@@ -14,37 +14,6 @@ export default function DocsHubPage() {
         </p>
       </div>
 
-      <div className={styles.notice}>
-        <strong>Content note:</strong> Text and images on this demo are placeholders or draft material.
-        Official content and photographs will be updated as the Diocese / Shrine provides them. The purpose
-        of this environment is to evaluate structure, administration, and multilingual workflows.
-      </div>
-
-      <div className={styles.notice}>
-        <strong>Suggested path for reviewers:</strong> read the proposed solution → open the live demo →
-        sign in with the credentials below → follow the admin user guide → download or print PDF copies for
-        committee circulation if needed.
-      </div>
-
-      <section className={styles.creds} aria-label="Demo admin credentials">
-        <h2>Admin credentials (demo testing)</h2>
-        <dl>
-          <dt>Login URL</dt>
-          <dd>
-            <a href="/admin/login">/admin/login</a>
-          </dd>
-          <dt>Email</dt>
-          <dd>admin@kibeho.org</dd>
-          <dt>Password</dt>
-          <dd>KibehoAdmin@202!</dd>
-        </dl>
-        <p>
-          Use these credentials only on the evaluation demo. Follow the{' '}
-          <Link to="/docs/sitemap-and-admin-guide#admin-guide">administrator user guide</Link> while
-          signed in. Change passwords on handover to production.
-        </p>
-      </section>
-
       <div className={styles.grid}>
         <article className={styles.card}>
           <h2>1. Proposed solution</h2>
@@ -95,7 +64,7 @@ export default function DocsHubPage() {
         <article className={styles.card}>
           <h2>4. Administration panel</h2>
           <p>
-            Sign in with the demo credentials above to create pages, publish news, update menus, replace
+            Sign in with the demo credentials below to create pages, publish news, update menus, replace
             images, manage translations, and more.
           </p>
           <div className={styles.cardActions}>
@@ -108,6 +77,37 @@ export default function DocsHubPage() {
           </div>
         </article>
       </div>
+
+      <div className={styles.notice} style={{ marginTop: '1.25rem' }}>
+        <strong>Content note:</strong> Text and images on this demo are placeholders or draft material.
+        Official content and photographs will be updated as the Diocese / Shrine provides them. The purpose
+        of this environment is to evaluate structure, administration, and multilingual workflows.
+      </div>
+
+      <div className={styles.notice}>
+        <strong>Suggested path for reviewers:</strong> read the proposed solution → open the live demo →
+        sign in with the credentials below → follow the admin user guide → download or print PDF copies for
+        committee circulation if needed.
+      </div>
+
+      <section className={styles.creds} aria-label="Demo admin credentials">
+        <h2>Admin credentials (demo testing)</h2>
+        <dl>
+          <dt>Login URL</dt>
+          <dd>
+            <a href="/admin/login">/admin/login</a>
+          </dd>
+          <dt>Email</dt>
+          <dd>admin@kibeho.org</dd>
+          <dt>Password</dt>
+          <dd>KibehoAdmin@202!</dd>
+        </dl>
+        <p>
+          Use these credentials only on the evaluation demo. Follow the{' '}
+          <Link to="/docs/sitemap-and-admin-guide#admin-guide">administrator user guide</Link> while
+          signed in. Change passwords on handover to production.
+        </p>
+      </section>
 
       <section className={styles.card} style={{ marginTop: '1.25rem' }}>
         <h2>Direct URLs (share with the committee)</h2>
