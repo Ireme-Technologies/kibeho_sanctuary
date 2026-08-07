@@ -1,0 +1,6 @@
+export const blogGridEyebrow = 'News & Events'
+export const blogGridHeading = 'News from the Shrine'
+export const searchPlaceholder = 'Search here...'
+export const popularPostsLabel = 'Popular Posts'
+export const popularTagsLabel = 'Popular Tags'
+export const noResultsText = 'No articles match your search.'

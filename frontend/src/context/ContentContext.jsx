@@ -1,0 +1,267 @@
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  fetchActivities,
+  fetchBlogPosts,
+  fetchPages,
+  fetchProjects,
+  fetchServices,
+  fetchSettings,
+  fetchUpcomingPilgrimages,
+} from '@api/cms'
+import { useLocale } from '@context/LocaleContext'
+import { company as fallbackCompany } from '@data/company'
+import { services as fallbackServices } from '@data/services'
+import { projects as fallbackProjects } from '@data/projects'
+import { blogPosts as fallbackBlogPosts, blogAuthors as fallbackAuthors } from '@data/blog'
+import { activities as fallbackActivities } from '@data/activities'
+import { upcomingPilgrimages as fallbackUpcomingPilgrimages } from '@data/upcomingPilgrimages'
+import {
+  primaryNav as fallbackPrimaryNav,
+  footerLinks as fallbackFooterLinks,
+  footerServiceLinks as fallbackFooterServiceLinks,
+  navCTA as fallbackNavCTA,
+} from '@data/navigation'
+import { contactHero, contactInfo, contactMap, contactFormLabels } from '@data/contact'
+import { applyThemeToDocument, DEFAULT_THEME, normalizeTheme } from '@utils/theme'
+
+const ContentContext = createContext(null)
+
+function pageContent(pages, key, fallback = {}) {
+  return pages?.[key]?.content ?? fallback
+}
+
+/** Prefer local ToR nav when API settings still use the old About/Activities IA */
+function isStalePrimaryNav(apiPrimary) {
+  if (!Array.isArray(apiPrimary) || !apiPrimary.length) return true
+  const labels = apiPrimary.map((item) => String(item?.label || '').toLowerCase())
+  const hasTorPillars =
+    labels.some((l) => l.includes('our lady')) &&
+    labels.some((l) => l.includes('shrine')) &&
+    labels.some((l) => l.includes('spirituality'))
+  if (!hasTorPillars) {
+    return (
+      labels.includes('about') ||
+      labels.includes('activities') ||
+      labels.includes('publications') ||
+      labels.includes('hotels') ||
+      labels.includes('contact') ||
+      labels.includes('support us')
+    )
+  }
+  const ourLady = apiPrimary.find((item) =>
+    String(item?.label || '')
+      .toLowerCase()
+      .includes('our lady')
+  )
+  if (ourLady && String(ourLady.path || '').replace(/\/$/, '') === '/our-lady') {
+    return true
+  }
+  return false
+}
+
+const NAV_LABEL_KEYS = {
+  'our lady': 'nav.ourLady',
+  shrine: 'nav.shrine',
+  'the shrine': 'nav.shrine',
+  pilgrimage: 'nav.pilgrimage',
+  spirituality: 'nav.spirituality',
+  news: 'nav.news',
+  support: 'nav.support',
+}
+
+function translateNav(items, t) {
+  if (!Array.isArray(items)) return items
+  return items.map((item) => {
+    const key = NAV_LABEL_KEYS[String(item.label || '').toLowerCase()]
+    const next = {
+      ...item,
+      label: key ? t(key) : item.label,
+    }
+    if (Array.isArray(item.children)) {
+      next.children = translateNav(item.children, t)
+    }
+    return next
+  })
+}
+
+export function ContentProvider({ children }) {
+  const { locale, t, ready: localeReady } = useLocale()
+  const [settings, setSettings] = useState({})
+  const [services, setServices] = useState([])
+  const [projects, setProjects] = useState([])
+  const [blogPosts, setBlogPosts] = useState([])
+  const [activities, setActivities] = useState([])
+  const [upcomingPilgrimages, setUpcomingPilgrimages] = useState([])
+  const [pages, setPages] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [fromApi, setFromApi] = useState(false)
+
+  const load = useCallback(async (activeLocale) => {
+    setLoading(true)
+    setError(null)
+    const params = activeLocale ? { locale: activeLocale } : {}
+    try {
+      const [
+        settingsData,
+        servicesData,
+        projectsData,
+        blogData,
+        activitiesData,
+        pilgrimagesData,
+        pagesData,
+      ] = await Promise.all([
+        fetchSettings(),
+        fetchServices(params),
+        fetchProjects(params),
+        fetchBlogPosts(params),
+        fetchActivities(params),
+        fetchUpcomingPilgrimages(params),
+        fetchPages(params),
+      ])
+      setSettings(settingsData || {})
+      setServices(servicesData || [])
+      setProjects(projectsData || [])
+      setBlogPosts(blogData || [])
+      setActivities(activitiesData || [])
+      setUpcomingPilgrimages(pilgrimagesData || [])
+      setPages(pagesData || {})
+      setFromApi(true)
+    } catch (err) {
+      setError(err)
+      setFromApi(false)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!localeReady) return
+    load(locale)
+  }, [locale, localeReady, load])
+
+  const theme = useMemo(
+    () => normalizeTheme(settings.theme || DEFAULT_THEME),
+    [settings.theme]
+  )
+
+  useEffect(() => {
+    applyThemeToDocument(theme)
+  }, [theme])
+
+  const value = useMemo(() => {
+    const rawCompany = settings.company || fallbackCompany
+    const company = {
+      ...fallbackCompany,
+      ...rawCompany,
+      name:
+        !rawCompany.name ||
+        rawCompany.name === 'Kibeho Sanctuary' ||
+        /^Kibeho Sanctuary$/i.test(rawCompany.name)
+          ? fallbackCompany.name
+          : rawCompany.name,
+      tagline:
+        !rawCompany.tagline || rawCompany.tagline === 'Shrine of Our Lady of Kibeho'
+          ? fallbackCompany.tagline
+          : rawCompany.tagline,
+      shortName: rawCompany.shortName || fallbackCompany.shortName,
+    }
+    const navigation = settings.navigation || {}
+    const contact = settings.contact || {}
+
+    const defaultHeaderImage =
+      pageContent(pages, 'headers.default').backgroundImage || '/images/about/about-hero.jpg'
+
+    const resolvedActivities = activities.length ? activities : fallbackActivities
+    const resolvedPilgrimages = upcomingPilgrimages.length
+      ? upcomingPilgrimages
+      : fallbackUpcomingPilgrimages
+
+    const apiPrimary = navigation.primaryNav
+    const apiNavIsStale = isStalePrimaryNav(apiPrimary)
+    const primaryNavRaw =
+      Array.isArray(apiPrimary) && apiPrimary.length && !apiNavIsStale
+        ? apiPrimary
+        : fallbackPrimaryNav
+
+    const footerLinksRaw = apiNavIsStale
+      ? fallbackFooterLinks
+      : navigation.footerLinks || fallbackFooterLinks
+    const footerServiceLinksRaw = apiNavIsStale
+      ? fallbackFooterServiceLinks
+      : navigation.footerServiceLinks || fallbackFooterServiceLinks
+
+    const navCTARaw = navigation.navCTA || fallbackNavCTA
+
+    return {
+      loading,
+      error,
+      fromApi,
+      refresh: () => load(locale),
+      company,
+      primaryNav: translateNav(primaryNavRaw, t),
+      footerLinks: translateNav(footerLinksRaw, t),
+      footerServiceLinks: translateNav(footerServiceLinksRaw, t),
+      navCTA: {
+        ...navCTARaw,
+        label: t('donate') || navCTARaw.label,
+      },
+      contactHero: contact.hero || contactHero,
+      contactInfo: contact.info || contactInfo,
+      contactMap: contact.map || contactMap,
+      contactFormLabels: {
+        ...contactFormLabels,
+        name: t('name'),
+        email: t('email'),
+        phone: t('phone'),
+        message: t('message'),
+        submit: t('sendMessage'),
+      },
+      services: services.length ? services : fallbackServices,
+      projects: projects.length ? projects : fallbackProjects,
+      activities: resolvedActivities,
+      upcomingPilgrimages: resolvedPilgrimages,
+      blogPosts: blogPosts.length
+        ? blogPosts.map((post) => ({
+            ...post,
+            authorId: post.author?.name,
+            comments: post.comments || [],
+            content: post.body
+              ? [{ type: 'html', html: post.body }]
+              : post.content || [],
+          }))
+        : fallbackBlogPosts,
+      blogAuthors: fallbackAuthors,
+      pages,
+      defaultHeaderImage,
+      resolveHeaderImage: (pageImage, fallback) =>
+        pageImage || defaultHeaderImage || fallback || '/images/about/about-hero.jpg',
+      section: (key, fallback = {}) => pageContent(pages, key, fallback),
+      theme,
+      locale,
+    }
+  }, [
+    settings,
+    services,
+    projects,
+    blogPosts,
+    activities,
+    upcomingPilgrimages,
+    pages,
+    loading,
+    error,
+    fromApi,
+    theme,
+    t,
+    locale,
+    load,
+  ])
+
+  return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>
+}
+
+export function useContent() {
+  const ctx = useContext(ContentContext)
+  if (!ctx) throw new Error('useContent must be used within ContentProvider')
+  return ctx
+}

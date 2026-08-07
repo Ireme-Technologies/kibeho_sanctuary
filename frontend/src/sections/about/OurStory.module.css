@@ -1,0 +1,228 @@
+/* ── SECTION ──────────────────────────────── */
+.section {
+  background-color: var(--color-white);
+  padding-block: var(--space-2xl);
+}
+
+/* ── CONTAINER — two-column grid ─────────── */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+/* ── TEXT COLUMN ──────────────────────────── */
+/* Pure CSS slide-in-from-left, driven by the .textColumnVisible toggle */
+.textColumn {
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateX(-56px);
+  transition: opacity 0.85s var(--ease-luxury), transform 0.85s var(--ease-luxury);
+}
+
+.textColumnVisible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── EYEBROW ──────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  margin-bottom: var(--space-sm);
+}
+
+/* ── HEADING ──────────────────────────────── */
+.heading {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  color: var(--color-black);
+  line-height: var(--lh-heading);
+  margin-bottom: var(--space-sm);
+}
+
+/* ── GOLD ACCENT LINE ─────────────────────── */
+.accentLine {
+  width: 48px;
+  height: 3px;
+  background-color: var(--color-gold);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-lg);
+}
+
+/* ── PARAGRAPHS ───────────────────────────── */
+.paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.paragraph {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--color-gray-text);
+  line-height: var(--lh-body);
+}
+
+/* ── QUOTE ────────────────────────────────── */
+.quote {
+  border-left: 3px solid var(--color-gold);
+  padding: var(--space-sm) var(--space-md);
+  margin: 0 0 var(--space-lg) 0;
+  background-color: var(--color-off-white);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.quote p {
+  font-family: var(--font-heading);
+  font-size: clamp(15px, 1.3vw, 17px);
+  font-weight: 600;
+  font-style: italic;
+  color: var(--color-black);
+  line-height: var(--lh-heading);
+  margin: 0;
+}
+
+/* ── STAT ROW ─────────────────────────────── */
+.stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  position: relative;
+}
+
+.statValue {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--color-gold);
+  line-height: 1;
+}
+
+.statLabel {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--color-gray-text);
+}
+
+.statDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--color-gold);
+  opacity: 0.4;
+  margin-inline: var(--space-md);
+  flex-shrink: 0;
+}
+
+/* ── IMAGE COLUMN ─────────────────────────── */
+/* Pure CSS slide-in-from-right, driven by the .imageColumnVisible toggle */
+.imageColumn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateX(56px);
+  transition: opacity 0.85s var(--ease-luxury), transform 0.85s var(--ease-luxury);
+}
+
+.imageColumnVisible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── IMAGE FRAME ──────────────────────────── */
+.imageFrame {
+  position: relative;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1.5px solid var(--color-gold);
+  background: transparent;
+  cursor: zoom-in;
+  display: block;
+  text-align: left;
+  /* Layered shadow: gold tint + black offset + soft ambient drop */
+  box-shadow:
+    6px 6px 0 rgba(212, 175, 55, 0.15),
+    12px 12px 0 rgba(10, 10, 10, 0.10),
+    0 32px 64px rgba(10, 10, 10, 0.12);
+}
+
+/* ── IMAGE ────────────────────────────────── */
+.image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: filter 0.4s ease;
+}
+
+.imageFrame:hover .image {
+  filter: brightness(1.05);
+}
+
+/* ── RESPONSIVE ───────────────────────────── */
+
+/* Tablet — switch to single column, image on top */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+
+  .imageColumn {
+    order: -1;
+  }
+
+  .imageFrame {
+    max-width: 560px;
+    margin-inline: auto;
+  }
+
+  .image {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .statDot {
+    margin-inline: var(--space-sm);
+  }
+
+  .quote p {
+    font-size: 14px;
+  }
+}
+
+/* ── REDUCED MOTION ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .textColumn,
+  .imageColumn {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+}

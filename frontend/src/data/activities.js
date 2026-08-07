@@ -1,0 +1,122 @@
+/**
+ * Fallback activities when the API is unavailable.
+ * Live content is managed in Admin → Activities.
+ */
+
+export const activities = [
+  {
+    id: 1,
+    slug: 'touch-the-rock',
+    title: 'Touch the Rock',
+    shortDescription:
+      'Pray at the rock of devotion and entrust your intentions to Our Lady of Kibeho.',
+    description:
+      '<p>Pilgrims come to touch the rock in prayer, bringing personal intentions with faith and humility before God through the intercession of the Blessed Virgin Mary.</p>',
+    image: '/images/sanctuary/activity-rock.jpg',
+    path: '/activities/touch-the-rock',
+    sortOrder: 1,
+    showInMenu: true,
+    isPublished: true,
+  },
+  {
+    id: 2,
+    slug: 'light-a-candle',
+    title: 'Light a Candle',
+    shortDescription:
+      'Offer a candle for family, peace, healing, thanksgiving, or a special intention.',
+    description:
+      '<p>Lighting a candle represents bringing one’s intentions before God through the intercession of Our Lady of Kibeho.</p>',
+    image: '/images/sanctuary/activity-candle.jpg',
+    path: '/activities/light-a-candle',
+    sortOrder: 2,
+    showInMenu: true,
+    isPublished: true,
+  },
+  {
+    id: 3,
+    slug: 'water',
+    title: 'Drink Water from the Spring',
+    shortDescription:
+      'Visit the spring in prayer and trust in God’s mercy through Our Lady of Kibeho.',
+    description:
+      '<p>Pilgrims visit the spring while offering prayers of faith and trust in God’s mercy.</p>',
+    image: '/images/sanctuary/activity-spring.jpg',
+    path: '/activities/water',
+    sortOrder: 3,
+    showInMenu: true,
+    isPublished: true,
+  },
+  {
+    id: 4,
+    slug: 'holy-mass',
+    title: 'Take Part in the Mass',
+    shortDescription: 'Join the Eucharist at the heart of every pilgrimage to Kibeho.',
+    description:
+      '<p>Daily Eucharistic celebrations remain at the heart of every pilgrimage.</p>',
+    image: '/images/sanctuary/hero.jpg',
+    path: '/activities/holy-mass',
+    sortOrder: 4,
+    showInMenu: true,
+    isPublished: true,
+  },
+  {
+    id: 5,
+    slug: 'mass-readings',
+    title: 'Mass Readings',
+    shortDescription: 'Follow the Word of God proclaimed in the liturgy at the shrine.',
+    description: '<p>Follow the Word of God proclaimed in the liturgy.</p>',
+    image: '/images/sanctuary/welcome.jpg',
+    path: '/activities/mass-readings',
+    sortOrder: 5,
+    showInMenu: true,
+    isPublished: true,
+  },
+  {
+    id: 6,
+    slug: 'worship-meditation',
+    title: 'Worship & Meditation',
+    shortDescription: 'Make space for silent prayer, adoration, and meditation at the shrine.',
+    description: '<p>Make space for silent prayer, adoration, and meditation during your pilgrimage.</p>',
+    image: '/images/sanctuary/mary.jpg',
+    path: '/activities/worship-meditation',
+    sortOrder: 6,
+    showInMenu: true,
+    isPublished: true,
+  },
+  {
+    id: 7,
+    slug: 'rosary-7-sorrows',
+    title: 'Rosary of the 7 Sorrows',
+    shortDescription: 'Pray the Seven Sorrows Rosary, closely linked to the message of Kibeho.',
+    description: '<p>Pray the Rosary of the Seven Sorrows of Mary.</p>',
+    image: '/images/sanctuary/crest.jpg',
+    path: '/activities/rosary-7-sorrows',
+    sortOrder: 7,
+    showInMenu: true,
+    isPublished: true,
+  },
+  {
+    id: 8,
+    slug: 'rosary',
+    title: 'Rosary',
+    shortDescription: 'Join the communal Rosary or pray quietly along the paths of Kibeho.',
+    description: '<p>Join the communal Rosary at the shrine.</p>',
+    image: '/images/sanctuary/hills.jpg',
+    path: '/activities/rosary',
+    sortOrder: 8,
+    showInMenu: true,
+    isPublished: true,
+  },
+  {
+    id: 9,
+    slug: 'road-to-the-cross',
+    title: 'Road to the Cross',
+    shortDescription: 'Walk the Stations of the Cross in prayerful pilgrimage with Christ.',
+    description: '<p>Walk the Stations of the Cross in prayerful pilgrimage.</p>',
+    image: '/images/sanctuary/hero.jpg',
+    path: '/activities/road-to-the-cross',
+    sortOrder: 9,
+    showInMenu: true,
+    isPublished: true,
+  },
+]

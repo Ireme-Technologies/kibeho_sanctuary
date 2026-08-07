@@ -1,0 +1,62 @@
+.section {
+  padding: 4rem 0 5rem;
+  background: #0b0b0b;
+  color: #f2f2f2;
+}
+
+.intro {
+  max-width: 40rem;
+  margin: 0 0 2rem;
+  color: #c7c7c7;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #171717;
+  border: 1px solid #2a2a2a;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+
+.card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  height: auto;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.card:hover img,
+.card:focus-visible img {
+  transform: scale(1.03);
+}
+
+.card:focus-visible {
+  outline: 2px solid #d4af37;
+  outline-offset: 2px;
+}
+
+.empty,
+.error {
+  color: #aaa;
+}
+
+.error {
+  color: #f88;
+}

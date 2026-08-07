@@ -1,0 +1,228 @@
+/* ── HERO ─────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 65vh;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding-block: var(--space-lg);
+}
+
+/* ── BACKGROUND ───────────────────────────── */
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.bgImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(10, 10, 10, 0.86) 0%,
+    rgba(20, 20, 20, 0.74) 50%,
+    rgba(10, 10, 10, 0.9) 100%
+  );
+}
+
+/* ── CONTENT WRAPPER ──────────────────────── */
+.contentWrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--container-width);
+  padding-inline: var(--container-padding);
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 640px);
+  max-width: 100%;
+  text-align: center;
+}
+
+/* ── BREADCRUMB ───────────────────────────── */
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.breadcrumbHome {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color var(--transition-base);
+}
+
+.breadcrumbHome:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.breadcrumbSep {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 10px;
+}
+
+.breadcrumbCurrent {
+  color: var(--color-gold);
+}
+
+/* ── EYEBROW ──────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-sm);
+}
+
+/* ── HEADLINE ─────────────────────────────── */
+.headline {
+  font-family: var(--font-heading);
+  font-size: var(--fs-hero);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-md);
+}
+
+/* ── GOLD ACCENT LINE ─────────────────────── */
+/* Pure CSS transform transition instead of framer-motion scaleX animation */
+.accentLine {
+  width: 56px;
+  height: 3px;
+  background-color: var(--color-gold);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-lg);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.6s var(--ease-luxury) 0.5s;
+}
+
+.accentLineVisible {
+  transform: scaleX(1);
+}
+
+/* ── SUBLINE ──────────────────────────────── */
+.subline {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.4vw, 18px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: var(--lh-body);
+  max-width: 480px;
+}
+
+/* ── SCROLL INDICATOR ─────────────────────── */
+.scrollIndicator {
+  position: absolute;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  animation: scrollIndicatorFadeIn 0.8s ease forwards;
+  animation-delay: 1.4s;
+}
+
+.scrollLine {
+  display: block;
+  width: 1.5px;
+  height: 48px;
+  background: linear-gradient(
+    to bottom,
+    var(--color-gold),
+    rgba(212, 175, 55, 0)
+  );
+  border-radius: var(--radius-sm);
+  transform-origin: top;
+  animation: scrollLinePulse 1.6s ease-in-out infinite;
+  animation-delay: 1.4s;
+}
+
+@keyframes scrollIndicatorFadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes scrollLinePulse {
+  0% { transform: scaleY(0); }
+  50% { transform: scaleY(1); }
+  100% { transform: scaleY(0); }
+}
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    height: 55vh;
+    min-height: 380px;
+  }
+
+  .content {
+    max-width: 90%;
+  }
+
+  .scrollIndicator {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    height: 48vh;
+    min-height: 320px;
+  }
+
+  .headline {
+    font-size: clamp(30px, 9vw, 48px);
+  }
+
+  .subline {
+    font-size: 15px;
+    max-width: 100%;
+  }
+}
+
+/* ── REDUCED MOTION ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .accentLine,
+  .scrollIndicator,
+  .scrollLine {
+    animation: none;
+    transition: none;
+  }
+
+  .accentLineVisible {
+    transform: scaleX(1);
+  }
+
+  .scrollIndicator {
+    opacity: 1;
+  }
+}

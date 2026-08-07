@@ -1,0 +1,16 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+}
+
+/* Non-hero pages: navbar is solid from the start, so push content down
+   to clear the fixed header. Hero pages skip this — the hero image
+   bleeds full-height behind the transparent navbar instead. */
+.withOffset {
+  padding-top: calc(var(--topbar-height) + var(--header-height));
+}

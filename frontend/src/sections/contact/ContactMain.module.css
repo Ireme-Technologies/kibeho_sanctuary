@@ -1,0 +1,444 @@
+/* ── SECTION ──────────────────────────────── */
+.section {
+  position: relative;
+  background-color: var(--color-black);
+  padding-block: var(--space-2xl);
+  overflow: hidden;
+}
+
+/* Subtle gold dot texture, same technique as TestimonialsGrid but
+   sparser/static since this section already has two busy cards */
+.background {
+  position: absolute;
+  inset: -10%;
+  z-index: 0;
+  background-image: radial-gradient(rgba(212, 175, 55, 0.12) 1px, transparent 1.5px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+
+/* ── CONTAINER — two floating cards, not a hard split ────── */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+/* ══════════════════════════════════════════
+   FORM CARD (light, elevated)
+══════════════════════════════════════════ */
+.formCard {
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: clamp(1.75rem, 4vw, var(--space-xl));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+
+.formEyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  margin-bottom: var(--space-sm);
+}
+
+.formHeading {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  color: var(--color-black);
+  line-height: var(--lh-heading);
+  margin-bottom: var(--space-md);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.channelRow {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.channelOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.channelActive {
+  border-color: var(--color-gold);
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--color-black);
+}
+
+.helperNote {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-gray-text-light);
+}
+
+.helperNote a {
+  color: var(--color-gold-dark);
+  font-weight: 600;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--color-black);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: var(--color-off-white);
+  border: 1.5px solid var(--color-gray-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--color-black);
+  transition: border-color var(--transition-base), background-color var(--transition-base),
+    box-shadow var(--transition-base);
+  outline: none;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-gray-text-light);
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--color-gold);
+  background-color: var(--color-white);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.inputError {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 130px;
+  line-height: var(--lh-body);
+}
+
+.error {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin: 0;
+}
+
+/* ── SUBMIT BUTTON ────────────────────────── */
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: 14px 32px;
+  background-color: var(--color-gold);
+  color: var(--color-black);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background-color var(--transition-base), color var(--transition-base),
+    transform var(--transition-base);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background-color: var(--color-gold-dark);
+  color: var(--color-white);
+  transform: translateY(-2px);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(10, 10, 10, 0.25);
+  border-top-color: var(--color-black);
+  border-radius: 50%;
+  animation: contactSpin 0.7s linear infinite;
+}
+
+@keyframes contactSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.successMsg {
+  padding: var(--space-sm) var(--space-md);
+  background-color: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: #166534;
+  font-weight: 500;
+}
+
+.errorMsg {
+  padding: var(--space-sm) var(--space-md);
+  background-color: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: #991b1b;
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════
+   INFO PANEL (glassmorphism, dark — matches
+   the Timeline milestone card visual language)
+══════════════════════════════════════════ */
+.infoCard {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: clamp(1.75rem, 4vw, var(--space-xl));
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.infoCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  opacity: 0.8;
+}
+
+.infoEyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-sm);
+}
+
+.infoHeading {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: var(--space-md);
+}
+
+.infoAccent {
+  width: 40px;
+  height: 3px;
+  background-color: var(--color-gold);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.infoList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  list-style: none;
+  padding: 0;
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.infoIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(212, 175, 55, 0.12);
+  border-radius: var(--radius-sm);
+  color: var(--color-gold);
+  flex-shrink: 0;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.infoLabel {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.infoValue {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.infoValueLink {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  transition: color var(--transition-base);
+}
+
+.infoValueLink:hover {
+  color: var(--color-gold);
+}
+
+.hoursRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hoursDay {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── WHATSAPP BUTTON (gold, not green — on-brand) ────────── */
+.whatsappBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 12px 22px;
+  background-color: var(--color-gold);
+  color: var(--color-black);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: var(--space-md);
+  transition: background-color var(--transition-base), color var(--transition-base),
+    transform var(--transition-base);
+  align-self: flex-start;
+}
+
+.whatsappBtn:hover {
+  background-color: var(--color-gold-dark);
+  color: var(--color-white);
+  transform: translateY(-2px);
+}
+
+/* ── SOCIAL LINKS ─────────────────────────── */
+.socialRow {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.socialLink {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  transition: border-color var(--transition-base), color var(--transition-base),
+    background-color var(--transition-base);
+}
+
+.socialLink:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  background-color: rgba(212, 175, 55, 0.08);
+}
+
+/* ── RESPONSE NOTE ────────────────────────── */
+.responseNote {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: var(--lh-body);
+}
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 960px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
+
+  .submitBtn {
+    width: 100%;
+  }
+}

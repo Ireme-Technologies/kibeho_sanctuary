@@ -1,0 +1,33 @@
+/* Used by sections via useInView: toggle one of these classes once inView is true.
+   Kept deliberately subtle — fade + small rise, no bounce/scale gimmicks,
+   per the "luxury, professional, not an animation playground" direction. */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in-up {
+  opacity: 0;
+}
+.fade-in-up.is-visible {
+  animation: fadeInUp 0.8s var(--ease-luxury) forwards;
+}
+
+.fade-in {
+  opacity: 0;
+}
+.fade-in.is-visible {
+  animation: fadeIn 0.8s var(--ease-luxury) forwards;
+}

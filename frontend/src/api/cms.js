@@ -1,0 +1,311 @@
+import { api, ensureCsrf } from './client'
+
+function withQuery(path, params = {}) {
+  const query = new URLSearchParams()
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === '') return
+    query.set(key, String(value))
+  })
+  const qs = query.toString()
+  return qs ? `${path}?${qs}` : path
+}
+
+export const fetchSettings = () => api('/api/settings')
+export const fetchI18n = (locale) => api(withQuery('/api/i18n', { locale }))
+export const updateI18n = (body) => api('/api/i18n', { method: 'PUT', body })
+export const fetchServices = (params = {}) => api(withQuery('/api/pilgrimage-services', params))
+export const fetchService = (slug, params = {}) =>
+  api(withQuery(`/api/pilgrimage-services/${slug}`, params))
+export const fetchProjects = (params = {}) => api(withQuery('/api/facilities', params))
+export const fetchProject = (slug, params = {}) => api(withQuery(`/api/facilities/${slug}`, params))
+export const fetchBlogPosts = (params = {}) => api(withQuery('/api/news', params))
+export const fetchBlogPost = (slug, params = {}) => api(withQuery(`/api/news/${slug}`, params))
+export const fetchActivities = (params = {}) => api(withQuery('/api/activities', params))
+export const fetchActivity = (slug, params = {}) => api(withQuery(`/api/activities/${slug}`, params))
+export const fetchUpcomingPilgrimages = (params = {}) =>
+  api(withQuery('/api/upcoming-pilgrimages', params))
+export const fetchUpcomingPilgrimage = (slug, params = {}) =>
+  api(withQuery(`/api/upcoming-pilgrimages/${slug}`, params))
+export const fetchPages = (params = {}) => api(withQuery('/api/pages', params))
+export const fetchPage = (key, params = {}) =>
+  api(withQuery(`/api/pages/${encodeURIComponent(key)}`, params))
+export const fetchGallery = () => api('/api/gallery')
+export const fetchVideos = (params = {}) => api(withQuery('/api/videos', params))
+export const fetchVideo = (slug, params = {}) => api(withQuery(`/api/videos/${slug}`, params))
+
+export async function createVideo(body) {
+  return api('/api/videos', { method: 'POST', body })
+}
+
+export async function updateVideo(id, body) {
+  return api(`/api/videos/${id}`, { method: 'PUT', body })
+}
+
+export async function deleteVideo(id) {
+  return api(`/api/videos/${id}`, { method: 'DELETE' })
+}
+
+export async function reorderVideos(order) {
+  return api('/api/videos/reorder', { method: 'PUT', body: { order } })
+}
+
+export async function submitContact(payload) {
+  return api('/api/contact', { method: 'POST', body: payload })
+}
+
+export async function submitEnquiry(payload) {
+  return api('/api/pilgrim-enquiries', { method: 'POST', body: payload })
+}
+
+export async function fetchEnquiryStats() {
+  return api('/api/pilgrim-enquiries/stats')
+}
+
+export async function fetchEnquiries(params = {}) {
+  const query = new URLSearchParams(params).toString()
+  return api(`/api/pilgrim-enquiries${query ? `?${query}` : ''}`)
+}
+
+export async function fetchEnquiry(id) {
+  return api(`/api/pilgrim-enquiries/${id}`)
+}
+
+export async function updateEnquiry(id, body) {
+  return api(`/api/pilgrim-enquiries/${id}`, { method: 'PUT', body })
+}
+
+export async function deleteEnquiry(id) {
+  return api(`/api/pilgrim-enquiries/${id}`, { method: 'DELETE' })
+}
+
+export async function replyEnquiry(id, body) {
+  return api(`/api/pilgrim-enquiries/${id}/messages`, { method: 'POST', body })
+}
+
+export async function uploadEnquiryDocument(id, file, note = '') {
+  await ensureCsrf()
+  const form = new FormData()
+  form.append('file', file)
+  if (note) form.append('note', note)
+  return api(`/api/pilgrim-enquiries/${id}/documents`, { method: 'POST', body: form })
+}
+
+export async function clientRegister(body) {
+  await ensureCsrf()
+  return api('/api/client/register', { method: 'POST', body })
+}
+
+export async function clientLogin(email, password) {
+  await ensureCsrf()
+  return api('/api/client/login', { method: 'POST', body: { email, password } })
+}
+
+export async function fetchClientEnquiries() {
+  return api('/api/client/pilgrim-enquiries')
+}
+
+export async function fetchClientEnquiry(id) {
+  return api(`/api/client/pilgrim-enquiries/${id}`)
+}
+
+export async function createClientEnquiry(body) {
+  return api('/api/client/pilgrim-enquiries', { method: 'POST', body })
+}
+
+export async function replyClientEnquiry(id, body) {
+  return api(`/api/client/pilgrim-enquiries/${id}/messages`, { method: 'POST', body })
+}
+
+export async function uploadClientEnquiryDocument(id, file, note = '') {
+  await ensureCsrf()
+  const form = new FormData()
+  form.append('file', file)
+  if (note) form.append('note', note)
+  return api(`/api/client/pilgrim-enquiries/${id}/documents`, { method: 'POST', body: form })
+}
+
+export async function login(email, password) {
+  await ensureCsrf()
+  return api('/api/login', { method: 'POST', body: { email, password } })
+}
+
+export async function fetchAdminRegistrationStatus() {
+  return api('/api/admin/registration-status')
+}
+
+export async function registerAdmin({ name, email, password, password_confirmation }) {
+  await ensureCsrf()
+  return api('/api/admin/register', {
+    method: 'POST',
+    body: { name, email, password, password_confirmation },
+  })
+}
+
+export async function logout() {
+  return api('/api/logout', { method: 'POST' })
+}
+
+export async function fetchUser() {
+  return api('/api/user')
+}
+
+export async function updateSettings(settings) {
+  return api('/api/settings', { method: 'PUT', body: { settings } })
+}
+
+export async function createService(body) {
+  return api('/api/pilgrimage-services', { method: 'POST', body })
+}
+
+export async function updateService(id, body) {
+  return api(`/api/pilgrimage-services/${id}`, { method: 'PUT', body })
+}
+
+export async function deleteService(id) {
+  return api(`/api/pilgrimage-services/${id}`, { method: 'DELETE' })
+}
+
+export async function createProject(body) {
+  return api('/api/facilities', { method: 'POST', body })
+}
+
+export async function updateProject(id, body) {
+  return api(`/api/facilities/${id}`, { method: 'PUT', body })
+}
+
+export async function deleteProject(id) {
+  return api(`/api/facilities/${id}`, { method: 'DELETE' })
+}
+
+export async function createBlogPost(body) {
+  return api('/api/news', { method: 'POST', body })
+}
+
+export async function updateBlogPost(id, body) {
+  return api(`/api/news/${id}`, { method: 'PUT', body })
+}
+
+export async function deleteBlogPost(id) {
+  return api(`/api/news/${id}`, { method: 'DELETE' })
+}
+
+export async function createActivity(body) {
+  return api('/api/activities', { method: 'POST', body })
+}
+
+export async function updateActivity(id, body) {
+  return api(`/api/activities/${id}`, { method: 'PUT', body })
+}
+
+export async function deleteActivity(id) {
+  return api(`/api/activities/${id}`, { method: 'DELETE' })
+}
+
+export async function createUpcomingPilgrimage(body) {
+  return api('/api/upcoming-pilgrimages', { method: 'POST', body })
+}
+
+export async function updateUpcomingPilgrimage(id, body) {
+  return api(`/api/upcoming-pilgrimages/${id}`, { method: 'PUT', body })
+}
+
+export async function deleteUpcomingPilgrimage(id) {
+  return api(`/api/upcoming-pilgrimages/${id}`, { method: 'DELETE' })
+}
+
+export const fetchMassSchedules = (params = {}) => api(withQuery('/api/mass-schedules', params))
+export const createMassSchedule = (body) => api('/api/mass-schedules', { method: 'POST', body })
+export const updateMassSchedule = (id, body) => api(`/api/mass-schedules/${id}`, { method: 'PUT', body })
+export const deleteMassSchedule = (id) => api(`/api/mass-schedules/${id}`, { method: 'DELETE' })
+
+export const fetchTestimonials = (params = {}) => api(withQuery('/api/testimonials', params))
+export const fetchTestimonial = (slug, params = {}) => api(withQuery(`/api/testimonials/${slug}`, params))
+export const createTestimonial = (body) => api('/api/testimonials', { method: 'POST', body })
+export const updateTestimonial = (id, body) => api(`/api/testimonials/${id}`, { method: 'PUT', body })
+export const deleteTestimonial = (id) => api(`/api/testimonials/${id}`, { method: 'DELETE' })
+
+export const fetchShrineProjects = (params = {}) => api(withQuery('/api/shrine-projects', params))
+export const fetchShrineProject = (slug, params = {}) =>
+  api(withQuery(`/api/shrine-projects/${slug}`, params))
+export const createShrineProject = (body) => api('/api/shrine-projects', { method: 'POST', body })
+export const updateShrineProject = (id, body) => api(`/api/shrine-projects/${id}`, { method: 'PUT', body })
+export const deleteShrineProject = (id) => api(`/api/shrine-projects/${id}`, { method: 'DELETE' })
+
+export const fetchSacredPlaces = (params = {}) => api(withQuery('/api/sacred-places', params))
+export const fetchSacredPlace = (slug, params = {}) =>
+  api(withQuery(`/api/sacred-places/${slug}`, params))
+export const createSacredPlace = (body) => api('/api/sacred-places', { method: 'POST', body })
+export const updateSacredPlace = (id, body) => api(`/api/sacred-places/${id}`, { method: 'PUT', body })
+export const deleteSacredPlace = (id) => api(`/api/sacred-places/${id}`, { method: 'DELETE' })
+
+export const fetchLodging = (params = {}) => api(withQuery('/api/facilities', { lodging: 1, ...params }))
+
+export async function updatePageSection(key, body) {
+  return api(`/api/pages/${encodeURIComponent(key)}`, { method: 'PUT', body })
+}
+
+export async function fetchContactMessages() {
+  return api('/api/contact-messages')
+}
+
+export async function deleteContactMessage(id) {
+  return api(`/api/contact-messages/${id}`, { method: 'DELETE' })
+}
+
+export async function fetchMedia(params = {}) {
+  const query = new URLSearchParams(params).toString()
+  return api(`/api/media${query ? `?${query}` : ''}`)
+}
+
+export async function uploadMedia(file, folder = 'uploads', extras = {}) {
+  await ensureCsrf()
+  const form = new FormData()
+  form.append('file', file)
+  form.append('folder', folder)
+  Object.entries(extras).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) form.append(key, value)
+  })
+  return api('/api/media', { method: 'POST', body: form })
+}
+
+export async function updateMedia(id, body) {
+  return api(`/api/media/${id}`, { method: 'PUT', body })
+}
+
+export async function reorderMedia(order) {
+  return api('/api/media/reorder', { method: 'PUT', body: { order } })
+}
+
+export async function deleteMedia(id) {
+  return api(`/api/media/${id}`, { method: 'DELETE' })
+}
+
+export async function fetchUsers() {
+  return api('/api/users')
+}
+
+export async function createUser(body) {
+  return api('/api/users', { method: 'POST', body })
+}
+
+export async function updateUser(id, body) {
+  return api(`/api/users/${id}`, { method: 'PUT', body })
+}
+
+export async function deleteUser(id) {
+  return api(`/api/users/${id}`, { method: 'DELETE' })
+}
+
+export async function changePassword(body) {
+  return api('/api/password/change', { method: 'POST', body })
+}
+
+export async function forgotPassword(email) {
+  await ensureCsrf()
+  return api('/api/password/forgot', { method: 'POST', body: { email } })
+}
+
+export async function resetPassword(body) {
+  await ensureCsrf()
+  return api('/api/password/reset', { method: 'POST', body })
+}

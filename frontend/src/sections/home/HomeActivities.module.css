@@ -1,0 +1,247 @@
+.section {
+  padding: var(--space-2xl) 0;
+  background:
+    radial-gradient(ellipse at top, rgba(74, 163, 224, 0.12), transparent 55%),
+    linear-gradient(165deg, var(--color-navy-deep) 0%, #152a45 48%, var(--color-navy) 100%);
+  color: var(--color-white);
+}
+
+.intro {
+  max-width: 48rem;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.65s var(--ease-luxury), transform 0.65s var(--ease-luxury);
+}
+
+.visible.intro,
+.visible.grid,
+.visible.actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.heading {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h2);
+  font-style: italic;
+  font-weight: 700;
+  color: #d8c08a;
+  margin-bottom: 1rem;
+  line-height: 1.25;
+}
+
+.subline {
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.divider {
+  display: block;
+  width: 4.5rem;
+  height: 1px;
+  margin: 1.5rem auto 0;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s var(--ease-luxury) 0.08s, transform 0.7s var(--ease-luxury) 0.08s;
+}
+
+.card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  min-height: 280px;
+  border-radius: 1.35rem;
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.visible .card {
+  animation: cardIn 0.6s var(--ease-luxury) forwards;
+}
+
+@keyframes cardIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease-luxury);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(10, 22, 38, 0.78) 0%, rgba(10, 22, 38, 0.22) 52%, rgba(10, 22, 38, 0.12) 100%);
+  transition: background 0.35s ease;
+}
+
+.cardContent {
+  position: absolute;
+  inset: auto 1rem 1.25rem;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  width: calc(100% - 2rem);
+}
+
+.cardTitle {
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-white);
+  line-height: 1.3;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  margin: 0;
+  transition: transform 0.35s var(--ease-luxury);
+}
+
+.hoverPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(10px);
+  transition:
+    max-height 0.4s var(--ease-luxury),
+    opacity 0.35s ease,
+    transform 0.35s var(--ease-luxury);
+}
+
+.cardDesc {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 28ch;
+}
+
+.cardCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  background: var(--color-sky);
+  color: var(--color-white);
+  font-size: 0.92rem;
+  font-weight: 700;
+  transition: background var(--transition-base), color var(--transition-base), transform var(--transition-base);
+}
+
+.card:hover img {
+  transform: scale(1.06);
+}
+
+.card:hover .overlay {
+  background:
+    linear-gradient(to top, rgba(10, 22, 38, 0.9) 0%, rgba(10, 22, 38, 0.45) 55%, rgba(10, 22, 38, 0.2) 100%);
+}
+
+.card:hover .cardTitle {
+  transform: translateY(-4px);
+}
+
+.card:hover .hoverPanel {
+  max-height: 12rem;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cardCta:hover {
+  background: var(--color-sky-light);
+  color: var(--color-navy-deep);
+  transform: translateY(-1px);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.85rem;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.65s var(--ease-luxury) 0.16s, transform 0.65s var(--ease-luxury) 0.16s;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14rem;
+  padding: 0.95rem 1.6rem;
+  border-radius: 999px;
+  background: var(--color-sky);
+  color: var(--color-white);
+  font-size: 1.02rem;
+  font-weight: 700;
+  transition: background var(--transition-base), transform var(--transition-base), color var(--transition-base);
+}
+
+.btn:hover {
+  background: var(--color-sky-light);
+  color: var(--color-navy-deep);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    margin-inline: auto;
+  }
+
+  .card {
+    aspect-ratio: 16 / 11;
+    min-height: 240px;
+  }
+
+  /* Touch devices: keep description visible */
+  .hoverPanel {
+    max-height: 12rem;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (hover: none) {
+  .hoverPanel {
+    max-height: 12rem;
+    opacity: 1;
+    transform: none;
+  }
+}

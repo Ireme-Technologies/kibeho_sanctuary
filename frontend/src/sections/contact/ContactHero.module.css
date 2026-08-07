@@ -1,0 +1,182 @@
+/* ── HERO ─────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 60vh;
+  min-height: 440px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.bgImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(10, 10, 10, 0.86) 0%,
+    rgba(20, 20, 20, 0.74) 50%,
+    rgba(10, 10, 10, 0.9) 100%
+  );
+}
+
+.contentWrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 600px;
+}
+
+/* ── BREADCRUMB ───────────────────────────── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.breadcrumbLink {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color var(--transition-base);
+}
+
+.breadcrumbLink:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.breadcrumbSep {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 10px;
+}
+
+.breadcrumbCurrent {
+  color: var(--color-gold);
+}
+
+/* ── EYEBROW ──────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-sm);
+}
+
+/* ── HEADLINE ─────────────────────────────── */
+.headline {
+  font-family: var(--font-heading);
+  font-size: var(--fs-hero);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-md);
+}
+
+/* ── ACCENT LINE (CSS transition, matches AboutHero pattern) ── */
+.accentLine {
+  width: 56px;
+  height: 3px;
+  background-color: var(--color-gold);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-lg);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.6s var(--ease-luxury) 0.5s;
+}
+
+.accentLineVisible {
+  transform: scaleX(1);
+}
+
+/* ── SUBLINE ──────────────────────────────── */
+.subline {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.4vw, 18px);
+  color: rgba(255, 255, 255, 0.72);
+  line-height: var(--lh-body);
+  max-width: 440px;
+  margin-bottom: var(--space-lg);
+}
+
+/* ── QUICK CONTACT CHIPS ──────────────────── */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 0.6rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--color-white);
+  transition: border-color var(--transition-base), background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+.chip:hover {
+  border-color: var(--color-gold);
+  background-color: rgba(212, 175, 55, 0.08);
+  color: var(--color-gold);
+}
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    height: 52vh;
+    min-height: 380px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chips {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ── REDUCED MOTION ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .accentLine {
+    transition: none;
+  }
+
+  .accentLineVisible {
+    transform: scaleX(1);
+  }
+}

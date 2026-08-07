@@ -1,0 +1,3 @@
+/* Intentionally empty — BlogHero delegates all styling to the shared
+   src/components/ui/PageHeader.module.css. Kept as a file so the
+   Name.jsx/.module.css/.js convention stays consistent across sections. */

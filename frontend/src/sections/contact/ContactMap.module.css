@@ -1,0 +1,83 @@
+/* ── SECTION ──────────────────────────────── */
+/* Deliberately quiet: generous whitespace, no dark background, no
+   full-bleed map — this is a secondary "by the way, here's the map"
+   element, not another hero-weight section. */
+.section {
+  background-color: var(--color-white);
+  padding-block: var(--space-2xl);
+}
+
+.container {
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── SMALL CARD, TUCKED TO ONE SIDE ───────── */
+.card {
+  width: 100%;
+  max-width: 320px;
+  border-left: 2px solid var(--color-gold);
+  padding-left: var(--space-md);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-gray-text);
+  margin: 2px 0 var(--space-sm);
+}
+
+/* ── SMALL MAP EMBED ──────────────────────── */
+.mapWrapper {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.map {
+  width: 100%;
+  height: 160px;
+  border: 0;
+  display: block;
+  filter: grayscale(35%) contrast(1.02);
+}
+
+/* ── DIRECTIONS LINK ──────────────────────── */
+.directionsLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gold-dark);
+  transition: color var(--transition-base), gap var(--transition-base);
+}
+
+.directionsLink:hover {
+  color: var(--color-gold);
+  gap: 9px;
+}
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 640px) {
+  .container {
+    justify-content: flex-start;
+  }
+
+  .card {
+    max-width: 100%;
+  }
+}

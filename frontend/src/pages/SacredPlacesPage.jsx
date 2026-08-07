@@ -1,0 +1,91 @@
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
+import { fetchSacredPlaces } from '@api/cms'
+import RichText from '@components/ui/RichText'
+import styles from './CatalogPage.module.css'
+
+const stripHtml = (html) =>
+  String(html || '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+export default function SacredPlacesPage({ type: typeProp }) {
+  const { pathname } = useLocation()
+  const { section, resolveHeaderImage } = useContent()
+
+  const type = useMemo(() => {
+    if (typeProp) return typeProp
+    return pathname.includes('apparition-sites') ? 'apparition_site' : 'church'
+  }, [typeProp, pathname])
+
+  const sectionKey = type === 'apparition_site' ? 'shrine.apparition-sites' : 'shrine.churches'
+  const hero = section(sectionKey, {})
+  const [items, setItems] = useState([])
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    fetchSacredPlaces({ ...{ type }, locale })
+      .then(setItems)
+      .catch((err) => setError(err.message))
+  }, [type])
+
+  const heroImage = resolveHeaderImage(
+    hero.heroImage,
+    type === 'church' ? '/images/sanctuary/church.jpg' : '/images/sanctuary/hero.jpg'
+  )
+
+  const basePath = type === 'apparition_site' ? '/shrine/apparition-sites' : '/shrine/churches'
+
+  return (
+    <div className={styles.page}>
+      <header
+        className={styles.hero}
+        style={{
+          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
+        }}
+      >
+        <div className="container">
+          <h1>{hero.title || (type === 'church' ? 'Churches' : 'Apparition Sites')}</h1>
+          {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}
+        </div>
+      </header>
+
+      <div className={`container ${styles.body}`}>
+        {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
+
+        {error ? <p className={styles.empty}>{error}</p> : null}
+
+        {!error && !items.length ? (
+          <p className={styles.empty}>Places will appear here once published.</p>
+        ) : null}
+
+        <div className={styles.grid}>
+          {items.map((item) => (
+            <Link
+              key={item.id}
+              to={item.path || `${basePath}/${item.slug}`}
+              className={styles.card}
+            >
+              {item.coverImage ? (
+                <div className={styles.cardMedia}>
+                  <img src={item.coverImage} alt="" />
+                </div>
+              ) : null}
+              <div className={styles.cardBody}>
+                {item.location ? <p className={styles.meta}>{item.location}</p> : null}
+                <h2>{item.name || item.title}</h2>
+                {item.shortDescription ? (
+                  <p className={styles.excerpt}>{stripHtml(item.shortDescription)}</p>
+                ) : null}
+                <span className={styles.cta}>Learn more →</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}

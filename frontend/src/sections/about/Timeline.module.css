@@ -1,0 +1,366 @@
+/* ── SECTION ──────────────────────────────── */
+.section {
+  position: relative;
+  padding-block: var(--space-2xl);
+  overflow: hidden;
+}
+
+/* ── PARALLAX BACKGROUND ──────────────────── */
+/* translateY offset comes from useParallax, applied inline on .bgImage */
+.parallaxBg {
+  position: absolute;
+  inset: -25% 0;
+  z-index: 0;
+  will-change: transform;
+}
+
+.bgImage {
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/about/timeline-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bgOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(10, 10, 10, 0.92) 0%,
+    rgba(20, 20, 20, 0.88) 100%
+  );
+}
+
+/* ── CONTENT ──────────────────────────────── */
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xl);
+}
+
+/* ── SECTION HEADER ───────────────────────── */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-sm);
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.heading {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: var(--lh-heading);
+  margin: 0;
+}
+
+/* ── TIMELINE WRAPPER ─────────────────────── */
+.timelineWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── CENTER LINE ──────────────────────────── */
+.centerLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 8%,
+    rgba(255, 255, 255, 0.15) 92%,
+    transparent 100%
+  );
+  z-index: 0;
+}
+
+/* ── MILESTONE ────────────────────────────── */
+.milestone {
+  display: grid;
+  grid-template-columns: 1fr 56px 1fr;
+  align-items: center;
+  padding-block: var(--space-lg);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── LEFT MILESTONE — card on left ─────────── */
+.milestoneLeft .contentArea {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: clamp(24px, 3vw, 48px);
+}
+
+.milestoneLeft .circleArea {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.milestoneLeft .emptyArea {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+/* ── RIGHT MILESTONE — card on right ───────── */
+.milestoneRight .emptyArea {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.milestoneRight .circleArea {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.milestoneRight .contentArea {
+  grid-column: 3;
+  grid-row: 1;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: clamp(24px, 3vw, 48px);
+}
+
+/* ── GLASS CARD ───────────────────────────── */
+.card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 380px;
+  width: 100%;
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  transition: transform 0.4s var(--ease-luxury), box-shadow 0.4s var(--ease-luxury),
+    border-color 0.4s ease;
+}
+
+/* Thin gold hairline across the top of every card */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  opacity: 0.8;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(212, 175, 55, 0.18), 0 8px 32px rgba(0, 0, 0, 0.4);
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+/* Left-side cards mirror their text alignment toward the center line */
+.milestoneLeft .card {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* ── YEAR WATERMARK (depth effect behind card content) ────────── */
+.yearWatermark {
+  position: absolute;
+  top: -14px;
+  right: 8px;
+  font-family: var(--font-heading);
+  font-size: 88px;
+  font-weight: 700;
+  color: rgba(212, 175, 55, 0.06);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* ── CARD CONTENT (sits above the watermark) ─────────────────── */
+.year {
+  position: relative;
+  z-index: 1;
+  display: block;
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+}
+
+.badge {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: var(--color-gold);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-sm);
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-heading);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: var(--lh-heading);
+  margin: 0 0 var(--space-xs);
+}
+
+.description {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: rgba(255, 255, 255, 0.6);
+  line-height: var(--lh-body);
+  max-width: 300px;
+}
+
+/* ── CIRCLE / CENTER NODE ─────────────────── */
+.circleArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--color-gold);
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.circleLogo {
+  width: 28px;
+  height: auto;
+  object-fit: contain;
+  /* Renders the logo white against the gold circle */
+  filter: brightness(0) invert(1);
+}
+
+/* ── RESPONSIVE ───────────────────────────── */
+
+/* Tablet & Mobile — line moves to the left, all cards align right of it */
+@media (max-width: 768px) {
+  .centerLine {
+    left: 26px;
+    transform: none;
+  }
+
+  .milestone {
+    grid-template-columns: 52px 1fr;
+    padding-block: var(--space-lg);
+  }
+
+  .milestoneLeft .circleArea,
+  .milestoneRight .circleArea {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .milestoneLeft .contentArea,
+  .milestoneRight .contentArea {
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: flex-start;
+    padding-left: var(--space-md);
+    padding-right: 0;
+  }
+
+  .milestoneLeft .emptyArea,
+  .milestoneRight .emptyArea {
+    display: none;
+  }
+
+  /* Reset right-alignment for mobile — all cards read left-to-right */
+  .milestoneLeft .card {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .card {
+    max-width: 100%;
+  }
+
+  .description {
+    max-width: 100%;
+  }
+
+  .circle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .circleLogo {
+    width: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .year {
+    font-size: 28px;
+  }
+
+  .yearWatermark {
+    font-size: 64px;
+  }
+
+  .card {
+    padding: var(--space-md);
+  }
+}
+
+/* ── REDUCED MOTION ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

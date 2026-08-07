@@ -1,0 +1,16 @@
+.placeholder {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--color-gray-border);
+  background: var(--color-off-white);
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gray-text-light);
+}
