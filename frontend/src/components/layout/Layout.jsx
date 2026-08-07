@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import DemoEvalBanner from './DemoEvalBanner'
 import styles from './Layout.module.css'
 
 /**
@@ -18,6 +19,7 @@ export default function Layout({ hasHero = false }) {
 
   return (
     <div className={styles.page}>
+      <DemoEvalBanner />
       <Navbar hasHero={hasHero} />
       <main className={`${styles.main} ${!hasHero ? styles.withOffset : ''}`}>
         <Outlet />

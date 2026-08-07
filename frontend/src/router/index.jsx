@@ -48,6 +48,11 @@ const HomeHeroAdminPage = lazy(() => import('@admin/HomeHeroAdminPage'))
 const UsersAdminPage = lazy(() => import('@admin/UsersAdminPage'))
 const AccountAdminPage = lazy(() => import('@admin/AccountAdminPage'))
 
+const DocsLayout = lazy(() => import('../docs/DocsLayout'))
+const DocsHubPage = lazy(() => import('../docs/DocsHubPage'))
+const ProposedSolutionPage = lazy(() => import('../docs/ProposedSolutionPage'))
+const SitemapAdminGuidePage = lazy(() => import('../docs/SitemapAdminGuidePage'))
+
 const Wrap = ({ Component, ...props }) => (
   <Suspense fallback={<PageLoader />}>
     <Component {...props} />
@@ -107,6 +112,15 @@ const cmsPaths = [
 ]
 
 const router = createBrowserRouter([
+  {
+    path: '/docs',
+    element: <Wrap Component={DocsLayout} />,
+    children: [
+      { index: true, element: <Wrap Component={DocsHubPage} /> },
+      { path: 'proposed-solution', element: <Wrap Component={ProposedSolutionPage} /> },
+      { path: 'sitemap-and-admin-guide', element: <Wrap Component={SitemapAdminGuidePage} /> },
+    ],
+  },
   {
     path: '/admin/login',
     element: <Wrap Component={LoginPage} />,

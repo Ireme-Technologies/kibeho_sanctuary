@@ -1,0 +1,45 @@
+.banner {
+  background: #163a5f;
+  color: #f4f7fb;
+  padding: 0.65rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.25rem;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.banner p {
+  margin: 0;
+  max-width: 40rem;
+}
+
+.banner strong {
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.85rem;
+}
+
+.actions a {
+  color: #fff;
+  font-weight: 650;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.actions a:hover {
+  border-bottom-color: #fff;
+}
+
+@media (max-width: 720px) {
+  .banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

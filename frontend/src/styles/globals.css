@@ -64,3 +64,37 @@ button {
   white-space: nowrap;
   border: 0;
 }
+
+/* Print / Save as PDF — docs pages: built-in margins (no manual print-dialog setup) */
+@media print {
+  /*
+   * Page box margins are unreliable (many browsers default to “None”).
+   * We use @page margin: 0 and pad the docs shell instead so PDFs always have inset.
+   */
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  html[data-docs-print='true'] body[data-docs-print='true'] [data-docs-shell='true'] {
+    padding: 22mm 20mm 24mm 20mm !important;
+    box-sizing: border-box !important;
+    background: #fff !important;
+    min-height: auto !important;
+  }
+
+  html[data-docs-print='true'] body[data-docs-print='true'] [data-docs-main='true'] {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
