@@ -33,7 +33,7 @@ export default function SitemapAdminGuidePage() {
       </div>
 
       <DocsToolbar
-        downloadHref="/docs/downloads/sitemap-and-admin-guide.md"
+        downloadHref="/evaluation-downloads/sitemap-and-admin-guide.md"
         downloadLabel="Download sitemap & admin guide (.md)"
       />
 

@@ -57,7 +57,7 @@ export default function DocsHubPage() {
             <Link className={styles.btnPrimary} to="/docs/proposed-solution">
               Open document
             </Link>
-            <a className={styles.btnGhost} href="/docs/downloads/proposed-solution.md" download>
+            <a className={styles.btnGhost} href="/evaluation-downloads/proposed-solution.md" download>
               Download .md
             </a>
           </div>
@@ -73,7 +73,7 @@ export default function DocsHubPage() {
             <Link className={styles.btnPrimary} to="/docs/sitemap-and-admin-guide">
               Open document
             </Link>
-            <a className={styles.btnGhost} href="/docs/downloads/sitemap-and-admin-guide.md" download>
+            <a className={styles.btnGhost} href="/evaluation-downloads/sitemap-and-admin-guide.md" download>
               Download .md
             </a>
           </div>
@@ -152,13 +152,13 @@ export default function DocsHubPage() {
             <tr>
               <td>Download — proposed solution</td>
               <td>
-                <code>/docs/downloads/proposed-solution.md</code>
+                <code>/evaluation-downloads/proposed-solution.md</code>
               </td>
             </tr>
             <tr>
               <td>Download — sitemap &amp; admin guide</td>
               <td>
-                <code>/docs/downloads/sitemap-and-admin-guide.md</code>
+                <code>/evaluation-downloads/sitemap-and-admin-guide.md</code>
               </td>
             </tr>
           </tbody>

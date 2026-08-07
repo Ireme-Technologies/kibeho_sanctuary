@@ -15,8 +15,8 @@ Share these with the Diocese evaluation committee:
 | Sitemap & admin user guide | `https://demo.iremetech.com/docs/sitemap-and-admin-guide` |
 | Public website demo | `https://demo.iremetech.com/` |
 | CMS admin login | `https://demo.iremetech.com/admin/login` |
-| Download — proposed solution | `https://demo.iremetech.com/docs/downloads/proposed-solution.md` |
-| Download — sitemap & admin guide | `https://demo.iremetech.com/docs/downloads/sitemap-and-admin-guide.md` |
+| Download — proposed solution | `https://demo.iremetech.com/evaluation-downloads/proposed-solution.md` |
+| Download — sitemap & admin guide | `https://demo.iremetech.com/evaluation-downloads/sitemap-and-admin-guide.md` |
 
 **Demo admin:** `admin@kibeho.org` / `KibehoAdmin@202!`  
 

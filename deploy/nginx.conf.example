@@ -35,7 +35,8 @@ server {
         try_files $uri =404;
     }
 
-    # SPA fallback for public site + /admin
+    # SPA fallback for public site + /admin + /docs
+    # Important: do not place a real public/docs/ folder (conflicts with React /docs routes → 403).
     location / {
         try_files $uri $uri/ /index.html;
     }

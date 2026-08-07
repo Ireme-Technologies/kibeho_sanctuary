@@ -29,7 +29,7 @@ export default function ProposedSolutionPage() {
       </div>
 
       <DocsToolbar
-        downloadHref="/docs/downloads/proposed-solution.md"
+        downloadHref="/evaluation-downloads/proposed-solution.md"
         downloadLabel="Download proposed solution (.md)"
       />
 
