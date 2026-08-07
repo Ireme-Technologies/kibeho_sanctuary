@@ -1,4 +1,18 @@
 const API_BASE = import.meta.env.VITE_API_URL || ''
+const IS_DEV = import.meta.env.DEV
+
+function apiUnreachableMessage(detail = '') {
+  if (IS_DEV) {
+    return (
+      'Could not reach the API server. Start Laravel with: php artisan serve --host=127.0.0.1 --port=8000' +
+      (detail ? ` (${detail})` : '')
+    )
+  }
+  return (
+    'Could not reach the API. On the live server, ensure Nginx routes /api and /sanctum to Laravel (index.php), PHP-FPM is running, and APP_URL / SANCTUM_STATEFUL_DOMAINS match this domain.' +
+    (detail ? ` (${detail})` : '')
+  )
+}
 
 function getCookie(name) {
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
@@ -11,11 +25,11 @@ export async function ensureCsrf() {
       credentials: 'include',
     })
     if (!res.ok) {
-      throw new Error('Could not reach the API server. Is Laravel running on port 8000?')
+      throw new Error(apiUnreachableMessage(`HTTP ${res.status} on /sanctum/csrf-cookie`))
     }
   } catch (err) {
-    if (err.message?.includes('API server')) throw err
-    throw new Error('Could not reach the API server. Start it with: php artisan serve --port=8000')
+    if (err.message?.includes('Could not reach the API')) throw err
+    throw new Error(apiUnreachableMessage(err.message || 'network error'))
   }
 }
 
@@ -42,10 +56,8 @@ export async function api(path, options = {}) {
           ? JSON.stringify(options.body)
           : options.body,
     })
-  } catch {
-    const error = new Error(
-      'Could not reach the API server. Start Laravel with: php artisan serve --host=127.0.0.1 --port=8000'
-    )
+  } catch (err) {
+    const error = new Error(apiUnreachableMessage(err.message || 'network error'))
     error.status = 0
     throw error
   }
