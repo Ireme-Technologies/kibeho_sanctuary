@@ -112,17 +112,20 @@
   align-items: center;
   justify-content: flex-start;
   flex-shrink: 0;
-  width: 4.25rem;
-  height: 4.25rem;
+  height: 3.6rem;
+  width: auto;
+  max-width: 12.5rem;
   z-index: 2;
 }
 
 .logoImg {
   height: 100%;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   display: block;
   object-fit: contain;
-  object-position: center;
+  object-position: left center;
+  border-radius: 4px;
 }
 
 .desktopNav {
@@ -350,7 +353,8 @@
   }
 
   .logo {
-    width: 3.25rem;
-    height: 3.25rem;
+    height: 2.75rem;
+    width: auto;
+    max-width: 9.5rem;
   }
 }

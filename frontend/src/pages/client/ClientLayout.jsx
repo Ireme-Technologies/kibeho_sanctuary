@@ -15,7 +15,7 @@ export default function ClientLayout() {
     <div className={styles.shell}>
       <header className={styles.header}>
         <Link to="/client" className={styles.brand}>
-          RVG Client Portal
+          Shrine Client Portal
         </Link>
         <nav className={styles.nav}>
           <NavLink to="/client" end>My enquiries</NavLink>

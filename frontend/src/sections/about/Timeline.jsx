@@ -4,7 +4,7 @@ import styles from './Timeline.module.css'
 import { useContent } from '@context/ContentContext'
 import { milestones as fb } from '@data/about'
 
-function MilestoneItem({ milestone, index }) {
+function MilestoneItem({ milestone, index, logoSrc }) {
   const isLeft = index % 2 === 0
   const [ref, inView] = useInView(0.3)
 
@@ -31,7 +31,7 @@ function MilestoneItem({ milestone, index }) {
       {/* Center node with logo */}
       <div className={styles.circleArea}>
         <div className={styles.circle} aria-hidden="true">
-          <img src="/logo-color.png" alt="" className={styles.circleLogo} />
+          <img src={logoSrc} alt="" className={styles.circleLogo} />
         </div>
       </div>
 
@@ -42,8 +42,9 @@ function MilestoneItem({ milestone, index }) {
 }
 
 export default function Timeline() {
-  const { section } = useContent()
+  const { section, company } = useContent()
   const milestones = section('about.timeline').milestones || fb
+  const logoSrc = company?.logo || '/images/logo/logo-transparent.png'
   const [headerRef, headerInView] = useInView(0.4)
   const [parallaxRef, parallaxOffset] = useParallax(0.15)
 
@@ -75,7 +76,7 @@ export default function Timeline() {
           <div className={styles.centerLine} aria-hidden="true" />
 
           {milestones.map((milestone, i) => (
-            <MilestoneItem key={milestone.id} milestone={milestone} index={i} />
+            <MilestoneItem key={milestone.id} milestone={milestone} index={i} logoSrc={logoSrc} />
           ))}
         </div>
 

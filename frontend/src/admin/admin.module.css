@@ -56,10 +56,12 @@
 }
 
 .brandLogo {
-  width: 48px;
-  height: 48px;
+  height: 40px;
+  width: auto;
+  max-width: 132px;
   object-fit: contain;
   flex-shrink: 0;
+  border-radius: 4px;
 }
 
 .brandText {
@@ -737,11 +739,13 @@
 }
 
 .loginLogo {
-  width: 4.25rem;
-  height: 4.25rem;
+  height: 3.25rem;
+  width: auto;
+  max-width: 14rem;
   object-fit: contain;
   margin-bottom: 0.5rem;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+  border-radius: 4px;
 }
 
 .loginEyebrow {
@@ -827,9 +831,11 @@
 }
 
 .loginLogoSm {
-  width: 2.75rem;
-  height: 2.75rem;
+  height: 2.5rem;
+  width: auto;
+  max-width: 9rem;
   object-fit: contain;
+  border-radius: 4px;
 }
 
 .loginCardMobileBrand p {

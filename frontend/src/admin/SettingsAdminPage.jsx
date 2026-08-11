@@ -10,12 +10,12 @@ import {
 } from '@data/navigation'
 import {
   DEFAULT_THEME,
-  GOOGLE_FONT_OPTIONS,
   applyThemeToDocument,
   normalizeTheme,
 } from '@utils/theme'
 import { inferSocialKey, SOCIAL_ICON_CODE_HINT } from '@utils/socials'
 import FlashMessage from './components/FlashMessage'
+import FontPicker from './components/FontPicker'
 import ImageField from './components/ImageField'
 import ListEditor from './components/ListEditor'
 import RichTextEditor from './components/RichTextEditor'
@@ -420,44 +420,27 @@ export default function SettingsAdminPage() {
 
               <h2 className={styles.sectionTitle}>Google Fonts</h2>
               <p className={styles.muted}>
-                Choose from the list or type any Google Font family name. Fonts load automatically on the
-                site.
+                Pick a heading and body font from the list, or choose “Custom Google Font…” and type the
+                exact family name. Fonts load in the background (non-blocking) so they do not slow first
+                paint. Click <strong>Save settings</strong> to publish.
               </p>
               <div className={styles.fieldRow}>
-                <div className={styles.field}>
-                  <label>Heading font</label>
-                  <input
-                    list="google-heading-fonts"
-                    value={theme.headingFont}
-                    onChange={(e) => updateTheme({ headingFont: e.target.value })}
-                    placeholder="Libre Baskerville"
-                  />
-                  <datalist id="google-heading-fonts">
-                    {GOOGLE_FONT_OPTIONS.map((font) => (
-                      <option key={font} value={font} />
-                    ))}
-                  </datalist>
-                  <div className={styles.fontPreview} style={{ fontFamily: `'${theme.headingFont}', serif` }}>
-                    Heading preview — Shrine of Our Lady of Kibeho
-                  </div>
-                </div>
-                <div className={styles.field}>
-                  <label>Body font</label>
-                  <input
-                    list="google-body-fonts"
-                    value={theme.bodyFont}
-                    onChange={(e) => updateTheme({ bodyFont: e.target.value })}
-                    placeholder="Source Sans 3"
-                  />
-                  <datalist id="google-body-fonts">
-                    {GOOGLE_FONT_OPTIONS.map((font) => (
-                      <option key={font} value={font} />
-                    ))}
-                  </datalist>
-                  <div className={styles.fontPreview} style={{ fontFamily: `'${theme.bodyFont}', sans-serif` }}>
-                    Body preview — Welcome pilgrims to the first Marian apparition site recognised in Africa.
-                  </div>
-                </div>
+                <FontPicker
+                  id="heading-font"
+                  label="Heading font"
+                  value={theme.headingFont}
+                  onChange={(headingFont) => updateTheme({ headingFont })}
+                  fallbackStack="Georgia, 'Times New Roman', serif"
+                  previewText="Heading preview — Shrine of Our Lady of Kibeho"
+                />
+                <FontPicker
+                  id="body-font"
+                  label="Body font"
+                  value={theme.bodyFont}
+                  onChange={(bodyFont) => updateTheme({ bodyFont })}
+                  fallbackStack="'Segoe UI', sans-serif"
+                  previewText="Body preview — Welcome pilgrims to the first Marian apparition site recognised in Africa."
+                />
               </div>
             </div>
           )}

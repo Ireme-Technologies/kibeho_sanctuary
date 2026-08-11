@@ -33,11 +33,11 @@ export default function Footer() {
       <div className={`container ${styles.grid}`}>
         <div className={styles.brandCol}>
           <NavLink to="/" className={styles.logo}>
-            <span className={styles.logoMark} aria-hidden="true" />
-            <span className={styles.logoText}>
-              <span className={styles.logoName}>{brandName}</span>
-              <span className={styles.logoTag}>{company.tagline}</span>
-            </span>
+            <img
+              src={company.logo || '/images/logo/logo-transparent.png'}
+              alt={brandName}
+              className={styles.logoImg}
+            />
           </NavLink>
           <div className={styles.socials}>
             {socials.map((social, index) => {

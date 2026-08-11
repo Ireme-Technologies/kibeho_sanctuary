@@ -269,21 +269,20 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background-color: var(--color-gold);
+  background-color: var(--color-navy);
   border: 3px solid rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15), 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 4px rgba(74, 163, 224, 0.18), 0 8px 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 }
 
 .circleLogo {
-  width: 28px;
+  width: 36px;
   height: auto;
   object-fit: contain;
-  /* Renders the logo white against the gold circle */
-  filter: brightness(0) invert(1);
 }
 
 /* ── RESPONSIVE ───────────────────────────── */
