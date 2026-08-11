@@ -23,6 +23,13 @@ import {
 } from '@data/navigation'
 import { contactHero, contactInfo, contactMap, contactFormLabels } from '@data/contact'
 import { applyThemeToDocument, DEFAULT_THEME, normalizeTheme } from '@utils/theme'
+import {
+  applyFavicon,
+  isStaleBrandAsset,
+  resolveFavicon,
+  resolveLogo,
+  resolvePreloaderLogo,
+} from '@utils/brand'
 
 const ContentContext = createContext(null)
 
@@ -149,6 +156,10 @@ export function ContentProvider({ children }) {
     applyThemeToDocument(theme)
   }, [theme])
 
+  useEffect(() => {
+    applyFavicon(resolveFavicon(settings.company || fallbackCompany))
+  }, [settings.company])
+
   const value = useMemo(() => {
     const rawCompany = settings.company || fallbackCompany
     const company = {
@@ -157,14 +168,20 @@ export function ContentProvider({ children }) {
       name:
         !rawCompany.name ||
         rawCompany.name === 'Kibeho Sanctuary' ||
-        /^Kibeho Sanctuary$/i.test(rawCompany.name)
+        /^Kibeho Sanctuary$/i.test(rawCompany.name) ||
+        isStaleBrandAsset(rawCompany.name)
           ? fallbackCompany.name
           : rawCompany.name,
       tagline:
-        !rawCompany.tagline || rawCompany.tagline === 'Shrine of Our Lady of Kibeho'
+        !rawCompany.tagline ||
+        rawCompany.tagline === 'Shrine of Our Lady of Kibeho' ||
+        isStaleBrandAsset(rawCompany.tagline)
           ? fallbackCompany.tagline
           : rawCompany.tagline,
       shortName: rawCompany.shortName || fallbackCompany.shortName,
+      logo: resolveLogo(rawCompany),
+      favicon: resolveFavicon(rawCompany),
+      preloaderLogo: resolvePreloaderLogo(rawCompany),
     }
     const navigation = settings.navigation || {}
     const contact = settings.contact || {}

@@ -140,7 +140,10 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
     Route::post('/pilgrim-enquiries/{pilgrimEnquiry}/documents', [PilgrimEnquiryController::class, 'uploadDocument']);
 
     Route::get('/media', [MediaController::class, 'index']);
+    Route::get('/media/site-assets', [MediaController::class, 'siteAssets']);
     Route::post('/media', [MediaController::class, 'store']);
+    Route::post('/media/site-assets/replace', [MediaController::class, 'replaceSiteAsset']);
+    Route::post('/media/{media}/replace', [MediaController::class, 'replace']);
     Route::put('/media/reorder', [MediaController::class, 'reorder']);
     Route::put('/media/{media}', [MediaController::class, 'update']);
     Route::delete('/media/{media}', [MediaController::class, 'destroy']);

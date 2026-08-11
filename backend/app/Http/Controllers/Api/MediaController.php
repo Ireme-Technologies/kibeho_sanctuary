@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Media;
 use App\Services\ImageOptimizer;
+use App\Services\SiteAssetService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -35,6 +36,40 @@ class MediaController extends Controller
             ->get();
 
         return response()->json($items);
+    }
+
+    public function siteAssets(SiteAssetService $assets)
+    {
+        return response()->json($assets->inventory());
+    }
+
+    public function replaceSiteAsset(Request $request, SiteAssetService $assets)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'max:15360', 'mimes:jpg,jpeg,png,gif,webp,svg,ico'],
+            'path' => ['required', 'string', 'max:255'],
+            'role' => ['nullable', 'in:logo,favicon,preloader,site'],
+        ]);
+
+        $result = $assets->replacePublicPath(
+            (string) $request->input('path'),
+            $request->file('file'),
+            $request->input('role')
+        );
+
+        return response()->json([
+            ...$result,
+            'inventory' => $assets->inventory(),
+        ]);
+    }
+
+    public function replace(Request $request, Media $media, SiteAssetService $assets)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'max:15360', 'mimes:jpg,jpeg,png,gif,webp,svg,mp4,webm,pdf'],
+        ]);
+
+        return response()->json($assets->replaceMedia($media, $request->file('file')));
     }
 
     public function store(Request $request, ImageOptimizer $optimizer)

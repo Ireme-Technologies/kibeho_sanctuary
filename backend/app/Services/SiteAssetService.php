@@ -1,0 +1,403 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Media;
+use App\Models\Setting;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+
+class SiteAssetService
+{
+    private const IMAGE_EXT = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'ico'];
+
+    public function __construct(private ImageOptimizer $optimizer) {}
+
+    public function inventory(): array
+    {
+        $company = $this->company();
+
+        return [
+            'branding' => $this->branding($company),
+            'site' => $this->siteImages($company),
+        ];
+    }
+
+    public function replacePublicPath(string $rawPath, UploadedFile $file, ?string $role = null): array
+    {
+        $relative = $this->normalizePublicPath($rawPath);
+        $processed = $this->optimizer->process($file);
+        $written = $this->writePublicFile($relative, $processed['contents']);
+        $versioned = '/'.$relative.'?v='.time();
+
+        if (in_array($role, ['logo', 'favicon', 'preloader'], true)) {
+            $this->updateCompanyField($role === 'preloader' ? 'preloaderLogo' : $role, $versioned);
+        }
+
+        return [
+            'path' => $relative,
+            'url' => $versioned,
+            'written' => $written,
+            'size' => $processed['size'],
+            'mime' => $processed['mime'],
+        ];
+    }
+
+    public function replaceMedia(Media $media, UploadedFile $file): Media
+    {
+        $processed = $this->optimizer->process($file);
+        Storage::disk($media->disk ?: 'public')->put($media->path, $processed['contents']);
+
+        $baseUrl = '/storage/'.ltrim($media->path, '/');
+        $oldUrl = $media->url;
+        $newUrl = $baseUrl.'?v='.time();
+
+        $media->update([
+            'url' => $newUrl,
+            'original_name' => $file->getClientOriginalName(),
+            'mime_type' => $processed['mime'],
+            'size' => $processed['size'],
+            'width' => $processed['width'] ?: null,
+            'height' => $processed['height'] ?: null,
+        ]);
+
+        $this->rewriteStoredUrls($oldUrl, $newUrl);
+
+        return $media->fresh();
+    }
+
+    private function branding(array $company): array
+    {
+        $items = [
+            [
+                'role' => 'logo',
+                'label' => 'Site logo',
+                'hint' => 'Header, footer, and admin.',
+                'path' => 'images/logo/logo-transparent.png',
+                'current' => $company['logo'] ?? null,
+            ],
+            [
+                'role' => 'favicon',
+                'label' => 'Favicon',
+                'hint' => 'Browser tab icon.',
+                'path' => 'images/logo/favicon.png',
+                'current' => $company['favicon'] ?? null,
+            ],
+            [
+                'role' => 'preloader',
+                'label' => 'Preloader mark',
+                'hint' => 'Shown while pages load. Use the Kibeho Sanctuary mark.',
+                'path' => 'images/logo/logo-transparent.png',
+                'current' => $company['preloaderLogo'] ?? $company['logo'] ?? null,
+            ],
+        ];
+
+        return array_map(fn ($item) => $this->decoratePublicItem($item), $items);
+    }
+
+    private function siteImages(array $company): array
+    {
+        $paths = [];
+        foreach ($this->imageRoots() as $root) {
+            if (! is_dir($root)) {
+                continue;
+            }
+            foreach (File::allFiles($root) as $file) {
+                $ext = strtolower($file->getExtension());
+                if (! in_array($ext, self::IMAGE_EXT, true)) {
+                    continue;
+                }
+                $relative = 'images/'.ltrim(str_replace('\\', '/', $file->getRelativePathname()), '/');
+                $paths[$relative] = true;
+            }
+        }
+
+        foreach ($this->collectImageUrls() as $url) {
+            $path = ltrim(parse_url($url, PHP_URL_PATH) ?: '', '/');
+            if (str_starts_with($path, 'images/')) {
+                $paths[$path] = true;
+            }
+        }
+
+        $brandingPaths = [
+            'images/logo/logo-transparent.png',
+            'images/logo/favicon.png',
+            'images/logo/favicon.svg',
+            'images/logo/favicon.jpeg',
+            'images/logo/logo-transparent.jpeg',
+        ];
+
+        $items = [];
+        foreach (array_keys($paths) as $relative) {
+            if (in_array($relative, $brandingPaths, true)) {
+                continue;
+            }
+            $items[] = $this->decoratePublicItem([
+                'role' => 'site',
+                'label' => basename($relative),
+                'path' => $relative,
+            ]);
+        }
+
+        usort($items, fn ($a, $b) => strcasecmp($a['path'], $b['path']));
+
+        return $items;
+    }
+
+    private function decoratePublicItem(array $item): array
+    {
+        $relative = $item['path'];
+        $exists = false;
+        $size = null;
+        foreach ($this->writeTargets($relative) as $abs) {
+            if (is_file($abs)) {
+                $exists = true;
+                $size = filesize($abs) ?: $size;
+            }
+        }
+
+        $current = $item['current'] ?? ('/'.$relative);
+
+        return [
+            ...$item,
+            'url' => $current ?: '/'.$relative,
+            'preview' => ($current ?: '/'.$relative).(str_contains((string) $current, '?') ? '' : '?t='.filemtime($this->firstExisting($relative) ?: __FILE__)),
+            'exists' => $exists,
+            'size' => $size,
+        ];
+    }
+
+    private function normalizePublicPath(string $raw): string
+    {
+        $path = parse_url(trim($raw), PHP_URL_PATH) ?: trim($raw);
+        $path = ltrim(str_replace('\\', '/', $path), '/');
+        if (! preg_match('#^images/[A-Za-z0-9._/-]+$#', $path)) {
+            throw ValidationException::withMessages([
+                'path' => 'Only files under /images/ can be replaced.',
+            ]);
+        }
+        if (str_contains($path, '..')) {
+            throw ValidationException::withMessages(['path' => 'Invalid path.']);
+        }
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        if (! in_array($ext, self::IMAGE_EXT, true)) {
+            throw ValidationException::withMessages(['path' => 'Unsupported image type.']);
+        }
+
+        return $path;
+    }
+
+    private function writePublicFile(string $relative, string $contents): array
+    {
+        $written = [];
+        foreach ($this->writeTargets($relative) as $abs) {
+            File::ensureDirectoryExists(dirname($abs));
+            File::put($abs, $contents);
+            $written[] = $abs;
+        }
+        if (! $written) {
+            throw ValidationException::withMessages([
+                'path' => 'Could not write the image to public storage.',
+            ]);
+        }
+
+        return $written;
+    }
+
+    private function writeTargets(string $relative): array
+    {
+        $targets = [public_path($relative)];
+        $frontend = base_path('../frontend/public/'.$relative);
+        if (is_dir(dirname($frontend)) || is_dir(base_path('../frontend/public'))) {
+            $targets[] = $frontend;
+        }
+
+        return array_values(array_unique($targets));
+    }
+
+    private function firstExisting(string $relative): ?string
+    {
+        foreach ($this->writeTargets($relative) as $abs) {
+            if (is_file($abs)) {
+                return $abs;
+            }
+        }
+
+        return null;
+    }
+
+    private function imageRoots(): array
+    {
+        return array_values(array_filter([
+            public_path('images'),
+            base_path('../frontend/public/images'),
+        ], 'is_dir'));
+    }
+
+    private function company(): array
+    {
+        $raw = Setting::query()->where('key', 'company')->value('value') ?: [];
+        if (is_string($raw)) {
+            $raw = json_decode($raw, true) ?: [];
+        }
+
+        return is_array($raw) ? $raw : [];
+    }
+
+    private function updateCompanyField(string $field, string $url): void
+    {
+        $company = $this->company();
+        $company[$field] = $url;
+        Setting::updateOrCreate(['key' => 'company'], ['value' => $company]);
+    }
+
+    private function collectImageUrls(): array
+    {
+        $found = [];
+        $walk = function ($value) use (&$found, &$walk) {
+            if (is_string($value) && $this->looksLikeImage($value)) {
+                $found[$value] = true;
+            } elseif (is_array($value)) {
+                foreach ($value as $child) {
+                    $walk($child);
+                }
+            }
+        };
+
+        foreach (Setting::query()->get() as $setting) {
+            $walk($setting->value);
+        }
+
+        if (Schema::hasTable('page_sections')) {
+            foreach (DB::table('page_sections')->get(['content', 'translations']) as $row) {
+                $walk(json_decode($row->content ?? '', true));
+                $walk(json_decode($row->translations ?? '', true));
+            }
+        }
+
+        foreach ($this->contentImageColumns() as $table => $columns) {
+            if (! Schema::hasTable($table)) {
+                continue;
+            }
+            $existing = array_values(array_filter($columns, fn ($col) => Schema::hasColumn($table, $col)));
+            if (! $existing) {
+                continue;
+            }
+            foreach (DB::table($table)->get($existing) as $row) {
+                foreach ($existing as $col) {
+                    $walk(json_decode($row->{$col} ?? '', true) ?: $row->{$col});
+                }
+            }
+        }
+
+        return array_keys($found);
+    }
+
+    private function contentImageColumns(): array
+    {
+        return [
+            'media' => ['url'],
+            'pilgrimage_services' => ['image', 'detail_image'],
+            'facilities' => ['cover_image', 'featured_image', 'gallery'],
+            'news_posts' => ['cover_image', 'author_avatar'],
+            'activities' => ['image'],
+            'upcoming_pilgrimages' => ['image'],
+            'videos' => ['thumbnail_url'],
+            'testimonials' => ['author_avatar'],
+            'shrine_projects' => ['cover_image', 'gallery'],
+            'sacred_places' => ['cover_image', 'gallery'],
+        ];
+    }
+
+    private function rewriteStoredUrls(?string $from, string $to): void
+    {
+        if (! $from || $from === $to) {
+            return;
+        }
+        $variants = array_unique([
+            $from,
+            strtok($from, '?'),
+        ]);
+
+        foreach (Setting::query()->get() as $setting) {
+            $next = $this->replaceInValue($setting->value, $variants, $to);
+            if ($next !== $setting->value) {
+                $setting->value = $next;
+                $setting->save();
+            }
+        }
+
+        if (Schema::hasTable('page_sections')) {
+            foreach (DB::table('page_sections')->get() as $row) {
+                $content = json_decode($row->content ?? '', true);
+                $translations = json_decode($row->translations ?? '', true);
+                $updates = [];
+                if (is_array($content)) {
+                    $next = $this->replaceInValue($content, $variants, $to);
+                    if ($next !== $content) {
+                        $updates['content'] = json_encode($next);
+                    }
+                }
+                if (is_array($translations)) {
+                    $next = $this->replaceInValue($translations, $variants, $to);
+                    if ($next !== $translations) {
+                        $updates['translations'] = json_encode($next);
+                    }
+                }
+                if ($updates) {
+                    DB::table('page_sections')->where('id', $row->id)->update($updates);
+                }
+            }
+        }
+
+        foreach ($this->contentImageColumns() as $table => $columns) {
+            if ($table === 'media' || ! Schema::hasTable($table)) {
+                continue;
+            }
+            foreach ($columns as $col) {
+                if (! Schema::hasColumn($table, $col)) {
+                    continue;
+                }
+                foreach (DB::table($table)->whereNotNull($col)->get(['id', $col]) as $row) {
+                    $decoded = json_decode($row->{$col} ?? '', true);
+                    $value = $decoded === null ? $row->{$col} : $decoded;
+                    $next = $this->replaceInValue($value, $variants, $to);
+                    if ($next !== $value) {
+                        DB::table($table)->where('id', $row->id)->update([
+                            $col => is_array($next) ? json_encode($next) : $next,
+                        ]);
+                    }
+                }
+            }
+        }
+    }
+
+    private function replaceInValue(mixed $value, array $from, string $to): mixed
+    {
+        if (is_string($value)) {
+            return in_array($value, $from, true) || in_array(strtok($value, '?'), $from, true)
+                ? $to
+                : $value;
+        }
+        if (is_array($value)) {
+            foreach ($value as $key => $child) {
+                $value[$key] = $this->replaceInValue($child, $from, $to);
+            }
+        }
+
+        return $value;
+    }
+
+    private function looksLikeImage(string $value): bool
+    {
+        if (! str_starts_with($value, '/') && ! str_starts_with($value, 'http')) {
+            return false;
+        }
+
+        return (bool) preg_match('/\.(jpe?g|png|gif|webp|svg|ico)(\?|$)/i', $value);
+    }
+}

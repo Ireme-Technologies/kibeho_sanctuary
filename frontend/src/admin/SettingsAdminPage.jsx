@@ -66,6 +66,8 @@ export default function SettingsAdminPage() {
     name: '',
     tagline: '',
     logo: '',
+    favicon: '',
+    preloaderLogo: '',
     phone: '',
     phoneHref: '',
     whatsapp: '',
@@ -128,6 +130,8 @@ export default function SettingsAdminPage() {
           name: c.name || 'Shrine of Our Lady of Kibeho',
           tagline: c.tagline || '',
           logo: c.logo || '/images/logo/logo-transparent.png',
+          favicon: c.favicon || '/images/logo/favicon.svg',
+          preloaderLogo: c.preloaderLogo || c.logo || '/images/logo/logo-transparent.png',
           phone: c.phone || '',
           phoneHref: c.phoneHref || '',
           whatsapp: c.whatsapp || '',
@@ -238,6 +242,8 @@ export default function SettingsAdminPage() {
           name: company.name,
           tagline: company.tagline,
           logo: company.logo,
+          favicon: company.favicon,
+          preloaderLogo: company.preloaderLogo || company.logo,
           phone: company.phone,
           phoneHref,
           whatsapp: company.whatsapp,
@@ -359,6 +365,22 @@ export default function SettingsAdminPage() {
                 onChange={(url) => setCompany({ ...company, logo: url })}
                 folder="logo"
               />
+              <ImageField
+                label="Favicon (browser tab)"
+                value={company.favicon}
+                onChange={(url) => setCompany({ ...company, favicon: url })}
+                folder="logo"
+              />
+              <ImageField
+                label="Preloader image"
+                value={company.preloaderLogo}
+                onChange={(url) => setCompany({ ...company, preloaderLogo: url })}
+                folder="logo"
+              />
+              <p className={styles.muted}>
+                To replace the seeded files in place (same URL for every page), use{' '}
+                <strong>Admin → Media library → Logo & brand</strong>.
+              </p>
               <div className={styles.fieldRow}>
                 <div className={styles.field}>
                   <label>Site name</label>

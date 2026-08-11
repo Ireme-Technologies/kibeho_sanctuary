@@ -44,7 +44,7 @@ export default function AdminLayout() {
     { to: '/admin/home-hero', label: 'Home hero' },
     { to: '/admin/sections', label: 'Pages' },
     { to: '/admin/translations', label: 'Translations' },
-    { to: '/admin/gallery', label: 'Gallery / Media' },
+    { to: '/admin/gallery', label: 'Media library' },
     { to: '/admin/enquiries', label: 'Pilgrim Enquiries' },
     ...(user?.can_manage_users ? [{ to: '/admin/users', label: 'Users' }] : []),
     { to: '/admin/settings', label: 'Settings & menus' },

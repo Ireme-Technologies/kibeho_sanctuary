@@ -20,6 +20,8 @@ class SettingsSeeder extends Seeder
                 'shortName' => 'Our Lady of Kibeho',
                 'tagline' => 'Official Website · Diocese of Gikongoro',
                 'logo' => '/images/logo/logo-transparent.png',
+                'favicon' => '/images/logo/favicon.svg',
+                'preloaderLogo' => '/images/logo/logo-transparent.png',
                 'phone' => '+250 788 123 456',
                 'phoneHref' => 'tel:+250788123456',
                 'whatsapp' => '+250788123456',

@@ -257,6 +257,26 @@ export async function fetchMedia(params = {}) {
   return api(`/api/media${query ? `?${query}` : ''}`)
 }
 
+export async function fetchSiteAssets() {
+  return api('/api/media/site-assets')
+}
+
+export async function replaceSiteAsset(file, path, role = 'site') {
+  await ensureCsrf()
+  const form = new FormData()
+  form.append('file', file)
+  form.append('path', path)
+  if (role) form.append('role', role)
+  return api('/api/media/site-assets/replace', { method: 'POST', body: form })
+}
+
+export async function replaceMediaFile(id, file) {
+  await ensureCsrf()
+  const form = new FormData()
+  form.append('file', file)
+  return api(`/api/media/${id}/replace`, { method: 'POST', body: form })
+}
+
 export async function uploadMedia(file, folder = 'uploads', extras = {}) {
   await ensureCsrf()
   const form = new FormData()
