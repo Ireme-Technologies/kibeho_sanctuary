@@ -87,13 +87,6 @@
   stroke-linejoin: round;
 }
 
-/* Logo mark (Mission) — full-color image, untinted */
-.logoIcon {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-}
-
 /* ─── Block label ─────────────────────────────────────────────── */
 .blockLabel {
   display: inline-block;

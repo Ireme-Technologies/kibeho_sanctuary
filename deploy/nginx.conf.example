@@ -2,7 +2,7 @@ server {
     listen 80;
     listen [::]:80;
     server_name example.com www.example.com;
-    root /var/www/rvgroup/backend/public;
+    root /var/www/kibehosanctuary/backend/public;
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-Content-Type-Options "nosniff";

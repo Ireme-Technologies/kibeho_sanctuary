@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { CUSTOM_FONT_VALUE, GOOGLE_FONT_OPTIONS } from '@utils/theme'
-import styles from './admin.module.css'
+import styles from '../admin.module.css'
 
 /**
  * Reliable font picker: native <select> for curated fonts + optional custom Google Font name.

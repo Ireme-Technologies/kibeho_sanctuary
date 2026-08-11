@@ -3,7 +3,14 @@ import styles from './MissionVision.module.css'
 import { useContent } from '@context/ContentContext'
 import { missionVision as fb } from '@data/about'
 
-// ── Telescope SVG icon — kept for the Vision block ─────────────
+function CrossIcon() {
+  return (
+    <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" />
+    </svg>
+  )
+}
+
 function TelescopeIcon() {
   return (
     <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true">
@@ -68,13 +75,7 @@ export default function MissionVision() {
 
           <Block
             data={missionVision.mission}
-            icon={
-              <img
-                src="/images/about/royal-ventures-logo.png"
-                alt=""
-                className={styles.logoIcon}
-              />
-            }
+            icon={<CrossIcon />}
             delay={0.15}
             inView={inView}
           />
