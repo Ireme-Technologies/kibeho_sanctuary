@@ -6,7 +6,7 @@ import ImageField from './components/ImageField'
 import ListEditor from './components/ListEditor'
 import BlocksEditor from './components/BlocksEditor'
 import RichTextEditor from './components/RichTextEditor'
-import LocaleTabs from './components/LocaleTabs'
+import LocaleTabs, { isFilledValue } from './components/LocaleTabs'
 import styles from './admin.module.css'
 
 const PAGES_TAB_KEY = 'admin.pages.activeTab'
@@ -126,10 +126,16 @@ function setPageLabel(label, translations, locale, value, defaultLocale) {
 }
 
 function getPageContentField(form, translations, field, locale, defaultLocale) {
-  if (locale === defaultLocale) return form[field] ?? ''
+  if (locale === defaultLocale) {
+    if (field === 'blocks' || field === 'links') return Array.isArray(form[field]) ? form[field] : []
+    return form[field] ?? ''
+  }
   const overlay = translations?.[locale]?.content || {}
   if (field === 'ctaPrimaryLabel') return overlay.cta?.primary?.label ?? ''
   if (field === 'ctaSecondaryLabel') return overlay.cta?.secondary?.label ?? ''
+  if (field === 'blocks' || field === 'links') {
+    return Array.isArray(overlay[field]) ? overlay[field] : []
+  }
   return overlay[field] ?? ''
 }
 
@@ -173,6 +179,8 @@ function buildSectionTranslations(translations, defaultLocale) {
       ;['eyebrow', 'title', 'subtitle', 'intro'].forEach((field) => {
         if (overlay[field] != null && String(overlay[field]).trim() !== '') content[field] = overlay[field]
       })
+      if (Array.isArray(overlay.blocks) && overlay.blocks.length) content.blocks = overlay.blocks
+      if (Array.isArray(overlay.links) && overlay.links.length) content.links = overlay.links
       if (overlay.cta?.primary?.label?.trim()) {
         content.cta = { ...content.cta, primary: { label: overlay.cta.primary.label } }
       }
@@ -187,6 +195,54 @@ function buildSectionTranslations(translations, defaultLocale) {
     if (Object.keys(cleaned).length) result[locale] = cleaned
   })
   return result
+}
+
+function cloneJson(value) {
+  try {
+    return JSON.parse(JSON.stringify(value ?? null))
+  } catch {
+    return value
+  }
+}
+
+function pageLocaleFilled(form, label, translations, locale, defaultLocale) {
+  if (locale === defaultLocale) {
+    return (
+      isFilledValue(label) ||
+      isFilledValue(form.title) ||
+      isFilledValue(form.intro) ||
+      (Array.isArray(form.blocks) && form.blocks.length > 0)
+    )
+  }
+  const pack = translations?.[locale] || {}
+  const overlay = pack.content || {}
+  return (
+    isFilledValue(pack.label) ||
+    isFilledValue(overlay.title) ||
+    isFilledValue(overlay.intro) ||
+    (Array.isArray(overlay.blocks) && overlay.blocks.length > 0)
+  )
+}
+
+function copyPageLocaleFromDefault(form, label, translations, locale) {
+  return {
+    ...translations,
+    [locale]: {
+      label,
+      content: {
+        eyebrow: form.eyebrow || '',
+        title: form.title || '',
+        subtitle: form.subtitle || '',
+        intro: form.intro || '',
+        blocks: cloneJson(form.blocks || []),
+        links: cloneJson(form.links || []),
+        cta: {
+          primary: { label: form.ctaPrimaryLabel || '' },
+          secondary: { label: form.ctaSecondaryLabel || '' },
+        },
+      },
+    },
+  }
 }
 
 export default function SectionsAdminPage() {
@@ -300,7 +356,13 @@ export default function SectionsAdminPage() {
   return (
     <div>
       <div className={styles.topbar}>
-        <h1>Pages</h1>
+        <div>
+          <h1>Pages</h1>
+          <p className={styles.muted} style={{ margin: '0.25rem 0 0' }}>
+            Choose a page, switch language tabs, then edit header text and body blocks. Each language can
+            have its own layout.
+          </p>
+        </div>
       </div>
       <FlashMessage
         type={flash.type}
@@ -358,7 +420,22 @@ export default function SectionsAdminPage() {
                 ))}
               </select>
             </div>
-            <LocaleTabs value={localeTab} onChange={setLocaleTab} defaultLocale={defaultLocale} />
+            <LocaleTabs
+              value={localeTab}
+              onChange={setLocaleTab}
+              defaultLocale={defaultLocale}
+              completeness={{
+                rw: pageLocaleFilled(form, label, sectionTranslations, 'rw', defaultLocale),
+                fr: pageLocaleFilled(form, label, sectionTranslations, 'fr', defaultLocale),
+                en: pageLocaleFilled(form, label, sectionTranslations, 'en', defaultLocale),
+                de: pageLocaleFilled(form, label, sectionTranslations, 'de', defaultLocale),
+              }}
+              onCopyFromDefault={() =>
+                setSectionTranslations(
+                  copyPageLocaleFromDefault(form, label, sectionTranslations, localeTab),
+                )
+              }
+            />
             <div className={styles.field}>
               <label>Admin label</label>
               <input
@@ -437,32 +514,45 @@ export default function SectionsAdminPage() {
               />
             </div>
 
-            {localeTab === defaultLocale ? (
-              <>
-                <h2 className={styles.sectionTitle}>Quick links</h2>
-                <ListEditor
-                  label="Link cards"
-                  items={form.links}
-                  onChange={(links) => setForm({ ...form, links })}
-                  addLabel="Add link"
-                  emptyItem={{ label: '', path: '' }}
-                  fields={[
-                    { key: 'label', label: 'Label' },
-                    { key: 'path', label: 'Path', placeholder: '/about/mass-times' },
-                  ]}
-                />
-
-                <h2 className={styles.sectionTitle}>Body content</h2>
-                <BlocksEditor
-                  blocks={form.blocks}
-                  onChange={(blocks) => setForm({ ...form, blocks })}
-                />
-              </>
-            ) : (
+            <h2 className={styles.sectionTitle}>Quick links</h2>
+            {localeTab !== defaultLocale &&
+            !getPageContentField(form, sectionTranslations, 'links', localeTab, defaultLocale).length ? (
               <p className={styles.muted}>
-                Quick links and body blocks are shared across languages. Switch to the default locale tab to edit them.
+                No links in this language yet. Use <strong>Copy from default</strong> above, then translate the labels.
               </p>
-            )}
+            ) : null}
+            <ListEditor
+              label="Link cards"
+              items={getPageContentField(form, sectionTranslations, 'links', localeTab, defaultLocale)}
+              onChange={(links) => {
+                const next = setPageContentField(form, sectionTranslations, 'links', localeTab, links, defaultLocale)
+                setForm(next.form)
+                setSectionTranslations(next.translations)
+              }}
+              addLabel="Add link"
+              emptyItem={{ label: '', path: '' }}
+              fields={[
+                { key: 'label', label: 'Label' },
+                { key: 'path', label: 'Path', placeholder: '/about/mass-times' },
+              ]}
+            />
+
+            <h2 className={styles.sectionTitle}>Body content</h2>
+            {localeTab !== defaultLocale &&
+            !getPageContentField(form, sectionTranslations, 'blocks', localeTab, defaultLocale).length ? (
+              <p className={styles.muted}>
+                This language has no page layout yet. Copy the default-language blocks, then translate the text —
+                or add new blocks below.
+              </p>
+            ) : null}
+            <BlocksEditor
+              blocks={getPageContentField(form, sectionTranslations, 'blocks', localeTab, defaultLocale)}
+              onChange={(blocks) => {
+                const next = setPageContentField(form, sectionTranslations, 'blocks', localeTab, blocks, defaultLocale)
+                setForm(next.form)
+                setSectionTranslations(next.translations)
+              }}
+            />
 
             <h2 className={styles.sectionTitle}>Call to action</h2>
             <div className={styles.fieldRow}>

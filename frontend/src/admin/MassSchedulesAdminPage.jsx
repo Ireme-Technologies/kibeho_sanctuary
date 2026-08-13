@@ -8,6 +8,7 @@ import {
 import { useLocale } from '@context/LocaleContext'
 import Modal from './components/Modal'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
 import { formatMassTime, formatRecurrence, RECURRENCE_OPTIONS } from '@utils/eventTime'
 import styles from './admin.module.css'
@@ -109,7 +110,7 @@ export default function MassSchedulesAdminPage() {
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this mass schedule entry?')) return
+    if (!(await confirmDelete('Delete this mass schedule entry?'))) return
     try {
       await deleteMassSchedule(id)
       await load()
@@ -193,7 +194,14 @@ export default function MassSchedulesAdminPage() {
         onClose={() => setOpen(false)}
       >
         <form className={styles.form} onSubmit={handleSubmit}>
-          <LocaleTabs value={localeTab} onChange={setLocaleTab} defaultLocale={defaultLocale} />
+          <LocaleTabs
+            value={localeTab}
+            onChange={setLocaleTab}
+            defaultLocale={defaultLocale}
+            form={form}
+            setForm={setForm}
+            fields={LOCALE_FIELDS}
+          />
           <div className={styles.fieldRow}>
             <div className={styles.field}>
               <label>Day label</label>

@@ -218,7 +218,7 @@ export default function HomePilgrimStrip() {
               </div>
             ) : (
               <p className={styles.emptyStay}>
-                Accommodation listings will appear here once published in Facilities.
+                Accommodation listings will appear here once published under Accommodations.
               </p>
             )}
           </div>

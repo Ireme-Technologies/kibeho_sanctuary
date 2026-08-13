@@ -24,21 +24,21 @@ User creation for additional Diocese staff is available from **Users** (where th
 
 | Menu item | Purpose |
 |-----------|---------|
-| Dashboard | Overview of pilgrim enquiries |
+| Dashboard | Overview of pilgrim enquiries, plus cards for languages and page layout |
 | Mass schedules | Weekly / recurring Mass times |
-| Pilgrim calendar | Upcoming pilgrimages & events |
+| Pilgrimage events | Pilgrimages, feast days, retreats & calendar events |
 | Churches | Church directory |
 | Apparition sites | Apparition site directory |
-| Accommodations | Lodging / hotels |
-| Support projects | Fundraising & development projects |
+| Accommodations | Lodging / hotels for pilgrims |
+| Development projects | Fundraising & infrastructure projects at the Shrine |
 | Testimonials | Pilgrim / spiritual testimonies |
 | News & clergy messages | Articles (categories, rich text, images) |
 | Pilgrimage Services | Structured pilgrimage programs |
 | Shrine Experiences | Activities / experiences |
 | Videos (YouTube) | Video catalogue |
 | Home hero | Homepage hero slides / media / CTAs |
-| Pages | All CMS informational pages (blocks) |
-| Translations | UI labels per language |
+| Pages | Informational pages: header, intro, and layout blocks (per language) |
+| Translations | Short UI labels only (Donate, Contact) — not page articles |
 | Gallery / Media | Upload images & documents; gallery flag |
 | Pilgrim Enquiries | Inbox, replies, documents |
 | Users | Create staff accounts (authorised managers) |
@@ -50,18 +50,20 @@ Provide a **staging URL** and a **demo admin account** (Diocese-owned email pref
 
 ### A. Create and edit a page
 1. Open **Pages**.
-2. Select the page key (e.g. Shrine → Welcome).
-3. Switch language tab if needed (FR / EN / …).
-4. Edit title, intro, and content blocks; add or replace an image.
-5. Click **Save**.
-6. Open the public URL and confirm the change.
+2. Select the page (e.g. Shrine → Welcome).
+3. On the blue **Content language** bar, choose the language (finish the default language first).
+4. Edit title, intro, and layout blocks (heading, rich text, gallery, YouTube, cards, schedule, …).
+5. For another language: switch tab → **Copy from default** → translate in place.
+6. Click **Save page**.
+7. Open the public URL, switch the site language, and confirm.
 
 ### B. Publish a news article
 1. Open **News & clergy messages**.
-2. Create article: title, category (News / Events / Rector / Bishop / Press), body (rich text), featured image.
-3. Fill other language tabs as available.
-4. Save / publish.
-5. Verify on `/news` and the article URL.
+2. Click **Add post** or **Edit** (language tabs are on the form, not the list).
+3. Create article: title, category (News / Events / Rector / Bishop / Press), body (rich text), featured image.
+4. Fill other language tabs (Copy from default if helpful).
+5. Save / publish.
+6. Verify on `/news` in each language you filled.
 
 ### C. Update a menu
 1. Open **Settings & menus**.
@@ -80,12 +82,20 @@ Provide a **staging URL** and a **demo admin account** (Diocese-owned email pref
 2. Link it from the relevant **Pages** block or Support → Annual Reports content.
 3. Test download on the public site.
 
-### F. Manage translations
+### F. Manage languages (best way)
+**Long content and page layout** live on each item, not on the Translations grid.
+
+1. Open **Pages** (or Edit on News / Mass / a directory item).
+2. Finish the **default language** tab first.
+3. Switch to Français / Ikinyarwanda / Deutsch. A green dot means that language already has text.
+4. Click **Copy from default**, translate the copied text and blocks, then **Save**.
+5. Check the public language switcher.
+
+**Short buttons only** (Donate, Contact):
 1. Open **Translations**.
-2. Choose language tab (e.g. Français).
-3. Edit a key (e.g. a button label).
+2. Choose a language tab (source column stays visible).
+3. Edit the label.
 4. Click **Save translations** (sticky bar appears when there are unsaved changes).
-5. For long page/news text: open that item and use **language tabs** on the form—not only the Translations grid.
 
 ### G. Create users and assign permissions
 1. Open **Users** (authorised account).

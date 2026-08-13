@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kibeho Sanctuary">
+  <rect width="64" height="64" fill="#1a365d"/>
+  <path
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="4.5"
+    stroke-linejoin="miter"
+    d="M26 8h12v14h14v12H38v14H26V34H12V22h14z"
+  />
+</svg>

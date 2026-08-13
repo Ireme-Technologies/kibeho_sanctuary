@@ -10,6 +10,7 @@ import Modal from './components/Modal'
 import ImageField from './components/ImageField'
 import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
 import { formatEventWhen, formatRecurrence, RECURRENCE_OPTIONS } from '@utils/eventTime'
 import styles from './admin.module.css'
@@ -130,7 +131,7 @@ export default function UpcomingPilgrimagesAdminPage() {
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this event?')) return
+    if (!(await confirmDelete('Delete this event?'))) return
     try {
       await deleteUpcomingPilgrimage(id)
       await load()
@@ -143,7 +144,7 @@ export default function UpcomingPilgrimagesAdminPage() {
   return (
     <div>
       <div className={styles.topbar}>
-        <h1>Pilgrim calendar</h1>
+        <h1>Pilgrimage events</h1>
         <button type="button" className={styles.btn} onClick={openCreate}>
           Add event
         </button>
@@ -156,8 +157,8 @@ export default function UpcomingPilgrimagesAdminPage() {
       />
 
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
-        Set the day, year, start/end times, and whether the event repeats weekly, monthly, or annually.
-        Published events appear on the calendar and homepage.
+        Manage pilgrimages, feast days, retreats, and other calendar events. Set dates, times, and
+        recurrence (weekly, monthly, or annual). Published events appear on the public calendar and homepage.
       </p>
 
       <div className={styles.card}>
@@ -204,12 +205,19 @@ export default function UpcomingPilgrimagesAdminPage() {
 
       <Modal
         open={open}
-        title={editingId ? 'Edit event' : 'Add event'}
+        title={editingId ? 'Edit pilgrimage event' : 'Add pilgrimage event'}
         onClose={() => setOpen(false)}
         wide
       >
         <form className={styles.form} onSubmit={handleSubmit}>
-          <LocaleTabs value={localeTab} onChange={setLocaleTab} defaultLocale={defaultLocale} />
+          <LocaleTabs
+            value={localeTab}
+            onChange={setLocaleTab}
+            defaultLocale={defaultLocale}
+            form={form}
+            setForm={setForm}
+            fields={LOCALE_FIELDS}
+          />
           <div className={styles.field}>
             <label>Title</label>
             <input

@@ -6,12 +6,15 @@ const TOC = [
   { href: '#content-types', label: 'Content types' },
   { href: '#admin-guide', label: 'Admin user guide' },
   { href: '#getting-started', label: 'Getting started' },
+  { href: '#languages', label: 'Manage languages' },
   { href: '#pages-news', label: 'Pages & news' },
   { href: '#menus-media', label: 'Menus, images & documents' },
-  { href: '#translations', label: 'Translations' },
+  { href: '#translations', label: 'UI labels (Translations)' },
   { href: '#schedules-dirs', label: 'Schedules & directories' },
   { href: '#enquiries-users', label: 'Enquiries & users' },
   { href: '#settings', label: 'Settings & account' },
+  { href: '#backup', label: 'Backups' },
+  { href: '#new-server', label: 'New server & source code' },
   { href: '#checklist', label: 'Non-technical checklist' },
   { href: '#future', label: 'Future upgrades' },
 ]
@@ -23,8 +26,9 @@ export default function SitemapAdminGuidePage() {
         <p className={styles.brandEyebrow}>Document 2 of 2</p>
         <h1>Sitemap &amp; administrator user guide</h1>
         <p className={styles.lede}>
-          Complete public site map, how every administration module works for non-technical staff, and
-          recommended future upgrades after Phase 1. Use this guide while signed in at{' '}
+          Complete public site map, how every administration module works for non-technical staff, how to
+          back up the site, and what is needed if the site moves to a new server. Start with{' '}
+          <a href="#languages">Best way to manage languages</a>. Use this guide while signed in at{' '}
           <a href="/admin/login" target="_blank" rel="noreferrer">
             /admin/login
           </a>
@@ -134,18 +138,12 @@ export default function SitemapAdminGuidePage() {
                   <td>Accommodations</td>
                 </tr>
                 <tr>
-                  <td>Pilgrimage Calendar</td>
+                  <td>Calendar</td>
                   <td>
-                    <code>/pilgrimage/calendar</code>
+                    <code>/pilgrimage/calendar</code>, <code>/pilgrimages</code>,{' '}
+                    <code>/pilgrimages/:slug</code>
                   </td>
-                  <td>Pilgrim calendar</td>
-                </tr>
-                <tr>
-                  <td>Programs</td>
-                  <td>
-                    <code>/pilgrimages</code>, <code>/pilgrimages/:slug</code>
-                  </td>
-                  <td>Pilgrimage Services</td>
+                  <td>Pilgrimage events</td>
                 </tr>
               </tbody>
             </table>
@@ -194,8 +192,9 @@ export default function SitemapAdminGuidePage() {
 
             <h3>F. Support the Shrine</h3>
             <p>
-              Hub, Vision, Master Plan, Donations, Annual Reports, Transparency, Partners (CMS). Current
-              Projects: <code>/support/projects</code> (+ slug) via Support projects module.
+              Hub, Vision, Master Plan, Donations, Annual Reports, Transparency, Partners (CMS). Development
+              projects: <code>/support/projects</code> (+ slug) via the Development projects admin module.
+              Public nav shortens this to <strong>Projects</strong>.
             </p>
 
             <h3>Other</h3>
@@ -235,8 +234,8 @@ export default function SitemapAdminGuidePage() {
                   <td>Mass schedules</td>
                 </tr>
                 <tr>
-                  <td>Pilgrim events</td>
-                  <td>Pilgrim calendar</td>
+                  <td>Pilgrimage events</td>
+                  <td>Pilgrimage events</td>
                 </tr>
                 <tr>
                   <td>Churches / apparition sites</td>
@@ -247,8 +246,8 @@ export default function SitemapAdminGuidePage() {
                   <td>Accommodations</td>
                 </tr>
                 <tr>
-                  <td>Fundraising projects</td>
-                  <td>Support projects</td>
+                  <td>Development projects</td>
+                  <td>Development projects</td>
                 </tr>
                 <tr>
                   <td>Testimonies</td>
@@ -288,7 +287,13 @@ export default function SitemapAdminGuidePage() {
             <h2>3. Administrator user guide</h2>
             <p>
               The CMS is available at <code>/admin</code>. Day-to-day publishing does not require coding.
-              Always click <strong>Save</strong> (or <strong>Save translations</strong>) after editing.
+              Always click <strong>Save</strong> on the content form you edited (or{' '}
+              <strong>Save translations</strong> only when you changed short button labels).
+            </p>
+            <p>
+              The most important daily skill is languages: finish the default language first, then use the
+              blue <strong>Content language</strong> bar on each item. See{' '}
+              <a href="#languages">Best way to manage languages</a>.
             </p>
           </section>
 
@@ -330,14 +335,16 @@ export default function SitemapAdminGuidePage() {
               <tbody>
                 <tr>
                   <td>Dashboard</td>
-                  <td>See recent pilgrim enquiries at a glance</td>
+                  <td>
+                    See recent pilgrim enquiries, plus short cards that explain languages and page layout
+                  </td>
                 </tr>
                 <tr>
                   <td>Mass schedules</td>
                   <td>Publish Mass times and languages</td>
                 </tr>
                 <tr>
-                  <td>Pilgrim calendar</td>
+                  <td>Pilgrimage events</td>
                   <td>Announce upcoming pilgrimages / events (incl. recurrence)</td>
                 </tr>
                 <tr>
@@ -349,7 +356,7 @@ export default function SitemapAdminGuidePage() {
                   <td>List lodging options for pilgrims</td>
                 </tr>
                 <tr>
-                  <td>Support projects</td>
+                  <td>Development projects</td>
                   <td>Describe fundraising / development projects</td>
                 </tr>
                 <tr>
@@ -378,11 +385,14 @@ export default function SitemapAdminGuidePage() {
                 </tr>
                 <tr>
                   <td>Pages</td>
-                  <td>All informational pillar pages (blocks)</td>
+                  <td>
+                    Informational pillar pages: header, intro, and layout blocks — each language can have its
+                    own body
+                  </td>
                 </tr>
                 <tr>
                   <td>Translations</td>
-                  <td>Short UI labels per language</td>
+                  <td>Short buttons and labels only (Donate, Contact) — not page articles</td>
                 </tr>
                 <tr>
                   <td>Gallery / Media</td>
@@ -400,48 +410,188 @@ export default function SitemapAdminGuidePage() {
                   <td>Settings &amp; menus</td>
                   <td>Organisation info, navigation, theme</td>
                 </tr>
+                <tr>
+                  <td>Backup &amp; restore</td>
+                  <td>Download or restore a ZIP of all live content and photos</td>
+                </tr>
               </tbody>
             </table>
             <h3>Language tabs on content forms</h3>
             <p>
-              Most content screens show tabs for Kinyarwanda, Français, English, Deutsch. Fill the language
-              you are working on; leave others empty to use fallback. Long texts are edited here—not only in
-              the Translations grid.
+              After you click <strong>Edit</strong> (or while editing a page), a blue{' '}
+              <strong>Content language</strong> bar appears with tabs for Ikinyarwanda, Français, English, and
+              Deutsch. That bar is where long text and page layout are translated. The{' '}
+              <strong>Translations</strong> menu is only for short buttons. Full steps:{' '}
+              <a href="#languages">Best way to manage languages</a>.
             </p>
           </section>
 
-          <section id="pages-news">
-            <h2>5. Create and edit a page</h2>
+          <section id="languages">
+            <h2>5. Best way to manage languages</h2>
+            <p>
+              The site has four public languages. Staff do <strong>not</strong> create four separate pages.
+              Each item is one record with language tabs. Empty fields fall back to the default language, then
+              English — so a missing French translation is not a blank page, it is English until you fill the
+              Français tab and click Save.
+            </p>
+
+            <div className={styles.notice}>
+              <strong>Use the right screen:</strong> page titles, articles, Mass notes, and body layout are
+              edited on that item’s form (Pages, News, …). <strong>Translations</strong> is only for short
+              chrome such as Donate, Contact, and form hints.
+            </div>
+
+            <h3>Recommended daily workflow</h3>
             <ol>
-              <li>Open <strong>Pages</strong>.</li>
-              <li>Select the page key matching the sitemap (e.g. Shrine → Welcome).</li>
-              <li>Choose the language tab.</li>
-              <li>Edit title, introduction, and content blocks. Add or replace images via the media picker.</li>
-              <li>Click <strong>Save</strong>.</li>
               <li>
-                Open the public URL in a new tab to verify. Hard-refresh if the browser cached an old view.
+                Sign in at <code>/admin</code>. The Dashboard cards <strong>Manage languages</strong> and{' '}
+                <strong>Flexible page layout</strong> summarise this process.
+              </li>
+              <li>
+                Finish the <strong>default language</strong> first (marked on the tab). Visitors see this when
+                a translation is still empty.
+              </li>
+              <li>
+                Open the item: <strong>Pages</strong> for pillar content, or <strong>Edit</strong> on News,
+                Mass schedules, churches, and other lists.
+              </li>
+              <li>
+                On the blue <strong>Content language</strong> bar, choose Ikinyarwanda, Français, English, or
+                Deutsch. A <strong>green dot</strong> means that language already has text; an empty ring
+                means it still falls back.
+              </li>
+              <li>
+                Click <strong>Copy from default</strong> to duplicate the default-language text and layout,
+                then translate in place. This is faster and keeps headings, galleries, and blocks aligned.
+              </li>
+              <li>
+                Click <strong>Save</strong> on that form (not “Save translations”, unless you were editing
+                button labels).
+              </li>
+              <li>
+                Open the public site, switch the header language, and confirm the new text. Hard-refresh if
+                the browser shows an old view.
               </li>
             </ol>
 
-            <h2>6. Publish a news article</h2>
+            <h3>What to translate where</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>You want to change…</th>
+                  <th>Go to…</th>
+                  <th>Then…</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>A page title, intro, or body layout</td>
+                  <td>Pages</td>
+                  <td>Language tab → edit blocks → Save page</td>
+                </tr>
+                <tr>
+                  <td>A news article or clergy message</td>
+                  <td>News &amp; clergy messages → Edit</td>
+                  <td>Language tab → title / body → Save</td>
+                </tr>
+                <tr>
+                  <td>Mass times notes, pilgrimages, churches, hotels, videos</td>
+                  <td>The matching admin menu → Edit</td>
+                  <td>Language tab → Save</td>
+                </tr>
+                <tr>
+                  <td>Homepage heading and caption</td>
+                  <td>Home hero</td>
+                  <td>Language tab → Save</td>
+                </tr>
+                <tr>
+                  <td>Buttons such as Donate, Contact, Read more</td>
+                  <td>Translations</td>
+                  <td>Language tab → edit the label → Save translations</td>
+                </tr>
+                <tr>
+                  <td>Which language first-time visitors see</td>
+                  <td>Translations</td>
+                  <td>Set <strong>Default language</strong> → Save translations</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Page layout in each language</h3>
+            <p>
+              On <strong>Pages</strong>, each language can have its own body: headings, rich text, notes,
+              lists, galleries, YouTube, cards, steps, and schedules. Add a block with the buttons above the
+              editor (do not only look for a single “Add block” at the bottom). Inside a text block, the
+              formatting toolbar covers headings, bold, lists, alignment, colour, tables, images, and YouTube.
+            </p>
+            <p>
+              If another language still has no blocks, use <strong>Copy from default</strong>, then translate
+              the copied text. Until you save a layout for that language, the public site keeps showing the
+              default-language body.
+            </p>
+
+            <h3>Good habits</h3>
+            <ul>
+              <li>Translate one page fully (all four tabs you need) before moving to the next page.</li>
+              <li>Official prayers and episcopal texts must be pasted from approved sources — do not improvise.</li>
+              <li>
+                If the public site is still in English after you typed French, you likely edited the
+                Translations grid, forgot Save on the content form, or are viewing a cached tab.
+              </li>
+            </ul>
+          </section>
+
+          <section id="pages-news">
+            <h2>6. Create and edit a page</h2>
+            <ol>
+              <li>Open <strong>Pages</strong>.</li>
+              <li>Select the page matching the sitemap (e.g. Shrine → Welcome).</li>
+              <li>
+                On the blue <strong>Content language</strong> bar, choose the language you are editing. Finish
+                the default language first.
+              </li>
+              <li>Edit eyebrow, title, subtitle, and introduction (rich text).</li>
+              <li>
+                Build the body with layout blocks: heading, paragraph, note, list, gallery, YouTube, cards,
+                steps, or schedule. Click a block type to add it. Use Up / Down to reorder.
+              </li>
+              <li>
+                For another language, click that tab, then <strong>Copy from default</strong>, translate the
+                copied blocks, and keep or adjust the layout.
+              </li>
+              <li>Click <strong>Save page</strong>.</li>
+              <li>
+                Open the public URL and switch the site language to verify. Hard-refresh if the browser cached
+                an old view.
+              </li>
+            </ol>
+            <p>
+              Images and URLs (hero image, button paths) are shared across languages. Button{' '}
+              <em>labels</em> and all visible text are per language.
+            </p>
+
+            <h2>7. Publish a news article</h2>
             <ol>
               <li>Open <strong>News &amp; clergy messages</strong>.</li>
+              <li>Click <strong>Add post</strong> or <strong>Edit</strong> — language tabs are on the form, not the list.</li>
               <li>
                 Create or edit: title, category (News, Events, Rector, Bishop, Press), summary, body (rich
                 text toolbar), featured image, publish status.
               </li>
-              <li>Complete other language tabs as translations become available.</li>
-              <li>Save, then check <code>/news</code> and the article link.</li>
+              <li>
+                Switch language tabs (or Copy from default) as translations become available, then Save.
+              </li>
+              <li>Check <code>/news</code> and the article link in each language you filled.</li>
             </ol>
             <p>
-              Tip: use headings, lists, links, and images in the rich text editor the same way you would in a
-              word processor. Paste from Word carefully; prefer plain paste then re-apply formatting in the
-              editor when possible.
+              Tip: use headings, lists, links, images, tables, and YouTube in the rich text editor the same
+              way you would in a word processor. Paste from Word carefully; prefer plain paste then re-apply
+              formatting in the editor when possible.
             </p>
           </section>
 
           <section id="menus-media">
-            <h2>7. Update a menu</h2>
+            <h2>8. Update a menu</h2>
             <ol>
               <li>Open <strong>Settings &amp; menus</strong>.</li>
               <li>Locate navigation (primary, utility, and/or footer).</li>
@@ -454,7 +604,7 @@ export default function SitemapAdminGuidePage() {
               follow the active language.
             </p>
 
-            <h2>8. Replace images and upload documents</h2>
+            <h2>9. Replace images and upload documents</h2>
             <ol>
               <li>Open <strong>Gallery / Media</strong>.</li>
               <li>Upload JPG/PNG/WebP for images or PDF for documents (reports, leaflets).</li>
@@ -475,59 +625,63 @@ export default function SitemapAdminGuidePage() {
           </section>
 
           <section id="translations">
-            <h2>9. Manage translations</h2>
-            <h3>A. Short UI labels</h3>
+            <h2>10. Short UI labels (Translations menu)</h2>
+            <p>
+              Use this screen only for repeating chrome: Donate, Contact, Read more, form field names, and
+              similar short phrases. It does <strong>not</strong> replace language tabs on Pages or News.
+            </p>
             <ol>
               <li>Open <strong>Translations</strong>.</li>
-              <li>Select a language tab (e.g. Français).</li>
-              <li>Search for a key or edit the text field.</li>
+              <li>Select a language tab (e.g. Français). The default-language column stays visible as the source.</li>
+              <li>Search for a key or for existing English text, then type the translation beside it.</li>
+              <li>
+                Optionally set the <strong>Default language</strong> used for first-time visitors and as
+                fallback.
+              </li>
               <li>
                 When the amber bar appears (“unsaved changes”), click <strong>Save translations</strong>.
               </li>
             </ol>
-            <h3>B. Long page / news content</h3>
-            <ol>
-              <li>Open the item (Pages, News, Church, etc.).</li>
-              <li>Use the language tabs on that form.</li>
-              <li>Save the item.</li>
-            </ol>
             <p>
-              Empty translations fall back to the default language, then English—so the site never shows a
-              blank critical label if fallbacks exist.
+              Empty labels fall back to the default language, then English. For page articles and layout,
+              return to <a href="#languages">Best way to manage languages</a>.
             </p>
           </section>
 
           <section id="schedules-dirs">
-            <h2>10. Schedules and directories</h2>
+            <h2>11. Schedules and directories</h2>
             <h3>Mass schedules</h3>
             <p>
               Add day, title, time, language, and notes. Use recurrence where weekly/monthly/annual patterns
               apply. Save and verify on <code>/shrine/mass-schedule</code>.
             </p>
-            <h3>Pilgrim calendar</h3>
+            <h3>Pilgrimage events</h3>
             <p>
-              Create upcoming pilgrimages with start/end date and time, optional recurrence, registration
-              flag, and multilingual description. Public page: <code>/pilgrimage/calendar</code>.
+              Create pilgrimage events with start/end date and time, optional recurrence, registration
+              flag, and multilingual description. Public pages: <code>/pilgrimage/calendar</code> and{' '}
+              <code>/pilgrimages/:slug</code>.
             </p>
             <h3>Churches &amp; apparition sites</h3>
             <p>
               Create entries with title, summary, body, images, and translations. Slugs are generated from
               titles—staff do not need to invent URLs manually.
             </p>
-            <h3>Accommodations, support projects, testimonials, services, activities, videos</h3>
+            <h3>Accommodations, development projects, testimonials, services, experiences, videos</h3>
             <p>
-              Same pattern: create/edit form → language tabs → media → Save → check the matching public list
-              and detail page. Videos store YouTube references rather than large video files on the server.
+              Same pattern: click <strong>Edit</strong> → language tabs (Copy from default if helpful) → media
+              → Save → check the matching public list and detail page. Videos store YouTube references rather
+              than large video files on the server.
             </p>
             <h3>Home hero</h3>
             <p>
-              Update homepage slides, titles, supporting text, and call-to-action buttons. Keep the first
+              Update homepage slides, titles, supporting text, and call-to-action buttons. Use language tabs
+              for heading, caption, and button labels (Copy from default, then translate). Keep the first
               viewport focused: brand, one headline, short support line, CTAs—avoid overcrowding.
             </p>
           </section>
 
           <section id="enquiries-users">
-            <h2>11. Pilgrim enquiries</h2>
+            <h2>12. Pilgrim enquiries</h2>
             <ol>
               <li>Open <strong>Pilgrim Enquiries</strong> (or use the Dashboard).</li>
               <li>Open a thread to read the message and any documents.</li>
@@ -536,7 +690,7 @@ export default function SitemapAdminGuidePage() {
               <li>Update status as your pastoral office workflow requires.</li>
             </ol>
 
-            <h2>12. Create users and permissions</h2>
+            <h2>13. Create users and permissions</h2>
             <ol>
               <li>
                 If your account shows <strong>Users</strong>, open it.
@@ -552,7 +706,7 @@ export default function SitemapAdminGuidePage() {
           </section>
 
           <section id="settings">
-            <h2>13. Settings, branding, and account</h2>
+            <h2>14. Settings, branding, and account</h2>
             <ul>
               <li>
                 <strong>Company / contact:</strong> official name, address, phones, email, WhatsApp, social
@@ -562,6 +716,10 @@ export default function SitemapAdminGuidePage() {
                 <strong>Theme:</strong> logo and configured visual options.
               </li>
               <li>
+                <strong>Backup &amp; restore:</strong> see{' '}
+                <a href="#backup">Backups — DigitalOcean and the admin ZIP</a>.
+              </li>
+              <li>
                 <strong>My account:</strong> update password; keep credentials private.
               </li>
             </ul>
@@ -569,21 +727,236 @@ export default function SitemapAdminGuidePage() {
             <ul>
               <li>Preview on mobile after major edits.</li>
               <li>Enter sensitive pastoral texts only from approved sources.</li>
-              <li>After large campaigns, ask IT to run a manual database export (see proposed solution).</li>
+              <li>
+                After large campaigns, download a full backup (see <a href="#backup">Backups</a>) and store it
+                off the server.
+              </li>
             </ul>
           </section>
 
+          <section id="backup">
+            <h2>15. Backups — DigitalOcean and the admin ZIP</h2>
+            <p>
+              There are <strong>two backup options</strong>. They complement each other. DigitalOcean copies
+              stay on DigitalOcean. The admin ZIP is a file the Diocese can keep and take to another host.
+            </p>
+
+            <h3>Option 1 — DigitalOcean server backup (web developer)</h3>
+            <p>
+              The hosting droplet can be snapshotted in the DigitalOcean panel. That restores the whole
+              server quickly if the droplet fails, <em>while the account and region still exist</em>.
+            </p>
+            <ul>
+              <li>
+                This is configured and checked by the <strong>web developer</strong> (Ireme Tech), not by
+                daily CMS staff.
+              </li>
+              <li>Retention is limited (often a few weeks). It is not a file you can download and take to another company.</li>
+              <li>Ask the developer to confirm that droplet backups or weekly snapshots are switched on.</li>
+            </ul>
+
+            <h3>Option 2 — Admin backup ZIP (sanctuary staff)</h3>
+            <p>
+              Administrators can download a full copy of <em>live content</em> without SSH. Open{' '}
+              <strong>Admin → Backup &amp; restore</strong> (bottom of the sidebar).
+            </p>
+            <ol>
+              <li>Sign in as an administrator (editors cannot use this page).</li>
+              <li>
+                Click <strong>Download full backup</strong>. A ZIP is saved to your computer.
+              </li>
+              <li>
+                Store that file <strong>off the web server</strong> — a Diocese computer, Google Drive / OneDrive,
+                or an encrypted USB. Keep at least the last two copies.
+              </li>
+              <li>
+                Do this <strong>weekly</strong>, and again after a large content update (new translations, many
+                photos, a campaign).
+              </li>
+            </ol>
+            <p>The ZIP includes pages, menus, translations, news, schedules, directories, enquiries, admin users, the media library, and site images (logo, hero, and other photos). It does <strong>not</strong> include server secrets (database password, mail keys). Those stay in the server <code>.env</code> file, which the developer sets on each host.</p>
+
+            <h3>Restore from the admin ZIP</h3>
+            <ol>
+              <li>Download a backup of the <em>current</em> site first, in case you need to undo.</li>
+              <li>On <strong>Backup &amp; restore</strong>, choose the ZIP, tick the confirmation box, then confirm twice.</li>
+              <li>
+                Restore replaces all current content with the file. After a move to a new server, sign in with
+                an administrator account that existed in that backup.
+              </li>
+            </ol>
+            <p>
+              If the ZIP is too large for the browser, the developer can restore it on the server with{' '}
+              <code>php artisan site:restore</code> (see <a href="#new-server">New server &amp; source code</a>
+              ).
+            </p>
+            <p>
+              Ireme Tech can help with a scheduled backup, a restore test, or a move to new hosting — ask
+              rather than guessing if something looks wrong.
+            </p>
+          </section>
+
+          <section id="new-server">
+            <h2>16. New server, source code, and developer support</h2>
+            <p>
+              Moving host or rebuilding after a total crash is a <strong>developer task</strong>, with sanctuary
+              staff providing the latest admin ZIP. The GitHub repository holds the website code (design and
+              application). Live news, translations, and uploaded photos live in the database and the backup ZIP
+              — a git clone alone is not a content backup.
+            </p>
+
+            <h3>What the new server needs</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Requirement</th>
+                  <th>Minimum / note</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Account ownership</td>
+                  <td>Hosting and domain in the name of the Diocese / Shrine</td>
+                </tr>
+                <tr>
+                  <td>PHP</td>
+                  <td>8.1 or newer, with zip, GD (images), OpenSSL, Mbstring, JSON, Fileinfo</td>
+                </tr>
+                <tr>
+                  <td>Database</td>
+                  <td>MySQL 5.7+ / 8.x or MariaDB</td>
+                </tr>
+                <tr>
+                  <td>Web server</td>
+                  <td>Nginx or Apache with HTTPS (Let’s Encrypt or host SSL)</td>
+                </tr>
+                <tr>
+                  <td>Composer</td>
+                  <td>Required on the server to install the Laravel (PHP) application</td>
+                </tr>
+                <tr>
+                  <td>Node.js &amp; npm</td>
+                  <td>
+                    Needed to <em>build</em> the React public site and admin. The live server does{' '}
+                    <strong>not</strong> need Node if the developer builds on a laptop and deploys the compiled
+                    files (the usual production method). Node is required on a machine that runs{' '}
+                    <code>npm run build</code> or <code>./deploy/build-local.sh</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Git / GitHub</td>
+                  <td>SSH or Git to pull the source. The developer can grant repository access.</td>
+                </tr>
+                <tr>
+                  <td>Email</td>
+                  <td>SMTP or an API (e.g. Resend) so enquiry notifications can send</td>
+                </tr>
+                <tr>
+                  <td>Disk</td>
+                  <td>Room for the application plus the media library (photos and PDFs grow over time)</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Artisan commands the developer uses</h3>
+            <p>
+              Laravel is driven from the <code>backend/</code> folder with <code>php artisan …</code>. Staff
+              do not need these day to day; they matter on a new server or a restore.
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Command</th>
+                  <th>When it is used</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <code>php artisan key:generate</code>
+                  </td>
+                  <td>First setup of a new server (creates <code>APP_KEY</code> in <code>.env</code>)</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>php artisan migrate</code>
+                  </td>
+                  <td>
+                    Create or update database tables. Do <strong>not</strong> run{' '}
+                    <code>migrate:fresh --seed</code> on a live restore — that wipes content.
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>php artisan storage:link</code>
+                  </td>
+                  <td>Makes uploaded photos and PDFs visible at <code>/storage/…</code></td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>php artisan site:backup</code>
+                  </td>
+                  <td>Writes a full ZIP on the server (same contents as Admin → Backup &amp; restore)</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>php artisan site:restore /path/to/backup.zip</code>
+                  </td>
+                  <td>Restores that ZIP when the file is too large to upload in the browser</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>./deploy/deploy.sh</code>
+                  </td>
+                  <td>On the droplet: git pull, Composer, migrate, copy public images (no Node required)</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Typical move: clone the GitHub repository → configure <code>.env</code> → Composer → migrate →
+              restore the admin ZIP → <code>storage:link</code> → point the domain DNS at the new host. The
+              domain registrar is independent of DigitalOcean.
+            </p>
+
+            <h3>GitHub source code and help from Ireme Tech</h3>
+            <ul>
+              <li>
+                The developer can <strong>share access to the source code on GitHub</strong> with Diocese IT
+                (organisation or invited accounts), so the Shrine is not locked to one laptop.
+              </li>
+              <li>
+                Ireme Tech remains <strong>available to help with migrating, backups, restores, and DigitalOcean
+                snapshots</strong> — including turning on droplet backups, testing a restore, or moving to
+                another host.
+              </li>
+              <li>
+                Day-to-day publishing (pages, news, photos, languages) stays in <code>/admin</code> and does
+                not require GitHub.
+              </li>
+            </ul>
+            <p>
+              Contact:{' '}
+              <a href="https://iremetech.com" target="_blank" rel="noreferrer">
+                iremetech.com
+              </a>
+              .
+            </p>
+          </section>
+
           <section id="checklist">
-            <h2>14. Non-technical demonstration checklist</h2>
+            <h2>17. Non-technical demonstration checklist</h2>
             <p>Use this list during Diocese evaluation sessions:</p>
             <ol>
-              <li>Create and edit a page</li>
-              <li>Publish a news article</li>
+              <li>Create and edit a page (including a layout block)</li>
+              <li>Copy a page into another language with <strong>Copy from default</strong>, then Save</li>
+              <li>Switch the public language switcher and confirm the translation</li>
+              <li>Publish a news article with at least two language tabs</li>
               <li>Update a menu</li>
               <li>Replace an image</li>
               <li>Upload a document (PDF)</li>
-              <li>Manage a translation (UI key + content language tab)</li>
+              <li>Change a short UI label in <strong>Translations</strong> and Save translations</li>
               <li>Create a user (authorised account)</li>
+              <li>Download a backup from Admin → Backup &amp; restore (store it off the server)</li>
             </ol>
             <p>
               Related reading:{' '}
@@ -592,7 +965,7 @@ export default function SitemapAdminGuidePage() {
           </section>
 
           <section id="future">
-            <h2>15. Future upgrades — recommendations</h2>
+            <h2>18. Future upgrades — recommendations</h2>
             <p>
               After Phase 1 go-live and content maturity, we recommend prioritising upgrades in this order
               (each quoted separately):
@@ -664,8 +1037,9 @@ export default function SitemapAdminGuidePage() {
             </p>
             <h3>What does not need an “upgrade”</h3>
             <p>
-              Adding ordinary pages within existing pillars, publishing news, updating schedules, and
-              translating existing fields are normal operations—not paid upgrades—once staff are trained.
+              Adding ordinary pages within existing pillars, publishing news, updating schedules, filling
+              language tabs, and translating existing fields are normal operations—not paid upgrades—once
+              staff are trained.
             </p>
           </section>
 

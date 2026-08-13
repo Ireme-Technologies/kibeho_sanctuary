@@ -79,7 +79,7 @@ export default function SupportProjectDetailPage() {
 
           <div className={styles.actions}>
             <Link to="/support/projects" className={styles.btnGhost}>
-              All projects
+              All development projects
             </Link>
             <Link to="/support/donations" className={styles.btn}>
               Support the Shrine

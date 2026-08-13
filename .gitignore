@@ -8,13 +8,10 @@ dist/
 dist-ssr/
 frontend/dist/
 backend/public/build/
-backend/public/assets/
-backend/public/images/
-backend/public/index.html
-backend/public/.vite/
-backend/public/favicon.ico
-backend/public/robots.txt
-backend/public/manifest.webmanifest
+backend/public/hot
+backend/public/storage
+# SPA is built locally (frontend npm run build) and committed so the
+# live server can git pull without running Node.
 backend/storage/*.key
 backend/storage/logs/*
 backend/storage/framework/cache/*

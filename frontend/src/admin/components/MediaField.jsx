@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchMedia, uploadMedia } from '@api/cms'
+import { confirmDelete } from './confirmDelete'
 import styles from '../admin.module.css'
 
 const MAX_BYTES = 700 * 1024
@@ -93,7 +94,14 @@ export default function MediaField({
           ) : (
             <img src={value} alt="" />
           )}
-          <button type="button" className={`${styles.btn} ${styles.btnDanger}`} onClick={() => onChange?.('')}>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnDanger}`}
+            onClick={async () => {
+              if (!(await confirmDelete('Remove this media?', { confirmLabel: 'Remove' }))) return
+              onChange?.('')
+            }}
+          >
             Remove
           </button>
         </div>

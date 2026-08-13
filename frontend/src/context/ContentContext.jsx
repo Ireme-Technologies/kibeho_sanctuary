@@ -242,10 +242,14 @@ export function ContentProvider({ children }) {
         ? blogPosts.map((post) => ({
             ...post,
             authorId: post.author?.name,
+            tags: post.tags || [],
             comments: post.comments || [],
             content: post.body
               ? [{ type: 'html', html: post.body }]
               : post.content || [],
+            author: post.author
+              ? { ...post.author, socials: post.author.socials || [] }
+              : post.author,
           }))
         : fallbackBlogPosts,
       blogAuthors: fallbackAuthors,

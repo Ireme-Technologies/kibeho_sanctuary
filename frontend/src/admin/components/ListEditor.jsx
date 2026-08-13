@@ -1,3 +1,4 @@
+import { confirmDelete } from './confirmDelete'
 import styles from '../admin.module.css'
 
 /**
@@ -101,7 +102,10 @@ export default function ListEditor({
               <button
                 type="button"
                 className={`${styles.btn} ${styles.btnDanger}`}
-                onClick={() => removeRow(index)}
+                onClick={async () => {
+                  if (!(await confirmDelete('Remove this item?', { confirmLabel: 'Remove' }))) return
+                  removeRow(index)
+                }}
               >
                 Remove
               </button>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchI18n, updateI18n } from '@api/cms'
 import { LOCALES } from '@i18n/locales'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import styles from './admin.module.css'
 
 function emptyRow(locales) {
@@ -107,8 +108,8 @@ export default function TranslationsAdminPage() {
     setFlash({ type: 'success', message: `Added key “${key}”. Click Save translations to keep it.` })
   }
 
-  const removeKey = (key) => {
-    if (!confirm(`Delete translation key “${key}”?`)) return
+  const removeKey = async (key) => {
+    if (!(await confirmDelete(`Delete translation key “${key}”?`))) return
     setDictionary((prev) => {
       const next = { ...prev }
       delete next[key]
@@ -156,9 +157,10 @@ export default function TranslationsAdminPage() {
       />
 
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
-        Edit any key below, then click <strong>Save translations</strong> to publish the change.
-        Empty values fall back to the default language, then English. CMS page content is translated
-        on each content form (language tabs).
+        This page is for <strong>short buttons and labels</strong> (Donate, Contact, form hints).
+        For page articles, news, and layout, open that item and use the <strong>language tabs</strong> on
+        the form — then click <strong>Save translations</strong> here after editing labels.
+        Empty values fall back to the default language, then English.
       </p>
 
       <div className={styles.card} style={{ marginBottom: '1rem' }}>
@@ -229,7 +231,12 @@ export default function TranslationsAdminPage() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th style={{ width: '28%' }}>Key</th>
+                <th style={{ width: '22%' }}>Key</th>
+                {tab !== defaultLocale ? (
+                  <th style={{ width: '28%' }}>
+                    {tabs.find((l) => l.code === defaultLocale)?.label || defaultLocale} (source)
+                  </th>
+                ) : null}
                 <th>{tabs.find((l) => l.code === tab)?.label || tab}</th>
                 <th style={{ width: 90 }} />
               </tr>
@@ -244,6 +251,11 @@ export default function TranslationsAdminPage() {
                     <td>
                       <code>{key}</code>
                     </td>
+                    {tab !== defaultLocale ? (
+                      <td>
+                        <p className={styles.sourceText}>{fallback || '—'}</p>
+                      </td>
+                    ) : null}
                     <td>
                       <input
                         value={row[tab] || ''}
@@ -265,8 +277,8 @@ export default function TranslationsAdminPage() {
               })}
               {!keys.length && (
                 <tr>
-                  <td colSpan={3} className={styles.muted}>
-                    No translation keys match.
+                  <td colSpan={tab !== defaultLocale ? 4 : 3} className={styles.muted}>
+                    No translation keys match. Open a content form (Pages, News) to translate long text.
                   </td>
                 </tr>
               )}

@@ -35,8 +35,9 @@ export default function DocsHubPage() {
         <article className={styles.card}>
           <h2>2. Sitemap & admin user guide</h2>
           <p>
-            Complete public sitemap, step-by-step administration for every CMS module, translations,
-            menus, media, users, and recommended future upgrades.
+            Complete public sitemap, step-by-step administration for every CMS module, and the best way to
+            manage languages (language tabs, Copy from default, page layout). Also covers menus, media,
+            users, and recommended future upgrades.
           </p>
           <div className={styles.cardActions}>
             <Link className={styles.btnPrimary} to="/docs/sitemap-and-admin-guide">
@@ -65,14 +66,14 @@ export default function DocsHubPage() {
           <h2>4. Administration panel</h2>
           <p>
             Sign in with the demo credentials below to create pages, publish news, update menus, replace
-            images, manage translations, and more.
+            images, manage languages, and more.
           </p>
           <div className={styles.cardActions}>
             <a className={styles.btnPrimary} href="/admin/login" target="_blank" rel="noreferrer">
               Open admin login
             </a>
-            <Link className={styles.btnSoft} to="/docs/sitemap-and-admin-guide#admin-guide">
-              Jump to admin guide
+            <Link className={styles.btnSoft} to="/docs/sitemap-and-admin-guide#languages">
+              How to manage languages
             </Link>
           </div>
         </article>

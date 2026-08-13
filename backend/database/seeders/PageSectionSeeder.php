@@ -47,7 +47,7 @@ class PageSectionSeeder extends Seeder
                 ],
             ],
             'home.upcomingPilgrimages' => [
-                'label' => 'Home Upcoming Pilgrimages',
+                'label' => 'Home pilgrimage events',
                 'content' => [
                     'items' => [
                         ['id' => 1, 'title' => 'Feast of the Assumption', 'text' => 'A major Marian gathering of prayer and thanksgiving at the shrine.', 'meta' => '15 August'],

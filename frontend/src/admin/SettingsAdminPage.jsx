@@ -18,6 +18,7 @@ import FlashMessage from './components/FlashMessage'
 import FontPicker from './components/FontPicker'
 import ImageField from './components/ImageField'
 import ListEditor from './components/ListEditor'
+import { confirmDelete } from './components/confirmDelete'
 import RichTextEditor from './components/RichTextEditor'
 import styles from './admin.module.css'
 
@@ -777,7 +778,10 @@ export default function SettingsAdminPage() {
                       <button
                         type="button"
                         className={`${styles.btn} ${styles.btnDanger}`}
-                        onClick={() => setPrimaryNav((prev) => prev.filter((_, i) => i !== index))}
+                        onClick={async () => {
+                          if (!(await confirmDelete('Remove this menu item?', { confirmLabel: 'Remove' }))) return
+                          setPrimaryNav((prev) => prev.filter((_, i) => i !== index))
+                        }}
                       >
                         Remove
                       </button>

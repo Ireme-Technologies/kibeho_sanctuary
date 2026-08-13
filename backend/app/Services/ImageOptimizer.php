@@ -37,7 +37,7 @@ class ImageOptimizer
         }
 
         if ($size > 0 && $size <= self::MAX_BYTES) {
-            [$width, $height] = @getimagesize($file->getRealPath()) ?: [0, 0];
+            [$width, $height] = @\getimagesize($file->getRealPath()) ?: [0, 0];
 
             return [
                 'contents' => file_get_contents($file->getRealPath()),
@@ -55,8 +55,14 @@ class ImageOptimizer
 
     private function compressToMax(UploadedFile $file): array
     {
+        if (! $this->gdAvailable()) {
+            throw ValidationException::withMessages([
+                'file' => ['This image is over 700KB and cannot be compressed because the PHP GD extension is not enabled on the server. Enable GD, or upload a file under 700KB.'],
+            ]);
+        }
+
         $path = $file->getRealPath();
-        $info = @getimagesize($path);
+        $info = @\getimagesize($path);
         if (! $info) {
             throw new RuntimeException('Unable to read image.');
         }
@@ -75,18 +81,18 @@ class ImageOptimizer
         while ($attempts < 12) {
             $newW = max(1, (int) round($width * $scale));
             $newH = max(1, (int) round($height * $scale));
-            $canvas = imagecreatetruecolor($newW, $newH);
-            imagealphablending($canvas, false);
-            imagesavealpha($canvas, true);
-            imagecopyresampled($canvas, $source, 0, 0, 0, 0, $newW, $newH, $width, $height);
+            $canvas = \imagecreatetruecolor($newW, $newH);
+            \imagealphablending($canvas, false);
+            \imagesavealpha($canvas, true);
+            \imagecopyresampled($canvas, $source, 0, 0, 0, 0, $newW, $newH, $width, $height);
 
             ob_start();
-            imagejpeg($canvas, null, $quality);
+            \imagejpeg($canvas, null, $quality);
             $contents = ob_get_clean();
-            imagedestroy($canvas);
+            \imagedestroy($canvas);
 
             if (strlen($contents) <= self::MAX_BYTES) {
-                imagedestroy($source);
+                \imagedestroy($source);
 
                 return [
                     'contents' => $contents,
@@ -108,20 +114,25 @@ class ImageOptimizer
             $attempts++;
         }
 
-        imagedestroy($source);
+        \imagedestroy($source);
 
         throw ValidationException::withMessages([
             'file' => ['Unable to compress this image under 700KB. Try a smaller source file.'],
         ]);
     }
 
+    private function gdAvailable(): bool
+    {
+        return \extension_loaded('gd') && \function_exists('imagecreatefromjpeg');
+    }
+
     private function createImageResource(string $path, string $mime)
     {
         return match ($mime) {
-            'image/jpeg', 'image/jpg' => @imagecreatefromjpeg($path),
-            'image/png' => @imagecreatefrompng($path),
-            'image/webp' => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($path) : null,
-            'image/gif' => @imagecreatefromgif($path),
+            'image/jpeg', 'image/jpg' => @\imagecreatefromjpeg($path),
+            'image/png' => @\imagecreatefrompng($path),
+            'image/webp' => \function_exists('imagecreatefromwebp') ? @\imagecreatefromwebp($path) : null,
+            'image/gif' => @\imagecreatefromgif($path),
             default => null,
         };
     }

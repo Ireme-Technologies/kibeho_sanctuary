@@ -402,7 +402,7 @@ export const pageFallbacks = {
           path: "/pilgrimage/office",
         },
         secondary: {
-          label: "Pilgrimage Calendar",
+          label: "Calendar",
           path: "/pilgrimage/calendar",
         },
       },
@@ -462,7 +462,7 @@ export const pageFallbacks = {
           path: "/pilgrimage/office",
         },
         {
-          label: "Pilgrimage Calendar",
+          label: "Calendar",
           path: "/pilgrimage/calendar",
         },
         {
@@ -476,7 +476,7 @@ export const pageFallbacks = {
           path: "/pilgrimage/plan",
         },
         secondary: {
-          label: "Upcoming Pilgrimages",
+          label: "Pilgrimage events",
           path: "/pilgrimages",
         },
       },
@@ -612,19 +612,19 @@ export const pageFallbacks = {
           path: "/contact",
         },
         secondary: {
-          label: "Upcoming pilgrimages",
+          label: "Pilgrimage events",
           path: "/pilgrimages",
         },
       },
     }),
 
   'pilgrimage.calendar': page({
-      title: "Pilgrimage Calendar",
+      title: "Pilgrimage events",
       subtitle: "Feasts, gatherings, and registered pilgrimages",
       intro: "Follow major Marian feasts, national and international pilgrimages, and opportunities to join organised groups at the Shrine.",
       cta: {
         primary: {
-          label: "View upcoming pilgrimages",
+          label: "View pilgrimage events",
           path: "/pilgrimages",
         },
         secondary: {
@@ -883,7 +883,7 @@ export const pageFallbacks = {
           path: "/support/master-plan",
         },
         {
-          label: "Current Projects",
+          label: "Projects",
           path: "/support/projects",
         },
         {
@@ -949,7 +949,7 @@ export const pageFallbacks = {
       ],
       cta: {
         primary: {
-          label: "Current Projects",
+          label: "Projects",
           path: "/support/projects",
         },
         secondary: {
@@ -960,7 +960,7 @@ export const pageFallbacks = {
     }),
 
   'support.projects': page({
-      title: "Current Projects",
+      title: "Development projects",
       subtitle: "Works underway at the Shrine",
       intro: "Follow current pastoral and infrastructure projects that sustain the life of the Shrine and improve the welcome of pilgrims.",
       cta: {

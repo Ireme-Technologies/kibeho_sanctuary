@@ -420,7 +420,7 @@
         "path": "/pilgrimage/office"
       },
       "secondary": {
-        "label": "Pilgrimage Calendar",
+        "label": "Calendar",
         "path": "/pilgrimage/calendar"
       }
     }
@@ -484,7 +484,7 @@
         "path": "/pilgrimage/office"
       },
       {
-        "label": "Pilgrimage Calendar",
+        "label": "Calendar",
         "path": "/pilgrimage/calendar"
       },
       {
@@ -498,7 +498,7 @@
         "path": "/pilgrimage/plan"
       },
       "secondary": {
-        "label": "Upcoming Pilgrimages",
+        "label": "Pilgrimage events",
         "path": "/pilgrimages"
       }
     }
@@ -645,14 +645,14 @@
         "path": "/contact"
       },
       "secondary": {
-        "label": "Upcoming pilgrimages",
+        "label": "Pilgrimage events",
         "path": "/pilgrimages"
       }
     }
   },
   "pilgrimage.calendar": {
     "eyebrow": "",
-    "title": "Pilgrimage Calendar",
+    "title": "Pilgrimage events",
     "subtitle": "Feasts, gatherings, and registered pilgrimages",
     "heroImage": "/images/sanctuary/hero.jpg",
     "intro": "Follow major Marian feasts, national and international pilgrimages, and opportunities to join organised groups at the Shrine.",
@@ -660,7 +660,7 @@
     "links": [],
     "cta": {
       "primary": {
-        "label": "View upcoming pilgrimages",
+        "label": "View pilgrimage events",
         "path": "/pilgrimages"
       },
       "secondary": {
@@ -951,7 +951,7 @@
         "path": "/support/master-plan"
       },
       {
-        "label": "Current Projects",
+        "label": "Projects",
         "path": "/support/projects"
       },
       {
@@ -1022,7 +1022,7 @@
     "links": [],
     "cta": {
       "primary": {
-        "label": "Current Projects",
+        "label": "Projects",
         "path": "/support/projects"
       },
       "secondary": {
@@ -1033,7 +1033,7 @@
   },
   "support.projects": {
     "eyebrow": "",
-    "title": "Current Projects",
+    "title": "Development projects",
     "subtitle": "Works underway at the Shrine",
     "heroImage": "/images/sanctuary/hero.jpg",
     "intro": "Follow current pastoral and infrastructure projects that sustain the life of the Shrine and improve the welcome of pilgrims.",

@@ -88,7 +88,7 @@ export default function PilgrimageDetailPage() {
         }
       >
         <div className="container">
-          <p className={styles.eyebrow}>Upcoming Pilgrimage</p>
+          <p className={styles.eyebrow}>Pilgrimage event</p>
           <h1>{pilgrimage.title}</h1>
           <div className={styles.metaRow}>
             {pilgrimage.meta ? <span>{pilgrimage.meta}</span> : null}
@@ -108,7 +108,7 @@ export default function PilgrimageDetailPage() {
             <RichText html={pilgrimage.description} className={styles.body} />
           ) : null}
           <Link to="/pilgrimages" className={styles.backLink}>
-            ← All upcoming pilgrimages
+            ← All pilgrimage events
           </Link>
         </div>
 

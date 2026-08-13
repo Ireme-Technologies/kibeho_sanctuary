@@ -10,6 +10,7 @@ import {
   uploadEnquiryDocument,
 } from '@api/cms'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import styles from './admin.module.css'
 
 function statusLabel(status) {
@@ -233,7 +234,7 @@ export default function EnquiriesAdminPage() {
   if (id) return <EnquiryDetail id={id} />
 
   const handleDelete = async (enquiryId) => {
-    if (!confirm('Delete this enquiry?')) return
+    if (!(await confirmDelete('Delete this enquiry?'))) return
     try {
       await deleteEnquiry(enquiryId)
       await load()

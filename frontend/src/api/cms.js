@@ -320,6 +320,47 @@ export async function changePassword(body) {
   return api('/api/password/change', { method: 'POST', body })
 }
 
+export const fetchBackupStatus = () => api('/api/backup/status')
+
+export async function downloadSiteBackup() {
+  await ensureCsrf()
+  const API_BASE = import.meta.env.VITE_API_URL || ''
+  const headers = { Accept: 'application/zip, application/json' }
+  const match = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;]*)/)
+  if (match) headers['X-XSRF-TOKEN'] = decodeURIComponent(match[1])
+
+  const response = await fetch(`${API_BASE}/api/backup/export`, {
+    credentials: 'include',
+    headers,
+  })
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.message || 'Backup download failed')
+  }
+
+  const blob = await response.blob()
+  const disposition = response.headers.get('Content-Disposition') || ''
+  const named = disposition.match(/filename="?([^"]+)"?/i)
+  const filename = named?.[1] || `kibeho-backup-${new Date().toISOString().slice(0, 10)}.zip`
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}
+
+export async function restoreSiteBackup(file) {
+  await ensureCsrf()
+  const form = new FormData()
+  form.append('file', file)
+  form.append('confirm', '1')
+  return api('/api/backup/import', { method: 'POST', body: form })
+}
+
 export async function forgotPassword(email) {
   await ensureCsrf()
   return api('/api/password/forgot', { method: 'POST', body: { email } })

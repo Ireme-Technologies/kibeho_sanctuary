@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchMedia, uploadMedia } from '@api/cms'
+import { confirmDelete } from './confirmDelete'
 import styles from '../admin.module.css'
 
 const MAX_BYTES = 700 * 1024
@@ -51,14 +52,28 @@ export default function ImageField({ label, value, onChange, folder = 'uploads',
       {!hidePreview && value ? (
         <div className={styles.imagePreview}>
           <img src={value} alt="" />
-          <button type="button" className={`${styles.btn} ${styles.btnDanger}`} onClick={() => onChange?.('')}>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnDanger}`}
+            onClick={async () => {
+              if (!(await confirmDelete('Remove this image?', { confirmLabel: 'Remove' }))) return
+              onChange?.('')
+            }}
+          >
             Remove
           </button>
         </div>
       ) : null}
       {hidePreview && value ? (
         <div className={styles.actions}>
-          <button type="button" className={`${styles.btn} ${styles.btnDanger}`} onClick={() => onChange?.('')}>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnDanger}`}
+            onClick={async () => {
+              if (!(await confirmDelete('Clear this image?', { confirmLabel: 'Remove' }))) return
+              onChange?.('')
+            }}
+          >
             Clear image
           </button>
         </div>

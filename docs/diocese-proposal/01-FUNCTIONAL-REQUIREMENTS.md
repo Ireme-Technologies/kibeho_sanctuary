@@ -39,11 +39,11 @@ Legend: **Included (Phase 1)** = in the current build / agreed delivery. **Later
 | Upload / replace images & documents (media library) | Included |
 | Manage translations (UI dictionary + per-content language tabs) | Included |
 | Mass schedules CRUD | Included |
-| Pilgrim calendar CRUD | Included |
+| Pilgrimage events CRUD | Included |
 | Churches & apparition sites CRUD | Included |
 | Accommodations CRUD | Included |
 | Pilgrimage services / shrine experiences | Included |
-| Support projects & testimonials | Included |
+| Development projects & testimonials | Included |
 | Videos (YouTube) | Included |
 | Home hero editor | Included |
 | Theme / branding settings (logo, colours where configured) | Included |

@@ -3,6 +3,7 @@ import { createUser, deleteUser, fetchUsers, updateUser } from '@api/cms'
 import { useAuth } from '@context/AuthContext'
 import Modal from './components/Modal'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import styles from './admin.module.css'
 
 const empty = { name: '', email: '', password: '', role: 'super_admin' }
@@ -66,7 +67,7 @@ export default function UsersAdminPage() {
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this user?')) return
+    if (!(await confirmDelete('Delete this user?'))) return
     try {
       await deleteUser(id)
       await load()

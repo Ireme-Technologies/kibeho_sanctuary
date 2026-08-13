@@ -1120,9 +1120,42 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--admin-border);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.localeBar {
+  margin-bottom: 1.15rem;
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid #c5ddf2;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f3f9ff 0%, #eaf4fc 100%);
+}
+
+.localeBarHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.localeBarTitle {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--admin-primary);
+}
+
+.localeBarHint {
+  margin: 0.25rem 0 0;
+  color: var(--admin-text-soft);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  max-width: 46rem;
 }
 
 .localeTab {
@@ -1156,6 +1189,111 @@
   opacity: 0.8;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.localeDotFilled,
+.localeDotEmpty {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.localeDotFilled {
+  background: #2e7d32;
+}
+
+.localeTabActive .localeDotFilled {
+  background: #b7f0bb;
+}
+
+.localeDotEmpty {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px #c5d0e0;
+}
+
+.localeTabActive .localeDotEmpty {
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.7);
+}
+
+.howtoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.howtoCard {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  padding: 1.1rem 1.15rem 1.15rem;
+  box-shadow: var(--admin-shadow);
+}
+
+.howtoCard h2 {
+  margin: 0 0 0.45rem;
+  font-size: 1.05rem;
+  color: var(--admin-primary);
+}
+
+.howtoCard p {
+  margin: 0 0 0.65rem;
+  color: var(--admin-text-soft);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.howtoLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.howtoLinks a {
+  color: var(--admin-primary);
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.blockPalette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.45rem 0 0.85rem;
+}
+
+.blockPaletteBtn {
+  border: 1px dashed var(--admin-border-strong);
+  background: #fff;
+  color: var(--admin-primary);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.blockPaletteBtn:hover {
+  border-color: var(--admin-accent);
+  background: #f3f9ff;
+}
+
+.sourceText {
+  margin: 0;
+  color: var(--admin-text-soft);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 860px) {
+  .howtoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .localeBarHead {
+    flex-direction: column;
+  }
 }
 
 .actions {
@@ -1314,6 +1452,56 @@
   place-items: center;
   z-index: 1000;
   padding: 1rem;
+}
+
+.confirmOverlay {
+  z-index: 1100;
+}
+
+.confirmModal {
+  width: min(440px, 100%);
+}
+
+.confirmStep {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--admin-muted, #6b7280);
+}
+
+.confirmMessage {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+.confirmHint {
+  margin: 0.75rem 0 0;
+  color: var(--admin-muted, #6b7280);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.btnDangerSolid {
+  background: var(--admin-danger);
+  border-color: var(--admin-danger);
+  color: #ffffff;
+}
+
+.btnDangerSolid:hover:not(:disabled) {
+  filter: brightness(0.92);
+  background: var(--admin-danger);
+  border-color: var(--admin-danger);
+  color: #ffffff;
 }
 
 .modal {

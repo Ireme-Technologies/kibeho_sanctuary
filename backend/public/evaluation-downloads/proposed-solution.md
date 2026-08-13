@@ -35,7 +35,7 @@ This pack answers each point you listed. It is based on the system already under
 
 WordPress is familiar and works well for many parish sites. For this project we recommend a **dedicated React + Laravel CMS** because:
 
-1. **The information architecture is fixed by the ToR** (Our Lady, Shrine, Pilgrimage, Spirituality, News, Support). A custom admin mirrors those pillars (mass schedules, pilgrim calendar, churches, apparition sites, accommodations, support projects, translations, pilgrim enquiries) instead of forcing them into generic “posts and pages.”
+1. **The information architecture is fixed by the ToR** (Our Lady, Shrine, Pilgrimage, Spirituality, News, Support). A custom admin mirrors those pillars (mass schedules, pilgrimage events, churches, apparition sites, accommodations, development projects, translations, pilgrim enquiries) instead of forcing them into generic “posts and pages.”
 2. **React.js for interactive users and loading speed** — after the first load, the site updates language, menus, lists, and admin forms without full page reloads, which feels faster on mobile networks and supports a modern pilgrim experience.
 3. **Laravel API for future connections** — a proper API is how websites today connect to **payment gateways**, **members / friends management**, CRM, mailing tools, and other Diocese systems without rebuilding the front end.
 4. **Multilingual is designed in from the start** (Kinyarwanda, French, English, German), with UI labels and long-form content managed separately, and room for additional languages later.
@@ -118,11 +118,11 @@ Legend: **Included (Phase 1)** = in the current build / agreed delivery. **Later
 | Upload / replace images & documents (media library) | Included |
 | Manage translations (UI dictionary + per-content language tabs) | Included |
 | Mass schedules CRUD | Included |
-| Pilgrim calendar CRUD | Included |
+| Pilgrimage events CRUD | Included |
 | Churches & apparition sites CRUD | Included |
 | Accommodations CRUD | Included |
 | Pilgrimage services / shrine experiences | Included |
-| Support projects & testimonials | Included |
+| Development projects & testimonials | Included |
 | Videos (YouTube) | Included |
 | Home hero editor | Included |
 | Theme / branding settings (logo, colours where configured) | Included |
@@ -149,9 +149,9 @@ Legend: **Included (Phase 1)** = in the current build / agreed delivery. **Later
 | Deploy to existing shared or dedicated hosting with Git/SSH | Included (subject to host capabilities) |
 | Source code repository handover | Included |
 | Admin user guide on handover | Included |
-| Server backup configuration (provider tools) | Included (documented + assisted) |
-| Manual full database export procedure | Included (documented; optional scheduled export script) |
-| Media files backup guidance | Included |
+| Server backup configuration (DigitalOcean snapshots, by the developer) | Included (documented + assisted) |
+| Admin Backup & restore ZIP (staff download, stored off the server) | Included |
+| Media files included in the admin ZIP | Included |
 
 ## 1.5 Later phase / optional (not assumed in Phase 1 unless quoted)
 
@@ -444,7 +444,7 @@ After training, staff can:
 | Menus | Change labels and links in Settings (within existing structure) |
 | Media | Upload/replace photos and PDFs; manage gallery |
 | Translations | Update UI strings; fill language tabs on content |
-| Schedules | Mass times; pilgrim calendar events |
+| Schedules | Mass times; pilgrimage events events |
 | Directories | Churches, apparition sites, accommodations, projects, testimonials, videos |
 | Home hero | Update slides, titles, CTAs |
 | Enquiries | Read pilgrim messages; reply; attach documents |

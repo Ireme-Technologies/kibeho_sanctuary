@@ -108,29 +108,38 @@ No mandatory proprietary CMS licence (unlike some commercial page builders). Ong
 
 ---
 
-## 5.6 Backup and recovery (server + manual)
+## 5.6 Backup and recovery
 
-As agreed with the client:
+Use **all three** layers. DigitalOcean snapshots alone are not enough if that account or region is unavailable, or if you move host.
 
-### A. Server-side backup
-- Enable the hosting provider’s backup (daily/weekly as offered).
-- Document restore steps with the host’s panel.
-- Retention period: [FILL — e.g. 7–30 days per host plan].
+### A. Hosting provider backup (DigitalOcean)
+- Enable droplet backups or weekly snapshots in the DigitalOcean panel.
+- These restore the whole server quickly **only while DigitalOcean still holds them**.
+- Retention is limited (often a few weeks). They are not a copy you can take to another company.
 
-### B. Manual / exportable backup (independent of host panel)
-- **Database:** export full MySQL dump (`mysqldump` or phpMyAdmin → Export) on a defined schedule (e.g. weekly) and after major content campaigns.
-- **Media:** copy `storage` / uploads directory.
-- **Application:** Git repository is the source of truth for code; tagged release on handover.
-- Store copies **off the web server** (Diocese drive / encrypted archive).
+### B. Admin export (independent of the host)
+Administrators can download a ZIP from **Admin → Backup & restore**. It includes:
+- Live CMS data (pages, menus, translations, news, schedules, directories, enquiries, users)
+- Uploaded media (`storage/app/public`)
+- Site images (`public/images`, including replaced logo/hero files)
 
-### C. Migration resilience
-If server backup fails, we can still:
-1. Provision hosting again under the Diocese name,
-2. Clone the repository,
-3. Import the latest database export + media archive,
-4. Re-link environment and SSL.
+Store that ZIP **off the web server** (Diocese computer, Google Drive, encrypted USB). Recommended: weekly, and after large content updates. Keep at least two copies.
 
-An optional small **admin “Export database”** button or scheduled dump script can be added in a later phase; the **documented manual export** is included in Phase 1 handover.
+Restore the ZIP on the same or a new server from the same admin page (two-step confirmation). If the file is larger than PHP upload limits, copy it to the server and run:
+
+```bash
+php artisan site:backup
+php artisan site:restore /path/to/kibeho-backup.zip --force
+```
+
+The ZIP does **not** include `.env` secrets. On a new host, recreate `.env` (new `APP_KEY` is fine), run `composer install`, `php artisan migrate` (not `migrate:fresh`), then restore the ZIP, then `php artisan storage:link`.
+
+### C. Application code
+- Git is the source of truth for the frontend and backend code.
+- A git clone without a content backup restores the **empty/seeded** demo, not live Diocese content.
+
+### D. Domain
+- The domain registrar (where DNS is paid) is independent of DigitalOcean. Point A/CNAME records at the new host when moving.
 
 ---
 

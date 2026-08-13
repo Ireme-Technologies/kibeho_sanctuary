@@ -47,6 +47,7 @@ const GalleryAdminPage = lazy(() => import('@admin/GalleryAdminPage'))
 const HomeHeroAdminPage = lazy(() => import('@admin/HomeHeroAdminPage'))
 const UsersAdminPage = lazy(() => import('@admin/UsersAdminPage'))
 const AccountAdminPage = lazy(() => import('@admin/AccountAdminPage'))
+const BackupAdminPage = lazy(() => import('@admin/BackupAdminPage'))
 
 const DocsLayout = lazy(() => import('../docs/DocsLayout'))
 const DocsHubPage = lazy(() => import('../docs/DocsHubPage'))
@@ -155,6 +156,7 @@ const router = createBrowserRouter([
       { path: 'home-hero', element: <Wrap Component={HomeHeroAdminPage} /> },
       { path: 'users', element: <Wrap Component={UsersAdminPage} /> },
       { path: 'account', element: <Wrap Component={AccountAdminPage} /> },
+      { path: 'backup', element: <Wrap Component={BackupAdminPage} /> },
     ],
   },
   {

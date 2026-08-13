@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchMedia, uploadMedia } from '@api/cms'
+import { confirmDelete } from './confirmDelete'
 import styles from '../admin.module.css'
 
 const MAX_BYTES = 700 * 1024
@@ -99,7 +100,14 @@ export default function MultiImageField({
                 <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => move(index, 1)}>
                   ↓
                 </button>
-                <button type="button" className={`${styles.btn} ${styles.btnDanger}`} onClick={() => removeAt(index)}>
+                <button
+                  type="button"
+                  className={`${styles.btn} ${styles.btnDanger}`}
+                  onClick={async () => {
+                    if (!(await confirmDelete('Remove this image?', { confirmLabel: 'Remove' }))) return
+                    removeAt(index)
+                  }}
+                >
                   Remove
                 </button>
               </div>

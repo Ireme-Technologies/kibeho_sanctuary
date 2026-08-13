@@ -121,6 +121,16 @@ class PageSectionController extends Controller
             return $base;
         }
 
-        return array_replace_recursive($base, $overlay);
+        $merged = array_replace_recursive($base, $overlay);
+
+        // List structures must replace, not merge by index, so a language can
+        // have its own page layout (blocks / quick links) without leaking extras.
+        foreach (['blocks', 'links'] as $listKey) {
+            if (array_key_exists($listKey, $overlay) && is_array($overlay[$listKey])) {
+                $merged[$listKey] = $overlay[$listKey];
+            }
+        }
+
+        return $merged;
     }
 }

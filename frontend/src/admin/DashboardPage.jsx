@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Eye, Trash2 } from 'lucide-react'
 import { deleteEnquiry, fetchEnquiries, fetchEnquiryStats } from '@api/cms'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import styles from './admin.module.css'
 
 function statusLabel(status) {
@@ -56,7 +57,7 @@ export default function DashboardPage() {
   })
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this enquiry?')) return
+    if (!(await confirmDelete('Delete this enquiry?'))) return
     try {
       await deleteEnquiry(id)
       await load()
@@ -80,6 +81,39 @@ export default function DashboardPage() {
         message={flash.message}
         onClear={() => setFlash({ type: 'success', message: '' })}
       />
+
+      <div className={styles.howtoGrid}>
+        <div className={styles.howtoCard}>
+          <h2>Manage languages</h2>
+          <p>
+            Open any content item and use the <strong>Ikinyarwanda / Français / English / Deutsch</strong> tabs.
+            A filled green dot means that language has text. Empty fields fall back to the default language.
+          </p>
+          <p>
+            Use <strong>Copy from default</strong> to duplicate the English (or default) text, then translate in place.
+          </p>
+          <div className={styles.howtoLinks}>
+            <Link to="/admin/sections">Pages &amp; layout</Link>
+            <Link to="/admin/blog">News articles</Link>
+            <Link to="/admin/translations">Button labels</Link>
+          </div>
+        </div>
+        <div className={styles.howtoCard}>
+          <h2>Flexible page layout</h2>
+          <p>
+            In <strong>Pages</strong>, add layout blocks: heading, rich text, note, list, gallery, YouTube,
+            cards, steps, or schedule. Each language can have its own body layout.
+          </p>
+          <p>
+            Inside a text block, the formatting toolbar covers bold, lists, alignment, colour, tables, images,
+            and YouTube — then click <strong>Save page</strong>.
+          </p>
+          <div className={styles.howtoLinks}>
+            <Link to="/admin/sections">Open Pages</Link>
+            <Link to="/admin/home-hero">Home hero</Link>
+          </div>
+        </div>
+      </div>
 
       <div className={styles.filterBar}>
         <div className={styles.field}>

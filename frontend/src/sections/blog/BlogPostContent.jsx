@@ -84,7 +84,7 @@ function ContentBlock({ block, onOpenImage }) {
     case 'checklist':
       return (
         <ul className={styles.checklist}>
-          {block.items.map((item, i) => (
+          {(block.items || []).map((item, i) => (
             <li key={i}>
               <Check size={16} />
               <span>{item}</span>
@@ -103,7 +103,7 @@ function ContentBlock({ block, onOpenImage }) {
     case 'gallery':
       return (
         <div className={styles.galleryBlock}>
-          {block.images.map((src, i) => (
+          {(block.images || []).map((src, i) => (
             <button
               key={i}
               type="button"
@@ -231,19 +231,19 @@ export default function BlogPostContent() {
               <Calendar size={14} /> {formatDate(post.publishedAt)}
             </span>
             <span className={styles.metaItem}>
-              <MessageCircle size={14} /> {post.comments.length}
+              <MessageCircle size={14} /> {(post.comments || []).length}
             </span>
           </div>
 
           <div className={styles.content}>
-            {post.content.map((block, i) => (
+            {(post.content || []).map((block, i) => (
               <ContentBlock key={i} block={block} onOpenImage={openImage} />
             ))}
           </div>
 
           <div className={styles.tagsShareRow}>
             <div className={styles.tags}>
-              {post.tags.map((tag) => (
+              {(post.tags || []).map((tag) => (
                 <span key={tag} className={styles.tagPill}>
                   {tag}
                 </span>
@@ -283,8 +283,9 @@ export default function BlogPostContent() {
                 <p className={styles.authorRole}>{author.role}</p>
                 <p className={styles.authorBioText}>{author.bio}</p>
                 <div className={styles.authorSocials}>
-                  {author.socials.map(({ iconKey, href }) => {
+                  {(author.socials || []).map(({ iconKey, href }) => {
                     const Icon = socialIcons[iconKey]
+                    if (!Icon || !href) return null
                     return (
                       <a key={iconKey} href={href} aria-label={iconKey} className={styles.shareIcon}>
                         <Icon size={14} />
@@ -315,9 +316,9 @@ export default function BlogPostContent() {
 
           <div className={styles.comments}>
             <h3 className={styles.commentsTitle}>
-              {commentsLabel} ({post.comments.length})
+              {commentsLabel} ({(post.comments || []).length})
             </h3>
-            {post.comments.map((comment) => (
+            {(post.comments || []).map((comment) => (
               <div key={comment.id} className={styles.comment}>
                 <div className={styles.commentAvatar}>
                   {comment.avatar ? (

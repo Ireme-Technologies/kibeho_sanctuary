@@ -1,6 +1,7 @@
 import ListEditor from './ListEditor'
 import MultiImageField from './MultiImageField'
 import RichTextEditor from './RichTextEditor'
+import { confirmDelete } from './confirmDelete'
 import { parseYoutubeId, youtubeThumbUrl } from '@utils/youtube'
 import styles from '../admin.module.css'
 
@@ -65,12 +66,15 @@ export default function BlocksEditor({ blocks = [], onChange }) {
     onChange?.(list.map((block, i) => (i === index ? emptyBlock(type) : block)))
   }
 
-  const removeBlock = (index) => {
+  const removeBlock = async (index) => {
+    if (!(await confirmDelete('Remove this content block?', { confirmLabel: 'Remove' }))) return
     onChange?.(list.filter((_, i) => i !== index))
   }
 
-  const addBlock = () => {
-    onChange?.([...list, emptyBlock('paragraph')])
+  const removeBlockItem = async (index, itemIndex, message = 'Remove this item?') => {
+    if (!(await confirmDelete(message, { confirmLabel: 'Remove' }))) return
+    const items = (list[index]?.items || []).filter((_, i) => i !== itemIndex)
+    updateBlock(index, { items })
   }
 
   const moveBlock = (index, direction) => {
@@ -83,10 +87,27 @@ export default function BlocksEditor({ blocks = [], onChange }) {
 
   return (
     <div className={styles.field}>
-      <label>Content blocks</label>
-      <p className={styles.muted}>Add headings, paragraphs, lists, cards, and schedules with form fields.</p>
+      <label>Page layout</label>
+      <p className={styles.muted}>
+        Build the page from blocks. Use the formatting toolbar inside text blocks for headings, lists,
+        links, images, tables, and YouTube.
+      </p>
+      <div className={styles.blockPalette} role="group" aria-label="Add a layout block">
+        {BLOCK_TYPES.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            className={styles.blockPaletteBtn}
+            onClick={() => onChange?.([...list, emptyBlock(opt.value)])}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
       <div className={styles.listEditor}>
-        {list.length === 0 && <p className={styles.muted}>No blocks yet.</p>}
+        {list.length === 0 && (
+          <p className={styles.muted}>No blocks yet. Choose a block type above to start the layout.</p>
+        )}
         {list.map((block, index) => (
           <div key={`block-${index}`} className={styles.listEditorRow}>
             <div>
@@ -233,10 +254,7 @@ export default function BlocksEditor({ blocks = [], onChange }) {
                       <button
                         type="button"
                         className={`${styles.btn} ${styles.btnDanger}`}
-                        onClick={() => {
-                          const items = (block.items || []).filter((_, i) => i !== itemIndex)
-                          updateBlock(index, { items })
-                        }}
+                        onClick={() => removeBlockItem(index, itemIndex)}
                       >
                         Remove
                       </button>
@@ -347,10 +365,7 @@ export default function BlocksEditor({ blocks = [], onChange }) {
                       <button
                         type="button"
                         className={`${styles.btn} ${styles.btnDanger}`}
-                        onClick={() => {
-                          const items = (block.items || []).filter((_, i) => i !== itemIndex)
-                          updateBlock(index, { items })
-                        }}
+                        onClick={() => removeBlockItem(index, itemIndex, 'Remove this lodging item?')}
                       >
                         Remove
                       </button>
@@ -382,9 +397,9 @@ export default function BlocksEditor({ blocks = [], onChange }) {
             </button>
           </div>
         ))}
-        <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={addBlock}>
-          Add content block
-        </button>
+        {list.length > 0 ? (
+          <p className={styles.muted}>Use the buttons above to add another block to this language’s layout.</p>
+        ) : null}
       </div>
     </div>
   )

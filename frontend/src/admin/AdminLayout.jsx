@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { ChevronDown, ExternalLink, LogOut, UserRound } from 'lucide-react'
 import { useAuth } from '@context/AuthContext'
 import { useContent } from '@context/ContentContext'
+import ConfirmDeleteDialog from './components/ConfirmDeleteDialog'
 import styles from './admin.module.css'
 
 function getInitials(name = '', email = '') {
@@ -31,11 +32,11 @@ export default function AdminLayout() {
   const links = [
     { to: '/admin', label: 'Dashboard', end: true },
     { to: '/admin/mass-schedules', label: 'Mass schedules' },
-    { to: '/admin/upcoming-pilgrimages', label: 'Pilgrim calendar' },
+    { to: '/admin/upcoming-pilgrimages', label: 'Pilgrimage events' },
     { to: '/admin/churches', label: 'Churches' },
     { to: '/admin/apparition-sites', label: 'Apparition sites' },
     { to: '/admin/projects', label: 'Accommodations' },
-    { to: '/admin/shrine-projects', label: 'Support projects' },
+    { to: '/admin/shrine-projects', label: 'Development projects' },
     { to: '/admin/testimonials', label: 'Testimonials' },
     { to: '/admin/blog', label: 'News & clergy messages' },
     { to: '/admin/services', label: 'Pilgrimage Services' },
@@ -48,6 +49,7 @@ export default function AdminLayout() {
     { to: '/admin/enquiries', label: 'Pilgrim Enquiries' },
     ...(user?.can_manage_users ? [{ to: '/admin/users', label: 'Users' }] : []),
     { to: '/admin/settings', label: 'Settings & menus' },
+    { to: '/admin/backup', label: 'Backup & restore' },
   ]
 
   useEffect(() => {
@@ -179,6 +181,7 @@ export default function AdminLayout() {
           </p>
         </footer>
       </div>
+      <ConfirmDeleteDialog />
     </div>
   )
 }

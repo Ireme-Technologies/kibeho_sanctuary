@@ -79,7 +79,7 @@ Primary structure follows the Diocese Terms of Reference (six pillars). Paths ar
 | Hotel / lodging detail | `/hotels/:slug` | Facility detail |
 | Transportation | `/pilgrimage/transportation` | CMS page |
 | Pilgrimage Office | `/pilgrimage/office` | CMS page |
-| Pilgrimage Calendar | `/pilgrimage/calendar` | Upcoming pilgrimage events |
+| Calendar | `/pilgrimage/calendar` | Pilgrimage events |
 | Practical Information | `/pilgrimage/practical-information` | CMS page |
 | Pilgrimage programs (list) | `/pilgrimages` | Pilgrimage service entities |
 | Program detail | `/pilgrimages/:slug` | Entity detail |
@@ -118,7 +118,7 @@ Primary structure follows the Diocese Terms of Reference (six pillars). Paths ar
 | Support (hub) | `/support` | CMS page |
 | Vision | `/support/vision` | CMS page |
 | Master Plan | `/support/master-plan` | CMS page |
-| Current Projects | `/support/projects` | Shrine project entities |
+| Projects | `/support/projects` | Development project entities |
 | Project detail | `/support/projects/:slug` | Entity detail |
 | Donations | `/support/donations` | CMS page |
 | Annual Reports | `/support/annual-reports` | CMS page (+ downloadable PDFs via media) |
@@ -144,7 +144,7 @@ Primary structure follows the Diocese Terms of Reference (six pillars). Paths ar
 |------|----------|------------------|
 | CMS pages | Pillar hubs & subpages | Pages (sections / blocks) |
 | News articles | News, Events, Rector, Bishop, Press | News & clergy messages |
-| Events (calendar) | Upcoming pilgrimages | Pilgrim calendar |
+| Pilgrimage events | Pilgrimages, feast days, retreats | Pilgrimage events |
 | Schedules | Mass times | Mass schedules |
 | Directories | Churches, sites, hotels, projects | Dedicated modules |
 | Media | Photos, PDFs | Gallery / Media |
@@ -184,21 +184,21 @@ User creation for additional Diocese staff is available from **Users** (where th
 
 | Menu item | Purpose |
 |-----------|---------|
-| Dashboard | Overview of pilgrim enquiries |
+| Dashboard | Overview of pilgrim enquiries, plus cards for languages and page layout |
 | Mass schedules | Weekly / recurring Mass times |
-| Pilgrim calendar | Upcoming pilgrimages & events |
+| Pilgrimage events | Pilgrimages, feast days, retreats & calendar events |
 | Churches | Church directory |
 | Apparition sites | Apparition site directory |
-| Accommodations | Lodging / hotels |
-| Support projects | Fundraising & development projects |
+| Accommodations | Lodging / hotels for pilgrims |
+| Development projects | Fundraising & infrastructure projects at the Shrine |
 | Testimonials | Pilgrim / spiritual testimonies |
 | News & clergy messages | Articles (categories, rich text, images) |
 | Pilgrimage Services | Structured pilgrimage programs |
 | Shrine Experiences | Activities / experiences |
 | Videos (YouTube) | Video catalogue |
 | Home hero | Homepage hero slides / media / CTAs |
-| Pages | All CMS informational pages (blocks) |
-| Translations | UI labels per language |
+| Pages | Informational pages: header, intro, and layout blocks (per language) |
+| Translations | Short UI labels only (Donate, Contact) — not page articles |
 | Gallery / Media | Upload images & documents; gallery flag |
 | Pilgrim Enquiries | Inbox, replies, documents |
 | Users | Create staff accounts (authorised managers) |
@@ -210,18 +210,20 @@ Provide a **staging URL** and a **demo admin account** (Diocese-owned email pref
 
 ### A. Create and edit a page
 1. Open **Pages**.
-2. Select the page key (e.g. Shrine → Welcome).
-3. Switch language tab if needed (FR / EN / …).
-4. Edit title, intro, and content blocks; add or replace an image.
-5. Click **Save**.
-6. Open the public URL and confirm the change.
+2. Select the page (e.g. Shrine → Welcome).
+3. On the blue **Content language** bar, choose the language (finish the default language first).
+4. Edit title, intro, and layout blocks (heading, rich text, gallery, YouTube, cards, schedule, …).
+5. For another language: switch tab → **Copy from default** → translate in place.
+6. Click **Save page**.
+7. Open the public URL, switch the site language, and confirm.
 
 ### B. Publish a news article
 1. Open **News & clergy messages**.
-2. Create article: title, category (News / Events / Rector / Bishop / Press), body (rich text), featured image.
-3. Fill other language tabs as available.
-4. Save / publish.
-5. Verify on `/news` and the article URL.
+2. Click **Add post** or **Edit** (language tabs are on the form, not the list).
+3. Create article: title, category (News / Events / Rector / Bishop / Press), body (rich text), featured image.
+4. Fill other language tabs (Copy from default if helpful).
+5. Save / publish.
+6. Verify on `/news` in each language you filled.
 
 ### C. Update a menu
 1. Open **Settings & menus**.
@@ -240,12 +242,20 @@ Provide a **staging URL** and a **demo admin account** (Diocese-owned email pref
 2. Link it from the relevant **Pages** block or Support → Annual Reports content.
 3. Test download on the public site.
 
-### F. Manage translations
+### F. Manage languages (best way)
+**Long content and page layout** live on each item, not on the Translations grid.
+
+1. Open **Pages** (or Edit on News / Mass / a directory item).
+2. Finish the **default language** tab first.
+3. Switch to Français / Ikinyarwanda / Deutsch. A green dot means that language already has text.
+4. Click **Copy from default**, translate the copied text and blocks, then **Save**.
+5. Check the public language switcher.
+
+**Short buttons only** (Donate, Contact):
 1. Open **Translations**.
-2. Choose language tab (e.g. Français).
-3. Edit a key (e.g. a button label).
+2. Choose a language tab (source column stays visible).
+3. Edit the label.
 4. Click **Save translations** (sticky bar appears when there are unsaved changes).
-5. For long page/news text: open that item and use **language tabs** on the form—not only the Translations grid.
 
 ### G. Create users and assign permissions
 1. Open **Users** (authorised account).
@@ -269,20 +279,40 @@ On final acceptance we provide:
 1. Open `/admin/login`.
 2. Use the credentials issued to the Diocese (prefer Diocese email addresses).
 3. Change password under profile → My account after first login.
-4. Always click **Save** or **Save translations** after edits. Unsaved translation edits show an amber sticky bar.
+4. Always click **Save** on the content form you edited. Click **Save translations** only after changing short button labels. Unsaved translation edits show an amber sticky bar.
+
+## Best way to manage languages
+The site has four public languages. Staff do **not** create four copies of a page. Each item is one record with a blue **Content language** bar (Ikinyarwanda / Français / English / Deutsch).
+
+**Use the right screen**
+- Page titles, articles, Mass notes, and **body layout** → that item’s form (Pages, News, …), then **Save**.
+- Short chrome (Donate, Contact, Read more) → **Translations**, then **Save translations**.
+
+**Recommended workflow**
+1. Sign in. Dashboard cards **Manage languages** and **Flexible page layout** summarise this process.
+2. Finish the **default language** first (marked on the tab). Visitors see this when a translation is empty.
+3. Open the item (**Pages**, or **Edit** on a list). Language tabs appear on the form, not on the list.
+4. Choose a language. A **green dot** means it has text; an empty ring still falls back.
+5. Click **Copy from default**, translate in place, then **Save**.
+6. Switch the public header language to verify. Empty fields fall back to the default language, then English — that is expected until the tab is filled.
+
+**Page layout per language**
+On **Pages**, add blocks with the type buttons (heading, rich text, note, list, gallery, YouTube, cards, steps, schedule). Each language can have its own body. The formatting toolbar inside text blocks covers headings, lists, links, images, tables, and YouTube.
 
 ## Pages (informational CMS)
 1. Open **Pages**.
-2. Select the page key matching the sitemap (example: Shrine → Welcome).
-3. Choose the language tab (RW / FR / EN / DE).
-4. Edit title, introduction, and blocks; attach images from the media library.
-5. Save and verify the public URL.
+2. Select the page matching the sitemap (example: Shrine → Welcome).
+3. Choose the language tab (finish default first).
+4. Edit title, introduction, and layout blocks; attach images from the media library.
+5. For another language: **Copy from default**, then translate the copied blocks.
+6. Save page and verify the public URL in that language.
 
 ## News & clergy messages
 1. Open **News & clergy messages**.
-2. Create/edit title, category (News, Events, Rector, Bishop, Press), body (rich text), featured image, status.
-3. Fill other language tabs as translations are ready.
-4. Save; check `/news` and the article slug page.
+2. Click Add post or Edit — language tabs are on the form.
+3. Create/edit title, category (News, Events, Rector, Bishop, Press), body (rich text), featured image, status.
+4. Fill other language tabs (Copy from default if helpful).
+5. Save; check `/news` in each language you filled.
 
 ## Menus
 1. Open **Settings & menus**.
@@ -297,29 +327,31 @@ On final acceptance we provide:
 4. Select uploads inside page/news/directory forms, or link PDFs from Support → Annual Reports content.
 5. Prefer compressed web-sized images for mobile visitors.
 
-## Translations
-### UI dictionary
-1. Open **Translations**.
-2. Select language tab; search or edit keys.
-3. Click **Save translations**.
+## Translations (short UI labels only)
+This screen does **not** edit page articles or layout.
 
-### Long editorial content
-Use language tabs on the specific content form (Pages, News, Churches, etc.), then Save that record.
+1. Open **Translations**.
+2. Select a language tab; the default-language column stays visible as the source.
+3. Search or edit keys (Donate, Contact, form hints).
+4. Optionally set **Default language** for first-time visitors.
+5. Click **Save translations**.
+
+For long editorial content, use language tabs on Pages, News, Churches, etc., then Save that record.
 
 ## Mass schedules
 Add day, title, time, language, notes, and recurrence where needed. Verify `/shrine/mass-schedule`.
 
-## Pilgrim calendar
-Create events with dates/times, recurrence (weekly/monthly/annual), registration flag, multilingual text. Verify `/pilgrimage/calendar`.
+## Pilgrimage events
+Create pilgrimage events with dates/times, recurrence (weekly/monthly/annual), registration flag, multilingual text. Verify `/pilgrimage/calendar` and `/pilgrimages/:slug`.
 
 ## Churches & apparition sites
 Create/edit directory entries with media and language tabs. Slugs auto-generate from titles.
 
-## Accommodations, support projects, testimonials, pilgrimage services, shrine experiences, videos
-Same pattern: form → language tabs → media/YouTube → Save → check public list/detail.
+## Accommodations, development projects, testimonials, pilgrimage services, shrine experiences, videos
+Same pattern: Edit → language tabs (Copy from default if helpful) → media/YouTube → Save → check public list/detail.
 
 ## Home hero
-Update homepage slides, headline, support line, and CTAs. Keep the first viewport focused.
+Update homepage slides, headline, support line, and CTAs. Use language tabs for heading, caption, and button labels. Keep the first viewport focused.
 
 ## Pilgrim Enquiries
 Open threads from Dashboard or **Pilgrim Enquiries**, reply, attach documents, use WhatsApp link when helpful, update status.
@@ -328,16 +360,93 @@ Open threads from Dashboard or **Pilgrim Enquiries**, reply, attach documents, u
 Authorised managers open **Users**, create Admin/Editor accounts, share credentials securely, require password change. Phase 1: both roles use the CMS; finer ACL is a future upgrade.
 
 ## Settings & branding
-Maintain organisation name, contact details, WhatsApp, social links, map embed, logo/theme options.
+Maintain organisation name, contact details, WhatsApp, social links, map embed, logo/theme options. Full backup steps are in the next section.
+
+## Backups — DigitalOcean and the admin ZIP
+
+There are **two backup options**. They complement each other. DigitalOcean copies stay on DigitalOcean. The admin ZIP is a file the Diocese can keep and take to another host.
+
+### Option 1 — DigitalOcean server backup (web developer)
+
+The hosting droplet can be snapshotted in the DigitalOcean panel. That restores the whole server quickly if the droplet fails, *while the account and region still exist*.
+
+- This is configured and checked by the **web developer** (Ireme Tech), not by daily CMS staff.
+- Retention is limited (often a few weeks). It is not a file you can download and take to another company.
+- Ask the developer to confirm that droplet backups or weekly snapshots are switched on.
+
+### Option 2 — Admin backup ZIP (sanctuary staff)
+
+Administrators can download a full copy of *live content* without SSH. Open **Admin → Backup & restore** (bottom of the sidebar).
+
+1. Sign in as an administrator (editors cannot use this page).
+2. Click **Download full backup**. A ZIP is saved to your computer.
+3. Store that file **off the web server** — a Diocese computer, Google Drive / OneDrive, or an encrypted USB. Keep at least the last two copies.
+4. Do this **weekly**, and again after a large content update (new translations, many photos, a campaign).
+
+The ZIP includes pages, menus, translations, news, schedules, directories, enquiries, admin users, the media library, and site images (logo, hero, and other photos). It does **not** include server secrets (database password, mail keys). Those stay in the server `.env` file, which the developer sets on each host.
+
+### Restore from the admin ZIP
+
+1. Download a backup of the *current* site first, in case you need to undo.
+2. On **Backup & restore**, choose the ZIP, tick the confirmation box, then confirm twice.
+3. Restore replaces all current content with the file. After a move to a new server, sign in with an administrator account that existed in that backup.
+
+If the ZIP is too large for the browser, the developer can restore it on the server with `php artisan site:restore`.
+
+Ireme Tech can help with a scheduled backup, a restore test, or a move to new hosting.
+
+## New server, source code, and developer support
+
+Moving host or rebuilding after a total crash is a **developer task**, with sanctuary staff providing the latest admin ZIP. The GitHub repository holds the website code (design and application). Live news, translations, and uploaded photos live in the database and the backup ZIP — a git clone alone is not a content backup.
+
+### What the new server needs
+
+| Requirement | Minimum / note |
+|-------------|----------------|
+| Account ownership | Hosting and domain in the name of the Diocese / Shrine |
+| PHP | 8.1 or newer, with zip, GD (images), OpenSSL, Mbstring, JSON, Fileinfo |
+| Database | MySQL 5.7+ / 8.x or MariaDB |
+| Web server | Nginx or Apache with HTTPS (Let’s Encrypt or host SSL) |
+| Composer | Required on the server to install the Laravel (PHP) application |
+| Node.js & npm | Needed to *build* the React public site and admin. The live server does **not** need Node if the developer builds on a laptop and deploys the compiled files (the usual production method). Node is required on a machine that runs `npm run build` or `./deploy/build-local.sh`. |
+| Git / GitHub | SSH or Git to pull the source. The developer can grant repository access. |
+| Email | SMTP or an API (e.g. Resend) so enquiry notifications can send |
+| Disk | Room for the application plus the media library (photos and PDFs grow over time) |
+
+### Artisan commands the developer uses
+
+Laravel is driven from the `backend/` folder with `php artisan …`. Staff do not need these day to day; they matter on a new server or a restore.
+
+| Command | When it is used |
+|---------|-----------------|
+| `php artisan key:generate` | First setup of a new server (creates `APP_KEY` in `.env`) |
+| `php artisan migrate` | Create or update database tables. Do **not** run `migrate:fresh --seed` on a live restore — that wipes content. |
+| `php artisan storage:link` | Makes uploaded photos and PDFs visible at `/storage/…` |
+| `php artisan site:backup` | Writes a full ZIP on the server (same contents as Admin → Backup & restore) |
+| `php artisan site:restore /path/to/backup.zip` | Restores that ZIP when the file is too large to upload in the browser |
+| `./deploy/deploy.sh` | On the droplet: git pull, Composer, migrate, copy public images (no Node required) |
+
+Typical move: clone the GitHub repository → configure `.env` → Composer → migrate → restore the admin ZIP → `storage:link` → point the domain DNS at the new host. The domain registrar is independent of DigitalOcean.
+
+### GitHub source code and help from Ireme Tech
+
+- The developer can **share access to the source code on GitHub** with Diocese IT (organisation or invited accounts), so the Shrine is not locked to one laptop.
+- Ireme Tech remains **available to help with migrating, backups, restores, and DigitalOcean snapshots** — including turning on droplet backups, testing a restore, or moving to another host.
+- Day-to-day publishing (pages, news, photos, languages) stays in `/admin` and does not require GitHub.
+
+Contact: https://iremetech.com
 
 ## Non-technical evaluation checklist
-1. Create/edit a page
-2. Publish a news article
-3. Update a menu
-4. Replace an image
-5. Upload a document
-6. Manage translations (UI + content tab)
-7. Create a user (if authorised)
+1. Create/edit a page (including a layout block)
+2. Copy a page into another language with **Copy from default**, then Save
+3. Switch the public language switcher and confirm the translation
+4. Publish a news article with at least two language tabs
+5. Update a menu
+6. Replace an image
+7. Upload a document
+8. Change a short UI label in **Translations** and Save translations
+9. Create a user (if authorised)
+10. Download a backup from Admin → Backup & restore (store it off the server)
 
 ---
 

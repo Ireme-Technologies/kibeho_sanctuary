@@ -6,6 +6,7 @@ import ImageField from './components/ImageField'
 import MultiImageField from './components/MultiImageField'
 import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
 import styles from './admin.module.css'
 
@@ -57,7 +58,7 @@ export default function ProjectsAdminPage() {
 
   const load = async () => setItems(await fetchProjects())
   useEffect(() => {
-    load().catch((err) => setFlash({ type: 'error', message: err.message || 'Failed to load projects' }))
+    load().catch((err) => setFlash({ type: 'error', message: err.message || 'Failed to load accommodations' }))
   }, [])
 
   const openCreate = () => {
@@ -126,24 +127,24 @@ export default function ProjectsAdminPage() {
       await load()
       setFlash({
         type: 'success',
-        message: editingId ? 'Facility updated.' : 'Facility created.',
+        message: editingId ? 'Accommodation updated.' : 'Accommodation created.',
       })
     } catch (err) {
       setError(err.message || 'Save failed')
-      setFlash({ type: 'error', message: err.message || 'Failed to save project.' })
+      setFlash({ type: 'error', message: err.message || 'Failed to save accommodation.' })
     } finally {
       setSaving(false)
     }
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this project?')) return
+    if (!(await confirmDelete('Delete this accommodation?'))) return
     try {
       await deleteProject(id)
       await load()
-      setFlash({ type: 'success', message: 'Facility deleted.' })
+      setFlash({ type: 'success', message: 'Accommodation deleted.' })
     } catch (err) {
-      setFlash({ type: 'error', message: err.message || 'Failed to delete project.' })
+      setFlash({ type: 'error', message: err.message || 'Failed to delete accommodation.' })
     }
   }
 
@@ -182,7 +183,14 @@ export default function ProjectsAdminPage() {
 
       <Modal open={open} title={editingId ? 'Edit accommodation' : 'Add accommodation'} onClose={() => setOpen(false)} wide>
         <form className={styles.form} onSubmit={handleSubmit}>
-          <LocaleTabs value={localeTab} onChange={setLocaleTab} defaultLocale={defaultLocale} />
+          <LocaleTabs
+            value={localeTab}
+            onChange={setLocaleTab}
+            defaultLocale={defaultLocale}
+            form={form}
+            setForm={setForm}
+            fields={LOCALE_FIELDS}
+          />
           <div className={styles.field}>
             <label>Title</label>
             <input

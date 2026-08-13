@@ -10,6 +10,7 @@ import Modal from './components/Modal'
 import ImageField from './components/ImageField'
 import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
 import styles from './admin.module.css'
 
@@ -111,7 +112,7 @@ export default function TestimonialsAdminPage() {
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this testimonial?')) return
+    if (!(await confirmDelete('Delete this testimonial?'))) return
     try {
       await deleteTestimonial(id)
       await load()
@@ -205,7 +206,14 @@ export default function TestimonialsAdminPage() {
               />
             </div>
           </div>
-          <LocaleTabs value={localeTab} onChange={setLocaleTab} defaultLocale={defaultLocale} />
+          <LocaleTabs
+            value={localeTab}
+            onChange={setLocaleTab}
+            defaultLocale={defaultLocale}
+            form={form}
+            setForm={setForm}
+            fields={LOCALE_FIELDS}
+          />
           <div className={styles.fieldRow}>
             <div className={styles.field}>
               <label>Author role</label>

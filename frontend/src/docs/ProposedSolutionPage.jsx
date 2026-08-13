@@ -67,8 +67,8 @@ export default function ProposedSolutionPage() {
             <ul>
               <li>
                 The information architecture is fixed by the ToR (Our Lady, Shrine, Pilgrimage, Spirituality,
-                News, Support). The admin mirrors those pillars—mass schedules, pilgrim calendar, churches,
-                apparition sites, accommodations, support projects, translations, pilgrim enquiries—rather
+                News, Support). The admin mirrors those pillars—mass schedules, pilgrimage events, churches,
+                apparition sites, accommodations, development projects, translations, pilgrim enquiries—rather
                 than forcing them into generic “posts and pages.”
               </li>
               <li>
@@ -92,8 +92,8 @@ export default function ProposedSolutionPage() {
                 path is available—the same class of hosting WordPress uses.
               </li>
               <li>
-                Dual backup: provider server backups plus documented full database (and media) export so the
-                site can be moved even if automated backup fails.
+                Dual backup: DigitalOcean snapshots (configured by the web developer) plus an admin ZIP that
+                staff can download and keep off the server, so the site can be moved even if the host fails.
               </li>
               <li>
                 Non-technical staff still publish through a visual admin panel (forms, language tabs, Save)—no
@@ -176,8 +176,8 @@ export default function ProposedSolutionPage() {
                   <td>Public site</td>
                   <td>
                     Six-pillar IA; responsive pages; home composition; CMS informational pages; news with
-                    categories; gallery; videos; mass schedule; pilgrim calendar; churches &amp; apparition
-                    sites; accommodations; support projects; testimonials; contact &amp; pilgrim enquiries;
+                    categories; gallery; videos; mass schedule; pilgrimage events; churches &amp; apparition
+                    sites; accommodations; development projects; testimonials; contact &amp; pilgrim enquiries;
                     language switcher (RW/FR/EN/DE); legacy URL redirects
                   </td>
                 </tr>
@@ -246,23 +246,28 @@ export default function ProposedSolutionPage() {
               <tbody>
                 <tr>
                   <td>UI dictionary</td>
-                  <td>Buttons, short labels, recurring phrases</td>
+                  <td>Buttons, short labels (Donate, Contact)</td>
                   <td>
-                    Admin → <strong>Translations</strong> (language tabs + Save)
+                    Admin → <strong>Translations</strong> only — then Save translations
                   </td>
                 </tr>
                 <tr>
                   <td>Editorial content</td>
-                  <td>Page bodies, news, schedules, directories</td>
-                  <td>Language tabs on each content form</td>
+                  <td>Page titles, bodies, layout blocks, news, schedules</td>
+                  <td>
+                    Blue <strong>Content language</strong> bar on each form. Finish the default language,
+                    then Copy from default and translate. Language tabs appear after Edit, not on the list.
+                  </td>
                 </tr>
               </tbody>
             </table>
             <p>
-              Empty fields fall back to the default language, then English. Visitor language choice is
-              remembered in the browser. Adding a future language is configuration + translation entry—not a
-              full rebuild. Official prayers and episcopal texts must come from approved Diocese sources; the
-              CMS stores and displays them.
+              Empty fields fall back to the default language, then English — that is expected until the
+              language tab is filled and saved. Visitor language choice is remembered in the browser. Adding a
+              future language is configuration + translation entry—not a full rebuild. Official prayers and
+              episcopal texts must come from approved Diocese sources; the CMS stores and displays them.
+              Step-by-step staff instructions:{' '}
+              <a href="/docs/sitemap-and-admin-guide#languages">Best way to manage languages</a>.
             </p>
           </section>
 
@@ -341,19 +346,24 @@ export default function ProposedSolutionPage() {
               <li>Authenticated media uploads; password hashing; role model (admin / editor)</li>
               <li>Framework updates under maintenance agreement</li>
             </ul>
-            <h3>Backups (server + manual)</h3>
+            <h3>Backups (two options)</h3>
             <ol>
               <li>
-                <strong>Server-side:</strong> enable the hosting provider’s backup schedule; document restore
-                in the host panel.
+                <strong>DigitalOcean server backup (web developer):</strong> droplet snapshots in the hosting
+                panel. Ireme Tech configures and checks this. It restores the whole server quickly while the
+                DigitalOcean account still exists — it is not a file the Diocese can take to another company.
               </li>
               <li>
-                <strong>Manual export:</strong> full MySQL dump + media folder copy on a defined schedule
-                (e.g. weekly) and after major campaigns; store off the web server (Diocese drive).
+                <strong>Admin ZIP (sanctuary staff):</strong> Administrators download a full content + media
+                backup from <strong>Admin → Backup &amp; restore</strong> and store it off the server (Diocese
+                computer or Drive). The same page restores the ZIP on this or a new host. See the{' '}
+                <a href="/docs/sitemap-and-admin-guide#backup">administrator user guide — Backups</a>.
               </li>
               <li>
-                <strong>Recovery:</strong> if server backup fails, re-provision hosting under the Diocese
-                name, clone the repository, import the latest DB + media, reconnect SSL/DNS.
+                <strong>Recovery / migration:</strong> re-provision hosting, clone the GitHub repository
+                (access can be shared with Diocese IT), import the latest admin ZIP, reconnect SSL and DNS.
+                Node is used to build the frontend; the live server can run without Node if the developer
+                deploys compiled files. Ireme Tech is available to help with migrating or backups.
               </li>
             </ol>
           </section>
@@ -363,15 +373,18 @@ export default function ProposedSolutionPage() {
             <h3>Staff can do independently (after training)</h3>
             <p>
               Edit pages; publish news; change menus; upload/replace images and PDFs; manage translations;
-              update mass schedules and pilgrim calendar; maintain churches, sites, hotels, projects,
+              update mass schedules and pilgrimage events; maintain churches, sites, accommodations, development projects,
               testimonials, videos; update home hero and contact details; handle pilgrim enquiries; create
-              users (authorised managers); change passwords.
+              users (authorised managers); change passwords; download a content backup ZIP from{' '}
+              <strong>Backup &amp; restore</strong> and keep it off the server.
             </p>
             <h3>Needs a developer</h3>
             <p>
               New modules (shop, booking engine, payment gateway); major redesign; enabling a brand-new
               language code; hosting/DNS emergencies; security patches; bulk migration from another CMS;
-              application bug fixes; advanced SEO/CDN engineering.
+              application bug fixes; advanced SEO/CDN engineering; DigitalOcean droplet snapshots; moving the
+              site to a new server (GitHub, Node build, Artisan, restore). Ireme Tech can share GitHub access
+              and help with migrating or backups when asked.
             </p>
             <p>
               <strong>Rule of thumb:</strong> text, image, PDF, date, menu link, or translation of existing
@@ -386,7 +399,7 @@ export default function ProposedSolutionPage() {
               <li>IA alignment, public site + CMS, multilingual foundation, forms &amp; enquiries</li>
               <li>Deploy on client-owned hosting; staging recommended</li>
               <li>Live demo/training; administrator user guide; repository handover</li>
-              <li>Backup procedures (server + manual export documentation)</li>
+              <li>Backup procedures (DigitalOcean snapshots by the developer + admin ZIP for staff)</li>
               <li>Warranty window for bugs in delivered scope (duration as per quotation)</li>
             </ul>
             <h3>Acceptance criteria (website considered complete)</h3>

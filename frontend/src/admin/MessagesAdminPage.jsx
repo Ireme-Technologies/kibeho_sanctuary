@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { deleteContactMessage, fetchContactMessages } from '@api/cms'
+import { confirmDelete } from './components/confirmDelete'
 import styles from './admin.module.css'
 
 export default function MessagesAdminPage() {
@@ -13,7 +14,7 @@ export default function MessagesAdminPage() {
   }, [])
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this message?')) return
+    if (!(await confirmDelete('Delete this message?'))) return
     await deleteContactMessage(id)
     await load()
   }

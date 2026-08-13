@@ -33,8 +33,10 @@ Additional languages can be enabled later without changing the core architecture
 
 **What:** Page titles and bodies, news articles, mass schedule notes, church descriptions, pilgrimage texts, testimonials, etc.
 
-**Where managed:** On each content form via **language tabs** (same record).  
-Example: edit a news article → Français tab → paste French body → Save.
+**Where managed:** On each content form via the blue **Content language** bar (same record).  
+Example: edit a news article → Français tab → **Copy from default** → translate the body → Save.
+
+**Page layout:** On **Pages**, each language can have its own blocks (heading, rich text, gallery, YouTube, cards, schedule). Until a language has saved blocks, the public site shows the default-language layout.
 
 **Who:** Content editors with translator support as needed.
 
@@ -96,3 +98,17 @@ No full rebuild is required—only configuration, content entry, and testing.
 ## 4.8 Quality note for the Diocese
 
 Official prayers, messages of the Blessed Virgin, and episcopal texts should be entered from **approved sources**. The CMS stores and displays them; it does not authorise theological content.
+
+---
+
+## 4.9 Best way for staff to work (daily)
+
+1. Sign in at `/admin`. Dashboard cards point to languages and page layout.
+2. Finish the **default language** on the item first.
+3. Click **Edit** (or open **Pages**). Language tabs are on the form, not the list.
+4. Choose Ikinyarwanda / Français / English / Deutsch. A **green dot** means that language has text.
+5. Click **Copy from default**, translate in place, then **Save** that record.
+6. Use **Translations** only for short buttons (Donate, Contact). Click **Save translations** there.
+7. Check the public language switcher. Empty fields fall back to the default language, then English — that is expected until the tab is filled.
+
+Do not look only at the Translations grid for page articles. That screen will not show the rich-text editor or page blocks.

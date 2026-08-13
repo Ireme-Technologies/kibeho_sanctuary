@@ -40,7 +40,7 @@ export const primaryNav = [
       { label: 'Accommodation', path: '/pilgrimage/accommodation' },
       { label: 'Transportation', path: '/pilgrimage/transportation' },
       { label: 'Pilgrimage Office', path: '/pilgrimage/office' },
-      { label: 'Pilgrimage Calendar', path: '/pilgrimage/calendar' },
+      { label: 'Calendar', path: '/pilgrimage/calendar' },
       { label: 'Practical Information', path: '/pilgrimage/practical-information' },
     ],
   },
@@ -77,7 +77,7 @@ export const primaryNav = [
     children: [
       { label: 'Vision', path: '/support/vision' },
       { label: 'Master Plan', path: '/support/master-plan' },
-      { label: 'Current Projects', path: '/support/projects' },
+      { label: 'Projects', path: '/support/projects' },
       { label: 'Donations', path: '/support/donations' },
       { label: 'Annual Reports', path: '/support/annual-reports' },
       { label: 'Transparency', path: '/support/transparency' },

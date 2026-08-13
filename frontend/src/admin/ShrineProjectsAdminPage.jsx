@@ -11,6 +11,7 @@ import ImageField from './components/ImageField'
 import MultiImageField from './components/MultiImageField'
 import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
 import styles from './admin.module.css'
 
@@ -47,7 +48,7 @@ export default function ShrineProjectsAdminPage() {
 
   useEffect(() => {
     load().catch((err) =>
-      setFlash({ type: 'error', message: err.message || 'Failed to load shrine projects' })
+      setFlash({ type: 'error', message: err.message || 'Failed to load development projects' })
     )
   }, [])
 
@@ -102,31 +103,31 @@ export default function ShrineProjectsAdminPage() {
       await load()
       setFlash({
         type: 'success',
-        message: editingId ? 'Shrine project updated.' : 'Shrine project created.',
+        message: editingId ? 'Development project updated.' : 'Development project created.',
       })
     } catch (err) {
       setError(err.message || 'Save failed')
-      setFlash({ type: 'error', message: err.message || 'Failed to save shrine project.' })
+      setFlash({ type: 'error', message: err.message || 'Failed to save development project.' })
     } finally {
       setSaving(false)
     }
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this shrine project?')) return
+    if (!(await confirmDelete('Delete this development project?'))) return
     try {
       await deleteShrineProject(id)
       await load()
-      setFlash({ type: 'success', message: 'Shrine project deleted.' })
+      setFlash({ type: 'success', message: 'Development project deleted.' })
     } catch (err) {
-      setFlash({ type: 'error', message: err.message || 'Failed to delete shrine project.' })
+      setFlash({ type: 'error', message: err.message || 'Failed to delete development project.' })
     }
   }
 
   return (
     <div>
       <div className={styles.topbar}>
-        <h1>Shrine projects</h1>
+        <h1>Development projects</h1>
         <button type="button" className={styles.btn} onClick={openCreate}>
           Add project
         </button>
@@ -183,7 +184,7 @@ export default function ShrineProjectsAdminPage() {
             {!items.length && (
               <tr>
                 <td colSpan={5} className={styles.muted}>
-                  No shrine projects yet.
+                  No development projects yet.
                 </td>
               </tr>
             )}
@@ -193,12 +194,19 @@ export default function ShrineProjectsAdminPage() {
 
       <Modal
         open={open}
-        title={editingId ? 'Edit shrine project' : 'Add shrine project'}
+        title={editingId ? 'Edit development project' : 'Add development project'}
         onClose={() => setOpen(false)}
         wide
       >
         <form className={styles.form} onSubmit={handleSubmit}>
-          <LocaleTabs value={localeTab} onChange={setLocaleTab} defaultLocale={defaultLocale} />
+          <LocaleTabs
+            value={localeTab}
+            onChange={setLocaleTab}
+            defaultLocale={defaultLocale}
+            form={form}
+            setForm={setForm}
+            fields={LOCALE_FIELDS}
+          />
           <div className={styles.field}>
             <label>Title</label>
             <input

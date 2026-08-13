@@ -16,13 +16,29 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache || true
 
-cd "$FRONTEND_DIR"
-npm ci
-npm run build
+# Static files (images, docs) live in frontend/public and are already in git.
+# Copy them next to the locally built SPA — no Node required.
+if [[ -d "$FRONTEND_DIR/public" ]]; then
+  cp -R "$FRONTEND_DIR/public/." "$BACKEND_DIR/public/"
+fi
 
-# Ensure SPA index exists alongside Laravel index.php
+# Frontend JS/CSS is built on a local machine and committed as
+# backend/public/index.html + backend/public/assets/.
+# Only build on the server if you explicitly ask: BUILD_FRONTEND=1 ./deploy/deploy.sh
+if [[ "${BUILD_FRONTEND:-0}" == "1" ]]; then
+  cd "$FRONTEND_DIR"
+  npm ci
+  rm -rf "$BACKEND_DIR/public/assets" "$BACKEND_DIR/public/.vite"
+  npm run build
+else
+  echo "Skipping frontend build (using committed backend/public SPA)."
+  echo "To build on the server anyway: BUILD_FRONTEND=1 $0"
+fi
+
 if [[ ! -f "$BACKEND_DIR/public/index.html" ]]; then
-  echo "WARNING: frontend build did not produce backend/public/index.html"
+  echo "ERROR: backend/public/index.html is missing."
+  echo "Build locally with ./deploy/build-local.sh, commit, and pull."
+  exit 1
 fi
 
 echo "Deploy complete."

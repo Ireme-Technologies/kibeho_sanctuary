@@ -11,6 +11,7 @@ import {
 } from '@api/cms'
 import { useContent } from '@context/ContentContext'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import styles from './admin.module.css'
 
 const MAX_BYTES = 700 * 1024
@@ -222,7 +223,7 @@ export default function GalleryAdminPage() {
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this media file permanently?')) return
+    if (!(await confirmDelete('Delete this media file permanently?'))) return
     try {
       await deleteMedia(id)
       await loadUploads()

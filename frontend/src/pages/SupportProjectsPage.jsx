@@ -36,7 +36,7 @@ export default function SupportProjectsPage() {
         }}
       >
         <div className="container">
-          <h1>{hero.title || 'Current Projects'}</h1>
+          <h1>{hero.title || 'Development projects'}</h1>
           {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}
         </div>
       </header>
@@ -47,7 +47,7 @@ export default function SupportProjectsPage() {
         {error ? <p className={styles.empty}>{error}</p> : null}
 
         {!error && !items.length ? (
-          <p className={styles.empty}>Support projects will appear here once published.</p>
+          <p className={styles.empty}>Development projects will appear here once published.</p>
         ) : null}
 
         <div className={styles.grid}>

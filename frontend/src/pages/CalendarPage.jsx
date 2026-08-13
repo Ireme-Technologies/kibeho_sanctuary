@@ -37,7 +37,7 @@ export default function CalendarPage() {
         }}
       >
         <div className="container">
-          <h1>{hero.title || 'Pilgrimage Calendar'}</h1>
+          <h1>{hero.title || 'Pilgrimage events'}</h1>
           {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}
         </div>
       </header>
@@ -46,7 +46,7 @@ export default function CalendarPage() {
         {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
 
         {!sorted.length ? (
-          <p className={styles.empty}>Upcoming events will appear here once published.</p>
+          <p className={styles.empty}>Pilgrimage events will appear here once published.</p>
         ) : null}
 
         <div className={styles.schedule}>

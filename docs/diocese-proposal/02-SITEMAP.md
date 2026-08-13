@@ -58,7 +58,7 @@ Primary structure follows the Diocese Terms of Reference (six pillars). Paths ar
 | Hotel / lodging detail | `/hotels/:slug` | Facility detail |
 | Transportation | `/pilgrimage/transportation` | CMS page |
 | Pilgrimage Office | `/pilgrimage/office` | CMS page |
-| Pilgrimage Calendar | `/pilgrimage/calendar` | Upcoming pilgrimage events |
+| Calendar | `/pilgrimage/calendar` | Pilgrimage events |
 | Practical Information | `/pilgrimage/practical-information` | CMS page |
 | Pilgrimage programs (list) | `/pilgrimages` | Pilgrimage service entities |
 | Program detail | `/pilgrimages/:slug` | Entity detail |
@@ -97,7 +97,7 @@ Primary structure follows the Diocese Terms of Reference (six pillars). Paths ar
 | Support (hub) | `/support` | CMS page |
 | Vision | `/support/vision` | CMS page |
 | Master Plan | `/support/master-plan` | CMS page |
-| Current Projects | `/support/projects` | Shrine project entities |
+| Projects | `/support/projects` | Development project entities |
 | Project detail | `/support/projects/:slug` | Entity detail |
 | Donations | `/support/donations` | CMS page |
 | Annual Reports | `/support/annual-reports` | CMS page (+ downloadable PDFs via media) |
@@ -123,9 +123,9 @@ Primary structure follows the Diocese Terms of Reference (six pillars). Paths ar
 |------|----------|------------------|
 | CMS pages | Pillar hubs & subpages | Pages (sections / blocks) |
 | News articles | News, Events, Rector, Bishop, Press | News & clergy messages |
-| Events (calendar) | Upcoming pilgrimages | Pilgrim calendar |
+| Pilgrimage events | Pilgrimages, feast days, retreats | Pilgrimage events |
 | Schedules | Mass times | Mass schedules |
-| Directories | Churches, sites, hotels, projects | Dedicated modules |
+| Directories | Churches, sites, accommodations, development projects | Dedicated modules |
 | Media | Photos, PDFs | Gallery / Media |
 | Videos | YouTube | Videos |
 | Forms | Contact, pilgrim enquiry, mass request (as configured) | Enquiries + public forms |

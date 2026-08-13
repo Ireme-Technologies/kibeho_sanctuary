@@ -16,8 +16,8 @@ export default function PilgrimagesPage() {
         }}
       >
         <div className="container">
-          <h1>Upcoming Pilgrimages</h1>
-          <p className={styles.subtitle}>Join prayer gatherings and pilgrimages at Kibeho Sanctuary.</p>
+          <h1>Pilgrimage events</h1>
+          <p className={styles.subtitle}>Join prayer gatherings, feast days, and pilgrimages at the Shrine of Our Lady of Kibeho.</p>
         </div>
       </header>
 

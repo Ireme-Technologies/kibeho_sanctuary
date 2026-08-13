@@ -4,8 +4,9 @@ import { useLocale } from '@context/LocaleContext'
 import ImageField from './components/ImageField'
 import MediaField from './components/MediaField'
 import FlashMessage from './components/FlashMessage'
+import { confirmDelete } from './components/confirmDelete'
 import RichTextEditor from './components/RichTextEditor'
-import LocaleTabs from './components/LocaleTabs'
+import LocaleTabs, { isFilledValue } from './components/LocaleTabs'
 import { parseYoutubeId } from '@utils/youtube'
 import styles from './admin.module.css'
 
@@ -154,6 +155,35 @@ function buildHeroTranslations(translations, defaultLocale) {
   return result
 }
 
+function heroLocaleFilled(form, translations, locale, defaultLocale) {
+  if (locale === defaultLocale) {
+    return isFilledValue(form.heading) || isFilledValue(form.caption) || isFilledValue(form.primaryLabel)
+  }
+  const overlay = translations?.[locale]?.content || {}
+  return (
+    isFilledValue(overlay.heading) ||
+    isFilledValue(overlay.caption) ||
+    isFilledValue(overlay.ctas?.primary?.label)
+  )
+}
+
+function copyHeroLocaleFromDefault(form, translations, locale) {
+  return {
+    ...translations,
+    [locale]: {
+      content: {
+        heading: form.heading || '',
+        caption: form.caption || '',
+        foreground: { alt: form.foregroundAlt || '' },
+        ctas: {
+          primary: { label: form.primaryLabel || '' },
+          secondary: { label: form.secondaryLabel || '' },
+        },
+      },
+    },
+  }
+}
+
 export default function HomeHeroAdminPage() {
   const { defaultLocale } = useLocale()
   const [form, setForm] = useState(emptyForm)
@@ -190,7 +220,8 @@ export default function HomeHeroAdminPage() {
     }))
   }
 
-  const removeSlide = (index) => {
+  const removeSlide = async (index) => {
+    if (!(await confirmDelete('Remove this hero slide?', { confirmLabel: 'Remove' }))) return
     setForm((prev) => ({
       ...prev,
       slides: prev.slides.filter((_, i) => i !== index),
@@ -304,7 +335,20 @@ export default function HomeHeroAdminPage() {
             </div>
           </div>
 
-          <LocaleTabs value={localeTab} onChange={setLocaleTab} defaultLocale={defaultLocale} />
+          <LocaleTabs
+            value={localeTab}
+            onChange={setLocaleTab}
+            defaultLocale={defaultLocale}
+            completeness={{
+              rw: heroLocaleFilled(form, sectionTranslations, 'rw', defaultLocale),
+              fr: heroLocaleFilled(form, sectionTranslations, 'fr', defaultLocale),
+              en: heroLocaleFilled(form, sectionTranslations, 'en', defaultLocale),
+              de: heroLocaleFilled(form, sectionTranslations, 'de', defaultLocale),
+            }}
+            onCopyFromDefault={() =>
+              setSectionTranslations(copyHeroLocaleFromDefault(form, sectionTranslations, localeTab))
+            }
+          />
 
           <div className={styles.field}>
             <label>Heading</label>

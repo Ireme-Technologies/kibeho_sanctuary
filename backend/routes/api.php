@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BackupController;
 use App\Http\Controllers\Api\UpcomingPilgrimageController;
 use App\Http\Controllers\Api\ClientAuthController;
 use App\Http\Controllers\Api\ContactMessageController;
@@ -157,4 +158,8 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{user}', [UserController::class, 'update']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
+
+    Route::get('/backup/status', [BackupController::class, 'status']);
+    Route::get('/backup/export', [BackupController::class, 'export']);
+    Route::post('/backup/import', [BackupController::class, 'import']);
 });

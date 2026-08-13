@@ -1,6 +1,6 @@
 /**
  * Fallback upcoming pilgrimages when the API is unavailable.
- * Live content is managed in Admin → Upcoming Pilgrimages.
+ * Live content is managed in Admin → Pilgrimage events.
  */
 
 export const upcomingPilgrimages = [
