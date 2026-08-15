@@ -54,9 +54,20 @@ export const projects = [
     coverImage: '/images/sanctuary/hero.jpg',
     featuredImage: '/images/sanctuary/hero.jpg',
     shortDescription: 'Hotel stays with easy access to the shrine for pilgrims and visitors.',
-    description: 'A welcoming hotel near the sanctuary grounds.',
-    gallery: [],
-    services: [],
+    description:
+      'A welcoming hotel near the sanctuary grounds, suited for pilgrims seeking comfortable rooms close to daily Mass and shrine activities.',
+    gallery: ['/images/sanctuary/hero.jpg', '/images/sanctuary/welcome.jpg', '/images/sanctuary/hills.jpg'],
+    amenities: [
+      'parking',
+      'wifi',
+      'hot-water',
+      'hill-views',
+      'swimming-pool',
+      'bar',
+      'table-tennis',
+      'restaurant',
+    ],
+    services: ['daily-mass', 'shuttle', 'guided-tours', 'laundry'],
     specs: {},
   },
   {

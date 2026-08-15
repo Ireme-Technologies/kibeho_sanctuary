@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Testimonial;
 use App\Models\UpcomingPilgrimage;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class UpcomingPilgrimageSeeder extends Seeder
 {
@@ -17,6 +19,28 @@ class UpcomingPilgrimageSeeder extends Seeder
                 'short_description' => 'A major Marian gathering of prayer and thanksgiving at the shrine.',
                 'description' => '<p>Join pilgrims from across Rwanda and beyond for the Feast of the Assumption at the Shrine of Our Lady of Kibeho — a day of Mass, procession, confession, and thanksgiving.</p><p>Register your group or individual pilgrimage so the pilgrim office can welcome you and share the feast-day schedule.</p>',
                 'image' => '/images/sanctuary/hero.jpg',
+                'archives' => [
+                    [
+                        'type' => 'gallery',
+                        'year' => 2025,
+                        'caption' => 'Pilgrims gathered for the Assumption at Kibeho.',
+                        'images' => [
+                            '/images/sanctuary/hero.jpg',
+                            '/images/sanctuary/church-wide.jpg',
+                            '/images/sanctuary/welcome.jpg',
+                        ],
+                    ],
+                    [
+                        'type' => 'gallery',
+                        'year' => 2024,
+                        'caption' => 'Mass, procession, and thanksgiving on 15 August.',
+                        'images' => [
+                            '/images/sanctuary/mary.jpg',
+                            '/images/sanctuary/hills.jpg',
+                            '/images/sanctuary/crest.jpg',
+                        ],
+                    ],
+                ],
                 'location' => 'Kibeho Sanctuary',
                 'starts_on' => '2026-08-15',
                 'ends_on' => '2026-08-15',
@@ -77,6 +101,9 @@ class UpcomingPilgrimageSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
+            if (! Schema::hasColumn('upcoming_pilgrimages', 'archives')) {
+                unset($item['archives']);
+            }
             UpcomingPilgrimage::updateOrCreate(
                 ['slug' => $item['slug']],
                 array_merge($item, [
@@ -85,6 +112,12 @@ class UpcomingPilgrimageSeeder extends Seeder
                     'is_published' => true,
                 ])
             );
+        }
+
+        if (Schema::hasColumn('testimonials', 'related_event_slug')) {
+            Testimonial::query()
+                ->whereIn('slug', ['grace-from-kibeho', 'family-pilgrimage'])
+                ->update(['related_event_slug' => 'feast-of-the-assumption']);
         }
     }
 }

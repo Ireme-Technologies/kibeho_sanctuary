@@ -3,14 +3,17 @@
 use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BackupController;
+use App\Http\Controllers\Api\CmsAuditController;
 use App\Http\Controllers\Api\UpcomingPilgrimageController;
 use App\Http\Controllers\Api\ClientAuthController;
+use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\FacilityController;
 use App\Http\Controllers\Api\MassScheduleController;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\NewsPostController;
 use App\Http\Controllers\Api\PageSectionController;
+use App\Http\Controllers\Api\PastoralTeamController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\PilgrimEnquiryController;
 use App\Http\Controllers\Api\PilgrimageServiceController;
@@ -61,6 +64,10 @@ Route::get('/shrine-projects', [ShrineProjectController::class, 'index']);
 Route::get('/shrine-projects/{slug}', [ShrineProjectController::class, 'show']);
 Route::get('/sacred-places', [SacredPlaceController::class, 'index']);
 Route::get('/sacred-places/{slug}', [SacredPlaceController::class, 'show']);
+Route::get('/pastoral-team', [PastoralTeamController::class, 'index']);
+Route::get('/pastoral-team/{slug}', [PastoralTeamController::class, 'show']);
+Route::get('/communities', [CommunityController::class, 'index']);
+Route::get('/communities/{slug}', [CommunityController::class, 'show']);
 
 Route::get('/pages', [PageSectionController::class, 'index']);
 Route::get('/pages/{key}', [PageSectionController::class, 'show']);
@@ -105,6 +112,7 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
     Route::delete('/activities/{activity}', [ActivityController::class, 'destroy']);
 
     Route::post('/upcoming-pilgrimages', [UpcomingPilgrimageController::class, 'store']);
+    Route::put('/upcoming-pilgrimages/{upcomingPilgrimage}/archives', [UpcomingPilgrimageController::class, 'updateArchives']);
     Route::put('/upcoming-pilgrimages/{upcomingPilgrimage}', [UpcomingPilgrimageController::class, 'update']);
     Route::delete('/upcoming-pilgrimages/{upcomingPilgrimage}', [UpcomingPilgrimageController::class, 'destroy']);
 
@@ -123,6 +131,14 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
     Route::post('/sacred-places', [SacredPlaceController::class, 'store']);
     Route::put('/sacred-places/{sacredPlace}', [SacredPlaceController::class, 'update']);
     Route::delete('/sacred-places/{sacredPlace}', [SacredPlaceController::class, 'destroy']);
+
+    Route::post('/pastoral-team', [PastoralTeamController::class, 'store']);
+    Route::put('/pastoral-team/{pastoralTeamMember}', [PastoralTeamController::class, 'update']);
+    Route::delete('/pastoral-team/{pastoralTeamMember}', [PastoralTeamController::class, 'destroy']);
+
+    Route::post('/communities', [CommunityController::class, 'store']);
+    Route::put('/communities/{community}', [CommunityController::class, 'update']);
+    Route::delete('/communities/{community}', [CommunityController::class, 'destroy']);
 
     Route::post('/pages', [PageSectionController::class, 'store']);
     Route::put('/pages/{key}', [PageSectionController::class, 'update']);
@@ -144,6 +160,8 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
     Route::get('/media/site-assets', [MediaController::class, 'siteAssets']);
     Route::post('/media', [MediaController::class, 'store']);
     Route::post('/media/site-assets/replace', [MediaController::class, 'replaceSiteAsset']);
+    Route::post('/media/site-assets/delete', [MediaController::class, 'destroySiteAsset']);
+    Route::post('/media/site-assets/delete-all', [MediaController::class, 'destroyAllSiteAssets']);
     Route::post('/media/{media}/replace', [MediaController::class, 'replace']);
     Route::put('/media/reorder', [MediaController::class, 'reorder']);
     Route::put('/media/{media}', [MediaController::class, 'update']);
@@ -159,6 +177,7 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
     Route::put('/users/{user}', [UserController::class, 'update']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
 
+    Route::get('/cms-audit', [CmsAuditController::class, 'show']);
     Route::get('/backup/status', [BackupController::class, 'status']);
     Route::get('/backup/export', [BackupController::class, 'export']);
     Route::post('/backup/import', [BackupController::class, 'import']);

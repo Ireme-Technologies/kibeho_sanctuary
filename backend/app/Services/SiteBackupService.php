@@ -30,6 +30,8 @@ class SiteBackupService
         'testimonials',
         'shrine_projects',
         'sacred_places',
+        'pastoral_team_members',
+        'communities',
         'contact_messages',
         'pilgrim_enquiries',
         'pilgrim_enquiry_messages',

@@ -4,13 +4,8 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchShrineProjects } from '@api/cms'
 import RichText from '@components/ui/RichText'
+import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
-
-const stripHtml = (html) =>
-  String(html || '')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
 
 export default function SupportProjectsPage() {
   const { section, resolveHeaderImage } = useContent()
@@ -65,9 +60,7 @@ export default function SupportProjectsPage() {
               <div className={styles.cardBody}>
                 {item.status ? <p className={styles.meta}>{item.status}</p> : null}
                 <h2>{item.title}</h2>
-                {item.shortDescription ? (
-                  <p className={styles.excerpt}>{stripHtml(item.shortDescription)}</p>
-                ) : null}
+                {cardExcerpt(item) ? <p className={styles.excerpt}>{cardExcerpt(item)}</p> : null}
                 <span className={styles.cta}>View project →</span>
               </div>
             </Link>

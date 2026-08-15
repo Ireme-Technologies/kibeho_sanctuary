@@ -7,13 +7,14 @@ import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['title', 'short_description', 'description']
+const LOCALE_FIELDS = ['title', 'description']
 
 const empty = {
   title: '',
-  short_description: '',
   description: '',
   image: '',
   sort_order: 0,
@@ -47,11 +48,10 @@ export default function ActivitiesAdminPage() {
     setOpen(true)
   }
 
-  const openEdit = (item) => {
+  const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
       title: item.title || '',
-      short_description: item.shortDescription || '',
       description: item.description || '',
       image: item.image || '',
       sort_order: item.sortOrder || 0,
@@ -59,7 +59,7 @@ export default function ActivitiesAdminPage() {
       is_published: item.isPublished !== false,
       translations: item.translations || {},
     })
-    setLocaleTab(defaultLocale || 'en')
+    setLocaleTab(localeCode || defaultLocale || 'en')
     setError('')
     setOpen(true)
   }
@@ -131,36 +131,33 @@ export default function ActivitiesAdminPage() {
             <tr>
               <th>Image</th>
               <th>Title</th>
+              <LocaleColumnHeaders defaultLocale={defaultLocale} />
               <th>Order</th>
               <th>Menu</th>
               <th>Published</th>
-              <th />
             </tr>
           </thead>
           <tbody>
             {items.map((item) => (
               <tr key={item.id}>
                 <td>{item.image ? <img className={styles.thumb} src={item.image} alt="" /> : '—'}</td>
-                <td>{item.title}</td>
+                <td>
+                  <ListTitle
+                    title={item.title}
+                    onEdit={() => openEdit(item)}
+                    onDelete={() => handleDelete(item.id)}
+                    viewHref={item.path || '/activities'}
+                  />
+                </td>
+                <LocaleColumnCells
+                  item={item}
+                  fields={LOCALE_FIELDS}
+                  defaultLocale={defaultLocale}
+                  onEditLocale={(code) => openEdit(item, code)}
+                />
                 <td>{item.sortOrder}</td>
                 <td>{item.showInMenu ? 'Yes' : 'No'}</td>
                 <td>{item.isPublished ? 'Yes' : 'No'}</td>
-                <td className={styles.actions}>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => openEdit(item)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnDanger}`}
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
@@ -191,20 +188,12 @@ export default function ActivitiesAdminPage() {
             />
           </div>
           <div className={styles.field}>
-            <label>Short description</label>
-            <textarea
-              rows={3}
-              value={getLocaleField(form, 'short_description', localeTab, defaultLocale)}
-              onChange={(e) => setForm(setLocaleField(form, 'short_description', localeTab, e.target.value, defaultLocale))}
-              placeholder="Shown on homepage cards when hovered"
-            />
-          </div>
-          <div className={styles.field}>
-            <label>Full description</label>
+            <label>Description</label>
             <RichTextEditor
               value={getLocaleField(form, 'description', localeTab, defaultLocale)}
               onChange={(html) => setForm(setLocaleField(form, 'description', localeTab, html, defaultLocale))}
             />
+            <p className={styles.muted}>Listings show the first 160 characters of this description.</p>
           </div>
           <ImageField
             label="Card image"

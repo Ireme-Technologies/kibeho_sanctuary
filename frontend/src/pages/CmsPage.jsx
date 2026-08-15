@@ -1,10 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ExternalLink, Play, X } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
+import { displayTitleLabel, displayCapsLabel } from '@i18n/typography'
 import { sectionKeyForPath } from '@data/pages/registry'
 import { getPageFallback } from '@data/pages/content'
+import { navKeyForPath } from '@i18n/navKeys'
 import { parseYoutubeId, youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from '@utils/youtube'
+import ContentLocaleNotice, { hasLocaleTranslation } from '@components/ContentLocaleNotice'
 import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
@@ -192,15 +196,39 @@ function Block({ block }) {
 
 export default function CmsPage() {
   const { pathname } = useLocation()
-  const { section } = useContent()
+  const { section, pages, company } = useContent()
+  const { t, locale, defaultLocale } = useLocale()
   const key = sectionKeyForPath(pathname)
-  if (!key) return <NotFoundPage />
-
-  const fallback = getPageFallback(key) || {}
-  const data = { ...fallback, ...section(key, {}) }
+  const fallback = (key && getPageFallback(key)) || {}
+  const record = key ? pages?.[key] : null
+  const translated = hasLocaleTranslation(record?.translations, locale, defaultLocale)
+  const data = { ...fallback, ...(key ? section(key, {}) : {}) }
+  if (key && !translated) {
+    const navKey = navKeyForPath(pathname)
+    if (navKey) {
+      data.title = t(navKey)
+      data.heading = t(navKey)
+    }
+    if (Array.isArray(data.links)) {
+      data.links = data.links.map((link) => {
+        const linkKey = navKeyForPath(link.path)
+        return linkKey ? { ...link, label: t(linkKey) } : link
+      })
+    }
+  }
   const blocks = data.blocks?.length ? data.blocks : fallback.blocks || []
   const links = data.links?.length ? data.links : fallback.links || []
   const cta = data.cta || fallback.cta
+  const rawTitle = data.title || fallback.title
+  const pageTitle = displayTitleLabel(rawTitle, locale)
+
+  useEffect(() => {
+    if (!key) return
+    const brand = company?.name || t('brand.name')
+    document.title = rawTitle ? `${rawTitle} | ${brand}` : brand
+  }, [key, rawTitle, company?.name, t])
+
+  if (!key) return <NotFoundPage />
 
   return (
     <div className={styles.page}>
@@ -213,20 +241,23 @@ export default function CmsPage() {
         }
       >
         <div className="container">
-          {data.eyebrow ? <p className={styles.eyebrow}>{data.eyebrow}</p> : null}
-          <h1>{data.title || fallback.title}</h1>
+          {data.eyebrow ? (
+            <p className={styles.eyebrow}>{displayCapsLabel(data.eyebrow, locale)}</p>
+          ) : null}
+          <h1>{pageTitle}</h1>
           {data.subtitle ? <p className={styles.subtitle}>{data.subtitle}</p> : null}
         </div>
       </header>
 
       <div className={`container ${styles.body}`}>
+        <ContentLocaleNotice translations={record?.translations} />
         {data.intro ? <RichText html={data.intro} className={styles.intro} /> : null}
 
         {links.length > 0 ? (
           <nav className={styles.linkGrid} aria-label="Section pages">
             {links.map((link) => (
               <Link key={link.path} to={link.path} className={styles.linkCard}>
-                {link.label}
+                {displayTitleLabel(link.label, locale)}
               </Link>
             ))}
           </nav>

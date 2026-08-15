@@ -15,6 +15,7 @@ class NewsPost extends Model
         'body',
         'category',
         'tags',
+        'related_event_slug',
         'author_name',
         'author_avatar',
         'author_role',

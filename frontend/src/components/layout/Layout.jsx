@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import DemoEvalBanner from './DemoEvalBanner'
 import styles from './Layout.module.css'
 
 /**
@@ -12,14 +13,19 @@ import styles from './Layout.module.css'
  */
 export default function Layout({ hasHero = false }) {
   const { pathname } = useLocation()
+  const { company } = useContent()
+  const { t } = useLocale()
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname])
 
+  useEffect(() => {
+    document.title = company?.name || t('brand.name')
+  }, [company?.name, t, pathname])
+
   return (
     <div className={styles.page}>
-      <DemoEvalBanner />
       <Navbar hasHero={hasHero} />
       <main className={`${styles.main} ${!hasHero ? styles.withOffset : ''}`}>
         <Outlet />

@@ -1,14 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
-import { formatDateRange, formatRecurrence, formatTimeRange } from '@utils/eventTime'
+import { formatItemDates, formatRecurrence, formatTimeRange } from '@utils/eventTime'
+import { classifyEvent, occurrenceWindow, statusLabel } from '@utils/occasion'
 import RichText from '@components/ui/RichText'
+import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
-
-const stripHtml = (html) =>
-  String(html || '')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
 
 function formatEventType(eventType) {
   if (!eventType) return null
@@ -20,9 +16,9 @@ export default function CalendarPage() {
   const hero = section('pilgrimage.calendar', {})
 
   const sorted = [...(upcomingPilgrimages || [])].sort((a, b) => {
-    const aDate = a.startsOn || ''
-    const bDate = b.startsOn || ''
-    if (aDate && bDate) return aDate.localeCompare(bDate)
+    const aStart = occurrenceWindow(a)?.start
+    const bStart = occurrenceWindow(b)?.start
+    if (aStart && bStart) return aStart - bStart
     return (a.sortOrder || 0) - (b.sortOrder || 0)
   })
 
@@ -51,14 +47,20 @@ export default function CalendarPage() {
 
         <div className={styles.schedule}>
           {sorted.map((item) => {
-            const dateLabel = formatDateRange(item.startsOn, item.endsOn, Boolean(item.isRecurring || item.recurrenceType))
+            const dateLabel = formatItemDates(item)
             const timeLabel = formatTimeRange(item.startsAtTime, item.endsAtTime)
             const eventTypeLabel = formatEventType(item.eventType)
             const recurrence = formatRecurrence(item)
+            const state = classifyEvent(item)
+            const badge = statusLabel(state.status)
 
             return (
-              <article key={item.id || item.slug} className={styles.scheduleRow}>
+              <article
+                key={item.id || item.slug}
+                className={`${styles.scheduleRow} ${state.status === 'live' ? styles.scheduleLive : ''}`}
+              >
                 <div>
+                  {badge ? <p className={styles.badge}>{badge}</p> : null}
                   {dateLabel ? <p className={styles.day}>{dateLabel}</p> : null}
                   {!dateLabel && item.meta ? <p className={styles.day}>{item.meta}</p> : null}
                 </div>
@@ -69,8 +71,8 @@ export default function CalendarPage() {
                       {[eventTypeLabel, recurrence].filter(Boolean).join(' · ')}
                     </p>
                   ) : null}
-                  {item.shortDescription ? (
-                    <p className={styles.notes}>{stripHtml(item.shortDescription)}</p>
+                  {cardExcerpt(item) ? (
+                    <p className={styles.notes}>{cardExcerpt(item)}</p>
                   ) : null}
                   {item.location ? <p className={styles.notes}>{item.location}</p> : null}
                   <Link to={item.path || `/pilgrimages/${item.slug}`} className={styles.cta}>

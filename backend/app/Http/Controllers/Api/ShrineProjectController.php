@@ -100,9 +100,7 @@ class ShrineProjectController extends Controller
                 'status' => $item->status,
                 'phase' => $item->phase,
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $item->translations, ['title', 'short_description', 'description', 'status', 'phase'], $locale);
+        $resolved = Locale::resolve($base, $item->translations, ['title', 'short_description', 'description', 'status', 'phase'], $locale);
 
         return [
             'id' => $item->id,
@@ -110,7 +108,7 @@ class ShrineProjectController extends Controller
             'title' => $resolved['title'],
             'status' => $resolved['status'],
             'phase' => $resolved['phase'],
-            'shortDescription' => $resolved['short_description'],
+            'shortDescription' => Locale::cardExcerpt($resolved),
             'description' => $resolved['description'],
             'coverImage' => $item->cover_image,
             'gallery' => $item->gallery ?? [],

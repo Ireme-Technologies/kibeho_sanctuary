@@ -468,6 +468,42 @@
   }
 }
 
+.auditBox {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+  gap: 1.1rem;
+  margin: 1rem 0 1.5rem;
+  padding: 1.1rem 1.15rem;
+  border: 1px solid var(--docs-line);
+  border-radius: 12px;
+  background: var(--docs-surface);
+}
+
+.auditEyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--docs-muted);
+}
+
+.auditList {
+  margin: 0.4rem 0 0;
+  padding-left: 1.15rem;
+}
+
+.auditList span {
+  color: var(--docs-muted);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 800px) {
+  .auditBox {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media print {
   /* Padding on the document shell — works even if print dialog margins are “None” */
   .shell {

@@ -1,26 +1,23 @@
-import { useEffect } from 'react'
-import styles from '../admin.module.css'
+import { useEffect, useRef } from 'react'
+import { closeNotify, notifyFlash } from './notify'
 
-export default function FlashMessage({ type = 'success', message, onClear, duration = 4000 }) {
+export default function FlashMessage({ type = 'success', message, onClear, duration = 3200 }) {
+  const onClearRef = useRef(onClear)
+  onClearRef.current = onClear
+
   useEffect(() => {
-    if (!message || !onClear) return undefined
-    const timer = setTimeout(onClear, duration)
-    return () => clearTimeout(timer)
-  }, [message, onClear, duration])
+    if (!message) return undefined
 
-  if (!message) return null
+    let active = true
+    notifyFlash(type, message, { duration: type === 'error' ? undefined : duration }).then(() => {
+      if (active) onClearRef.current?.()
+    })
 
-  return (
-    <div
-      className={`${styles.flash} ${type === 'error' ? styles.flashError : styles.flashSuccess}`}
-      role="status"
-    >
-      <span>{message}</span>
-      {onClear && (
-        <button type="button" className={styles.flashClose} onClick={onClear} aria-label="Dismiss">
-          ×
-        </button>
-      )}
-    </div>
-  )
+    return () => {
+      active = false
+      closeNotify()
+    }
+  }, [type, message, duration])
+
+  return null
 }

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { ChevronDown, ExternalLink, LogOut, UserRound } from 'lucide-react'
+import { BookOpen, ChevronDown, ExternalLink, LogOut, UserRound } from 'lucide-react'
 import { useAuth } from '@context/AuthContext'
 import { useContent } from '@context/ContentContext'
-import ConfirmDeleteDialog from './components/ConfirmDeleteDialog'
 import styles from './admin.module.css'
 
 function getInitials(name = '', email = '') {
@@ -31,25 +30,29 @@ export default function AdminLayout() {
 
   const links = [
     { to: '/admin', label: 'Dashboard', end: true },
-    { to: '/admin/mass-schedules', label: 'Mass schedules' },
-    { to: '/admin/upcoming-pilgrimages', label: 'Pilgrimage events' },
-    { to: '/admin/churches', label: 'Churches' },
-    { to: '/admin/apparition-sites', label: 'Apparition sites' },
-    { to: '/admin/projects', label: 'Accommodations' },
-    { to: '/admin/shrine-projects', label: 'Development projects' },
-    { to: '/admin/testimonials', label: 'Testimonials' },
-    { to: '/admin/blog', label: 'News & clergy messages' },
-    { to: '/admin/services', label: 'Pilgrimage Services' },
-    { to: '/admin/activities', label: 'Shrine Experiences' },
-    { to: '/admin/videos', label: 'Videos (YouTube)' },
+    { to: '/admin/audit', label: 'CMS audit' },
+    { to: '/admin/menus', label: 'Site menus' },
+    { to: '/admin/sections', label: 'Site pages' },
     { to: '/admin/home-hero', label: 'Home hero' },
-    { to: '/admin/sections', label: 'Pages' },
     { to: '/admin/translations', label: 'Translations' },
-    { to: '/admin/gallery', label: 'Media library' },
-    { to: '/admin/enquiries', label: 'Pilgrim Enquiries' },
-    ...(user?.can_manage_users ? [{ to: '/admin/users', label: 'Users' }] : []),
-    { to: '/admin/settings', label: 'Settings & menus' },
+    { to: '/admin/blog', label: 'Articles / News' },
+    { to: '/admin/upcoming-pilgrimages', label: 'Pilgrimage events' },
+    { to: '/admin/services', label: 'Pilgrimage services' },
+    { to: '/admin/activities', label: 'Shrine experiences' },
+    { to: '/admin/shrine-projects', label: 'Development projects' },
+    { to: '/admin/apparition-sites', label: 'Apparition sites' },
+    { to: '/admin/churches', label: 'Churches' },
+    { to: '/admin/communities', label: 'Communities' },
+    { to: '/admin/mass-schedules', label: 'Mass schedules' },
+    { to: '/admin/projects', label: 'Accommodations' },
+    { to: '/admin/pastoral-team', label: 'Pastoral team' },
+    { to: '/admin/gallery', label: 'Media gallery' },
+    { to: '/admin/videos', label: 'Videos (YouTube)' },
+    { to: '/admin/enquiries', label: 'Enquiries' },
+    { to: '/admin/testimonials', label: 'Testimonials' },
+    { to: '/admin/settings', label: 'Settings' },
     { to: '/admin/backup', label: 'Backup & restore' },
+    ...(user?.can_manage_users ? [{ to: '/admin/users', label: 'Users' }] : []),
   ]
 
   useEffect(() => {
@@ -111,6 +114,16 @@ export default function AdminLayout() {
           </div>
 
           <div className={styles.appHeaderRight}>
+            <a
+              href="/docs/sitemap-and-admin-guide"
+              className={styles.viewSiteLink}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <BookOpen size={14} aria-hidden="true" />
+              User guide
+              <ExternalLink size={14} aria-hidden="true" />
+            </a>
             <Link to="/" className={styles.viewSiteLink} target="_blank" rel="noreferrer">
               View site
               <ExternalLink size={14} aria-hidden="true" />
@@ -181,7 +194,6 @@ export default function AdminLayout() {
           </p>
         </footer>
       </div>
-      <ConfirmDeleteDialog />
     </div>
   )
 }

@@ -14,6 +14,8 @@ export const primaryNav = [
       { label: 'The Messages', path: '/our-lady/messages' },
       { label: 'Church Recognition', path: '/our-lady/church-recognition' },
       { label: 'History', path: '/our-lady/history' },
+      { label: 'Pastoral Team', path: '/our-lady/pastoral-team' },
+      { label: 'Communities', path: '/our-lady/communities' },
       { label: 'FAQ', path: '/our-lady/faq' },
     ],
   },
@@ -119,5 +121,34 @@ export const languages = [
   { code: 'en', label: 'English', flag: '🇬🇧' },
   { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
 ]
+
+function navPath(item) {
+  return String(item?.path || '').replace(/\/+$/, '') || '/'
+}
+
+export function ensureOurLadyNavChildren(items) {
+  if (!Array.isArray(items)) return items
+  const extras = [
+    { label: 'Pastoral Team', path: '/our-lady/pastoral-team' },
+    { label: 'Communities', path: '/our-lady/communities' },
+  ]
+  return items.map((item) => {
+    const path = navPath(item)
+    const label = String(item.label || '').toLowerCase()
+    const isOurLady = path === '/' || path === '/our-lady' || label.includes('our lady')
+    if (!isOurLady) return item
+    const children = Array.isArray(item.children) ? [...item.children] : []
+    const missing = extras.filter((extra) => !children.some((child) => navPath(child) === extra.path))
+    if (!missing.length) return { ...item, children }
+    const faqIndex = children.findIndex((child) => {
+      const childPath = navPath(child)
+      return childPath === '/our-lady/faq' || childPath === '/faq' || String(child.label || '').toLowerCase() === 'faq'
+    })
+    const inserts = missing.map((extra) => ({ ...extra }))
+    if (faqIndex >= 0) children.splice(faqIndex, 0, ...inserts)
+    else children.push(...inserts)
+    return { ...item, children }
+  })
+}
 
 export const navCTA = { label: 'Donate', path: '/support/donations' }

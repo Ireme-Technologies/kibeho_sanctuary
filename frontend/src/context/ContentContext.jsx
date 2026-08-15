@@ -20,7 +20,10 @@ import {
   footerLinks as fallbackFooterLinks,
   footerServiceLinks as fallbackFooterServiceLinks,
   navCTA as fallbackNavCTA,
+  utilityNav as fallbackUtilityNav,
+  ensureOurLadyNavChildren,
 } from '@data/navigation'
+import { resolveNavLabel } from '@i18n/navKeys'
 import { contactHero, contactInfo, contactMap, contactFormLabels } from '@data/contact'
 import { applyThemeToDocument, DEFAULT_THEME, normalizeTheme } from '@utils/theme'
 import {
@@ -66,33 +69,22 @@ function isStalePrimaryNav(apiPrimary) {
   return false
 }
 
-const NAV_LABEL_KEYS = {
-  'our lady': 'nav.ourLady',
-  shrine: 'nav.shrine',
-  'the shrine': 'nav.shrine',
-  pilgrimage: 'nav.pilgrimage',
-  spirituality: 'nav.spirituality',
-  news: 'nav.news',
-  support: 'nav.support',
-}
-
-function translateNav(items, t) {
+function translateNav(items, t, locale, defaultLocale) {
   if (!Array.isArray(items)) return items
   return items.map((item) => {
-    const key = NAV_LABEL_KEYS[String(item.label || '').toLowerCase()]
     const next = {
       ...item,
-      label: key ? t(key) : item.label,
+      label: resolveNavLabel(item, t, locale, defaultLocale),
     }
     if (Array.isArray(item.children)) {
-      next.children = translateNav(item.children, t)
+      next.children = translateNav(item.children, t, locale, defaultLocale)
     }
     return next
   })
 }
 
 export function ContentProvider({ children }) {
-  const { locale, t, ready: localeReady } = useLocale()
+  const { locale, defaultLocale, t, ready: localeReady } = useLocale()
   const [settings, setSettings] = useState({})
   const [services, setServices] = useState([])
   const [projects, setProjects] = useState([])
@@ -166,18 +158,22 @@ export function ContentProvider({ children }) {
       ...fallbackCompany,
       ...rawCompany,
       name:
-        !rawCompany.name ||
-        rawCompany.name === 'Kibeho Sanctuary' ||
-        /^Kibeho Sanctuary$/i.test(rawCompany.name) ||
-        isStaleBrandAsset(rawCompany.name)
-          ? fallbackCompany.name
-          : rawCompany.name,
+        locale !== defaultLocale && t('brand.name')
+          ? t('brand.name')
+          : !rawCompany.name ||
+              rawCompany.name === 'Kibeho Sanctuary' ||
+              /^Kibeho Sanctuary$/i.test(rawCompany.name) ||
+              isStaleBrandAsset(rawCompany.name)
+            ? fallbackCompany.name
+            : rawCompany.name,
       tagline:
-        !rawCompany.tagline ||
-        rawCompany.tagline === 'Shrine of Our Lady of Kibeho' ||
-        isStaleBrandAsset(rawCompany.tagline)
-          ? fallbackCompany.tagline
-          : rawCompany.tagline,
+        locale !== defaultLocale && t('placeOfFaith')
+          ? t('placeOfFaith')
+          : !rawCompany.tagline ||
+              rawCompany.tagline === 'Shrine of Our Lady of Kibeho' ||
+              isStaleBrandAsset(rawCompany.tagline)
+            ? fallbackCompany.tagline
+            : rawCompany.tagline,
       shortName: rawCompany.shortName || fallbackCompany.shortName,
       logo: resolveLogo(rawCompany),
       favicon: resolveFavicon(rawCompany),
@@ -209,6 +205,10 @@ export function ContentProvider({ children }) {
       : navigation.footerServiceLinks || fallbackFooterServiceLinks
 
     const navCTARaw = navigation.navCTA || fallbackNavCTA
+    const utilityNavRaw =
+      Array.isArray(navigation.utilityNav) && navigation.utilityNav.length && !apiNavIsStale
+        ? navigation.utilityNav
+        : fallbackUtilityNav
 
     return {
       loading,
@@ -216,9 +216,10 @@ export function ContentProvider({ children }) {
       fromApi,
       refresh: () => load(locale),
       company,
-      primaryNav: translateNav(primaryNavRaw, t),
-      footerLinks: translateNav(footerLinksRaw, t),
-      footerServiceLinks: translateNav(footerServiceLinksRaw, t),
+      primaryNav: translateNav(ensureOurLadyNavChildren(primaryNavRaw), t, locale, defaultLocale),
+      utilityNav: translateNav(utilityNavRaw, t, locale, defaultLocale),
+      footerLinks: translateNav(footerLinksRaw, t, locale, defaultLocale),
+      footerServiceLinks: translateNav(footerServiceLinksRaw, t, locale, defaultLocale),
       navCTA: {
         ...navCTARaw,
         label: t('donate') || navCTARaw.label,
@@ -275,6 +276,7 @@ export function ContentProvider({ children }) {
     theme,
     t,
     locale,
+    defaultLocale,
     load,
   ])
 

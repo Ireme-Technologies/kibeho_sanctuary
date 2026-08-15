@@ -13,6 +13,8 @@ import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
 import { parseYoutubeId, youtubeThumbUrl } from '@utils/youtube'
 import styles from './admin.module.css'
 
@@ -53,7 +55,7 @@ export default function VideosAdminPage() {
     setOpen(true)
   }
 
-  const openEdit = (item) => {
+  const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
       title: item.title || '',
@@ -65,7 +67,7 @@ export default function VideosAdminPage() {
       published_at: item.publishedAt || '',
       translations: item.translations || {},
     })
-    setLocaleTab(defaultLocale || 'en')
+    setLocaleTab(localeCode || defaultLocale || 'en')
     setError('')
     setOpen(true)
   }
@@ -160,9 +162,9 @@ export default function VideosAdminPage() {
             <tr>
               <th>Preview</th>
               <th>Title</th>
+              <LocaleColumnHeaders defaultLocale={defaultLocale} />
               <th>Published</th>
               <th>Order</th>
-              <th />
             </tr>
           </thead>
           <tbody>
@@ -176,9 +178,20 @@ export default function VideosAdminPage() {
                   )}
                 </td>
                 <td>
-                  <strong>{item.title}</strong>
-                  <div className={styles.muted}>{item.youtubeId}</div>
+                  <ListTitle
+                    title={item.title}
+                    subtitle={item.youtubeId}
+                    onEdit={() => openEdit(item)}
+                    onDelete={() => handleDelete(item.id)}
+                    viewHref="/news/videos"
+                  />
                 </td>
+                <LocaleColumnCells
+                  item={item}
+                  fields={LOCALE_FIELDS}
+                  defaultLocale={defaultLocale}
+                  onEditLocale={(code) => openEdit(item, code)}
+                />
                 <td>{item.isPublished ? 'Yes' : 'No'}</td>
                 <td>
                   <div className={styles.actions}>
@@ -190,21 +203,11 @@ export default function VideosAdminPage() {
                     </button>
                   </div>
                 </td>
-                <td>
-                  <div className={styles.actions}>
-                    <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => openEdit(item)}>
-                      Edit
-                    </button>
-                    <button type="button" className={`${styles.btn} ${styles.btnDanger}`} onClick={() => handleDelete(item.id)}>
-                      Delete
-                    </button>
-                  </div>
-                </td>
               </tr>
             ))}
             {!items.length && (
               <tr>
-                <td colSpan={5} className={styles.muted}>
+                <td colSpan={8} className={styles.muted}>
                   No videos yet. Add a YouTube URL to get started.
                 </td>
               </tr>

@@ -14,7 +14,7 @@ class FacilityController extends Controller
     public function index(Request $request)
     {
         $locale = Locale::fromRequest($request);
-        $query = Facility::query()->orderBy('sort_order')->orderByDesc('id');
+        $query = Facility::query();
 
         if (! Auth::guard('web')->user()) {
             $query->where('is_published', true);
@@ -30,6 +30,10 @@ class FacilityController extends Controller
 
         if ($request->boolean('lodging')) {
             $query->whereIn('category', ['Hotel', 'Guest House', 'Apartment', 'Hospitality']);
+            // Oldest first unless staff set a custom sort order.
+            $query->orderBy('sort_order')->orderBy('id');
+        } else {
+            $query->orderBy('sort_order')->orderByDesc('id');
         }
 
         return response()->json(
@@ -55,7 +59,15 @@ class FacilityController extends Controller
     {
         $locale = Locale::fromRequest($request);
         $data = $this->validated($request);
-        $data['slug'] = !empty($data['slug']) ? $data['slug'] : Str::slug($data['title']);
+        $data['slug'] = ! empty($data['slug']) ? $data['slug'] : Str::slug($data['title']);
+        if (! isset($data['sort_order'])) {
+            $lodging = ['Hotel', 'Guest House', 'Apartment', 'Hospitality'];
+            $query = Facility::query();
+            if (in_array($data['category'] ?? '', $lodging, true)) {
+                $query->whereIn('category', $lodging);
+            }
+            $data['sort_order'] = (int) $query->max('sort_order') + 1;
+        }
         $facility = Facility::create($data);
 
         return response()->json($this->transform($facility, $locale), 201);
@@ -102,11 +114,17 @@ class FacilityController extends Controller
             'featured_image' => ['nullable', 'string', 'max:500'],
             'gallery' => ['nullable', 'array'],
             'gallery.*' => ['string'],
+            'amenities' => ['nullable', 'array'],
+            'amenities.*' => ['string', 'max:80'],
             'related_programs' => ['nullable', 'array'],
             'related_programs.*' => ['string'],
             'services' => ['nullable', 'array'],
             'services.*' => ['string'],
             'specs' => ['nullable', 'array'],
+            'website_url' => ['nullable', 'string', 'max:500'],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'whatsapp' => ['nullable', 'string', 'max:50'],
+            'email' => ['nullable', 'email', 'max:255'],
             'sort_order' => ['nullable', 'integer'],
             'is_published' => ['boolean'],
             'translations' => ['nullable', 'array'],
@@ -137,9 +155,7 @@ class FacilityController extends Controller
                 'managed_by' => $facility->managed_by,
                 'status' => $facility->status,
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $facility->translations, ['title', 'short_description', 'description', 'category', 'location', 'managed_by', 'status'], $locale);
+        $resolved = Locale::resolve($base, $facility->translations, ['title', 'short_description', 'description', 'category', 'location', 'managed_by', 'status'], $locale);
 
         return [
             'id' => $facility->id,
@@ -156,14 +172,19 @@ class FacilityController extends Controller
             'rating' => $facility->rating,
             'bookingUrl' => $facility->booking_url,
             'featured' => $facility->featured,
-            'shortDescription' => $resolved['short_description'],
+            'shortDescription' => Locale::cardExcerpt($resolved),
             'description' => $resolved['description'],
             'coverImage' => $facility->cover_image,
             'featuredImage' => $facility->featured_image,
             'gallery' => $facility->gallery ?? [],
+            'amenities' => $facility->amenities ?? [],
             'relatedPrograms' => $facility->related_programs ?? [],
             'services' => $facility->related_programs ?? [],
             'specs' => $facility->specs ?? [],
+            'websiteUrl' => $facility->website_url,
+            'phone' => $facility->phone,
+            'whatsapp' => $facility->whatsapp,
+            'email' => $facility->email,
             'sortOrder' => $facility->sort_order,
             'isPublished' => $facility->is_published,
             'path' => '/hotels/'.$facility->slug,

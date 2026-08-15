@@ -4,13 +4,17 @@ import { useLocale } from '@context/LocaleContext'
 import Modal from './components/Modal'
 import ImageField from './components/ImageField'
 import MultiImageField from './components/MultiImageField'
+import OptionChecklist from './components/OptionChecklist'
 import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
+import { LODGING_AMENITIES, LODGING_SERVICES } from '@data/lodgingCatalog'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['title', 'short_description', 'description', 'category', 'location', 'status']
+const LOCALE_FIELDS = ['title', 'description', 'category', 'location', 'status']
 
 const CATEGORY_OPTIONS = [
   'Hotel',
@@ -35,12 +39,17 @@ const empty = {
   rating: '',
   booking_url: '',
   featured: false,
-  short_description: '',
   description: '',
   cover_image: '',
   featured_image: '',
   gallery: [],
-  services: '',
+  amenities: [],
+  services: [],
+  website_url: '',
+  phone: '',
+  whatsapp: '',
+  email: '',
+  sort_order: '',
   is_published: true,
   translations: {},
 }
@@ -68,7 +77,7 @@ export default function ProjectsAdminPage() {
     setError('')
     setOpen(true)
   }
-  const openEdit = (item) => {
+  const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
       title: item.title || '',
@@ -81,28 +90,39 @@ export default function ProjectsAdminPage() {
       rating: item.rating ?? '',
       booking_url: item.bookingUrl || '',
       featured: Boolean(item.featured),
-      short_description: item.shortDescription || '',
       description: item.description || '',
       cover_image: item.coverImage || '',
       featured_image: item.featuredImage || '',
       gallery: Array.isArray(item.gallery) ? item.gallery : [],
-      services: (item.services || []).join('\n'),
+      amenities: Array.isArray(item.amenities) ? item.amenities : [],
+      services: Array.isArray(item.services) ? item.services : [],
+      website_url: item.websiteUrl || '',
+      phone: item.phone || '',
+      whatsapp: item.whatsapp || '',
+      email: item.email || '',
+      sort_order: item.sortOrder ?? '',
       is_published: item.isPublished !== false,
       translations: item.translations || {},
     })
-    setLocaleTab(defaultLocale || 'en')
+    setLocaleTab(localeCode || defaultLocale || 'en')
     setError('')
     setOpen(true)
   }
 
   const payload = () => {
-    const { translations: _t, ...rest } = form
+    const { translations: _t, sort_order, ...rest } = form
     return {
       ...rest,
+      ...(sort_order === '' || sort_order == null ? {} : { sort_order: Number(sort_order) }),
       rating: form.rating === '' || form.rating == null ? null : Number(form.rating),
       booking_url: form.booking_url || null,
       gallery: Array.isArray(form.gallery) ? form.gallery : [],
-      services: form.services.split('\n').map((v) => v.trim()).filter(Boolean),
+      amenities: Array.isArray(form.amenities) ? form.amenities : [],
+      services: Array.isArray(form.services) ? form.services : [],
+      website_url: form.website_url || null,
+      phone: form.phone || null,
+      whatsapp: form.whatsapp || null,
+      email: form.email || null,
       specs: {
         Location: form.location,
         Year: form.year,
@@ -162,19 +182,34 @@ export default function ProjectsAdminPage() {
       <div className={styles.card}>
         <table className={styles.table}>
           <thead>
-            <tr><th>Image</th><th>Title</th><th>Category</th><th>Featured</th><th /></tr>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <LocaleColumnHeaders defaultLocale={defaultLocale} />
+              <th>Category</th>
+              <th>Featured</th>
+            </tr>
           </thead>
           <tbody>
             {items.map((item) => (
               <tr key={item.id}>
                 <td>{item.coverImage ? <img className={styles.thumb} src={item.coverImage} alt="" /> : '—'}</td>
-                <td>{item.title}</td>
+                <td>
+                  <ListTitle
+                    title={item.title}
+                    onEdit={() => openEdit(item)}
+                    onDelete={() => handleDelete(item.id)}
+                    viewHref={item.path}
+                  />
+                </td>
+                <LocaleColumnCells
+                  item={item}
+                  fields={LOCALE_FIELDS}
+                  defaultLocale={defaultLocale}
+                  onEditLocale={(code) => openEdit(item, code)}
+                />
                 <td>{item.category}</td>
                 <td>{item.featured ? 'Yes' : 'No'}</td>
-                <td className={styles.actions}>
-                  <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => openEdit(item)}>Edit</button>
-                  <button type="button" className={`${styles.btn} ${styles.btnDanger}`} onClick={() => handleDelete(item.id)}>Delete</button>
-                </td>
               </tr>
             ))}
           </tbody>
@@ -258,13 +293,41 @@ export default function ProjectsAdminPage() {
                 placeholder="/contact or https://..."
               />
             </div>
+            <div className={styles.field}>
+              <label>Official website</label>
+              <input
+                value={form.website_url}
+                onChange={(e) => setForm({ ...form, website_url: e.target.value })}
+                placeholder="https://..."
+              />
+            </div>
           </div>
-          <div className={styles.field}>
-            <label>Short description</label>
-            <RichTextEditor
-              value={getLocaleField(form, 'short_description', localeTab, defaultLocale)}
-              onChange={(html) => setForm(setLocaleField(form, 'short_description', localeTab, html, defaultLocale))}
-            />
+          <div className={styles.fieldRow}>
+            <div className={styles.field}>
+              <label>Phone</label>
+              <input
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                placeholder="+250 7xx xxx xxx"
+              />
+            </div>
+            <div className={styles.field}>
+              <label>WhatsApp</label>
+              <input
+                value={form.whatsapp}
+                onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
+                placeholder="+250 7xx xxx xxx"
+              />
+            </div>
+            <div className={styles.field}>
+              <label>Email</label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder="stay@example.com"
+              />
+            </div>
           </div>
           <div className={styles.field}>
             <label>Description</label>
@@ -272,6 +335,7 @@ export default function ProjectsAdminPage() {
               value={getLocaleField(form, 'description', localeTab, defaultLocale)}
               onChange={(html) => setForm(setLocaleField(form, 'description', localeTab, html, defaultLocale))}
             />
+            <p className={styles.muted}>Listings show the first 160 characters of this description.</p>
           </div>
           <ImageField label="Cover image" value={form.cover_image} onChange={(url) => setForm({ ...form, cover_image: url })} folder="projects" />
           <ImageField label="Featured image" value={form.featured_image} onChange={(url) => setForm({ ...form, featured_image: url })} folder="projects" />
@@ -281,9 +345,36 @@ export default function ProjectsAdminPage() {
             onChange={(gallery) => setForm({ ...form, gallery })}
             folder="projects"
           />
+          <OptionChecklist
+            label="Amenities"
+            hint="Tick what this stay offers. These appear beside the photo gallery."
+            options={LODGING_AMENITIES}
+            value={form.amenities}
+            onChange={(amenities) => setForm({ ...form, amenities })}
+            allowCustom
+            customPlaceholder="e.g. Campfire"
+          />
+          <OptionChecklist
+            label="Services offered"
+            hint="Shown in the services section under the booking buttons."
+            options={LODGING_SERVICES}
+            value={form.services}
+            onChange={(services) => setForm({ ...form, services })}
+            allowCustom
+            customPlaceholder="e.g. Packed lunch"
+          />
           <div className={styles.field}>
-            <label>Services delivered (one per line)</label>
-            <textarea rows={3} value={form.services} onChange={(e) => setForm({ ...form, services: e.target.value })} />
+            <label>Sort order</label>
+            <input
+              type="number"
+              min="0"
+              value={form.sort_order}
+              onChange={(e) => setForm({ ...form, sort_order: e.target.value })}
+              placeholder="Leave blank to keep at the end"
+            />
+            <p className={styles.muted}>
+              Lower numbers appear first. Leave blank on new listings so older stays stay on top.
+            </p>
           </div>
           <label><input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} /> Featured</label>
           <label><input type="checkbox" checked={form.is_published} onChange={(e) => setForm({ ...form, is_published: e.target.checked })} /> Published</label>

@@ -27,9 +27,6 @@ export default function ActivityDetailPage() {
         <div className="container">
           <p className={styles.eyebrow}>Activities</p>
           <h1>{activity.title}</h1>
-          {activity.shortDescription ? (
-            <p className={styles.subtitle}>{activity.shortDescription}</p>
-          ) : null}
         </div>
       </header>
 

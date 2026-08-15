@@ -1,4 +1,6 @@
 import { LOCALES } from '@i18n/locales'
+import { useLocale } from '@context/LocaleContext'
+import { confirmAction } from './notify'
 import styles from '../admin.module.css'
 
 function cloneValue(value) {
@@ -52,14 +54,15 @@ export default function LocaleTabs({
   value,
   onChange,
   defaultLocale = 'en',
-  locales = LOCALES,
+  locales,
   form,
   setForm,
   fields,
   completeness,
   onCopyFromDefault,
 }) {
-  const list = locales.length ? locales : LOCALES
+  const { workspaceLocales } = useLocale()
+  const list = locales?.length ? locales : workspaceLocales?.length ? workspaceLocales : LOCALES
   const current = list.find((item) => item.code === value) || list[0]
   const defaultMeta = list.find((item) => item.code === defaultLocale)
   const defaultLabel = defaultMeta?.nativeLabel || defaultMeta?.label || defaultLocale
@@ -71,14 +74,16 @@ export default function LocaleTabs({
     return null
   }
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (isDefault) return
     const alreadyFilled = filledFor(value)
     if (
       alreadyFilled &&
-      !window.confirm(
-        `Replace the ${current?.nativeLabel || value} fields with ${defaultLabel} text? You can then translate in place.`,
-      )
+      !(await confirmAction({
+        title: 'Replace this translation?',
+        text: `Replace the ${current?.nativeLabel || value} fields with ${defaultLabel} text? You can then translate in place.`,
+        confirmLabel: 'Replace',
+      }))
     ) {
       return
     }
@@ -101,7 +106,9 @@ export default function LocaleTabs({
           <p className={styles.localeBarHint}>
             {isDefault
               ? `You are editing the default language (${current?.nativeLabel || value}). This is what visitors see when a translation is still empty.`
-              : `You are editing ${current?.nativeLabel || value}. Fill the fields below, then Save. Empty fields fall back to ${defaultLabel} on the public site.`}
+              : current?.public === false
+                ? `You are editing ${current?.nativeLabel || value} (draft). Visitors cannot choose this language yet. Fill the fields, Save, then turn it on under Translations → Show to visitors.`
+                : `You are editing ${current?.nativeLabel || value}. Fill the fields below, then Save. Empty fields fall back to ${defaultLabel} on the public site.`}
           </p>
         </div>
         {!isDefault && canCopy ? (
@@ -133,6 +140,8 @@ export default function LocaleTabs({
               {item.nativeLabel || item.label}
               {item.code === defaultLocale ? (
                 <span className={styles.localeTabHint}>default</span>
+              ) : item.public === false ? (
+                <span className={styles.localeTabHint}>draft</span>
               ) : null}
             </button>
           )

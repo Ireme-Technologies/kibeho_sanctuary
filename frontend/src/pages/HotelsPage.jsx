@@ -4,22 +4,13 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchLodging } from '@api/cms'
 import RichText from '@components/ui/RichText'
+import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
-
-const stripHtml = (html) =>
-  String(html || '')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
 
 function renderStars(rating) {
   const n = Math.round(Number(rating) || 0)
   if (!n) return null
   return '★'.repeat(Math.min(n, 5))
-}
-
-function isExternal(url) {
-  return /^https?:\/\//i.test(url || '')
 }
 
 export default function HotelsPage() {
@@ -60,7 +51,7 @@ export default function HotelsPage() {
           <p className={styles.empty}>Lodging listings will appear here once published.</p>
         ) : null}
 
-        <div className={styles.grid}>
+        <div className={styles.lodgingGrid}>
           {items.map((item) => (
             <article key={item.id} className={styles.card}>
               <Link to={`/hotels/${item.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
@@ -77,30 +68,12 @@ export default function HotelsPage() {
                       {renderStars(item.rating)}
                     </p>
                   ) : null}
-                  {item.shortDescription ? (
-                    <p className={styles.excerpt}>{stripHtml(item.shortDescription)}</p>
+                  {cardExcerpt(item) ? (
+                    <p className={styles.excerpt}>{cardExcerpt(item)}</p>
                   ) : null}
                   <span className={styles.cta}>View details →</span>
                 </div>
               </Link>
-              {item.bookingUrl ? (
-                <div className={styles.actions} style={{ padding: '0 1.2rem 1.35rem' }}>
-                  {isExternal(item.bookingUrl) ? (
-                    <a
-                      href={item.bookingUrl}
-                      className={styles.btn}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Book now
-                    </a>
-                  ) : (
-                    <Link to={item.bookingUrl} className={styles.btn}>
-                      Book now
-                    </Link>
-                  )}
-                </div>
-              ) : null}
             </article>
           ))}
         </div>

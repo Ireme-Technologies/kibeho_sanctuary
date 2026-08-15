@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\PageSection;
 use App\Support\Locale;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class PageSectionController extends Controller
@@ -79,16 +78,12 @@ class PageSectionController extends Controller
     private function transform(PageSection $section, ?string $locale = null): array
     {
         $base = ['label' => $section->label];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $section->translations, ['label'], $locale);
+        $resolved = Locale::resolve($base, $section->translations, ['label'], $locale);
 
         return [
             'key' => $section->key,
             'label' => $resolved['label'],
-            'content' => Auth::guard('web')->user()
-            ? ($section->content ?? [])
-            : $this->resolveContent($section->content ?? [], $section->translations, $locale),
+            'content' => $this->resolveContent($section->content ?? [], $section->translations, $locale),
             'translations' => $section->translations ?? [],
         ];
     }

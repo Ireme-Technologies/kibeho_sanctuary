@@ -25,11 +25,16 @@ class Facility extends Model
         'cover_image',
         'featured_image',
         'gallery',
+        'amenities',
         'related_programs',
         'specs',
         'sort_order',
         'is_published',
         'translations',
+        'website_url',
+        'phone',
+        'whatsapp',
+        'email',
     ];
 
     protected $casts = [
@@ -38,6 +43,7 @@ class Facility extends Model
         'is_published' => 'boolean',
         'rating' => 'float',
         'gallery' => 'array',
+        'amenities' => 'array',
         'related_programs' => 'array',
         'specs' => 'array',
     ];

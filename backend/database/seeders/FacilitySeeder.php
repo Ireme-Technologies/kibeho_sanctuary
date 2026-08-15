@@ -29,8 +29,13 @@ class FacilitySeeder extends Seeder
                 'gallery' => [
                     '/images/sanctuary/welcome.jpg',
                     '/images/sanctuary/hero.jpg',
+                    '/images/sanctuary/hills.jpg',
                 ],
-                'related_programs' => ['Retreats', 'Spiritual Guidance'],
+                'amenities' => [
+                    'parking', 'wifi', 'hot-water', 'hill-views', 'restaurant', 'breakfast',
+                    'generator', 'security', 'mosquito-nets', 'chapel', 'garden',
+                ],
+                'related_programs' => ['daily-mass', 'shuttle', 'spiritual-guidance', 'laundry', 'retreats'],
                 'specs' => [
                     'Location' => 'Kibeho, Nyaruguru',
                     'Capacity' => '120 rooms',
@@ -52,13 +57,26 @@ class FacilitySeeder extends Seeder
                 'status' => 'Available',
                 'rating' => 4.0,
                 'booking_url' => '/contact',
+                'website_url' => '',
+                'phone' => '+250 788 123 456',
+                'whatsapp' => '+250788123456',
+                'email' => 'info@kibehosanctuary.org',
                 'featured' => true,
                 'short_description' => 'Hotel stays with easy access to the shrine for pilgrims and visitors.',
                 'description' => '<p>A welcoming hotel near the sanctuary grounds, suited for pilgrims seeking comfortable rooms close to daily Mass and shrine activities.</p>',
                 'cover_image' => '/images/sanctuary/hero.jpg',
                 'featured_image' => '/images/sanctuary/hero.jpg',
-                'gallery' => ['/images/sanctuary/hero.jpg'],
-                'related_programs' => ['Pilgrimage'],
+                'gallery' => [
+                    '/images/sanctuary/hero.jpg',
+                    '/images/sanctuary/welcome.jpg',
+                    '/images/sanctuary/hills.jpg',
+                    '/images/projects/grand-legacy-hotel-interior/gallery-1.jpg',
+                ],
+                'amenities' => [
+                    'parking', 'wifi', 'hot-water', 'hill-views', 'swimming-pool', 'bar',
+                    'table-tennis', 'restaurant', 'air-conditioning', 'conference', 'breakfast', 'security',
+                ],
+                'related_programs' => ['daily-mass', 'shuttle', 'guided-tours', 'laundry'],
                 'specs' => [
                     'Location' => 'Near Kibeho Sanctuary',
                     'Category' => 'Hotel',
@@ -82,8 +100,11 @@ class FacilitySeeder extends Seeder
                 'description' => '<p>Furnished apartments for families and groups who prefer a home-like stay during their pilgrimage.</p>',
                 'cover_image' => '/images/sanctuary/hills.jpg',
                 'featured_image' => '/images/sanctuary/hills.jpg',
-                'gallery' => ['/images/sanctuary/hills.jpg'],
-                'related_programs' => ['Pilgrimage'],
+                'gallery' => ['/images/sanctuary/hills.jpg', '/images/sanctuary/welcome.jpg'],
+                'amenities' => [
+                    'parking', 'wifi', 'hot-water', 'hill-views', 'kitchenette', 'family-rooms', 'security',
+                ],
+                'related_programs' => ['laundry', 'airport-pickup'],
                 'specs' => [
                     'Location' => 'Kibeho centre',
                     'Category' => 'Apartment',
@@ -107,8 +128,11 @@ class FacilitySeeder extends Seeder
                 'description' => '<p>A peaceful guest house oriented toward retreats, silence, and communal prayer near the shrine.</p>',
                 'cover_image' => '/images/sanctuary/mary.jpg',
                 'featured_image' => '/images/sanctuary/mary.jpg',
-                'gallery' => ['/images/sanctuary/mary.jpg'],
-                'related_programs' => ['Retreats'],
+                'gallery' => ['/images/sanctuary/mary.jpg', '/images/sanctuary/hills.jpg'],
+                'amenities' => [
+                    'parking', 'wifi', 'hot-water', 'hill-views', 'chapel', 'garden', 'generator', 'breakfast',
+                ],
+                'related_programs' => ['daily-mass', 'spiritual-guidance', 'retreats', 'laundry'],
                 'specs' => [
                     'Location' => 'Kibeho, Nyaruguru',
                     'Category' => 'Guest House',

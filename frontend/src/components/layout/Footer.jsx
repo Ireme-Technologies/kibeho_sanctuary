@@ -4,6 +4,7 @@ import { googleReviews } from '@data/googleReviews'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
+import { displayCapsLabel, displayTitleLabel } from '@i18n/typography'
 import styles from './Footer.module.css'
 
 export default function Footer() {
@@ -16,16 +17,16 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={`container ${styles.ctaBand}`}>
         <div className={styles.ctaCopy}>
-          <h2 className={styles.ctaTitle}>{t('supportMission')}</h2>
+          <h2 className={styles.ctaTitle}>{displayTitleLabel(t('supportMission'), locale)}</h2>
           <p className={styles.ctaText}>{t('supportMissionText')}</p>
         </div>
         <div className={styles.ctaActions}>
           <NavLink to={navCTA?.path || '/support/donations'} className={styles.ctaBtn}>
             <Heart size={16} aria-hidden="true" />
-            {navCTA?.label || t('donate')}
+            {displayCapsLabel(navCTA?.label || t('donate'), locale)}
           </NavLink>
           <NavLink to="/support/partners" className={styles.ctaBtnGhost}>
-            {t('becomeVolunteer')}
+            {displayCapsLabel(t('becomeVolunteer'), locale)}
           </NavLink>
         </div>
       </div>

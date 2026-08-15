@@ -97,9 +97,7 @@ class SacredPlaceController extends Controller
                 'description' => $item->description,
                 'location' => $item->location,
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $item->translations, ['name', 'short_description', 'description', 'location'], $locale);
+        $resolved = Locale::resolve($base, $item->translations, ['name', 'short_description', 'description', 'location'], $locale);
         $base = $item->type === 'church' ? '/shrine/churches/' : '/shrine/apparition-sites/';
 
         return [
@@ -108,7 +106,7 @@ class SacredPlaceController extends Controller
             'type' => $item->type,
             'name' => $resolved['name'],
             'title' => $resolved['name'],
-            'shortDescription' => $resolved['short_description'],
+            'shortDescription' => Locale::cardExcerpt($resolved),
             'description' => $resolved['description'],
             'coverImage' => $item->cover_image,
             'gallery' => $item->gallery ?? [],

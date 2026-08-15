@@ -4,12 +4,12 @@ import { ChevronDown, Menu } from 'lucide-react'
 import { useScrolled } from '@hooks/useScrolled'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
-import { utilityNav } from '@data/navigation'
-import { welcomeMessage } from '@data/home/sanctuaryHome'
+import { displayCapsLabel } from '@i18n/typography'
 import MobileDrawer from './MobileDrawer'
 import styles from './Navbar.module.css'
 
 function NavItem({ item }) {
+  const { locale } = useLocale()
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   const closeTimer = useRef(null)
@@ -57,7 +57,7 @@ function NavItem({ item }) {
         end={item.path === '/'}
         className={({ isActive }) => `${styles.navLink} ${isActive ? styles.activeLink : ''}`}
       >
-        {item.label}
+        {displayCapsLabel(item.label, locale)}
       </NavLink>
     )
   }
@@ -79,7 +79,7 @@ function NavItem({ item }) {
           }
           onClick={() => setOpen(false)}
         >
-          {item.label}
+          {displayCapsLabel(item.label, locale)}
         </NavLink>
         <button
           type="button"
@@ -117,7 +117,7 @@ function NavItem({ item }) {
 }
 
 export default function Navbar({ hasHero = false }) {
-  const { primaryNav, navCTA, company } = useContent()
+  const { primaryNav, utilityNav, navCTA, company } = useContent()
   const { locale, setLocale, locales, current, t } = useLocale()
   const scrolled = useScrolled(60)
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -141,15 +141,15 @@ export default function Navbar({ hasHero = false }) {
     <>
       <div className={styles.topBar}>
         <div className={`container ${styles.topInner}`}>
-          <p className={styles.welcome}>{welcomeMessage}</p>
+          <p className={styles.welcome}>{t('welcomeBar')}</p>
           <div className={styles.topLinks}>
-            {utilityNav.map((item) => (
+            {(utilityNav || []).map((item) => (
               <Link key={item.path + item.label} to={item.path} className={styles.topLink}>
                 {item.label}
               </Link>
             ))}
             <Link to={navCTA.path} className={styles.donateBtn}>
-              {navCTA.label || t('donate')}
+              {displayCapsLabel(navCTA.label || t('donate'), locale)}
             </Link>
           </div>
         </div>

@@ -5,6 +5,7 @@ import {
   homeActivities as fallbackMeta,
   shrineHighlights as fallbackHighlights,
 } from '@data/home/sanctuaryHome'
+import { cardExcerpt } from '@utils/text'
 import styles from './HomeActivities.module.css'
 
 export default function HomeActivities() {
@@ -38,8 +39,8 @@ export default function HomeActivities() {
               <div className={styles.cardContent}>
                 <h3 className={styles.cardTitle}>{item.title}</h3>
                 <div className={styles.hoverPanel}>
-                  {item.shortDescription ? (
-                    <p className={styles.cardDesc}>{item.shortDescription}</p>
+                  {cardExcerpt(item) ? (
+                    <p className={styles.cardDesc}>{cardExcerpt(item)}</p>
                   ) : null}
                   <Link to={item.path} className={styles.cardCta}>
                     Learn more

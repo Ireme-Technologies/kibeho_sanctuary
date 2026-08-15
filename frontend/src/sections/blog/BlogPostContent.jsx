@@ -19,6 +19,9 @@ import ImageLightbox from '@components/ui/ImageLightbox'
 import RichText from '@components/ui/RichText'
 import { getInitials } from '@utils/text'
 import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
+import { displayTitleLabel } from '@i18n/typography'
+import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import {
   postNotFoundText,
   backToBlogLabel,
@@ -168,6 +171,7 @@ function CommentForm() {
 export default function BlogPostContent() {
   const { slug } = useParams()
   const { blogPosts, blogAuthors } = useContent()
+  const { locale } = useLocale()
   const [lightboxIndex, setLightboxIndex] = useState(null)
   const currentIndex = blogPosts.findIndex((p) => p.slug === slug)
   const post = blogPosts[currentIndex]
@@ -221,7 +225,8 @@ export default function BlogPostContent() {
             <img src={post.coverImage} alt="" />
           </button>
 
-          <h1 className={styles.title}>{post.title}</h1>
+          <h1 className={styles.title}>{displayTitleLabel(post.title, locale)}</h1>
+          <ContentLocaleNotice translations={post.translations} />
 
           <div className={styles.meta}>
             <span className={styles.metaItem}>

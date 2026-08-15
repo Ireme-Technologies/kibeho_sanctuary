@@ -95,9 +95,7 @@ class MassScheduleController extends Controller
                 'title' => $item->title,
                 'notes' => $item->notes,
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $item->translations, ['day_label', 'title', 'notes'], $locale);
+        $resolved = Locale::resolve($base, $item->translations, ['day_label', 'title', 'notes'], $locale);
 
         return [
             'id' => $item->id,

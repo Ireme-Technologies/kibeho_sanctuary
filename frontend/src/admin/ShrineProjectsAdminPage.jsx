@@ -13,15 +13,16 @@ import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['title', 'short_description', 'description', 'status', 'phase']
+const LOCALE_FIELDS = ['title', 'description', 'status', 'phase']
 
 const empty = {
   title: '',
   status: '',
   phase: '',
-  short_description: '',
   description: '',
   cover_image: '',
   gallery: [],
@@ -60,13 +61,12 @@ export default function ShrineProjectsAdminPage() {
     setOpen(true)
   }
 
-  const openEdit = (item) => {
+  const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
       title: item.title || '',
       status: item.status || '',
       phase: item.phase || '',
-      short_description: item.shortDescription || '',
       description: item.description || '',
       cover_image: item.coverImage || '',
       gallery: Array.isArray(item.gallery) ? item.gallery : [],
@@ -77,7 +77,7 @@ export default function ShrineProjectsAdminPage() {
       is_published: item.isPublished !== false,
       translations: item.translations || {},
     })
-    setLocaleTab(defaultLocale || 'en')
+    setLocaleTab(localeCode || defaultLocale || 'en')
     setError('')
     setOpen(true)
   }
@@ -145,9 +145,9 @@ export default function ShrineProjectsAdminPage() {
             <tr>
               <th>Image</th>
               <th>Title</th>
+              <LocaleColumnHeaders defaultLocale={defaultLocale} />
               <th>Status</th>
               <th>Featured</th>
-              <th />
             </tr>
           </thead>
           <tbody>
@@ -160,30 +160,27 @@ export default function ShrineProjectsAdminPage() {
                     '—'
                   )}
                 </td>
-                <td>{item.title}</td>
+                <td>
+                  <ListTitle
+                    title={item.title}
+                    onEdit={() => openEdit(item)}
+                    onDelete={() => handleDelete(item.id)}
+                    viewHref={item.path}
+                  />
+                </td>
+                <LocaleColumnCells
+                  item={item}
+                  fields={LOCALE_FIELDS}
+                  defaultLocale={defaultLocale}
+                  onEditLocale={(code) => openEdit(item, code)}
+                />
                 <td>{item.status || '—'}</td>
                 <td>{item.featured ? 'Yes' : 'No'}</td>
-                <td className={styles.actions}>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => openEdit(item)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnDanger}`}
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
               </tr>
             ))}
             {!items.length && (
               <tr>
-                <td colSpan={5} className={styles.muted}>
+                <td colSpan={8} className={styles.muted}>
                   No development projects yet.
                 </td>
               </tr>
@@ -234,18 +231,12 @@ export default function ShrineProjectsAdminPage() {
             </div>
           </div>
           <div className={styles.field}>
-            <label>Short description</label>
-            <RichTextEditor
-              value={getLocaleField(form, 'short_description', localeTab, defaultLocale)}
-              onChange={(html) => setForm(setLocaleField(form, 'short_description', localeTab, html, defaultLocale))}
-            />
-          </div>
-          <div className={styles.field}>
             <label>Description</label>
             <RichTextEditor
               value={getLocaleField(form, 'description', localeTab, defaultLocale)}
               onChange={(html) => setForm(setLocaleField(form, 'description', localeTab, html, defaultLocale))}
             />
+            <p className={styles.muted}>Listings show the first 160 characters of this description.</p>
           </div>
           <ImageField
             label="Cover image"

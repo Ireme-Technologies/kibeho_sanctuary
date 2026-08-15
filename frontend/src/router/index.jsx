@@ -18,6 +18,7 @@ const DashboardPage = lazy(() => import('@admin/DashboardPage'))
 const ServicesAdminPage = lazy(() => import('@admin/ServicesAdminPage'))
 const ActivitiesAdminPage = lazy(() => import('@admin/ActivitiesAdminPage'))
 const UpcomingPilgrimagesAdminPage = lazy(() => import('@admin/UpcomingPilgrimagesAdminPage'))
+const EventUpdatesAdminPage = lazy(() => import('@admin/EventUpdatesAdminPage'))
 const ProjectsAdminPage = lazy(() => import('@admin/ProjectsAdminPage'))
 const BlogAdminPage = lazy(() => import('@admin/BlogAdminPage'))
 const VideosAdminPage = lazy(() => import('@admin/VideosAdminPage'))
@@ -38,8 +39,13 @@ const SacredPlacesPage = lazy(() => import('@pages/SacredPlacesPage'))
 const SacredPlaceDetailPage = lazy(() => import('@pages/SacredPlaceDetailPage'))
 const SupportProjectsPage = lazy(() => import('@pages/SupportProjectsPage'))
 const SupportProjectDetailPage = lazy(() => import('@pages/SupportProjectDetailPage'))
+const PastoralTeamPage = lazy(() => import('@pages/PastoralTeamPage'))
+const PastoralTeamDetailPage = lazy(() => import('@pages/PastoralTeamDetailPage'))
+const CommunitiesPage = lazy(() => import('@pages/CommunitiesPage'))
+const CommunityDetailPage = lazy(() => import('@pages/CommunityDetailPage'))
 const CalendarPage = lazy(() => import('@pages/CalendarPage'))
 const SettingsAdminPage = lazy(() => import('@admin/SettingsAdminPage'))
+const MenusAdminPage = lazy(() => import('@admin/MenusAdminPage'))
 const SectionsAdminPage = lazy(() => import('@admin/SectionsAdminPage'))
 const TranslationsAdminPage = lazy(() => import('@admin/TranslationsAdminPage'))
 const EnquiriesAdminPage = lazy(() => import('@admin/EnquiriesAdminPage'))
@@ -47,7 +53,10 @@ const GalleryAdminPage = lazy(() => import('@admin/GalleryAdminPage'))
 const HomeHeroAdminPage = lazy(() => import('@admin/HomeHeroAdminPage'))
 const UsersAdminPage = lazy(() => import('@admin/UsersAdminPage'))
 const AccountAdminPage = lazy(() => import('@admin/AccountAdminPage'))
+const AuditAdminPage = lazy(() => import('@admin/AuditAdminPage'))
 const BackupAdminPage = lazy(() => import('@admin/BackupAdminPage'))
+const PastoralTeamAdminPage = lazy(() => import('@admin/PastoralTeamAdminPage'))
+const CommunitiesAdminPage = lazy(() => import('@admin/CommunitiesAdminPage'))
 
 const DocsLayout = lazy(() => import('../docs/DocsLayout'))
 const DocsHubPage = lazy(() => import('../docs/DocsHubPage'))
@@ -135,18 +144,23 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Wrap Component={DashboardPage} /> },
+      { path: 'audit', element: <Wrap Component={AuditAdminPage} /> },
       { path: 'services', element: <Wrap Component={ServicesAdminPage} /> },
       { path: 'activities', element: <Wrap Component={ActivitiesAdminPage} /> },
       { path: 'upcoming-pilgrimages', element: <Wrap Component={UpcomingPilgrimagesAdminPage} /> },
+      { path: 'upcoming-pilgrimages/:id/updates', element: <Wrap Component={EventUpdatesAdminPage} /> },
       { path: 'mass-schedules', element: <Wrap Component={MassSchedulesAdminPage} /> },
       { path: 'projects', element: <Wrap Component={ProjectsAdminPage} /> },
       { path: 'shrine-projects', element: <Wrap Component={ShrineProjectsAdminPage} /> },
       { path: 'churches', element: <ChurchesAdmin /> },
       { path: 'apparition-sites', element: <ApparitionSitesAdmin /> },
+      { path: 'communities', element: <Wrap Component={CommunitiesAdminPage} /> },
+      { path: 'pastoral-team', element: <Wrap Component={PastoralTeamAdminPage} /> },
       { path: 'testimonials', element: <Wrap Component={TestimonialsAdminPage} /> },
       { path: 'blog', element: <Wrap Component={BlogAdminPage} /> },
       { path: 'videos', element: <Wrap Component={VideosAdminPage} /> },
       { path: 'settings', element: <Wrap Component={SettingsAdminPage} /> },
+      { path: 'menus', element: <Wrap Component={MenusAdminPage} /> },
       { path: 'sections', element: <Wrap Component={SectionsAdminPage} /> },
       { path: 'translations', element: <Wrap Component={TranslationsAdminPage} /> },
       { path: 'enquiries', element: <Wrap Component={EnquiriesAdminPage} /> },
@@ -183,6 +197,10 @@ const router = createBrowserRouter([
       { path: 'shrine/churches/:slug', element: <Wrap Component={SacredPlaceDetailPage} /> },
       { path: 'shrine/apparition-sites', element: <Wrap Component={SacredPlacesPage} type="apparition_site" /> },
       { path: 'shrine/apparition-sites/:slug', element: <Wrap Component={SacredPlaceDetailPage} /> },
+      { path: 'our-lady/pastoral-team', element: <Wrap Component={PastoralTeamPage} /> },
+      { path: 'our-lady/pastoral-team/:slug', element: <Wrap Component={PastoralTeamDetailPage} /> },
+      { path: 'our-lady/communities', element: <Wrap Component={CommunitiesPage} /> },
+      { path: 'our-lady/communities/:slug', element: <Wrap Component={CommunityDetailPage} /> },
       { path: 'spirituality/testimonies', element: <Wrap Component={TestimonialsPage} /> },
       { path: 'support/projects', element: <Wrap Component={SupportProjectsPage} /> },
       { path: 'support/projects/:slug', element: <Wrap Component={SupportProjectDetailPage} /> },
@@ -204,8 +222,8 @@ const router = createBrowserRouter([
       { path: 'about/water', element: <Navigate to="/shrine/holy-spring" replace /> },
       { path: 'about/accommodations', element: <Navigate to="/pilgrimage/accommodation" replace /> },
       { path: 'about/projects', element: <Navigate to="/support/projects" replace /> },
-      { path: 'about/pastoral-team', element: <Navigate to="/pilgrimage/office" replace /> },
-      { path: 'about/communities', element: <Navigate to="/shrine/welcome" replace /> },
+      { path: 'about/pastoral-team', element: <Navigate to="/our-lady/pastoral-team" replace /> },
+      { path: 'about/communities', element: <Navigate to="/our-lady/communities" replace /> },
       { path: 'about/community-attrated', element: <Navigate to="/shrine/welcome" replace /> },
       { path: 'about/*', element: <Navigate to="/our-lady" replace /> },
       { path: 'pilgrimage/what-is-a-pilgrimage', element: <Navigate to="/pilgrimage/why-kibeho" replace /> },

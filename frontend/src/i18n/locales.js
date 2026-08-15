@@ -1,6 +1,9 @@
+import { findLanguageMeta } from './languageCatalog'
+import { navStrings } from './navKeys'
+
 /**
- * Multilingual strategy (ToR): Kinyarwanda, French, English, German.
- * Additional locales can be appended here; CMS translations come next.
+ * Default sanctuary languages. Extra languages are added in CMS Translations
+ * and merged at runtime via LocaleContext.
  */
 
 export const LOCALES = [
@@ -55,12 +58,7 @@ export const uiStrings = {
     pilgrimReviews: 'Pilgrim Reviews',
     pilgrimageCalendar: 'Pilgrimage events',
     emptyContent: 'Content will appear here soon.',
-    'nav.ourLady': 'Our Lady',
-    'nav.shrine': 'The Shrine',
-    'nav.pilgrimage': 'Pilgrimage',
-    'nav.spirituality': 'Spirituality',
-    'nav.news': 'News',
-    'nav.support': 'Support',
+    ...navStrings.en,
   },
   fr: {
     donate: 'Faire un don',
@@ -102,12 +100,7 @@ export const uiStrings = {
     pilgrimReviews: 'Avis des pèlerins',
     pilgrimageCalendar: 'Événements de pèlerinage',
     emptyContent: 'Le contenu apparaîtra bientôt ici.',
-    'nav.ourLady': 'Notre-Dame',
-    'nav.shrine': 'Le Sanctuaire',
-    'nav.pilgrimage': 'Pèlerinage',
-    'nav.spirituality': 'Spiritualité',
-    'nav.news': 'Actualités',
-    'nav.support': 'Soutien',
+    ...navStrings.fr,
   },
   rw: {
     donate: 'Tanga inkunga',
@@ -149,12 +142,7 @@ export const uiStrings = {
     pilgrimReviews: 'Ibitekerezo by’abasizi',
     pilgrimageCalendar: 'Ibirori by’urugendo',
     emptyContent: 'Ibirimo bizagaragara hano vuba.',
-    'nav.ourLady': 'Nyina wacu',
-    'nav.shrine': 'Umwibutso',
-    'nav.pilgrimage': 'Urugendo',
-    'nav.spirituality': 'Ubwiyunge',
-    'nav.news': 'Amakuru',
-    'nav.support': 'Inkunga',
+    ...navStrings.rw,
   },
   de: {
     donate: 'Spenden',
@@ -196,17 +184,12 @@ export const uiStrings = {
     pilgrimReviews: 'Pilgerbewertungen',
     pilgrimageCalendar: 'Pilgerveranstaltungen',
     emptyContent: 'Inhalte erscheinen hier in Kürze.',
-    'nav.ourLady': 'Unsere Liebe Frau',
-    'nav.shrine': 'Das Heiligtum',
-    'nav.pilgrimage': 'Pilgerfahrt',
-    'nav.spirituality': 'Spiritualität',
-    'nav.news': 'Nachrichten',
-    'nav.support': 'Unterstützung',
+    ...navStrings.de,
   },
 }
 
-export function getLocale(code) {
-  return LOCALES.find((l) => l.code === code) || LOCALES.find((l) => l.code === DEFAULT_LOCALE)
+export function getLocale(code, extras = []) {
+  return findLanguageMeta(code, extras.length ? extras : LOCALES)
 }
 
 export function t(locale, key) {

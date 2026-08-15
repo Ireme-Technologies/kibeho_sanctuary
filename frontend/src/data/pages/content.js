@@ -42,6 +42,14 @@ export const pageFallbacks = {
           path: "/our-lady/history",
         },
         {
+          label: "Pastoral Team",
+          path: "/our-lady/pastoral-team",
+        },
+        {
+          label: "Communities",
+          path: "/our-lady/communities",
+        },
+        {
           label: "FAQ",
           path: "/our-lady/faq",
         },
@@ -182,6 +190,20 @@ export const pageFallbacks = {
         },
         secondary: null,
       },
+    }),
+
+  'our-lady.pastoral-team': page({
+      title: 'Pastoral Team',
+      subtitle: 'Those who serve pilgrims at the Shrine',
+      intro: 'Meet the priests and pastoral workers who welcome pilgrims, celebrate the liturgy, and accompany the life of the Shrine of Our Lady of Kibeho.',
+      heroImage: '/images/sanctuary/welcome.jpg',
+    }),
+
+  'our-lady.communities': page({
+      title: 'Communities around Kibeho',
+      subtitle: 'Parishes, villages, and religious houses near the Shrine',
+      intro: 'The message of Our Lady of Kibeho is lived first among the people of this hillside — parish families, neighbouring communities, and religious houses who welcome pilgrims year-round.',
+      heroImage: '/images/sanctuary/hills.jpg',
     }),
 
   'our-lady.faq': page({

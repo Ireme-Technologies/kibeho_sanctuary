@@ -1,6 +1,11 @@
 .header {
   position: relative;
-  height: 260px;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  box-sizing: border-box;
+  min-height: clamp(440px, 58vh, 720px);
+  height: auto;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -29,7 +34,9 @@
 .content {
   position: relative;
   z-index: 1;
-  padding-bottom: var(--space-lg);
+  width: 100%;
+  padding-top: clamp(4.5rem, 11vh, 7.5rem);
+  padding-bottom: clamp(2.5rem, 6vh, 4rem);
 }
 
 .title {

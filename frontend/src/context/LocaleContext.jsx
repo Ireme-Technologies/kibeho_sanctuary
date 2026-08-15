@@ -8,13 +8,31 @@ import {
   t as fallbackTranslate,
   uiStrings,
 } from '@i18n/locales'
+import { addableFromCatalog, normalizeLanguages } from '@i18n/languageCatalog'
 
 const LocaleContext = createContext(null)
 
-function readStoredLocale(fallback = DEFAULT_LOCALE) {
+function applyI18nData(data) {
+  const languages = normalizeLanguages(data)
+  const defaultLocale = data?.defaultLocale || DEFAULT_LOCALE
+  const workspaceCodes = languages.map((item) => item.code)
+  const publicCodes = languages
+    .filter((item) => item.public !== false || item.code === defaultLocale)
+    .map((item) => item.code)
+  return {
+    defaultLocale,
+    languages,
+    workspaceCodes,
+    publicCodes: publicCodes.length ? publicCodes : [defaultLocale],
+    dictionary: data?.dictionary || {},
+    catalog: data?.catalog || addableFromCatalog(languages),
+  }
+}
+
+function readStoredLocale(allowed, fallback = DEFAULT_LOCALE) {
   try {
     const stored = localStorage.getItem(LOCALE_STORAGE_KEY)
-    if (stored && LOCALES.some((l) => l.code === stored)) return stored
+    if (stored && allowed.includes(stored)) return stored
   } catch {
     /* ignore */
   }
@@ -24,29 +42,37 @@ function readStoredLocale(fallback = DEFAULT_LOCALE) {
 export function LocaleProvider({ children }) {
   const [defaultLocale, setDefaultLocale] = useState(DEFAULT_LOCALE)
   const [dictionary, setDictionary] = useState({})
-  const [enabledLocales, setEnabledLocales] = useState(LOCALES.map((l) => l.code))
-  const [locale, setLocaleState] = useState(() => readStoredLocale(DEFAULT_LOCALE))
+  const [languages, setLanguages] = useState(() =>
+    LOCALES.map((item) => ({ ...item, public: true })),
+  )
+  const [catalog, setCatalog] = useState(() => addableFromCatalog(LOCALES))
+  const [locale, setLocaleState] = useState(() =>
+    readStoredLocale(
+      LOCALES.map((item) => item.code),
+      DEFAULT_LOCALE,
+    ),
+  )
   const [ready, setReady] = useState(false)
+
+  const applyData = (data) => {
+    const next = applyI18nData(data)
+    setDefaultLocale(next.defaultLocale)
+    setLanguages(next.languages)
+    setDictionary(next.dictionary)
+    setCatalog(next.catalog)
+    setLocaleState((prev) => {
+      if (next.publicCodes.includes(prev)) return prev
+      return readStoredLocale(next.publicCodes, next.defaultLocale)
+    })
+    return next
+  }
 
   useEffect(() => {
     let cancelled = false
     fetchI18n()
       .then((data) => {
         if (cancelled) return
-        const def = data.defaultLocale || DEFAULT_LOCALE
-        setDefaultLocale(def)
-        setEnabledLocales(data.enabledLocales?.length ? data.enabledLocales : LOCALES.map((l) => l.code))
-        setDictionary(data.dictionary || {})
-        setLocaleState((prev) => {
-          // If user has a stored choice, keep it; otherwise use admin default
-          try {
-            const stored = localStorage.getItem(LOCALE_STORAGE_KEY)
-            if (stored && LOCALES.some((l) => l.code === stored)) return stored
-          } catch {
-            /* ignore */
-          }
-          return def
-        })
+        applyData(data)
       })
       .catch(() => {
         /* keep hardcoded fallbacks */
@@ -59,8 +85,18 @@ export function LocaleProvider({ children }) {
     }
   }, [])
 
+  const publicLocales = useMemo(
+    () => languages.filter((item) => item.public !== false || item.code === defaultLocale),
+    [languages, defaultLocale],
+  )
+  const workspaceLocales = useMemo(
+    () => (languages.length ? languages : LOCALES.map((item) => ({ ...item, public: true }))),
+    [languages],
+  )
+
   const setLocale = (code) => {
-    if (!LOCALES.some((l) => l.code === code)) return
+    const allowed = publicLocales.map((item) => item.code)
+    if (!allowed.includes(code)) return
     setLocaleState(code)
     try {
       localStorage.setItem(LOCALE_STORAGE_KEY, code)
@@ -70,37 +106,37 @@ export function LocaleProvider({ children }) {
   }
 
   useEffect(() => {
-    const meta = getLocale(locale)
+    const meta = getLocale(locale, workspaceLocales)
     document.documentElement.lang = meta.htmlLang
-  }, [locale])
-
-  const locales = useMemo(
-    () => LOCALES.filter((l) => enabledLocales.includes(l.code)),
-    [enabledLocales]
-  )
+  }, [locale, workspaceLocales])
 
   const t = (key) => {
     const row = dictionary[key]
+    const fromUi = fallbackTranslate(locale, key)
+    const uiHit = fromUi && fromUi !== key ? fromUi : null
     if (row && typeof row === 'object') {
       return (
         row[locale] ||
+        uiHit ||
         row[defaultLocale] ||
         row.en ||
         Object.values(row).find(Boolean) ||
-        fallbackTranslate(locale, key) ||
         key
       )
     }
     if (typeof row === 'string' && row) return row
-    return fallbackTranslate(locale, key) || uiStrings[defaultLocale]?.[key] || key
+    return uiHit || uiStrings[defaultLocale]?.[key] || key
   }
 
   const value = useMemo(
     () => ({
       locale,
       setLocale,
-      locales: locales.length ? locales : LOCALES,
-      current: getLocale(locale),
+      locales: publicLocales.length ? publicLocales : LOCALES,
+      workspaceLocales,
+      publicLocales,
+      catalog,
+      current: getLocale(locale, workspaceLocales),
       defaultLocale,
       dictionary,
       t,
@@ -108,12 +144,11 @@ export function LocaleProvider({ children }) {
       isTranslatedContent: true,
       reloadI18n: async () => {
         const data = await fetchI18n()
-        setDefaultLocale(data.defaultLocale || DEFAULT_LOCALE)
-        setEnabledLocales(data.enabledLocales?.length ? data.enabledLocales : LOCALES.map((l) => l.code))
-        setDictionary(data.dictionary || {})
+        applyData(data)
+        return data
       },
     }),
-    [locale, locales, defaultLocale, dictionary, ready]
+    [locale, publicLocales, workspaceLocales, catalog, defaultLocale, dictionary, ready],
   )
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>

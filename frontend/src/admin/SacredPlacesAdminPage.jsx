@@ -13,9 +13,11 @@ import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['name', 'short_description', 'description', 'location']
+const LOCALE_FIELDS = ['name', 'description', 'location']
 
 const TYPE_OPTIONS = [
   { value: 'church', label: 'Church' },
@@ -34,7 +36,6 @@ function emptyForm(fixedType) {
   return {
     type: fixedType || 'church',
     name: '',
-    short_description: '',
     description: '',
     cover_image: '',
     gallery: [],
@@ -77,12 +78,11 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
     setOpen(true)
   }
 
-  const openEdit = (item) => {
+  const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
       type: fixedType || item.type || 'church',
       name: item.name || '',
-      short_description: item.shortDescription || '',
       description: item.description || '',
       cover_image: item.coverImage || '',
       gallery: Array.isArray(item.gallery) ? item.gallery : [],
@@ -91,7 +91,7 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
       is_published: item.isPublished !== false,
       translations: item.translations || {},
     })
-    setLocaleTab(defaultLocale || 'en')
+    setLocaleTab(localeCode || defaultLocale || 'en')
     setError('')
     setOpen(true)
   }
@@ -172,8 +172,8 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
             <tr>
               <th>Image</th>
               <th>Name</th>
+              <LocaleColumnHeaders defaultLocale={defaultLocale} />
               {!fixedType && <th>Type</th>}
-              <th />
             </tr>
           </thead>
           <tbody>
@@ -186,29 +186,26 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
                     '—'
                   )}
                 </td>
-                <td>{item.name}</td>
-                {!fixedType && <td>{typeLabel(item.type)}</td>}
-                <td className={styles.actions}>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => openEdit(item)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnDanger}`}
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </button>
+                <td>
+                  <ListTitle
+                    title={item.name}
+                    onEdit={() => openEdit(item)}
+                    onDelete={() => handleDelete(item.id)}
+                    viewHref={item.path}
+                  />
                 </td>
+                <LocaleColumnCells
+                  item={item}
+                  fields={LOCALE_FIELDS}
+                  defaultLocale={defaultLocale}
+                  onEditLocale={(code) => openEdit(item, code)}
+                />
+                {!fixedType && <td>{typeLabel(item.type)}</td>}
               </tr>
             ))}
             {!items.length && (
               <tr>
-                <td colSpan={fixedType ? 3 : 4} className={styles.muted}>
+                <td colSpan={fixedType ? 6 : 7} className={styles.muted}>
                   No {title.toLowerCase()} yet.
                 </td>
               </tr>
@@ -252,19 +249,12 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
             />
           </div>
           <div className={styles.field}>
-            <label>Short description</label>
-            <textarea
-              rows={3}
-              value={getLocaleField(form, 'short_description', localeTab, defaultLocale)}
-              onChange={(e) => setForm(setLocaleField(form, 'short_description', localeTab, e.target.value, defaultLocale))}
-            />
-          </div>
-          <div className={styles.field}>
             <label>Description</label>
             <RichTextEditor
               value={getLocaleField(form, 'description', localeTab, defaultLocale)}
               onChange={(html) => setForm(setLocaleField(form, 'description', localeTab, html, defaultLocale))}
             />
+            <p className={styles.muted}>Listings show the first 160 characters of this description.</p>
           </div>
           <ImageField
             label="Cover image"

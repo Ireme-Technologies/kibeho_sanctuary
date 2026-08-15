@@ -2,6 +2,8 @@
  * Shared date/time/recurrence formatting for masses and calendar events.
  */
 
+import { occurrenceWindow } from './occasion'
+
 export const RECURRENCE_OPTIONS = [
   { value: '', label: 'Does not repeat' },
   { value: 'weekly', label: 'Weekly' },
@@ -17,16 +19,50 @@ const RECURRENCE_LABELS = {
 
 /**
  * Format calendar event dates/times for public display.
+ * Recurring feasts use this year's (or next) occurrence, not the stored seed year.
  */
 export function formatEventWhen(item = {}) {
   const parts = []
-  const datePart = formatDateRange(item.startsOn, item.endsOn, Boolean(item.isRecurring || item.recurrenceType))
+  const datePart = formatItemDates(item)
   if (datePart) parts.push(datePart)
 
   const timePart = formatTimeRange(item.startsAtTime, item.endsAtTime)
   if (timePart) parts.push(timePart)
 
   return parts.join(' · ')
+}
+
+export function formatItemDates(item = {}) {
+  const window = occurrenceWindow(item)
+  const recurring = Boolean(item.isRecurring || item.recurrenceType || item.recurrence_type)
+  if (recurring && window?.start) {
+    return formatWindowDates(window)
+  }
+  return formatDateRange(item.startsOn || item.starts_on, item.endsOn || item.ends_on, false)
+}
+
+function formatWindowDates(window) {
+  const start = window.start
+  const end = window.end || window.start
+  const sameDay = start.getTime() === end.getTime()
+  if (sameDay) {
+    return start.toLocaleDateString('en-GB', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
+  }
+  if (start.getFullYear() === end.getFullYear() && start.getMonth() === end.getMonth()) {
+    return `${start.getDate()} – ${end.getDate()} ${start.toLocaleDateString('en-GB', {
+      month: 'long',
+      year: 'numeric',
+    })}`
+  }
+  return `${start.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })} – ${end.toLocaleDateString(
+    'en-GB',
+    { day: 'numeric', month: 'long', year: 'numeric' }
+  )}`
 }
 
 export function formatDateRange(startsOn, endsOn, isRecurring = false) {

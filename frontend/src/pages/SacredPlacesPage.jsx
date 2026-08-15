@@ -4,17 +4,13 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchSacredPlaces } from '@api/cms'
 import RichText from '@components/ui/RichText'
+import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
-
-const stripHtml = (html) =>
-  String(html || '')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
 
 export default function SacredPlacesPage({ type: typeProp }) {
   const { pathname } = useLocation()
   const { section, resolveHeaderImage } = useContent()
+  const { locale } = useLocale()
 
   const type = useMemo(() => {
     if (typeProp) return typeProp
@@ -30,7 +26,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
     fetchSacredPlaces({ ...{ type }, locale })
       .then(setItems)
       .catch((err) => setError(err.message))
-  }, [type])
+  }, [type, locale])
 
   const heroImage = resolveHeaderImage(
     hero.heroImage,
@@ -77,9 +73,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
               <div className={styles.cardBody}>
                 {item.location ? <p className={styles.meta}>{item.location}</p> : null}
                 <h2>{item.name || item.title}</h2>
-                {item.shortDescription ? (
-                  <p className={styles.excerpt}>{stripHtml(item.shortDescription)}</p>
-                ) : null}
+                {cardExcerpt(item) ? <p className={styles.excerpt}>{cardExcerpt(item)}</p> : null}
                 <span className={styles.cta}>Learn more →</span>
               </div>
             </Link>

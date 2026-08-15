@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             VideoSeeder::class,
             CmsContentSeeder::class,
             PageSectionSeeder::class,
+            PastoralTeamAndCommunitySeeder::class,
+            EnsureOurLadyNavSeeder::class,
         ]);
     }
 }

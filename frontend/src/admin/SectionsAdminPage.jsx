@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fetchPages, updatePageSection } from '@api/cms'
 import { useLocale } from '@context/LocaleContext'
+import { pathForSectionKey } from '@data/pages/registry'
 import FlashMessage from './components/FlashMessage'
 import ImageField from './components/ImageField'
 import ListEditor from './components/ListEditor'
 import BlocksEditor from './components/BlocksEditor'
 import RichTextEditor from './components/RichTextEditor'
 import LocaleTabs, { isFilledValue } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
 const PAGES_TAB_KEY = 'admin.pages.activeTab'
@@ -14,7 +17,7 @@ const PAGES_SELECTED_KEY = 'admin.pages.selectedKey'
 
 const TABS = [
   { id: 'default-header', label: 'Default header' },
-  { id: 'page', label: 'Edit page' },
+  { id: 'page', label: 'All pages' },
 ]
 
 const emptyContent = () => ({
@@ -89,6 +92,8 @@ function formToContent(form, previous = {}) {
 
 function readStoredTab() {
   try {
+    const urlTab = new URLSearchParams(window.location.search).get('tab')
+    if (TABS.some((tab) => tab.id === urlTab)) return urlTab
     const stored = sessionStorage.getItem(PAGES_TAB_KEY)
     if (TABS.some((tab) => tab.id === stored)) return stored
   } catch {
@@ -259,6 +264,9 @@ export default function SectionsAdminPage() {
   const [flash, setFlash] = useState({ type: 'success', message: '' })
   const [saving, setSaving] = useState(false)
   const [savingDefault, setSavingDefault] = useState(false)
+  const [editingPage, setEditingPage] = useState(false)
+  const [pageQuery, setPageQuery] = useState('')
+  const pendingLocaleRef = useRef(null)
 
   const selectTab = (id) => {
     setActiveTab(id)
@@ -300,8 +308,13 @@ export default function SectionsAdminPage() {
     setLabel(section.label || selectedKey)
     setForm(contentToForm(section.content || {}))
     setSectionTranslations(section.translations || {})
-    setLocaleTab(defaultLocale || 'en')
-  }, [selectedKey, sections, defaultLocale])
+  }, [selectedKey, sections])
+
+  useEffect(() => {
+    const next = pendingLocaleRef.current || defaultLocale || 'en'
+    pendingLocaleRef.current = null
+    setLocaleTab(next)
+  }, [selectedKey, defaultLocale])
 
   const sectionKeys = Object.keys(sections)
     .filter(isEditablePageKey)
@@ -310,6 +323,21 @@ export default function SectionsAdminPage() {
       const labelB = (sections[b]?.label || b).toLowerCase()
       return labelA.localeCompare(labelB)
     })
+
+  const filteredKeys = sectionKeys.filter((key) => {
+    const q = pageQuery.trim().toLowerCase()
+    if (!q) return true
+    const label = (sections[key]?.label || '').toLowerCase()
+    const path = pathForSectionKey(key).toLowerCase()
+    return label.includes(q) || key.toLowerCase().includes(q) || path.includes(q)
+  })
+
+  const openPageEditor = (key, localeCode) => {
+    pendingLocaleRef.current = localeCode || defaultLocale || 'en'
+    selectPage(key)
+    setEditingPage(true)
+    setLocaleTab(localeCode || defaultLocale || 'en')
+  }
 
   const handleSaveDefault = async (e) => {
     e.preventDefault()
@@ -359,8 +387,8 @@ export default function SectionsAdminPage() {
         <div>
           <h1>Pages</h1>
           <p className={styles.muted} style={{ margin: '0.25rem 0 0' }}>
-            Choose a page, switch language tabs, then edit header text and body blocks. Each language can
-            have its own layout.
+            All website pages are listed below. Open a page, switch language tabs, then edit header text and
+            body blocks. Each language can have its own layout.
           </p>
         </div>
       </div>
@@ -378,7 +406,10 @@ export default function SectionsAdminPage() {
             role="tab"
             aria-selected={activeTab === tab.id}
             className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ''}`}
-            onClick={() => selectTab(tab.id)}
+            onClick={() => {
+              selectTab(tab.id)
+              if (tab.id === 'page') setEditingPage(false)
+            }}
           >
             {tab.label}
           </button>
@@ -392,7 +423,7 @@ export default function SectionsAdminPage() {
               Default header image
             </h2>
             <p className={styles.muted}>
-              Used when a page does not set its own header / hero image below under Edit page.
+              Used when a page does not set its own header / hero image below under All pages.
             </p>
             <ImageField
               label="Default background image"
@@ -407,9 +438,73 @@ export default function SectionsAdminPage() {
         </div>
       )}
 
-      {activeTab === 'page' && (
+      {activeTab === 'page' && !editingPage && (
+        <div className={styles.card}>
+          <p className={styles.langLegend}>
+            Flag columns start with the default language. Pencil = that language has text. Plus = still
+            empty — click it to open the page in that language. Edit and View sit under the title.
+          </p>
+          <div className={styles.filterBar}>
+            <div className={styles.field}>
+              <label>Search pages</label>
+              <input
+                value={pageQuery}
+                onChange={(e) => setPageQuery(e.target.value)}
+                placeholder="Name, key, or URL"
+              />
+            </div>
+          </div>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <LocaleColumnHeaders defaultLocale={defaultLocale} />
+                <th>URL</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredKeys.map((key) => (
+                <tr key={key}>
+                  <td>
+                    <ListTitle
+                      title={sections[key]?.label || key}
+                      subtitle={key}
+                      onEdit={() => openPageEditor(key)}
+                      viewHref={pathForSectionKey(key)}
+                    />
+                  </td>
+                  <LocaleColumnCells
+                    item={sections[key]}
+                    defaultLocale={defaultLocale}
+                    onEditLocale={(code) => openPageEditor(key, code)}
+                  />
+                  <td>{pathForSectionKey(key)}</td>
+                </tr>
+              ))}
+              {!filteredKeys.length && (
+                <tr>
+                  <td colSpan={6} className={styles.muted}>
+                    No pages match that search.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {activeTab === 'page' && editingPage && (
         <div className={styles.card}>
           <form className={styles.form} onSubmit={handleSavePage} style={{ maxWidth: 920 }}>
+            <div className={styles.actions} style={{ marginBottom: '0.75rem' }}>
+              <button
+                type="button"
+                className={`${styles.btn} ${styles.btnSecondary}`}
+                onClick={() => setEditingPage(false)}
+              >
+                Back to page list
+              </button>
+            </div>
             <div className={styles.field}>
               <label>Page</label>
               <select value={selectedKey} onChange={(e) => selectPage(e.target.value)}>

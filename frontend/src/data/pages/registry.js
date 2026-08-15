@@ -11,6 +11,8 @@ export const pageRegistry = {
   '/our-lady/messages': 'our-lady.messages',
   '/our-lady/church-recognition': 'our-lady.church-recognition',
   '/our-lady/history': 'our-lady.history',
+  '/our-lady/pastoral-team': 'our-lady.pastoral-team',
+  '/our-lady/communities': 'our-lady.communities',
   '/our-lady/faq': 'our-lady.faq',
 
   /* The Shrine */
@@ -88,4 +90,9 @@ export const pageRegistry = {
 
 export function sectionKeyForPath(pathname) {
   return pageRegistry[pathname] || null
+}
+
+export function pathForSectionKey(key) {
+  const match = Object.entries(pageRegistry).find(([, sectionKey]) => sectionKey === key)
+  return match?.[0] || `/${String(key || '').replace(/\./g, '/')}`
 }

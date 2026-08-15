@@ -1,0 +1,63 @@
+/**
+ * Amenities and on-site services for Rwandan pilgrim lodging.
+ * Admin selects from this list per accommodation; the public page shows icons + labels.
+ */
+export const LODGING_AMENITIES = [
+  { id: 'parking', label: 'Parking' },
+  { id: 'secure-parking', label: 'Secure parking' },
+  { id: 'wifi', label: 'Free internet' },
+  { id: 'hot-water', label: 'Hot water' },
+  { id: 'hill-views', label: 'Hill views' },
+  { id: 'garden', label: 'Garden' },
+  { id: 'swimming-pool', label: 'Swimming pool' },
+  { id: 'table-tennis', label: 'Table tennis' },
+  { id: 'bar', label: 'Bar' },
+  { id: 'restaurant', label: 'Restaurant' },
+  { id: 'breakfast', label: 'Breakfast included' },
+  { id: 'air-conditioning', label: 'Air conditioning' },
+  { id: 'fan', label: 'Ceiling fan' },
+  { id: 'generator', label: 'Backup power' },
+  { id: 'mosquito-nets', label: 'Mosquito nets' },
+  { id: 'en-suite', label: 'En-suite bathroom' },
+  { id: 'tv', label: 'TV / DSTV' },
+  { id: 'kitchenette', label: 'Kitchenette' },
+  { id: 'security', label: '24-hour security' },
+  { id: 'conference', label: 'Conference room' },
+  { id: 'chapel', label: 'Chapel / prayer room' },
+  { id: 'family-rooms', label: 'Family rooms' },
+  { id: 'balcony', label: 'Balcony' },
+  { id: 'wheelchair', label: 'Wheelchair access' },
+  { id: 'bottled-water', label: 'Bottled water' },
+  { id: 'fireplace', label: 'Fireplace' },
+  { id: 'playground', label: 'Children’s play area' },
+]
+
+export const LODGING_SERVICES = [
+  { id: 'daily-mass', label: 'Daily Mass' },
+  { id: 'shuttle', label: 'Shuttle service' },
+  { id: 'guided-tours', label: 'Guided shrine tours' },
+  { id: 'laundry', label: 'Laundry service' },
+  { id: 'airport-pickup', label: 'Airport pickup' },
+  { id: 'room-service', label: 'Room service' },
+  { id: 'concierge', label: 'Concierge' },
+  { id: 'spiritual-guidance', label: 'Spiritual guidance' },
+  { id: 'retreats', label: 'Retreat hosting' },
+  { id: 'restaurant-service', label: 'Restaurant' },
+  { id: 'conference-service', label: 'Meetings & conferences' },
+]
+
+export function lodgingLabel(id, catalog = LODGING_AMENITIES) {
+  const found = catalog.find((item) => item.id === id)
+  if (found) return found.label
+  return String(id || '')
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+export function resolveLodgingItems(ids, catalog) {
+  const list = Array.isArray(ids) ? ids.filter(Boolean) : []
+  return list.map((id) => ({
+    id,
+    label: lodgingLabel(id, catalog),
+  }))
+}

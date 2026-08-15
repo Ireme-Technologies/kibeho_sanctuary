@@ -7,6 +7,7 @@ use App\Models\UpcomingPilgrimage;
 use App\Support\Locale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -66,6 +67,32 @@ class UpcomingPilgrimageController extends Controller
         return response()->json($this->transform($upcomingPilgrimage->fresh(), $locale));
     }
 
+    public function updateArchives(Request $request, UpcomingPilgrimage $upcomingPilgrimage)
+    {
+        $locale = Locale::fromRequest($request);
+
+        if (! Schema::hasColumn('upcoming_pilgrimages', 'archives')) {
+            return response()->json(['message' => 'Run database migrations to enable event updates.'], 503);
+        }
+
+        $this->coerceArchiveYears($request);
+        $data = $request->validate([
+            'archives' => ['nullable', 'array'],
+            'archives.*.type' => ['nullable', 'string', Rule::in(['gallery', 'news'])],
+            'archives.*.year' => ['nullable', 'integer', 'min:1900', 'max:2200'],
+            'archives.*.caption' => ['nullable', 'string', 'max:500'],
+            'archives.*.slug' => ['nullable', 'string', 'max:255'],
+            'archives.*.images' => ['nullable', 'array'],
+            'archives.*.images.*' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $upcomingPilgrimage->update([
+            'archives' => $this->normalizeArchives($data['archives'] ?? []),
+        ]);
+
+        return response()->json($this->transform($upcomingPilgrimage->fresh(), $locale));
+    }
+
     public function destroy(UpcomingPilgrimage $upcomingPilgrimage)
     {
         $upcomingPilgrimage->delete();
@@ -73,8 +100,33 @@ class UpcomingPilgrimageController extends Controller
         return response()->json(['message' => 'Deleted.']);
     }
 
+    private function coerceArchiveYears(Request $request): void
+    {
+        $archives = $request->input('archives');
+        if (! is_array($archives)) {
+            return;
+        }
+
+        $request->merge([
+            'archives' => array_map(function ($row) {
+                if (! is_array($row)) {
+                    return $row;
+                }
+                if (($row['year'] ?? null) === '') {
+                    $row['year'] = null;
+                }
+
+                return $row;
+            }, $archives),
+        ]);
+    }
+
     private function validated(Request $request, ?int $ignoreId = null): array
     {
+        if ($request->exists('archives')) {
+            $this->coerceArchiveYears($request);
+        }
+
         $data = $request->validate([
             'slug' => ['nullable', 'string', 'max:255', 'unique:upcoming_pilgrimages,slug,'.($ignoreId ?? 'NULL')],
             'event_type' => ['nullable', 'string', 'max:50'],
@@ -83,6 +135,13 @@ class UpcomingPilgrimageController extends Controller
             'short_description' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'image' => ['nullable', 'string', 'max:500'],
+            'archives' => ['nullable', 'array'],
+            'archives.*.type' => ['nullable', 'string', Rule::in(['gallery', 'news'])],
+            'archives.*.year' => ['nullable', 'integer', 'min:1900', 'max:2200'],
+            'archives.*.caption' => ['nullable', 'string', 'max:500'],
+            'archives.*.slug' => ['nullable', 'string', 'max:255'],
+            'archives.*.images' => ['nullable', 'array'],
+            'archives.*.images.*' => ['nullable', 'string', 'max:500'],
             'location' => ['nullable', 'string', 'max:255'],
             'starts_on' => ['nullable', 'date'],
             'ends_on' => ['nullable', 'date', 'after_or_equal:starts_on'],
@@ -103,7 +162,57 @@ class UpcomingPilgrimageController extends Controller
         $data['recurrence_type'] = $type;
         $data['is_recurring'] = ! empty($type);
 
+        if (! $request->exists('archives') || ! Schema::hasColumn('upcoming_pilgrimages', 'archives')) {
+            unset($data['archives']);
+        } else {
+            $data['archives'] = $this->normalizeArchives($data['archives'] ?? []);
+        }
+
         return $data;
+    }
+
+    private function normalizeArchives(array $rows): array
+    {
+        $out = [];
+        foreach ($rows as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+            $kind = ($row['type'] ?? 'gallery') === 'news' ? 'news' : 'gallery';
+            $year = isset($row['year']) && $row['year'] !== '' && $row['year'] !== null
+                ? (int) $row['year']
+                : null;
+            $caption = trim((string) ($row['caption'] ?? ''));
+
+            if ($kind === 'news') {
+                $slug = trim((string) ($row['slug'] ?? ''));
+                if ($slug === '') {
+                    continue;
+                }
+                $out[] = [
+                    'type' => 'news',
+                    'year' => $year,
+                    'slug' => $slug,
+                    'caption' => $caption,
+                ];
+                continue;
+            }
+
+            $images = array_values(array_filter(
+                array_map(fn ($img) => is_string($img) ? $img : '', $row['images'] ?? [])
+            ));
+            if (! $images) {
+                continue;
+            }
+            $out[] = [
+                'type' => 'gallery',
+                'year' => $year,
+                'caption' => $caption,
+                'images' => $images,
+            ];
+        }
+
+        return $out;
     }
 
     private function transform(UpcomingPilgrimage $item, ?string $locale = null): array
@@ -115,9 +224,7 @@ class UpcomingPilgrimageController extends Controller
                 'description' => $item->description,
                 'location' => $item->location,
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $item->translations, ['title', 'meta', 'short_description', 'description', 'location'], $locale);
+        $resolved = Locale::resolve($base, $item->translations, ['title', 'meta', 'short_description', 'description', 'location'], $locale);
 
         return [
             'id' => $item->id,
@@ -125,9 +232,12 @@ class UpcomingPilgrimageController extends Controller
             'eventType' => $item->event_type ?: 'pilgrimage',
             'title' => $resolved['title'],
             'meta' => $resolved['meta'],
-            'shortDescription' => $resolved['short_description'],
+            'shortDescription' => Locale::cardExcerpt($resolved),
             'description' => $resolved['description'],
             'image' => $item->image,
+            'archives' => Schema::hasColumn('upcoming_pilgrimages', 'archives')
+                ? ($item->archives ?? [])
+                : [],
             'location' => $resolved['location'],
             'startsOn' => optional($item->starts_on)->toDateString(),
             'endsOn' => optional($item->ends_on)->toDateString(),

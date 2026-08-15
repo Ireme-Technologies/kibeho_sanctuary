@@ -224,6 +224,11 @@ class I18nSeederData
             ],
         ];
 
+        $nav = NavI18nSeederData::byLocale();
+        foreach ($byLocale as $code => $map) {
+            $byLocale[$code] = array_merge($map, $nav[$code] ?? []);
+        }
+
         $strings = [];
         foreach ($byLocale as $locale => $map) {
             foreach ($map as $key => $value) {
@@ -237,6 +242,13 @@ class I18nSeederData
         return [
             'defaultLocale' => 'en',
             'enabledLocales' => ['rw', 'fr', 'en', 'de'],
+            'publicLocales' => ['rw', 'fr', 'en', 'de'],
+            'languages' => [
+                ['code' => 'rw', 'label' => 'Kinyarwanda', 'nativeLabel' => 'Ikinyarwanda', 'flag' => '🇷🇼', 'htmlLang' => 'rw', 'public' => true],
+                ['code' => 'fr', 'label' => 'Français', 'nativeLabel' => 'Français', 'flag' => '🇫🇷', 'htmlLang' => 'fr', 'public' => true],
+                ['code' => 'en', 'label' => 'English', 'nativeLabel' => 'English', 'flag' => '🇬🇧', 'htmlLang' => 'en', 'public' => true],
+                ['code' => 'de', 'label' => 'Deutsch', 'nativeLabel' => 'Deutsch', 'flag' => '🇩🇪', 'htmlLang' => 'de', 'public' => true],
+            ],
             'strings' => $strings,
         ];
     }

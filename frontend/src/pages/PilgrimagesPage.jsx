@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { formatEventWhen, formatRecurrence } from '@utils/eventTime'
+import { classifyEvent, statusLabel } from '@utils/occasion'
+import { cardExcerpt } from '@utils/text'
 import styles from './CmsPage.module.css'
 
 export default function PilgrimagesPage() {
@@ -25,7 +27,8 @@ export default function PilgrimagesPage() {
         <div className={styles.cards}>
           {(upcomingPilgrimages || []).map((item) => {
             const when = formatEventWhen(item)
-            const metaBits = [when, formatRecurrence(item)].filter(Boolean)
+            const badge = statusLabel(classifyEvent(item).status)
+            const metaBits = [badge, when, formatRecurrence(item)].filter(Boolean)
 
             return (
               <article key={item.id || item.slug} className={styles.card}>
@@ -38,9 +41,7 @@ export default function PilgrimagesPage() {
                 ) : null}
                 <p className={styles.eyebrow}>{metaBits.join(' · ') || item.meta || 'Upcoming'}</p>
                 <h3>{item.title}</h3>
-                {item.shortDescription ? (
-                  <p>{String(item.shortDescription).replace(/<[^>]+>/g, '')}</p>
-                ) : null}
+                {cardExcerpt(item) ? <p>{cardExcerpt(item)}</p> : null}
                 <Link to={item.path || `/pilgrimages/${item.slug}`} className={styles.inlineLink}>
                   View more & register →
                 </Link>

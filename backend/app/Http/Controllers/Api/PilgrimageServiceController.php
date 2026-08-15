@@ -101,9 +101,7 @@ class PilgrimageServiceController extends Controller
                 'description' => $service->description,
                 'highlights' => $service->highlights ?? [],
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $service->translations, ['title', 'description', 'highlights'], $locale);
+        $resolved = Locale::resolve($base, $service->translations, ['title', 'description', 'highlights'], $locale);
         $highlights = $resolved['highlights'] ?? [];
 
         return [

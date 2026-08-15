@@ -16,6 +16,7 @@ class Testimonial extends Model
         'body',
         'rating',
         'featured',
+        'related_event_slug',
         'sort_order',
         'is_published',
         'published_at',

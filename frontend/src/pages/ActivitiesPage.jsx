@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import RichText from '@components/ui/RichText'
+import { cardExcerpt } from '@utils/text'
 import styles from './CmsPage.module.css'
 
 export default function ActivitiesPage() {
@@ -35,7 +36,9 @@ export default function ActivitiesPage() {
         {data.intro ? <RichText html={data.intro} className={styles.intro} /> : null}
 
         <div className={styles.cards}>
-          {(activities || []).map((item) => (
+          {(activities || []).map((item) => {
+            const summary = cardExcerpt(item)
+            return (
             <Link key={item.id || item.slug} to={item.path || `/activities/${item.slug}`} className={styles.card}>
               {item.image ? (
                 <img
@@ -45,9 +48,10 @@ export default function ActivitiesPage() {
                 />
               ) : null}
               <h3>{item.title}</h3>
-              {item.shortDescription ? <p>{item.shortDescription}</p> : null}
+              {summary ? <p>{summary}</p> : null}
             </Link>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>

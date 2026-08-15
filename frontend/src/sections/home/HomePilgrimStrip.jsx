@@ -6,6 +6,8 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { useInView } from '@hooks/useInView'
 import { formatEventWhen, formatRecurrence } from '@utils/eventTime'
+import { classifyEvent, pickSiteOccasion, statusLabel } from '@utils/occasion'
+import { cardExcerpt } from '@utils/text'
 import styles from './HomePilgrimStrip.module.css'
 
 const whyIcons = {
@@ -46,7 +48,18 @@ function Stars({ rating }) {
 export default function HomePilgrimStrip() {
   const { section, upcomingPilgrimages, projects } = useContent()
   const { t } = useLocale()
-  const pilgrimages = (upcomingPilgrimages || []).slice(0, 4)
+  const occasion = pickSiteOccasion(upcomingPilgrimages)
+  const pilgrimages = useMemo(() => {
+    const list = [...(upcomingPilgrimages || [])]
+    const featuredSlug = occasion?.item?.slug
+    return list
+      .sort((a, b) => {
+        if (featuredSlug && a.slug === featuredSlug) return -1
+        if (featuredSlug && b.slug === featuredSlug) return 1
+        return (a.startsOn || '').localeCompare(b.startsOn || '')
+      })
+      .slice(0, 4)
+  }, [upcomingPilgrimages, occasion?.item?.slug])
   const reasons = section('home.whyVisit', {}).items || whyVisit
   const [ref, inView] = useInView(0.12)
   const [active, setActive] = useState(0)
@@ -87,23 +100,22 @@ export default function HomePilgrimStrip() {
             </Link>
           </div>
           <div className={`${styles.pilgrimGrid} ${inView ? styles.visible : ''}`}>
-            {pilgrimages.map((item, index) => (
+            {pilgrimages.map((item, index) => {
+              const state = classifyEvent(item)
+              const badge = statusLabel(state.status)
+              return (
               <article
                 key={item.id || item.slug}
-                className={styles.pill}
+                className={`${styles.pill} ${state.status === 'live' ? styles.pillLive : ''}`}
                 style={{ animationDelay: `${index * 0.08}s` }}
               >
                 <span className={styles.meta}>
-                  {[formatEventWhen(item), formatRecurrence(item), item.meta]
+                  {[badge, formatEventWhen(item), formatRecurrence(item), item.meta]
                     .filter(Boolean)
                     .join(' · ') || 'Upcoming'}
                 </span>
                 <h3>{item.title}</h3>
-                <p>
-                  {String(item.shortDescription || item.text || '')
-                    .replace(/<[^>]+>/g, '')
-                    .trim()}
-                </p>
+                <p>{cardExcerpt(item)}</p>
                 <Link
                   to={item.path || `/pilgrimages/${item.slug}`}
                   className={styles.viewMore}
@@ -111,7 +123,8 @@ export default function HomePilgrimStrip() {
                   {t('viewMore')}
                 </Link>
               </article>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>

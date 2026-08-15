@@ -21,6 +21,20 @@ export const upcomingPilgrimages = [
     isRecurring: true,
     recurrenceType: 'annual',
     eventType: 'feast',
+    archives: [
+      {
+        type: 'gallery',
+        year: 2025,
+        caption: 'Pilgrims gathered for the Assumption at Kibeho.',
+        images: ['/images/sanctuary/hero.jpg', '/images/sanctuary/church-wide.jpg', '/images/sanctuary/welcome.jpg'],
+      },
+      {
+        type: 'gallery',
+        year: 2024,
+        caption: 'Mass, procession, and thanksgiving on 15 August.',
+        images: ['/images/sanctuary/mary.jpg', '/images/sanctuary/hills.jpg', '/images/sanctuary/crest.jpg'],
+      },
+    ],
     path: '/pilgrimages/feast-of-the-assumption',
     sortOrder: 1,
     registrationOpen: true,

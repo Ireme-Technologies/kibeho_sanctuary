@@ -1,15 +1,26 @@
 .page {
+  width: 100%;
   padding-bottom: var(--space-2xl);
 }
 
 .hero {
-  min-height: 280px;
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  box-sizing: border-box;
+  min-height: clamp(440px, 58vh, 720px);
   display: flex;
   align-items: flex-end;
-  padding: var(--space-2xl) 0 var(--space-xl);
-  background:
+  overflow: hidden;
+  padding: clamp(4.5rem, 11vh, 7.5rem) 0 clamp(2.5rem, 6vh, 4rem);
+  background-color: var(--color-navy-deep);
+  background-image:
     linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)),
-    url('/images/sanctuary/hero.jpg') center / cover no-repeat;
+    url('/images/sanctuary/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: var(--color-white);
 }
 
@@ -42,6 +53,12 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.lodgingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.25rem;
 }
 
@@ -131,6 +148,25 @@
   border: 1px solid var(--color-gray-border);
   border-radius: var(--radius-md);
   background: var(--color-off-white);
+}
+
+.scheduleLive {
+  border-color: var(--color-sky);
+  background: #eef6fc;
+  box-shadow: inset 4px 0 0 var(--color-navy);
+}
+
+.badge {
+  margin: 0 0 0.35rem;
+  display: inline-flex;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-white);
+  background: var(--color-navy);
 }
 
 .day {
@@ -235,6 +271,18 @@
 
 @media (max-width: 720px) {
   .scheduleRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1020px) {
+  .lodgingGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .lodgingGrid {
     grid-template-columns: 1fr;
   }
 }

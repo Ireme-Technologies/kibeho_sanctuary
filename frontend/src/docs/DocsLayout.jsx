@@ -4,8 +4,8 @@ import styles from './DocsLayout.module.css'
 
 const NAV = [
   { to: '/docs', label: 'Documentation hub', end: true },
+  { to: '/docs/sitemap-and-admin-guide', label: 'Administrator guide' },
   { to: '/docs/proposed-solution', label: 'Proposed solution' },
-  { to: '/docs/sitemap-and-admin-guide', label: 'Sitemap & admin guide' },
 ]
 
 export default function DocsLayout() {
@@ -66,8 +66,8 @@ export default function DocsLayout() {
         </p>
         <div className={styles.footerLinks}>
           <Link to="/docs">Hub</Link>
+          <Link to="/docs/sitemap-and-admin-guide">Administrator guide</Link>
           <Link to="/docs/proposed-solution">Proposed solution</Link>
-          <Link to="/docs/sitemap-and-admin-guide">Sitemap & admin guide</Link>
           <a href="/" target="_blank" rel="noreferrer">
             Live demo
           </a>

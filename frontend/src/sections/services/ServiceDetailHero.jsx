@@ -1,14 +1,6 @@
 import { ChevronDown } from 'lucide-react'
+import { excerpt } from '@utils/text'
 import styles from './ServiceDetailHero.module.css'
-
-function shortDescription(text = '', max = 160) {
-  const clean = String(text)
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-  if (clean.length <= max) return clean
-  return `${clean.slice(0, max).replace(/\s+\S*$/, '')}…`
-}
 
 export default function ServiceDetailHero({ service }) {
   const heroImage = service?.detailImage || `/images/services/detail-heros/${service?.slug || 'service'}.jpg`
@@ -31,7 +23,7 @@ export default function ServiceDetailHero({ service }) {
         <h1 className={styles.title}>{service?.title}</h1>
 
         <div className={styles.bottom}>
-          <p className={styles.summary}>{shortDescription(service?.description)}</p>
+          <p className={styles.summary}>{excerpt(service?.description)}</p>
           <button type="button" className={styles.readMore} onClick={scrollToDetails}>
             Read more
             <ChevronDown size={18} aria-hidden="true" />

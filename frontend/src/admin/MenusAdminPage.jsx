@@ -1,0 +1,244 @@
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { fetchSettings, updateSettings } from '@api/cms'
+import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
+import {
+  footerLinks as fallbackFooterLinks,
+  footerServiceLinks as fallbackFooterServiceLinks,
+  navCTA as fallbackNavCTA,
+  primaryNav as fallbackPrimaryNav,
+  utilityNav as fallbackUtilityNav,
+  ensureOurLadyNavChildren,
+} from '@data/navigation'
+import FlashMessage from './components/FlashMessage'
+import LocaleTabs from './components/LocaleTabs'
+import MenuTreeEditor from './components/MenuTreeEditor'
+import { ensureNavIds, persistNavItems } from './menuUtils'
+import styles from './admin.module.css'
+
+const LOCATIONS = [
+  {
+    id: 'main',
+    label: 'Main menu',
+    title: 'Main menu',
+    hint: 'This is the primary navigation under the logo (Notre-Dame, Le Sanctuaire, Pèlerinage, …). Top-level items can have dropdown submenus.',
+  },
+  {
+    id: 'header',
+    label: 'Top header',
+    title: 'Top header menu',
+    hint: 'Links in the dark bar above the logo, plus the Donate button on the right. This list has no dropdowns.',
+  },
+  {
+    id: 'footer',
+    label: 'Footer',
+    title: 'Footer menus',
+    hint: 'Two columns at the bottom of every page: Quick links and Explore. These lists have no dropdowns.',
+  },
+]
+
+export default function MenusAdminPage() {
+  const { refresh } = useContent()
+  const { defaultLocale } = useLocale()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const requested = searchParams.get('location')
+  const locationId = LOCATIONS.some((item) => item.id === requested) ? requested : 'main'
+  const location = LOCATIONS.find((item) => item.id === locationId) || LOCATIONS[0]
+
+  const [menuLocale, setMenuLocale] = useState(defaultLocale || 'en')
+  const [primaryNav, setPrimaryNav] = useState([])
+  const [utilityNav, setUtilityNav] = useState([])
+  const [footerLinks, setFooterLinks] = useState([])
+  const [footerServiceLinks, setFooterServiceLinks] = useState([])
+  const [navCTA, setNavCTA] = useState({ label: 'Donate', path: '/support/donations' })
+  const [error, setError] = useState('')
+  const [flash, setFlash] = useState({ type: 'success', message: '' })
+  const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    setMenuLocale(defaultLocale || 'en')
+  }, [defaultLocale])
+
+  useEffect(() => {
+    fetchSettings()
+      .then((data) => {
+        const navigation = data.navigation || {}
+        setPrimaryNav(
+          ensureNavIds(
+            ensureOurLadyNavChildren(
+              navigation.primaryNav?.length ? navigation.primaryNav : fallbackPrimaryNav,
+            ),
+          ),
+        )
+        setUtilityNav(ensureNavIds(navigation.utilityNav?.length ? navigation.utilityNav : fallbackUtilityNav))
+        setFooterLinks(ensureNavIds(navigation.footerLinks?.length ? navigation.footerLinks : fallbackFooterLinks))
+        setFooterServiceLinks(
+          ensureNavIds(
+            navigation.footerServiceLinks?.length ? navigation.footerServiceLinks : fallbackFooterServiceLinks,
+          ),
+        )
+        setNavCTA(navigation.navCTA || fallbackNavCTA)
+      })
+      .catch((err) => setFlash({ type: 'error', message: err.message || 'Failed to load menus' }))
+  }, [])
+
+  const selectLocation = (id) => {
+    const next = new URLSearchParams(searchParams)
+    next.set('location', id)
+    setSearchParams(next, { replace: true })
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
+    setError('')
+    setFlash({ type: 'success', message: '' })
+    try {
+      await updateSettings({
+        navigation: {
+          primaryNav: persistNavItems(primaryNav),
+          utilityNav: persistNavItems(utilityNav),
+          footerLinks: persistNavItems(footerLinks),
+          footerServiceLinks: persistNavItems(footerServiceLinks),
+          navCTA,
+        },
+      })
+      await refresh?.()
+      setFlash({ type: 'success', message: 'Menus saved. The public site will use this structure.' })
+    } catch (err) {
+      const message = err.message || 'Save failed'
+      setError(message)
+      setFlash({ type: 'error', message })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const locationLabel = useMemo(() => location.title, [location])
+
+  return (
+    <div>
+      <div className={styles.topbar}>
+        <h1>Site menus</h1>
+        <button className={styles.btn} type="button" onClick={handleSave} disabled={saving}>
+          {saving ? 'Saving…' : 'Save menus'}
+        </button>
+      </div>
+      <FlashMessage
+        type={flash.type}
+        message={flash.message}
+        onClear={() => setFlash({ type: 'success', message: '' })}
+      />
+
+      <div className={styles.tabs} role="tablist" aria-label="Menu locations">
+        {LOCATIONS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            role="tab"
+            aria-selected={item.id === locationId}
+            className={`${styles.tab} ${item.id === locationId ? styles.tabActive : ''}`}
+            onClick={() => selectLocation(item.id)}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+
+      <div>
+        <div className={styles.menuLocationBanner} role="status">
+          <p className={styles.menuLocationKicker}>You are editing</p>
+          <h2>{locationLabel}</h2>
+          <p>{location.hint}</p>
+        </div>
+
+        <LocaleTabs value={menuLocale} onChange={setMenuLocale} defaultLocale={defaultLocale} />
+        <p className={styles.muted}>
+          Labels in the default language are stored here. Other languages use automatic translations for known
+          page paths — type a label in a language tab only if you want to override that automatic text. Paths
+          stay the same in every language.
+        </p>
+
+        {locationId === 'main' ? (
+          <MenuTreeEditor
+            items={primaryNav}
+            onChange={setPrimaryNav}
+            allowChildren
+            locale={menuLocale}
+            defaultLocale={defaultLocale}
+            addTitle="Add to the main menu"
+            pathPlaceholder="/our-lady"
+          />
+        ) : null}
+
+        {locationId === 'header' ? (
+          <>
+            <div className={styles.card} style={{ marginBottom: '1rem' }}>
+              <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
+                Header button (Faire un don)
+              </h2>
+              <p className={styles.muted}>The white button on the far right of the dark top bar.</p>
+              <div className={styles.fieldRow}>
+                <div className={styles.field}>
+                  <label>Button label</label>
+                  <input
+                    value={navCTA.label}
+                    onChange={(e) => setNavCTA({ ...navCTA, label: e.target.value })}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Button link</label>
+                  <input
+                    value={navCTA.path}
+                    onChange={(e) => setNavCTA({ ...navCTA, path: e.target.value })}
+                    placeholder="/support/donations"
+                  />
+                </div>
+              </div>
+            </div>
+            <MenuTreeEditor
+              items={utilityNav}
+              onChange={setUtilityNav}
+              locale={menuLocale}
+              defaultLocale={defaultLocale}
+              addTitle="Add a top header link"
+              pathPlaceholder="/shrine/mass-schedule"
+            />
+          </>
+        ) : null}
+
+        {locationId === 'footer' ? (
+          <div className={styles.menuFooterColumns}>
+            <div>
+              <h2 className={styles.sectionTitle}>Quick links</h2>
+              <MenuTreeEditor
+                items={footerLinks}
+                onChange={setFooterLinks}
+                locale={menuLocale}
+                defaultLocale={defaultLocale}
+                addTitle="Add a quick link"
+                pathPlaceholder="/contact"
+              />
+            </div>
+            <div>
+              <h2 className={styles.sectionTitle}>Explore</h2>
+              <MenuTreeEditor
+                items={footerServiceLinks}
+                onChange={setFooterServiceLinks}
+                locale={menuLocale}
+                defaultLocale={defaultLocale}
+                addTitle="Add an Explore link"
+                pathPlaceholder="/pilgrimage/plan"
+              />
+            </div>
+          </div>
+        ) : null}
+
+        {error ? <p className={styles.error}>{error}</p> : null}
+        <button className={styles.btn} type="button" onClick={handleSave} disabled={saving}>
+          {saving ? 'Saving…' : 'Save menus'}
+        </button>
+      </div>
+    </div>
+  )
+}

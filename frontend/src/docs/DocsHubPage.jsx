@@ -8,65 +8,34 @@ export default function DocsHubPage() {
         <p className={styles.brandEyebrow}>Start here</p>
         <h1>System documentation for Diocese evaluation</h1>
         <p className={styles.lede}>
-          This demo presents the proposed Shrine website platform (React + Laravel CMS)—not WordPress—with
-          full functional documentation, a live public site, an administration panel, and downloadable guides.
-          Use the links below to move between documents and the working demo.
+          Start with the administrator guide and CMS audit if you will manage the site. The proposed
+          solution document is for evaluation of the platform. The live demo and admin panel are linked
+          below.
         </p>
       </div>
 
       <div className={styles.grid}>
         <article className={styles.card}>
-          <h2>1. Proposed solution</h2>
+          <h2>1. Administrator guide</h2>
           <p>
-            Functional requirements (Phase 1 vs later), why React.js (interactive speed) and a Laravel API
-            (payments, members, external services), multilingual concept, architecture, security, backups,
-            ownership, and acceptance criteria.
-          </p>
-          <div className={styles.cardActions}>
-            <Link className={styles.btnPrimary} to="/docs/proposed-solution">
-              Open document
-            </Link>
-            <a className={styles.btnGhost} href="/evaluation-downloads/proposed-solution.md" download>
-              Download .md
-            </a>
-          </div>
-        </article>
-
-        <article className={styles.card}>
-          <h2>2. Sitemap & admin user guide</h2>
-          <p>
-            Complete public sitemap, step-by-step administration for every CMS module, and the best way to
-            manage languages (language tabs, Copy from default, page layout). Also covers menus, media,
-            users, and recommended future upgrades.
+            Sign in, open CMS audit for a readiness score, then follow settings, languages, pages, listings,
+            and backup. Critical gaps appear in the guide when you are signed in.
           </p>
           <div className={styles.cardActions}>
             <Link className={styles.btnPrimary} to="/docs/sitemap-and-admin-guide">
-              Open document
+              Open the guide
             </Link>
-            <a className={styles.btnGhost} href="/evaluation-downloads/sitemap-and-admin-guide.md" download>
-              Download .md
+            <a className={styles.btnGhost} href="/admin/audit">
+              Open CMS audit
             </a>
           </div>
         </article>
 
         <article className={styles.card}>
-          <h2>3. Live public demo</h2>
+          <h2>2. Administration panel</h2>
           <p>
-            Browse the six-pillar public website as pilgrims and visitors will see it. Used text and images
-            will be replaced with approved content as it becomes available.
-          </p>
-          <div className={styles.cardActions}>
-            <a className={styles.btnPrimary} href="/" target="_blank" rel="noreferrer">
-              Open website demo
-            </a>
-          </div>
-        </article>
-
-        <article className={styles.card}>
-          <h2>4. Administration panel</h2>
-          <p>
-            Sign in with the demo credentials below to create pages, publish news, update menus, replace
-            images, manage languages, and more.
+            Sign in to create pages, publish news, update menus, replace images, and manage languages. Use
+            CMS audit after login to see what is still missing.
           </p>
           <div className={styles.cardActions}>
             <a className={styles.btnPrimary} href="/admin/login" target="_blank" rel="noreferrer">
@@ -75,6 +44,35 @@ export default function DocsHubPage() {
             <Link className={styles.btnSoft} to="/docs/sitemap-and-admin-guide#languages">
               How to manage languages
             </Link>
+          </div>
+        </article>
+
+        <article className={styles.card}>
+          <h2>3. Live public site</h2>
+          <p>
+            Browse the public website as pilgrims will see it. Demo text and images are replaced as official
+            content is provided.
+          </p>
+          <div className={styles.cardActions}>
+            <a className={styles.btnPrimary} href="/" target="_blank" rel="noreferrer">
+              Open website
+            </a>
+          </div>
+        </article>
+
+        <article className={styles.card}>
+          <h2>4. Proposed solution</h2>
+          <p>
+            Evaluation document: Phase 1 vs later, why this CMS, multilingual concept, architecture,
+            security, backups, ownership, and acceptance criteria.
+          </p>
+          <div className={styles.cardActions}>
+            <Link className={styles.btnPrimary} to="/docs/proposed-solution">
+              Open document
+            </Link>
+            <a className={styles.btnGhost} href="/evaluation-downloads/proposed-solution.md" download>
+              Download .md
+            </a>
           </div>
         </article>
       </div>
@@ -86,9 +84,8 @@ export default function DocsHubPage() {
       </div>
 
       <div className={styles.notice}>
-        <strong>Suggested path for reviewers:</strong> read the proposed solution → open the live demo →
-        sign in with the credentials below → follow the admin user guide → download or print PDF copies for
-        committee circulation if needed.
+        <strong>Suggested path:</strong> sign in → open CMS audit → follow the administrator guide in order
+        (settings, languages, pages, listings, backup). Evaluators can also read the proposed solution.
       </div>
 
       <section className={styles.creds} aria-label="Demo admin credentials">

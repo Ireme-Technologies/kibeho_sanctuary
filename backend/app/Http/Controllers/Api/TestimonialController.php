@@ -24,6 +24,10 @@ class TestimonialController extends Controller
             $query->where('featured', true);
         }
 
+        if ($event = $request->query('event')) {
+            $query->where('related_event_slug', $event);
+        }
+
         return response()->json(
             $query->get()->map(fn (Testimonial $item) => $this->transform($item, $locale))
         );
@@ -82,6 +86,7 @@ class TestimonialController extends Controller
             'body' => ['required', 'string'],
             'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
             'featured' => ['boolean'],
+            'related_event_slug' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_published' => ['boolean'],
             'published_at' => ['nullable', 'date'],
@@ -97,9 +102,7 @@ class TestimonialController extends Controller
                 'author_role' => $item->author_role,
                 'author_location' => $item->author_location,
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $item->translations, ['title', 'body', 'author_role', 'author_location'], $locale);
+        $resolved = Locale::resolve($base, $item->translations, ['title', 'body', 'author_role', 'author_location'], $locale);
 
         return [
             'id' => $item->id,
@@ -112,6 +115,7 @@ class TestimonialController extends Controller
             'body' => $resolved['body'],
             'rating' => $item->rating,
             'featured' => $item->featured,
+            'relatedEventSlug' => $item->related_event_slug,
             'sortOrder' => $item->sort_order,
             'isPublished' => $item->is_published,
             'publishedAt' => optional($item->published_at)->toDateString(),

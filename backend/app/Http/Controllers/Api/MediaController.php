@@ -63,6 +63,20 @@ class MediaController extends Controller
         ]);
     }
 
+    public function destroySiteAsset(Request $request, SiteAssetService $assets)
+    {
+        $request->validate([
+            'path' => ['required', 'string', 'max:255'],
+        ]);
+
+        return response()->json($assets->deletePublicPath((string) $request->input('path')));
+    }
+
+    public function destroyAllSiteAssets(SiteAssetService $assets)
+    {
+        return response()->json($assets->deleteAllSiteImages());
+    }
+
     public function replace(Request $request, Media $media, SiteAssetService $assets)
     {
         $request->validate([

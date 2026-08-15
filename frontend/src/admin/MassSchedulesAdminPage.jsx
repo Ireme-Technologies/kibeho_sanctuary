@@ -10,6 +10,8 @@ import Modal from './components/Modal'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
 import { formatMassTime, formatRecurrence, RECURRENCE_OPTIONS } from '@utils/eventTime'
 import styles from './admin.module.css'
 
@@ -56,7 +58,7 @@ export default function MassSchedulesAdminPage() {
     setOpen(true)
   }
 
-  const openEdit = (item) => {
+  const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
       day_label: item.dayLabel || '',
@@ -71,7 +73,7 @@ export default function MassSchedulesAdminPage() {
       is_published: item.isPublished !== false,
       translations: item.translations || {},
     })
-    setLocaleTab(defaultLocale || 'en')
+    setLocaleTab(localeCode || defaultLocale || 'en')
     setError('')
     setOpen(true)
   }
@@ -145,41 +147,38 @@ export default function MassSchedulesAdminPage() {
             <tr>
               <th>Day</th>
               <th>Title</th>
+              <LocaleColumnHeaders defaultLocale={defaultLocale} />
               <th>Time</th>
               <th>Repeats</th>
               <th>Published</th>
-              <th />
             </tr>
           </thead>
           <tbody>
             {items.map((item) => (
               <tr key={item.id}>
                 <td>{item.dayLabel || '—'}</td>
-                <td>{item.title}</td>
+                <td>
+                  <ListTitle
+                    title={item.title}
+                    onEdit={() => openEdit(item)}
+                    onDelete={() => handleDelete(item.id)}
+                    viewHref="/shrine/mass-schedule"
+                  />
+                </td>
+                <LocaleColumnCells
+                  item={item}
+                  fields={LOCALE_FIELDS}
+                  defaultLocale={defaultLocale}
+                  onEditLocale={(code) => openEdit(item, code)}
+                />
                 <td>{formatMassTime(item) || '—'}</td>
                 <td>{formatRecurrence(item) || 'One-time'}</td>
                 <td>{item.isPublished ? 'Yes' : 'No'}</td>
-                <td className={styles.actions}>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => openEdit(item)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnDanger}`}
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
               </tr>
             ))}
             {!items.length && (
               <tr>
-                <td colSpan={6} className={styles.muted}>
+                <td colSpan={9} className={styles.muted}>
                   No mass schedules yet.
                 </td>
               </tr>

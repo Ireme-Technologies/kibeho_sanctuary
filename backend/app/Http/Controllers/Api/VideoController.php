@@ -132,9 +132,7 @@ class VideoController extends Controller
                 'title' => $video->title,
                 'description' => $video->description,
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $video->translations, ['title', 'description'], $locale);
+        $resolved = Locale::resolve($base, $video->translations, ['title', 'description'], $locale);
 
         $id = $video->youtube_id;
         $thumb = $video->thumbnail_url

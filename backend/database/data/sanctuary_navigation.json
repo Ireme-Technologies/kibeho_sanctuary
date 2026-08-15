@@ -25,6 +25,14 @@
           "path": "/our-lady/history"
         },
         {
+          "label": "Pastoral Team",
+          "path": "/our-lady/pastoral-team"
+        },
+        {
+          "label": "Communities",
+          "path": "/our-lady/communities"
+        },
+        {
           "label": "FAQ",
           "path": "/our-lady/faq"
         }

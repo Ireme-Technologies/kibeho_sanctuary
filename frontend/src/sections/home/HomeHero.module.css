@@ -3,8 +3,8 @@
   width: 100%;
   overflow: hidden;
   background-color: var(--color-navy);
-  margin-top: calc(var(--topbar-height) + var(--header-height));
-  height: calc(100vh - var(--topbar-height) - var(--header-height));
+  margin-top: var(--chrome-height);
+  height: calc(100vh - var(--chrome-height));
   min-height: 580px;
   max-height: 860px;
 }
@@ -103,6 +103,15 @@
 @keyframes heroFadeUp {
   from { opacity: 0; transform: translateY(28px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.kicker {
+  margin: 0 0 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-sky-light);
 }
 
 .headline {

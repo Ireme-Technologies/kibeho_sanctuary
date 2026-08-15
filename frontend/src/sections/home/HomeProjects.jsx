@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { MapPin, ArrowRight } from 'lucide-react'
 import { useInView } from '@hooks/useInView'
 import { useContent } from '@context/ContentContext'
-import RichText from '@components/ui/RichText'
+import { cardExcerpt } from '@utils/text'
 import {
   projectsHeadingStart as fbStart,
   projectsHeadingHighlight as fbHighlight,
@@ -37,7 +37,9 @@ function ProjectCard({ project, isHero, index, inView }) {
           <MapPin size={13} className={styles.metaIcon} />
           <span className={styles.cardLocation}>{project.location}</span>
         </div>
-        <RichText html={project.shortDescription} className={styles.cardDescription} />
+        {cardExcerpt(project) ? (
+          <p className={styles.cardDescription}>{cardExcerpt(project)}</p>
+        ) : null}
         <span className={styles.cardCta}>
           View Project
           <span className={styles.ctaArrow}>

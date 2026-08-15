@@ -4,11 +4,8 @@ import PageHeader from '@components/ui/PageHeader'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchVideos } from '@api/cms'
+import { excerpt, stripHtml } from '@utils/text'
 import styles from './VideosPage.module.css'
-
-function stripHtml(html = '') {
-  return String(html).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-}
 
 export default function VideosPage() {
   const { section, resolveHeaderImage } = useContent()
@@ -81,7 +78,7 @@ export default function VideosPage() {
                 <div className={styles.body}>
                   <h2 className={styles.title}>{item.title}</h2>
                   {item.description ? (
-                    <p className={styles.excerpt}>{stripHtml(item.description)}</p>
+                    <p className={styles.excerpt}>{excerpt(item.description)}</p>
                   ) : null}
                   <div className={styles.actions}>
                     <button type="button" className={styles.watchBtn} onClick={() => setActive(item)}>

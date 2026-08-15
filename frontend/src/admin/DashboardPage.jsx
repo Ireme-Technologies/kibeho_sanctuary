@@ -84,18 +84,34 @@ export default function DashboardPage() {
 
       <div className={styles.howtoGrid}>
         <div className={styles.howtoCard}>
-          <h2>Manage languages</h2>
+          <h2>See what is still missing</h2>
           <p>
-            Open any content item and use the <strong>Ikinyarwanda / Français / English / Deutsch</strong> tabs.
-            A filled green dot means that language has text. Empty fields fall back to the default language.
-          </p>
-          <p>
-            Use <strong>Copy from default</strong> to duplicate the English (or default) text, then translate in place.
+            Open <strong>CMS audit</strong> for a readiness score: settings, pages, accommodations,
+            communities, translations, and more. Each gap links to the screen where you can finish it.
           </p>
           <div className={styles.howtoLinks}>
+            <Link to="/admin/audit">Open CMS audit</Link>
+            <a href="/docs/sitemap-and-admin-guide#getting-started" target="_blank" rel="noreferrer">
+              User guide
+            </a>
+          </div>
+        </div>
+        <div className={styles.howtoCard}>
+          <h2>Manage languages</h2>
+          <p>
+            In <strong>Translations</strong>, add a language, translate it in admin, then click{' '}
+            <strong>Show to visitors</strong> when it is ready. Draft languages stay on Pages, News, and
+            menus for staff, but they do not appear in the public language menu.
+          </p>
+          <p>
+            Lists show flag columns starting with the default language. A <strong>pencil</strong> means
+            that language has text. A <strong>plus</strong> means it is empty — click it to open the editor
+            on that language.
+          </p>
+          <div className={styles.howtoLinks}>
+            <Link to="/admin/translations">Add or publish a language</Link>
             <Link to="/admin/sections">Pages &amp; layout</Link>
             <Link to="/admin/blog">News articles</Link>
-            <Link to="/admin/translations">Button labels</Link>
           </div>
         </div>
         <div className={styles.howtoCard}>
@@ -109,8 +125,32 @@ export default function DashboardPage() {
             and YouTube — then click <strong>Save page</strong>.
           </p>
           <div className={styles.howtoLinks}>
-            <Link to="/admin/sections">Open Pages</Link>
+            <Link to="/admin/sections">Site pages</Link>
             <Link to="/admin/home-hero">Home hero</Link>
+          </div>
+        </div>
+        <div className={styles.howtoCard}>
+          <h2>Menus &amp; links</h2>
+          <p>
+            The public header, utility bar, and footer are edited in <strong>Site menus</strong>.
+            Choose Main menu, Top header, or Footer, then add an item as top-level or a submenu.
+            Drag items to reorder them.
+          </p>
+          <div className={styles.howtoLinks}>
+            <Link to="/admin/menus">Open site menus</Link>
+            <Link to="/admin/translations">Button labels</Link>
+          </div>
+        </div>
+        <div className={styles.howtoCard}>
+          <h2>Page list &amp; languages</h2>
+          <p>
+            <strong>Pages</strong> and <strong>News</strong> use a WordPress-style list: the title, then
+            Edit / View / Delete underneath, then flag columns for each language. Click a plus to add a
+            missing translation.
+          </p>
+          <div className={styles.howtoLinks}>
+            <Link to="/admin/sections">List of pages</Link>
+            <Link to="/admin/blog">News articles</Link>
           </div>
         </div>
       </div>

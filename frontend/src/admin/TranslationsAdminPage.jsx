@@ -1,57 +1,58 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchI18n, updateI18n } from '@api/cms'
+import { useLocale } from '@context/LocaleContext'
 import { LOCALES } from '@i18n/locales'
+import { normalizeLanguages } from '@i18n/languageCatalog'
 import FlashMessage from './components/FlashMessage'
+import LanguagesManager from './components/LanguagesManager'
 import { confirmDelete } from './components/confirmDelete'
+import { orderedLocales } from './components/LocaleColumns'
 import styles from './admin.module.css'
 
 function emptyRow(locales) {
   return Object.fromEntries(locales.map((code) => [code, '']))
 }
 
-function snapshotState({ defaultLocale, enabledLocales, dictionary }) {
-  return JSON.stringify({ defaultLocale, enabledLocales, dictionary })
+function snapshotState({ dictionary }) {
+  return JSON.stringify({ dictionary })
 }
 
 export default function TranslationsAdminPage() {
+  const { reloadI18n } = useLocale()
   const [defaultLocale, setDefaultLocale] = useState('en')
-  const [enabledLocales, setEnabledLocales] = useState(LOCALES.map((l) => l.code))
+  const [languages, setLanguages] = useState(LOCALES.map((item) => ({ ...item, public: true })))
+  const [catalog, setCatalog] = useState([])
   const [dictionary, setDictionary] = useState({})
   const [savedSnapshot, setSavedSnapshot] = useState('')
-  const [tab, setTab] = useState('en')
   const [query, setQuery] = useState('')
   const [newKey, setNewKey] = useState('')
+  const [showAllLocales, setShowAllLocales] = useState(false)
   const [flash, setFlash] = useState({ type: 'success', message: '' })
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [langBusy, setLangBusy] = useState(false)
+
+  const enabledLocales = languages.map((item) => item.code)
 
   const dirty = useMemo(() => {
     if (!savedSnapshot) return false
-    return (
-      snapshotState({ defaultLocale, enabledLocales, dictionary }) !== savedSnapshot
-    )
-  }, [defaultLocale, enabledLocales, dictionary, savedSnapshot])
+    return snapshotState({ dictionary }) !== savedSnapshot
+  }, [dictionary, savedSnapshot])
+
+  const applyPack = (data) => {
+    const nextDict = data.dictionary || {}
+    setDefaultLocale(data.defaultLocale || 'en')
+    setLanguages(normalizeLanguages(data))
+    setCatalog(data.catalog || [])
+    setDictionary(nextDict)
+    setSavedSnapshot(snapshotState({ dictionary: nextDict }))
+  }
 
   const load = async () => {
     setLoading(true)
     try {
       const data = await fetchI18n()
-      const nextDefault = data.defaultLocale || 'en'
-      const nextEnabled = data.enabledLocales?.length
-        ? data.enabledLocales
-        : LOCALES.map((l) => l.code)
-      const nextDict = data.dictionary || {}
-      setDefaultLocale(nextDefault)
-      setEnabledLocales(nextEnabled)
-      setDictionary(nextDict)
-      setSavedSnapshot(
-        snapshotState({
-          defaultLocale: nextDefault,
-          enabledLocales: nextEnabled,
-          dictionary: nextDict,
-        }),
-      )
-      if (data.defaultLocale) setTab(data.defaultLocale)
+      applyPack(data)
     } catch (err) {
       setFlash({ type: 'error', message: err.message || 'Failed to load translations' })
     } finally {
@@ -117,16 +118,40 @@ export default function TranslationsAdminPage() {
     })
   }
 
+  const persistLanguages = async (nextLanguages, nextDefault = defaultLocale) => {
+    setLangBusy(true)
+    try {
+      const data = await updateI18n({
+        defaultLocale: nextDefault,
+        enabledLocales: nextLanguages.map((item) => item.code),
+        languages: nextLanguages,
+      })
+      setDefaultLocale(data.defaultLocale || nextDefault)
+      setLanguages(normalizeLanguages(data))
+      setCatalog(data.catalog || [])
+      if (nextLanguages.length > 3) setShowAllLocales(true)
+      await reloadI18n()
+      setFlash({ type: 'success', message: 'Languages updated.' })
+    } catch (err) {
+      setFlash({ type: 'error', message: err.message || 'Failed to update languages' })
+      throw err
+    } finally {
+      setLangBusy(false)
+    }
+  }
+
   const handleSave = async () => {
     setSaving(true)
     try {
       await updateI18n({
         defaultLocale,
         enabledLocales,
+        languages,
         strings: dictionary,
       })
       setFlash({ type: 'success', message: 'Translations saved.' })
       await load()
+      await reloadI18n()
     } catch (err) {
       setFlash({ type: 'error', message: err.message || 'Failed to save translations' })
     } finally {
@@ -134,7 +159,12 @@ export default function TranslationsAdminPage() {
     }
   }
 
-  const tabs = LOCALES.filter((l) => enabledLocales.includes(l.code))
+  const enabledMeta = languages.length ? languages : LOCALES
+  const columnLocales = orderedLocales(defaultLocale, {
+    locales: enabledMeta,
+    limit: showAllLocales ? undefined : 3,
+  })
+  const hiddenLocales = enabledMeta.filter((l) => !columnLocales.some((c) => c.code === l.code))
   const saveLabel = saving ? 'Saving…' : 'Save translations'
   const saveDisabled = saving || loading || !dirty
 
@@ -157,25 +187,21 @@ export default function TranslationsAdminPage() {
       />
 
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
-        This page is for <strong>short buttons and labels</strong> (Donate, Contact, form hints).
-        For page articles, news, and layout, open that item and use the <strong>language tabs</strong> on
-        the form — then click <strong>Save translations</strong> here after editing labels.
-        Empty values fall back to the default language, then English.
+        This page is for <strong>short buttons and labels</strong> (Donate, menu words, form hints).
+        Empty cells are highlighted — visitors then see the default language. Long articles belong in{' '}
+        <strong>Pages</strong> or <strong>News</strong>, where each language has its own editor.
       </p>
+
+      <LanguagesManager
+        languages={enabledMeta}
+        defaultLocale={defaultLocale}
+        catalog={catalog}
+        onPersist={persistLanguages}
+        busy={langBusy || saving}
+      />
 
       <div className={styles.card} style={{ marginBottom: '1rem' }}>
         <div className={styles.fieldRow}>
-          <div className={styles.field}>
-            <label>Default language</label>
-            <select value={defaultLocale} onChange={(e) => setDefaultLocale(e.target.value)}>
-              {LOCALES.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.label}
-                </option>
-              ))}
-            </select>
-            <p className={styles.muted}>Used for first-time visitors and as fallback when a translation is missing.</p>
-          </div>
           <div className={styles.field}>
             <label>Search keys</label>
             <input
@@ -184,8 +210,6 @@ export default function TranslationsAdminPage() {
               placeholder="Filter by key or text…"
             />
           </div>
-        </div>
-        <div className={styles.fieldRow}>
           <div className={styles.field}>
             <label>Add key</label>
             <input
@@ -208,21 +232,25 @@ export default function TranslationsAdminPage() {
         </div>
       </div>
 
-      <div className={styles.card}>
-        <div className={styles.localeTabs} role="tablist" aria-label="Languages">
-          {tabs.map((l) => (
+      <div className={`${styles.card} ${styles.i18nTable}`}>
+        <div className={styles.i18nToolbar}>
+          <p className={styles.i18nToolbarHint}>
+            Columns start with the default language. Cream cells are still empty
+            {hiddenLocales.length
+              ? ` — ${hiddenLocales.map((l) => l.nativeLabel || l.label).join(', ')} ${
+                  hiddenLocales.length === 1 ? 'is' : 'are'
+                } hidden until you show all languages.`
+              : '.'}
+          </p>
+          {enabledMeta.length > 3 ? (
             <button
-              key={l.code}
               type="button"
-              role="tab"
-              aria-selected={tab === l.code}
-              className={`${styles.localeTab} ${tab === l.code ? styles.localeTabActive : ''}`}
-              onClick={() => setTab(l.code)}
+              className={showAllLocales ? `${styles.btn} ${styles.btnSecondary}` : styles.btn}
+              onClick={() => setShowAllLocales((value) => !value)}
             >
-              {l.flag} {l.label}
-              {l.code === defaultLocale ? ' · default' : ''}
+              {showAllLocales ? 'Show 3 languages' : 'Show all languages'}
             </button>
-          ))}
+          ) : null}
         </div>
 
         {loading ? (
@@ -231,13 +259,14 @@ export default function TranslationsAdminPage() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th style={{ width: '22%' }}>Key</th>
-                {tab !== defaultLocale ? (
-                  <th style={{ width: '28%' }}>
-                    {tabs.find((l) => l.code === defaultLocale)?.label || defaultLocale} (source)
+                <th style={{ width: '18%' }}>Key</th>
+                {columnLocales.map((l) => (
+                  <th key={l.code}>
+                    {l.flag} {l.nativeLabel || l.label}
+                    {l.code === defaultLocale ? ' · default' : ''}
+                    {l.public === false && l.code !== defaultLocale ? ' · draft' : ''}
                   </th>
-                ) : null}
-                <th>{tabs.find((l) => l.code === tab)?.label || tab}</th>
+                ))}
                 <th style={{ width: 90 }} />
               </tr>
             </thead>
@@ -251,18 +280,26 @@ export default function TranslationsAdminPage() {
                     <td>
                       <code>{key}</code>
                     </td>
-                    {tab !== defaultLocale ? (
-                      <td>
-                        <p className={styles.sourceText}>{fallback || '—'}</p>
-                      </td>
-                    ) : null}
-                    <td>
-                      <input
-                        value={row[tab] || ''}
-                        onChange={(e) => setValue(key, tab, e.target.value)}
-                        placeholder={fallback ? `Fallback: ${fallback}` : 'Enter translation'}
-                      />
-                    </td>
+                    {columnLocales.map((l) => {
+                      const value = row[l.code] || ''
+                      const empty = !String(value).trim()
+                      return (
+                        <td key={l.code}>
+                          <input
+                            className={empty && l.code !== defaultLocale ? styles.i18nEmpty : undefined}
+                            value={value}
+                            onChange={(e) => setValue(key, l.code, e.target.value)}
+                            placeholder={
+                              l.code === defaultLocale
+                                ? 'Default text'
+                                : fallback
+                                  ? `Empty — uses: ${fallback}`
+                                  : 'Empty'
+                            }
+                          />
+                        </td>
+                      )
+                    })}
                     <td>
                       <button
                         type="button"
@@ -277,8 +314,8 @@ export default function TranslationsAdminPage() {
               })}
               {!keys.length && (
                 <tr>
-                  <td colSpan={tab !== defaultLocale ? 4 : 3} className={styles.muted}>
-                    No translation keys match. Open a content form (Pages, News) to translate long text.
+                  <td colSpan={columnLocales.length + 2} className={styles.muted}>
+                    No translation keys match. Open Pages or News to translate long text.
                   </td>
                 </tr>
               )}

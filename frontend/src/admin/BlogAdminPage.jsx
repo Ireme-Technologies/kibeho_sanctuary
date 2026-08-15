@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { createBlogPost, deleteBlogPost, fetchBlogPosts, updateBlogPost } from '@api/cms'
+import { createBlogPost, deleteBlogPost, fetchBlogPosts, fetchUpcomingPilgrimages, updateBlogPost } from '@api/cms'
 import { useLocale } from '@context/LocaleContext'
 import Modal from './components/Modal'
 import ImageField from './components/ImageField'
@@ -7,6 +7,8 @@ import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
 const LOCALE_FIELDS = ['title', 'excerpt', 'body']
@@ -24,6 +26,7 @@ const empty = {
   cover_image: '',
   published_at: '',
   is_published: true,
+  related_event_slug: '',
   translations: {},
 }
 
@@ -39,6 +42,7 @@ const CATEGORY_OPTIONS = [
 export default function BlogAdminPage() {
   const { defaultLocale } = useLocale()
   const [items, setItems] = useState([])
+  const [events, setEvents] = useState([])
   const [form, setForm] = useState(empty)
   const [localeTab, setLocaleTab] = useState(defaultLocale || 'en')
   const [editingId, setEditingId] = useState(null)
@@ -50,6 +54,9 @@ export default function BlogAdminPage() {
   const load = async () => setItems(await fetchBlogPosts())
   useEffect(() => {
     load().catch((err) => setFlash({ type: 'error', message: err.message || 'Failed to load posts' }))
+    fetchUpcomingPilgrimages()
+      .then(setEvents)
+      .catch(() => setEvents([]))
   }, [])
 
   const openCreate = () => {
@@ -59,7 +66,7 @@ export default function BlogAdminPage() {
     setError('')
     setOpen(true)
   }
-  const openEdit = (item) => {
+  const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
       title: item.title || '',
@@ -74,9 +81,10 @@ export default function BlogAdminPage() {
       cover_image: item.coverImage || '',
       published_at: item.publishedAt || '',
       is_published: item.isPublished !== false,
+      related_event_slug: item.relatedEventSlug || '',
       translations: item.translations || {},
     })
-    setLocaleTab(defaultLocale || 'en')
+    setLocaleTab(localeCode || defaultLocale || 'en')
     setError('')
     setOpen(true)
   }
@@ -86,6 +94,7 @@ export default function BlogAdminPage() {
     return {
       ...rest,
       tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
+      related_event_slug: form.related_event_slug || null,
       translations: splitTranslationsPayload(form, LOCALE_FIELDS, defaultLocale),
     }
   }
@@ -133,22 +142,41 @@ export default function BlogAdminPage() {
         message={flash.message}
         onClear={() => setFlash({ type: 'success', message: '' })}
       />
+      <p className={styles.langLegend}>
+        Flag columns start with the default language. A pencil means that language has text; a plus
+        means it is still empty — click it to translate. Edit / View / Delete sit under the title.
+      </p>
       <div className={styles.card}>
         <table className={styles.table}>
           <thead>
-            <tr><th>Image</th><th>Title</th><th>Category</th><th>Published</th><th /></tr>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <LocaleColumnHeaders defaultLocale={defaultLocale} />
+              <th>Category</th>
+              <th>Published</th>
+            </tr>
           </thead>
           <tbody>
             {items.map((item) => (
               <tr key={item.id}>
                 <td>{item.coverImage ? <img className={styles.thumb} src={item.coverImage} alt="" /> : '—'}</td>
-                <td>{item.title}</td>
+                <td>
+                  <ListTitle
+                    title={item.title}
+                    onEdit={() => openEdit(item)}
+                    onDelete={() => handleDelete(item.id)}
+                    viewHref={item.slug ? `/news/${item.slug}` : null}
+                  />
+                </td>
+                <LocaleColumnCells
+                  item={item}
+                  fields={LOCALE_FIELDS}
+                  defaultLocale={defaultLocale}
+                  onEditLocale={(code) => openEdit(item, code)}
+                />
                 <td>{item.category}</td>
                 <td>{item.publishedAt || '—'}</td>
-                <td className={styles.actions}>
-                  <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => openEdit(item)}>Edit</button>
-                  <button type="button" className={`${styles.btn} ${styles.btnDanger}`} onClick={() => handleDelete(item.id)}>Delete</button>
-                </td>
               </tr>
             ))}
           </tbody>
@@ -212,6 +240,21 @@ export default function BlogAdminPage() {
               <label>Published at</label>
               <input type="date" value={form.published_at || ''} onChange={(e) => setForm({ ...form, published_at: e.target.value })} />
             </div>
+          </div>
+          <div className={styles.field}>
+            <label>Related pilgrimage / feast</label>
+            <select
+              value={form.related_event_slug}
+              onChange={(e) => setForm({ ...form, related_event_slug: e.target.value })}
+            >
+              <option value="">None</option>
+              {events.map((event) => (
+                <option key={event.slug} value={event.slug}>
+                  {event.title}
+                </option>
+              ))}
+            </select>
+            <p className={styles.muted}>Shown as an update on that event’s public page.</p>
           </div>
           <label>
             <input type="checkbox" checked={form.is_published} onChange={(e) => setForm({ ...form, is_published: e.target.checked })} /> Published

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { ChevronDown, X } from 'lucide-react'
 import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
+import { displayCapsLabel } from '@i18n/typography'
 import styles from './MobileDrawer.module.css'
 
 function DrawerItem({ item, onClose }) {
@@ -64,6 +66,7 @@ function DrawerItem({ item, onClose }) {
 
 export default function MobileDrawer({ isOpen, onClose }) {
   const { primaryNav, navCTA } = useContent()
+  const { locale } = useLocale()
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
@@ -94,7 +97,7 @@ export default function MobileDrawer({ isOpen, onClose }) {
             <DrawerItem key={item.path + item.label} item={item} onClose={onClose} />
           ))}
           <NavLink to={navCTA.path} onClick={onClose} className={styles.ctaBtn}>
-            {navCTA.label}
+            {displayCapsLabel(navCTA.label, locale)}
           </NavLink>
         </nav>
       </aside>

@@ -77,6 +77,12 @@
   animation: riseIn 0.55s var(--ease-luxury) forwards;
 }
 
+.pillLive {
+  border-top-color: var(--color-navy);
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(180deg, #eef6fc 0%, var(--color-white) 42%);
+}
+
 @keyframes riseIn {
   to {
     opacity: 1;

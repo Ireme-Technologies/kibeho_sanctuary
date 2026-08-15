@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react'
+import { Navigate, useSearchParams } from 'react-router-dom'
 import { fetchSettings, updateSettings } from '@api/cms'
 import { useContent } from '@context/ContentContext'
-import {
-  primaryNav as fallbackPrimaryNav,
-  footerLinks as fallbackFooterLinks,
-  footerServiceLinks as fallbackFooterServiceLinks,
-  navCTA as fallbackNavCTA,
-  utilityNav as fallbackUtilityNav,
-} from '@data/navigation'
 import {
   DEFAULT_THEME,
   applyThemeToDocument,
@@ -18,7 +12,6 @@ import FlashMessage from './components/FlashMessage'
 import FontPicker from './components/FontPicker'
 import ImageField from './components/ImageField'
 import ListEditor from './components/ListEditor'
-import { confirmDelete } from './components/confirmDelete'
 import RichTextEditor from './components/RichTextEditor'
 import styles from './admin.module.css'
 
@@ -27,28 +20,13 @@ const TABS = [
   { id: 'contact', label: 'Contact & social' },
   { id: 'contact-page', label: 'Contact page' },
   { id: 'map', label: 'Map' },
-  { id: 'menus', label: 'Menus & links' },
 ]
 
 const SETTINGS_TAB_KEY = 'admin.settings.activeTab'
 
 const emptyHours = { day: '', hours: '' }
-const emptyLink = { label: '', path: '' }
 const emptySocial = { label: '', href: '' }
 const emptyCustomSocial = { iconCode: '', label: '', href: '' }
-const emptyNavChild = { label: '', path: '' }
-const emptyNavItem = { label: '', path: '', children: [] }
-
-function normalizeNavItems(items) {
-  if (!Array.isArray(items) || !items.length) return fallbackPrimaryNav
-  return items.map((item) => ({
-    label: item.label || '',
-    path: item.path || '',
-    children: Array.isArray(item.children)
-      ? item.children.map((child) => ({ label: child.label || '', path: child.path || '' }))
-      : [],
-  }))
-}
 
 function readStoredTab() {
   try {
@@ -60,9 +38,20 @@ function readStoredTab() {
   return 'brand'
 }
 
+function readInitialTab() {
+  try {
+    const urlTab = new URLSearchParams(window.location.search).get('tab')
+    if (TABS.some((tab) => tab.id === urlTab)) return urlTab
+  } catch {
+    /* ignore */
+  }
+  return readStoredTab()
+}
+
 export default function SettingsAdminPage() {
   const { refresh } = useContent()
-  const [activeTab, setActiveTab] = useState(readStoredTab)
+  const [searchParams] = useSearchParams()
+  const [activeTab, setActiveTab] = useState(readInitialTab)
   const [company, setCompany] = useState({
     name: '',
     tagline: '',
@@ -102,11 +91,6 @@ export default function SettingsAdminPage() {
     directionsLink: '',
     directionsLabel: 'Get Directions',
   })
-  const [primaryNav, setPrimaryNav] = useState([])
-  const [utilityNav, setUtilityNav] = useState([])
-  const [footerLinks, setFooterLinks] = useState([])
-  const [footerServiceLinks, setFooterServiceLinks] = useState([])
-  const [navCTA, setNavCTA] = useState({ label: 'Donate', path: '/support/donations' })
   const [error, setError] = useState('')
   const [flash, setFlash] = useState({ type: 'success', message: '' })
   const [saving, setSaving] = useState(false)
@@ -118,6 +102,13 @@ export default function SettingsAdminPage() {
     } catch {
       /* ignore */
     }
+    try {
+      const url = new URL(window.location.href)
+      url.searchParams.set('tab', id)
+      window.history.replaceState({}, '', url)
+    } catch {
+      /* ignore */
+    }
   }
 
   useEffect(() => {
@@ -125,7 +116,6 @@ export default function SettingsAdminPage() {
       .then((data) => {
         const c = data.company || {}
         const contactData = data.contact || {}
-        const navigation = data.navigation || {}
         const nextTheme = normalizeTheme(data.theme || DEFAULT_THEME)
         setCompany({
           name: c.name || 'Shrine of Our Lady of Kibeho',
@@ -194,23 +184,6 @@ export default function SettingsAdminPage() {
           directionsLink: contactData.map?.directionsLink || '',
           directionsLabel: contactData.map?.directionsLabel || 'Get Directions',
         })
-        setPrimaryNav(normalizeNavItems(navigation.primaryNav))
-        setUtilityNav(
-          Array.isArray(navigation.utilityNav) && navigation.utilityNav.length
-            ? navigation.utilityNav
-            : fallbackUtilityNav
-        )
-        setFooterLinks(
-          Array.isArray(navigation.footerLinks) && navigation.footerLinks.length
-            ? navigation.footerLinks
-            : fallbackFooterLinks
-        )
-        setFooterServiceLinks(
-          Array.isArray(navigation.footerServiceLinks) && navigation.footerServiceLinks.length
-            ? navigation.footerServiceLinks
-            : fallbackFooterServiceLinks
-        )
-        setNavCTA(navigation.navCTA || fallbackNavCTA)
       })
       .catch((err) => setFlash({ type: 'error', message: err.message || 'Failed to load settings' }))
   }, [])
@@ -221,14 +194,6 @@ export default function SettingsAdminPage() {
       applyThemeToDocument(next)
       return next
     })
-  }
-
-  const updateNavItem = (index, patch) => {
-    setPrimaryNav((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)))
-  }
-
-  const updateNavChildren = (index, children) => {
-    updateNavItem(index, { children })
   }
 
   const handleSubmit = async (e) => {
@@ -297,23 +262,6 @@ export default function SettingsAdminPage() {
             directionsLabel: map.directionsLabel,
           },
         },
-        navigation: {
-          primaryNav: primaryNav.map((item) => ({
-            label: item.label,
-            path: item.path,
-            ...(item.children?.length
-              ? {
-                  children: item.children
-                    .filter((child) => child.label || child.path)
-                    .map((child) => ({ label: child.label, path: child.path })),
-                }
-              : {}),
-          })),
-          utilityNav: utilityNav.filter((item) => item.label || item.path),
-          footerLinks: footerLinks.filter((item) => item.label || item.path),
-          footerServiceLinks: footerServiceLinks.filter((item) => item.label || item.path),
-          navCTA,
-        },
       })
       applyThemeToDocument(theme)
       await refresh?.()
@@ -325,6 +273,10 @@ export default function SettingsAdminPage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  if (searchParams.get('tab') === 'menus') {
+    return <Navigate to="/admin/menus" replace />
   }
 
   return (
@@ -672,154 +624,6 @@ export default function SettingsAdminPage() {
                   />
                 </div>
               ) : null}
-            </div>
-          )}
-
-          {activeTab === 'menus' && (
-            <div className={styles.tabPanel} role="tabpanel">
-              <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
-                Header CTA button
-              </h2>
-              <div className={styles.fieldRow}>
-                <div className={styles.field}>
-                  <label>Button label</label>
-                  <input value={navCTA.label} onChange={(e) => setNavCTA({ ...navCTA, label: e.target.value })} />
-                </div>
-                <div className={styles.field}>
-                  <label>Button link</label>
-                  <input value={navCTA.path} onChange={(e) => setNavCTA({ ...navCTA, path: e.target.value })} />
-                </div>
-              </div>
-
-              <h2 className={styles.sectionTitle}>Top utility links</h2>
-              <ListEditor
-                label="Utility bar links"
-                items={utilityNav}
-                onChange={setUtilityNav}
-                addLabel="Add utility link"
-                emptyItem={{ ...emptyLink }}
-                fields={[
-                  { key: 'label', label: 'Label' },
-                  { key: 'path', label: 'Path', placeholder: '/about/mass-times' },
-                ]}
-              />
-
-              <h2 className={styles.sectionTitle}>Main menu</h2>
-              <p className={styles.muted}>
-                Edit labels, paths, and dropdown children. Use ↑ ↓ to reorder top-level items and dropdowns.
-              </p>
-              <div className={styles.listEditor}>
-                {primaryNav.map((item, index) => (
-                  <div key={`nav-${index}`} className={styles.listEditorRow}>
-                    <div>
-                      <div className={styles.listEditorFields}>
-                        <div className={styles.field}>
-                          <label>Menu label</label>
-                          <input
-                            value={item.label}
-                            onChange={(e) => updateNavItem(index, { label: e.target.value })}
-                          />
-                        </div>
-                        <div className={styles.field}>
-                          <label>Path</label>
-                          <input
-                            value={item.path}
-                            onChange={(e) => updateNavItem(index, { path: e.target.value })}
-                          />
-                        </div>
-                      </div>
-                      <div className={styles.nestedCard}>
-                        <ListEditor
-                          label="Dropdown items"
-                          items={item.children || []}
-                          onChange={(children) => updateNavChildren(index, children)}
-                          addLabel="Add dropdown item"
-                          emptyItem={{ ...emptyNavChild }}
-                          fields={[
-                            { key: 'label', label: 'Label' },
-                            { key: 'path', label: 'Path' },
-                          ]}
-                        />
-                      </div>
-                    </div>
-                    <div className={styles.listEditorControls}>
-                      <button
-                        type="button"
-                        className={`${styles.btn} ${styles.btnSecondary}`}
-                        onClick={() =>
-                          setPrimaryNav((prev) => {
-                            if (index === 0) return prev
-                            const next = [...prev]
-                            ;[next[index - 1], next[index]] = [next[index], next[index - 1]]
-                            return next
-                          })
-                        }
-                        disabled={index === 0}
-                        aria-label="Move menu item up"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.btn} ${styles.btnSecondary}`}
-                        onClick={() =>
-                          setPrimaryNav((prev) => {
-                            if (index >= prev.length - 1) return prev
-                            const next = [...prev]
-                            ;[next[index + 1], next[index]] = [next[index], next[index + 1]]
-                            return next
-                          })
-                        }
-                        disabled={index === primaryNav.length - 1}
-                        aria-label="Move menu item down"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.btn} ${styles.btnDanger}`}
-                        onClick={async () => {
-                          if (!(await confirmDelete('Remove this menu item?', { confirmLabel: 'Remove' }))) return
-                          setPrimaryNav((prev) => prev.filter((_, i) => i !== index))
-                        }}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  className={`${styles.btn} ${styles.btnSecondary}`}
-                  onClick={() => setPrimaryNav((prev) => [...prev, { ...emptyNavItem, children: [] }])}
-                >
-                  Add menu item
-                </button>
-              </div>
-
-              <h2 className={styles.sectionTitle}>Footer links</h2>
-              <ListEditor
-                label="Useful links"
-                items={footerLinks}
-                onChange={setFooterLinks}
-                addLabel="Add footer link"
-                emptyItem={{ ...emptyLink }}
-                fields={[
-                  { key: 'label', label: 'Label' },
-                  { key: 'path', label: 'Path' },
-                ]}
-              />
-              <ListEditor
-                label="Pilgrimage / quick service links"
-                items={footerServiceLinks}
-                onChange={setFooterServiceLinks}
-                addLabel="Add link"
-                emptyItem={{ ...emptyLink }}
-                fields={[
-                  { key: 'label', label: 'Label' },
-                  { key: 'path', label: 'Path' },
-                ]}
-              />
             </div>
           )}
 

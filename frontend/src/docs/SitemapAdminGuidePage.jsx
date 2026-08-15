@@ -1,21 +1,23 @@
 import styles from './DocsLayout.module.css'
 import { DocsToolbar, DocsCrossNav, DocsToc } from './DocsChrome'
+import DocsAuditPanel from './DocsAuditPanel'
 
 const TOC = [
-  { href: '#sitemap', label: 'Complete sitemap' },
-  { href: '#content-types', label: 'Content types' },
-  { href: '#admin-guide', label: 'Admin user guide' },
-  { href: '#getting-started', label: 'Getting started' },
-  { href: '#languages', label: 'Manage languages' },
+  { href: '#start-here', label: 'How to use this CMS' },
+  { href: '#audit', label: 'CMS audit & readiness' },
+  { href: '#getting-started', label: 'Sign in' },
+  { href: '#settings', label: 'Settings' },
+  { href: '#languages', label: 'Languages' },
+  { href: '#menus-media', label: 'Menus & media' },
   { href: '#pages-news', label: 'Pages & news' },
-  { href: '#menus-media', label: 'Menus, images & documents' },
-  { href: '#translations', label: 'UI labels (Translations)' },
-  { href: '#schedules-dirs', label: 'Schedules & directories' },
+  { href: '#schedules-dirs', label: 'Directories' },
+  { href: '#translations', label: 'Button labels' },
   { href: '#enquiries-users', label: 'Enquiries & users' },
-  { href: '#settings', label: 'Settings & account' },
-  { href: '#backup', label: 'Backups' },
-  { href: '#new-server', label: 'New server & source code' },
-  { href: '#checklist', label: 'Non-technical checklist' },
+  { href: '#backup', label: 'Backup & restore' },
+  { href: '#sitemap', label: 'Public sitemap' },
+  { href: '#content-types', label: 'Content types' },
+  { href: '#checklist', label: 'Checklist' },
+  { href: '#new-server', label: 'New server (technical)' },
   { href: '#future', label: 'Future upgrades' },
 ]
 
@@ -23,12 +25,12 @@ export default function SitemapAdminGuidePage() {
   return (
     <div>
       <div className={styles.pageHeader}>
-        <p className={styles.brandEyebrow}>Document 2 of 2</p>
-        <h1>Sitemap &amp; administrator user guide</h1>
+        <p className={styles.brandEyebrow}>Administrator guide</p>
+        <h1>How to run the Shrine website</h1>
         <p className={styles.lede}>
-          Complete public site map, how every administration module works for non-technical staff, how to
-          back up the site, and what is needed if the site moves to a new server. Start with{' '}
-          <a href="#languages">Best way to manage languages</a>. Use this guide while signed in at{' '}
+          Follow this order: sign in, open <strong>CMS audit</strong>, finish settings and languages, then
+          pages and listings. The live score below (when you are signed in) shows what still needs official
+          content. Use this guide at{' '}
           <a href="/admin/login" target="_blank" rel="noreferrer">
             /admin/login
           </a>
@@ -44,8 +46,50 @@ export default function SitemapAdminGuidePage() {
       <div className={styles.layout}>
         <DocsToc items={TOC} />
         <article className={styles.article}>
+          <section id="start-here">
+            <h2>1. How to use this CMS</h2>
+            <p>
+              Work from the <strong>CMS audit</strong> in the admin sidebar. It scores settings, pages,
+              accommodations, communities, articles, translations, and more, and links you to whatever is
+              not finished. Then follow this guide in order:
+            </p>
+            <ol>
+              <li>
+                Sign in and open <a href="/admin/audit">CMS audit</a>.
+              </li>
+              <li>
+                Complete <a href="#settings">Settings</a> (name, logo, phone, email, map).
+              </li>
+              <li>
+                Add and publish <a href="#languages">languages</a> when translations are ready.
+              </li>
+              <li>
+                Check <a href="#menus-media">menus and images</a>, then <a href="#pages-news">pages and news</a>.
+              </li>
+              <li>
+                Fill <a href="#schedules-dirs">directories</a> (accommodation, churches, pastoral team, etc.).
+              </li>
+              <li>
+                Download a <a href="#backup">backup</a> after large updates.
+              </li>
+            </ol>
+            <p>
+              The public <a href="#sitemap">sitemap</a> is a reference at the end of this page.
+            </p>
+          </section>
+
+          <section id="audit">
+            <h2>2. CMS audit &amp; readiness</h2>
+            <p>
+              The audit is a content report, not a technical test. A high score means fields are filled; you
+              should still replace demo wording and photos with official Shrine material. Click any critical
+              item to open the editor.
+            </p>
+            <DocsAuditPanel />
+          </section>
+
           <section id="sitemap">
-            <h2>1. Complete sitemap</h2>
+            <h2>Public sitemap (reference)</h2>
             <p>
               Primary structure follows the Diocese Terms of Reference (six pillars). Utility links: Mass
               Schedule, Plan Your Pilgrimage, Support, Donate, Contact, and language switcher (RW · FR · EN ·
@@ -270,8 +314,12 @@ export default function SitemapAdminGuidePage() {
                   <td>Translations</td>
                 </tr>
                 <tr>
-                  <td>Menus &amp; contact</td>
-                  <td>Settings &amp; menus</td>
+                  <td>Menus</td>
+                  <td>Site menus</td>
+                </tr>
+                <tr>
+                  <td>Contact &amp; theme</td>
+                  <td>Settings</td>
                 </tr>
                 <tr>
                   <td>Pilgrim messages</td>
@@ -333,6 +381,12 @@ export default function SitemapAdminGuidePage() {
                 </tr>
               </thead>
               <tbody>
+                <tr>
+                  <td>CMS audit</td>
+                  <td>
+                    See the readiness score and jump to missing settings, pages, listings, or translations
+                  </td>
+                </tr>
                 <tr>
                   <td>Dashboard</td>
                   <td>
@@ -407,8 +461,12 @@ export default function SitemapAdminGuidePage() {
                   <td>Create staff accounts (if authorised)</td>
                 </tr>
                 <tr>
-                  <td>Settings &amp; menus</td>
-                  <td>Organisation info, navigation, theme</td>
+                  <td>Site menus</td>
+                  <td>Main menu, top header, and footer links</td>
+                </tr>
+                <tr>
+                  <td>Settings</td>
+                  <td>Organisation info, contact, theme</td>
                 </tr>
                 <tr>
                   <td>Backup &amp; restore</td>
@@ -593,11 +651,11 @@ export default function SitemapAdminGuidePage() {
           <section id="menus-media">
             <h2>8. Update a menu</h2>
             <ol>
-              <li>Open <strong>Settings &amp; menus</strong>.</li>
-              <li>Locate navigation (primary, utility, and/or footer).</li>
-              <li>Update labels and paths. Keep paths consistent with the sitemap (e.g. <code>/support/donations</code>).</li>
-              <li>Save settings.</li>
-              <li>Refresh the public site header/footer.</li>
+              <li>Open <strong>Site menus</strong>.</li>
+              <li>Choose <strong>Main menu</strong>, <strong>Top header</strong>, or <strong>Footer</strong> so you know which location you are editing.</li>
+              <li>Add an item as top-level or as a submenu under a parent, then drag to reorder.</li>
+              <li>Keep paths consistent with the sitemap (e.g. <code>/support/donations</code>).</li>
+              <li>Save menus, then refresh the public site.</li>
             </ol>
             <p>
               Major pillar labels can also be aligned with keys in <strong>Translations</strong> so they
@@ -658,8 +716,9 @@ export default function SitemapAdminGuidePage() {
             <h3>Pilgrimage events</h3>
             <p>
               Create pilgrimage events with start/end date and time, optional recurrence, registration
-              flag, and multilingual description. Public pages: <code>/pilgrimage/calendar</code> and{' '}
-              <code>/pilgrimages/:slug</code>.
+              flag, and multilingual description. Use the <strong>Updates</strong> column on an event to
+              add photo galleries or link a news article (year is optional). Public pages:{' '}
+              <code>/pilgrimage/calendar</code> and <code>/pilgrimages/:slug</code>.
             </p>
             <h3>Churches &amp; apparition sites</h3>
             <p>
@@ -717,7 +776,7 @@ export default function SitemapAdminGuidePage() {
               </li>
               <li>
                 <strong>Backup &amp; restore:</strong> see{' '}
-                <a href="#backup">Backups — DigitalOcean and the admin ZIP</a>.
+                <a href="#backup">Backup &amp; restore</a>.
               </li>
               <li>
                 <strong>My account:</strong> update password; keep credentials private.
@@ -735,27 +794,13 @@ export default function SitemapAdminGuidePage() {
           </section>
 
           <section id="backup">
-            <h2>15. Backups — DigitalOcean and the admin ZIP</h2>
+            <h2>15. Backup &amp; restore</h2>
             <p>
-              There are <strong>two backup options</strong>. They complement each other. DigitalOcean copies
-              stay on DigitalOcean. The admin ZIP is a file the Diocese can keep and take to another host.
+              Use <strong>Admin → Backup &amp; restore</strong> to download a ZIP of this site’s content and
+              media, keep it in a safe place, and restore it here when you need to roll back or recover.
             </p>
 
-            <h3>Option 1 — DigitalOcean server backup (web developer)</h3>
-            <p>
-              The hosting droplet can be snapshotted in the DigitalOcean panel. That restores the whole
-              server quickly if the droplet fails, <em>while the account and region still exist</em>.
-            </p>
-            <ul>
-              <li>
-                This is configured and checked by the <strong>web developer</strong> (Ireme Tech), not by
-                daily CMS staff.
-              </li>
-              <li>Retention is limited (often a few weeks). It is not a file you can download and take to another company.</li>
-              <li>Ask the developer to confirm that droplet backups or weekly snapshots are switched on.</li>
-            </ul>
-
-            <h3>Option 2 — Admin backup ZIP (sanctuary staff)</h3>
+            <h3>Download a backup (sanctuary staff)</h3>
             <p>
               Administrators can download a full copy of <em>live content</em> without SSH. Open{' '}
               <strong>Admin → Backup &amp; restore</strong> (bottom of the sidebar).

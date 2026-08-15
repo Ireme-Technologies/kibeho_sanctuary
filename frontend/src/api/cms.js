@@ -209,6 +209,13 @@ export async function updateUpcomingPilgrimage(id, body) {
   return api(`/api/upcoming-pilgrimages/${id}`, { method: 'PUT', body })
 }
 
+export async function updateUpcomingPilgrimageArchives(id, archives) {
+  return api(`/api/upcoming-pilgrimages/${id}/archives`, {
+    method: 'PUT',
+    body: { archives },
+  })
+}
+
 export async function deleteUpcomingPilgrimage(id) {
   return api(`/api/upcoming-pilgrimages/${id}`, { method: 'DELETE' })
 }
@@ -237,6 +244,19 @@ export const fetchSacredPlace = (slug, params = {}) =>
 export const createSacredPlace = (body) => api('/api/sacred-places', { method: 'POST', body })
 export const updateSacredPlace = (id, body) => api(`/api/sacred-places/${id}`, { method: 'PUT', body })
 export const deleteSacredPlace = (id) => api(`/api/sacred-places/${id}`, { method: 'DELETE' })
+
+export const fetchPastoralTeam = (params = {}) => api(withQuery('/api/pastoral-team', params))
+export const fetchPastoralTeamMember = (slug, params = {}) =>
+  api(withQuery(`/api/pastoral-team/${slug}`, params))
+export const createPastoralTeamMember = (body) => api('/api/pastoral-team', { method: 'POST', body })
+export const updatePastoralTeamMember = (id, body) => api(`/api/pastoral-team/${id}`, { method: 'PUT', body })
+export const deletePastoralTeamMember = (id) => api(`/api/pastoral-team/${id}`, { method: 'DELETE' })
+
+export const fetchCommunities = (params = {}) => api(withQuery('/api/communities', params))
+export const fetchCommunity = (slug, params = {}) => api(withQuery(`/api/communities/${slug}`, params))
+export const createCommunity = (body) => api('/api/communities', { method: 'POST', body })
+export const updateCommunity = (id, body) => api(`/api/communities/${id}`, { method: 'PUT', body })
+export const deleteCommunity = (id) => api(`/api/communities/${id}`, { method: 'DELETE' })
 
 export const fetchLodging = (params = {}) => api(withQuery('/api/facilities', { lodging: 1, ...params }))
 
@@ -268,6 +288,14 @@ export async function replaceSiteAsset(file, path, role = 'site') {
   form.append('path', path)
   if (role) form.append('role', role)
   return api('/api/media/site-assets/replace', { method: 'POST', body: form })
+}
+
+export async function deleteSiteAsset(path) {
+  return api('/api/media/site-assets/delete', { method: 'POST', body: { path } })
+}
+
+export async function deleteAllSiteAssets() {
+  return api('/api/media/site-assets/delete-all', { method: 'POST', body: {} })
 }
 
 export async function replaceMediaFile(id, file) {
@@ -320,6 +348,7 @@ export async function changePassword(body) {
   return api('/api/password/change', { method: 'POST', body })
 }
 
+export const fetchCmsAudit = () => api('/api/cms-audit')
 export const fetchBackupStatus = () => api('/api/backup/status')
 
 export async function downloadSiteBackup() {

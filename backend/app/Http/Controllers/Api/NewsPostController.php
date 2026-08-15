@@ -24,6 +24,10 @@ class NewsPostController extends Controller
             $query->where('category', $category);
         }
 
+        if ($event = $request->query('event')) {
+            $query->where('related_event_slug', $event);
+        }
+
         return response()->json(
             $query->get()->map(fn (NewsPost $post) => $this->transform($post, $locale))
         );
@@ -82,6 +86,7 @@ class NewsPostController extends Controller
             'category' => ['nullable', 'string', 'max:100'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['string'],
+            'related_event_slug' => ['nullable', 'string', 'max:255'],
             'author_name' => ['nullable', 'string', 'max:255'],
             'author_avatar' => ['nullable', 'string', 'max:500'],
             'author_role' => ['nullable', 'string', 'max:255'],
@@ -101,9 +106,7 @@ class NewsPostController extends Controller
                 'body' => $post->body,
                 'category' => $post->category,
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $post->translations, ['title', 'excerpt', 'body', 'category'], $locale);
+        $resolved = Locale::resolve($base, $post->translations, ['title', 'excerpt', 'body', 'category'], $locale);
 
         return [
             'id' => $post->id,
@@ -113,6 +116,7 @@ class NewsPostController extends Controller
             'body' => $resolved['body'],
             'category' => $resolved['category'],
             'tags' => $post->tags ?? [],
+            'relatedEventSlug' => $post->related_event_slug,
             'author' => [
                 'name' => $post->author_name,
                 'avatar' => $post->author_avatar,

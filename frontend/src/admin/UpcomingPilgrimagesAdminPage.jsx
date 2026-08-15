@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   createUpcomingPilgrimage,
   deleteUpcomingPilgrimage,
@@ -12,16 +13,17 @@ import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
 import { formatEventWhen, formatRecurrence, RECURRENCE_OPTIONS } from '@utils/eventTime'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['title', 'meta', 'short_description', 'description', 'location']
+const LOCALE_FIELDS = ['title', 'meta', 'description', 'location']
 
 const empty = {
   title: '',
   event_type: 'pilgrimage',
   meta: '',
-  short_description: '',
   description: '',
   image: '',
   location: '',
@@ -42,6 +44,10 @@ const EVENT_TYPES = [
   { value: 'retreat', label: 'Retreat' },
   { value: 'calendar', label: 'Calendar event' },
 ]
+
+function updateCount(item) {
+  return Array.isArray(item?.archives) ? item.archives.length : 0
+}
 
 export default function UpcomingPilgrimagesAdminPage() {
   const { defaultLocale } = useLocale()
@@ -70,13 +76,12 @@ export default function UpcomingPilgrimagesAdminPage() {
     setOpen(true)
   }
 
-  const openEdit = (item) => {
+  const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
       title: item.title || '',
       event_type: item.eventType || 'pilgrimage',
       meta: item.meta || '',
-      short_description: item.shortDescription || '',
       description: item.description || '',
       image: item.image || '',
       location: item.location || '',
@@ -90,7 +95,7 @@ export default function UpcomingPilgrimagesAdminPage() {
       is_published: item.isPublished !== false,
       translations: item.translations || {},
     })
-    setLocaleTab(defaultLocale || 'en')
+    setLocaleTab(localeCode || defaultLocale || 'en')
     setError('')
     setOpen(true)
   }
@@ -159,6 +164,7 @@ export default function UpcomingPilgrimagesAdminPage() {
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
         Manage pilgrimages, feast days, retreats, and other calendar events. Set dates, times, and
         recurrence (weekly, monthly, or annual). Published events appear on the public calendar and homepage.
+        Use the Updates column to attach photo galleries or news articles for an event.
       </p>
 
       <div className={styles.card}>
@@ -167,35 +173,41 @@ export default function UpcomingPilgrimagesAdminPage() {
             <tr>
               <th>Image</th>
               <th>Title</th>
+              <LocaleColumnHeaders defaultLocale={defaultLocale} />
               <th>When</th>
               <th>Repeats</th>
               <th>Published</th>
-              <th />
+              <th>Updates</th>
             </tr>
           </thead>
           <tbody>
             {items.map((item) => (
               <tr key={item.id}>
                 <td>{item.image ? <img className={styles.thumb} src={item.image} alt="" /> : '—'}</td>
-                <td>{item.title}</td>
+                <td>
+                  <ListTitle
+                    title={item.title}
+                    onEdit={() => openEdit(item)}
+                    onDelete={() => handleDelete(item.id)}
+                    viewHref={item.path || '/pilgrimage/calendar'}
+                  />
+                </td>
+                <LocaleColumnCells
+                  item={item}
+                  fields={LOCALE_FIELDS}
+                  defaultLocale={defaultLocale}
+                  onEditLocale={(code) => openEdit(item, code)}
+                />
                 <td>{formatEventWhen(item) || item.meta || '—'}</td>
                 <td>{formatRecurrence(item) || 'One-time'}</td>
                 <td>{item.isPublished ? 'Yes' : 'No'}</td>
-                <td className={styles.actions}>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => openEdit(item)}
+                <td>
+                  <Link
+                    to={`/admin/upcoming-pilgrimages/${item.id}/updates`}
+                    className={`${styles.btn} ${styles.btnCompact}`}
                   >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnDanger}`}
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </button>
+                    {updateCount(item) ? `Manage (${updateCount(item)})` : 'Add updates'}
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -307,19 +319,12 @@ export default function UpcomingPilgrimagesAdminPage() {
             </select>
           </div>
           <div className={styles.field}>
-            <label>Short description</label>
-            <textarea
-              rows={3}
-              value={getLocaleField(form, 'short_description', localeTab, defaultLocale)}
-              onChange={(e) => setForm(setLocaleField(form, 'short_description', localeTab, e.target.value, defaultLocale))}
-            />
-          </div>
-          <div className={styles.field}>
-            <label>Full description</label>
+            <label>Description</label>
             <RichTextEditor
               value={getLocaleField(form, 'description', localeTab, defaultLocale)}
               onChange={(html) => setForm(setLocaleField(form, 'description', localeTab, html, defaultLocale))}
             />
+            <p className={styles.muted}>Listings show the first 160 characters of this description.</p>
           </div>
           <ImageField
             label="Cover image"

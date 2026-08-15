@@ -1,0 +1,27 @@
+.admin-swal {
+  z-index: 20000 !important;
+}
+
+.admin-swal-popup {
+  font-family: inherit;
+  border-radius: 12px;
+  padding: 1.6rem 1.4rem 1.35rem;
+}
+
+.admin-swal-title {
+  font-family: inherit;
+  font-size: 1.35rem !important;
+  color: #1a365d;
+}
+
+.admin-swal-text {
+  font-size: 1rem !important;
+  color: #5a6577;
+}
+
+.admin-swal-confirm,
+.admin-swal-cancel {
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  padding: 0.55rem 1.15rem !important;
+}

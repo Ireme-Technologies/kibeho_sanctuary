@@ -123,13 +123,7 @@ class SiteAssetService
             }
         }
 
-        $brandingPaths = [
-            'images/logo/logo-transparent.png',
-            'images/logo/favicon.png',
-            'images/logo/favicon.svg',
-            'images/logo/favicon.jpeg',
-            'images/logo/logo-transparent.jpeg',
-        ];
+        $brandingPaths = $this->brandingPaths();
 
         $items = [];
         foreach (array_keys($paths) as $relative) {
@@ -146,6 +140,83 @@ class SiteAssetService
         usort($items, fn ($a, $b) => strcasecmp($a['path'], $b['path']));
 
         return $items;
+    }
+
+    public function deletePublicPath(string $rawPath): array
+    {
+        $relative = $this->normalizePublicPath($rawPath);
+        if ($this->isBrandingPath($relative)) {
+            throw ValidationException::withMessages([
+                'path' => 'Logo and brand files are managed on the Logo & brand tab.',
+            ]);
+        }
+
+        $deleted = $this->deletePublicFiles($relative);
+        $this->clearStoredPublicUrl($relative);
+
+        return [
+            'path' => $relative,
+            'deleted' => $deleted > 0,
+            'inventory' => $this->inventory(),
+        ];
+    }
+
+    public function deleteAllSiteImages(): array
+    {
+        $items = $this->siteImages($this->company());
+        $removed = 0;
+        $files = 0;
+
+        foreach ($items as $item) {
+            $relative = $item['path'] ?? '';
+            if (! $relative || $this->isBrandingPath($relative)) {
+                continue;
+            }
+            $files += $this->deletePublicFiles($relative);
+            $this->clearStoredPublicUrl($relative);
+            $removed++;
+        }
+
+        return [
+            'removed' => $removed,
+            'files' => $files,
+            'inventory' => $this->inventory(),
+        ];
+    }
+
+    private function brandingPaths(): array
+    {
+        return [
+            'images/logo/logo-transparent.png',
+            'images/logo/favicon.png',
+            'images/logo/favicon.svg',
+            'images/logo/favicon.jpeg',
+            'images/logo/logo-transparent.jpeg',
+        ];
+    }
+
+    private function isBrandingPath(string $relative): bool
+    {
+        return in_array($relative, $this->brandingPaths(), true)
+            || str_starts_with($relative, 'images/logo/');
+    }
+
+    private function deletePublicFiles(string $relative): int
+    {
+        $deleted = 0;
+        foreach ($this->writeTargets($relative) as $abs) {
+            if (is_file($abs) && File::delete($abs)) {
+                $deleted++;
+            }
+        }
+
+        return $deleted;
+    }
+
+    private function clearStoredPublicUrl(string $relative): void
+    {
+        $url = '/'.ltrim($relative, '/');
+        $this->rewriteStoredUrls($url, '');
     }
 
     private function decoratePublicItem(array $item): array
@@ -177,7 +248,7 @@ class SiteAssetService
         $path = ltrim(str_replace('\\', '/', $path), '/');
         if (! preg_match('#^images/[A-Za-z0-9._/-]+$#', $path)) {
             throw ValidationException::withMessages([
-                'path' => 'Only files under /images/ can be replaced.',
+                'path' => 'Only files under /images/ can be changed.',
             ]);
         }
         if (str_contains($path, '..')) {
@@ -305,7 +376,7 @@ class SiteAssetService
             'facilities' => ['cover_image', 'featured_image', 'gallery'],
             'news_posts' => ['cover_image', 'author_avatar'],
             'activities' => ['image'],
-            'upcoming_pilgrimages' => ['image'],
+            'upcoming_pilgrimages' => ['image', 'archives'],
             'videos' => ['thumbnail_url'],
             'testimonials' => ['author_avatar'],
             'shrine_projects' => ['cover_image', 'gallery'],
@@ -315,7 +386,10 @@ class SiteAssetService
 
     private function rewriteStoredUrls(?string $from, string $to): void
     {
-        if (! $from || $from === $to) {
+        if (! $from) {
+            return;
+        }
+        if ($from === $to) {
             return;
         }
         $variants = array_unique([
@@ -325,6 +399,9 @@ class SiteAssetService
 
         foreach (Setting::query()->get() as $setting) {
             $next = $this->replaceInValue($setting->value, $variants, $to);
+            if ($to === '') {
+                $next = $this->scrubEmptyImageSlots($next);
+            }
             if ($next !== $setting->value) {
                 $setting->value = $next;
                 $setting->save();
@@ -338,12 +415,18 @@ class SiteAssetService
                 $updates = [];
                 if (is_array($content)) {
                     $next = $this->replaceInValue($content, $variants, $to);
+                    if ($to === '') {
+                        $next = $this->scrubEmptyImageSlots($next);
+                    }
                     if ($next !== $content) {
                         $updates['content'] = json_encode($next);
                     }
                 }
                 if (is_array($translations)) {
                     $next = $this->replaceInValue($translations, $variants, $to);
+                    if ($to === '') {
+                        $next = $this->scrubEmptyImageSlots($next);
+                    }
                     if ($next !== $translations) {
                         $updates['translations'] = json_encode($next);
                     }
@@ -366,6 +449,9 @@ class SiteAssetService
                     $decoded = json_decode($row->{$col} ?? '', true);
                     $value = $decoded === null ? $row->{$col} : $decoded;
                     $next = $this->replaceInValue($value, $variants, $to);
+                    if ($to === '') {
+                        $next = $this->scrubEmptyImageSlots($next);
+                    }
                     if ($next !== $value) {
                         DB::table($table)->where('id', $row->id)->update([
                             $col => is_array($next) ? json_encode($next) : $next,
@@ -387,6 +473,26 @@ class SiteAssetService
             foreach ($value as $key => $child) {
                 $value[$key] = $this->replaceInValue($child, $from, $to);
             }
+        }
+
+        return $value;
+    }
+
+    private function scrubEmptyImageSlots(mixed $value): mixed
+    {
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        $isList = array_is_list($value);
+        foreach ($value as $key => $child) {
+            $value[$key] = $this->scrubEmptyImageSlots($child);
+        }
+        if ($isList) {
+            $value = array_values(array_filter(
+                $value,
+                fn ($item) => $item !== '' && $item !== null
+            ));
         }
 
         return $value;

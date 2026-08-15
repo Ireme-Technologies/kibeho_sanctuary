@@ -3,6 +3,7 @@ import {
   createTestimonial,
   deleteTestimonial,
   fetchTestimonials,
+  fetchUpcomingPilgrimages,
   updateTestimonial,
 } from '@api/cms'
 import { useLocale } from '@context/LocaleContext'
@@ -12,6 +13,8 @@ import RichTextEditor from './components/RichTextEditor'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
+import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
+import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
 const LOCALE_FIELDS = ['title', 'body', 'author_role', 'author_location']
@@ -28,12 +31,14 @@ const empty = {
   sort_order: 0,
   is_published: true,
   published_at: '',
+  related_event_slug: '',
   translations: {},
 }
 
 export default function TestimonialsAdminPage() {
   const { defaultLocale } = useLocale()
   const [items, setItems] = useState([])
+  const [events, setEvents] = useState([])
   const [form, setForm] = useState(empty)
   const [localeTab, setLocaleTab] = useState(defaultLocale || 'en')
   const [editingId, setEditingId] = useState(null)
@@ -48,6 +53,9 @@ export default function TestimonialsAdminPage() {
     load().catch((err) =>
       setFlash({ type: 'error', message: err.message || 'Failed to load testimonials' })
     )
+    fetchUpcomingPilgrimages()
+      .then(setEvents)
+      .catch(() => setEvents([]))
   }, [])
 
   const openCreate = () => {
@@ -58,7 +66,7 @@ export default function TestimonialsAdminPage() {
     setOpen(true)
   }
 
-  const openEdit = (item) => {
+  const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
       author_name: item.authorName || '',
@@ -72,9 +80,10 @@ export default function TestimonialsAdminPage() {
       sort_order: item.sortOrder ?? 0,
       is_published: item.isPublished !== false,
       published_at: item.publishedAt || '',
+      related_event_slug: item.relatedEventSlug || '',
       translations: item.translations || {},
     })
-    setLocaleTab(defaultLocale || 'en')
+    setLocaleTab(localeCode || defaultLocale || 'en')
     setError('')
     setOpen(true)
   }
@@ -86,6 +95,7 @@ export default function TestimonialsAdminPage() {
       rating: form.rating === '' || form.rating == null ? null : Number(form.rating),
       sort_order: Number(form.sort_order) || 0,
       published_at: form.published_at || null,
+      related_event_slug: form.related_event_slug || null,
       translations: splitTranslationsPayload(form, LOCALE_FIELDS, defaultLocale),
     }
   }
@@ -143,9 +153,9 @@ export default function TestimonialsAdminPage() {
             <tr>
               <th>Author</th>
               <th>Title</th>
+              <LocaleColumnHeaders defaultLocale={defaultLocale} />
               <th>Rating</th>
               <th>Featured</th>
-              <th />
             </tr>
           </thead>
           <tbody>
@@ -157,30 +167,27 @@ export default function TestimonialsAdminPage() {
                     <div className={styles.muted}>{item.authorRole}</div>
                   ) : null}
                 </td>
-                <td>{item.title || '—'}</td>
+                <td>
+                  <ListTitle
+                    title={item.title || 'Untitled'}
+                    onEdit={() => openEdit(item)}
+                    onDelete={() => handleDelete(item.id)}
+                    viewHref="/spirituality/testimonies"
+                  />
+                </td>
+                <LocaleColumnCells
+                  item={item}
+                  fields={LOCALE_FIELDS}
+                  defaultLocale={defaultLocale}
+                  onEditLocale={(code) => openEdit(item, code)}
+                />
                 <td>{item.rating != null ? `${item.rating}/5` : '—'}</td>
                 <td>{item.featured ? 'Yes' : 'No'}</td>
-                <td className={styles.actions}>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => openEdit(item)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnDanger}`}
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
               </tr>
             ))}
             {!items.length && (
               <tr>
-                <td colSpan={5} className={styles.muted}>
+                <td colSpan={8} className={styles.muted}>
                   No testimonials yet.
                 </td>
               </tr>
@@ -283,6 +290,21 @@ export default function TestimonialsAdminPage() {
               value={form.published_at}
               onChange={(e) => setForm({ ...form, published_at: e.target.value })}
             />
+          </div>
+          <div className={styles.field}>
+            <label>Related pilgrimage / feast</label>
+            <select
+              value={form.related_event_slug}
+              onChange={(e) => setForm({ ...form, related_event_slug: e.target.value })}
+            >
+              <option value="">None</option>
+              {events.map((event) => (
+                <option key={event.slug} value={event.slug}>
+                  {event.title}
+                </option>
+              ))}
+            </select>
+            <p className={styles.muted}>Shown on that event’s public page when visitors open it.</p>
           </div>
           <label>
             <input

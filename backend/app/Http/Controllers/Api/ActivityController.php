@@ -90,15 +90,13 @@ class ActivityController extends Controller
                 'short_description' => $activity->short_description,
                 'description' => $activity->description,
             ];
-        $resolved = Auth::guard('web')->user()
-            ? $base
-            : Locale::resolve($base, $activity->translations, ['title', 'short_description', 'description'], $locale);
+        $resolved = Locale::resolve($base, $activity->translations, ['title', 'short_description', 'description'], $locale);
 
         return [
             'id' => $activity->id,
             'slug' => $activity->slug,
             'title' => $resolved['title'],
-            'shortDescription' => $resolved['short_description'],
+            'shortDescription' => Locale::cardExcerpt($resolved),
             'description' => $resolved['description'],
             'image' => $activity->image,
             'path' => '/activities/'.$activity->slug,

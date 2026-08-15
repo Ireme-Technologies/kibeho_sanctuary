@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import {
+  deleteAllSiteAssets,
   deleteMedia,
+  deleteSiteAsset,
   fetchMedia,
   fetchSiteAssets,
   reorderMedia,
@@ -41,7 +43,7 @@ function ReplaceButton({ onFile, disabled, label = 'Replace' }) {
   )
 }
 
-function AssetCard({ item, busy, onReplace }) {
+function AssetCard({ item, busy, onReplace, onRemove }) {
   return (
     <article className={styles.assetCard}>
       <div className={styles.assetPreview}>
@@ -55,7 +57,19 @@ function AssetCard({ item, busy, onReplace }) {
         <strong>{item.label || item.path}</strong>
         <span className={styles.muted}>{item.hint || item.path}</span>
         {item.size ? <span className={styles.muted}>{Math.round(item.size / 1024)}KB</span> : null}
-        <ReplaceButton disabled={busy} onFile={(file) => onReplace(item, file)} />
+        <div className={styles.assetActions}>
+          <ReplaceButton disabled={busy} onFile={(file) => onReplace(item, file)} />
+          {onRemove ? (
+            <button
+              type="button"
+              className={`${styles.btn} ${styles.btnDanger}`}
+              disabled={busy}
+              onClick={() => onRemove(item)}
+            >
+              Remove
+            </button>
+          ) : null}
+        </div>
       </div>
     </article>
   )
@@ -179,6 +193,68 @@ export default function GalleryAdminPage() {
     }
   }
 
+  const applyInventory = (inventory) => {
+    if (!inventory) return
+    setBranding(inventory.branding || [])
+    setSite(inventory.site || [])
+  }
+
+  const handleRemoveSite = async (item) => {
+    if (
+      !(await confirmDelete(
+        `Remove ${item.label || item.path}? Pages still using this path will lose the picture until you upload a replacement.`,
+        { confirmLabel: 'Remove', title: 'Remove site image' }
+      ))
+    ) {
+      return
+    }
+    setBusyKey(item.role + item.path)
+    setFlash({ type: 'success', message: '' })
+    try {
+      const result = await deleteSiteAsset(item.path)
+      applyInventory(result.inventory)
+      await refresh()
+      setFlash({ type: 'success', message: `${item.label || item.path} removed.` })
+    } catch (err) {
+      setFlash({ type: 'error', message: err.errors?.path?.[0] || err.message || 'Remove failed' })
+    } finally {
+      setBusyKey('')
+    }
+  }
+
+  const handleRemoveAllSite = async () => {
+    const count = site.length
+    if (!count) return
+    if (
+      !(await confirmDelete(
+        `Remove all ${count} seeded site images? Logo and brand files stay. Content that pointed at these files will be cleared until you upload new photos.`,
+        {
+          confirmLabel: 'Remove all',
+          title: 'Remove all site images',
+          finalMessage: 'This permanently deletes the bundled photos from the server. Continue?',
+        }
+      ))
+    ) {
+      return
+    }
+    setBusyKey('site-all')
+    setFlash({ type: 'success', message: '' })
+    try {
+      const result = await deleteAllSiteAssets()
+      applyInventory(result.inventory)
+      await refresh()
+      const n = result.removed ?? count
+      setFlash({
+        type: 'success',
+        message: n === 1 ? '1 site image removed.' : `${n} site images removed.`,
+      })
+    } catch (err) {
+      setFlash({ type: 'error', message: err.message || 'Failed to remove site images.' })
+    } finally {
+      setBusyKey('')
+    }
+  }
+
   const handleReplaceUpload = async (item, file) => {
     setBusyKey(`media-${item.id}`)
     setFlash({ type: 'success', message: '' })
@@ -297,10 +373,20 @@ export default function GalleryAdminPage() {
 
       {tab === 'site' && (
         <div className={styles.card}>
-          <h2 style={{ marginTop: 0 }}>Seeded & bundled site images</h2>
+          <div className={styles.topbar} style={{ marginBottom: '0.75rem' }}>
+            <h2 style={{ margin: 0 }}>Seeded & bundled site images</h2>
+            <button
+              type="button"
+              className={`${styles.btn} ${styles.btnDanger}`}
+              disabled={!site.length || busyKey === 'site-all'}
+              onClick={handleRemoveAllSite}
+            >
+              {busyKey === 'site-all' ? 'Removing…' : 'Remove all site images'}
+            </button>
+          </div>
           <p className={styles.muted}>
-            These are the static <code>/images/…</code> files used by seeders and fallbacks. Replacing a file
-            updates every page that still points at that path.
+            These are the static <code>/images/…</code> files used by seeders and fallbacks. Remove them when you
+            want the live site to use only photos you upload. Logo and brand files stay on the Logo & brand tab.
           </p>
           <div className={styles.field} style={{ maxWidth: 360, marginBottom: '1rem' }}>
             <label htmlFor="site-search">Filter</label>
@@ -316,8 +402,9 @@ export default function GalleryAdminPage() {
               <AssetCard
                 key={item.path}
                 item={item}
-                busy={busyKey === (item.role || 'site') + item.path}
+                busy={busyKey === (item.role || 'site') + item.path || busyKey === 'site-all'}
                 onReplace={handleReplaceSite}
+                onRemove={handleRemoveSite}
               />
             ))}
             {!filteredSite.length && <p className={styles.muted}>No matching site images.</p>}

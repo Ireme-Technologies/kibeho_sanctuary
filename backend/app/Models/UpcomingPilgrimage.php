@@ -15,6 +15,7 @@ class UpcomingPilgrimage extends Model
         'short_description',
         'description',
         'image',
+        'archives',
         'location',
         'starts_on',
         'ends_on',
@@ -30,6 +31,7 @@ class UpcomingPilgrimage extends Model
 
     protected $casts = [
         'starts_on' => 'date',
+        'archives' => 'array',
         'translations' => 'array',
         'ends_on' => 'date',
         'registration_open' => 'boolean',

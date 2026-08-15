@@ -92,17 +92,34 @@ export default function MultiImageField({
         <div className={styles.multiImageList}>
           {urls.map((url, index) => (
             <div key={`${url}-${index}`} className={styles.multiImageItem}>
-              <img src={url} alt="" />
+              <div className={styles.multiImagePreview}>
+                <img src={url} alt="" />
+                <span className={styles.multiImageIndex}>{index + 1}</span>
+              </div>
               <div className={styles.multiImageActions}>
-                <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => move(index, -1)}>
+                <button
+                  type="button"
+                  className={`${styles.btn} ${styles.btnSecondary} ${styles.btnCompact}`}
+                  onClick={() => move(index, -1)}
+                  disabled={index === 0}
+                  title="Move earlier"
+                  aria-label="Move earlier"
+                >
                   ↑
                 </button>
-                <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => move(index, 1)}>
+                <button
+                  type="button"
+                  className={`${styles.btn} ${styles.btnSecondary} ${styles.btnCompact}`}
+                  onClick={() => move(index, 1)}
+                  disabled={index === urls.length - 1}
+                  title="Move later"
+                  aria-label="Move later"
+                >
                   ↓
                 </button>
                 <button
                   type="button"
-                  className={`${styles.btn} ${styles.btnDanger}`}
+                  className={`${styles.btn} ${styles.btnDanger} ${styles.btnCompact}`}
                   onClick={async () => {
                     if (!(await confirmDelete('Remove this image?', { confirmLabel: 'Remove' }))) return
                     removeAt(index)

@@ -3,13 +3,21 @@
 }
 
 .hero {
-  min-height: 320px;
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  box-sizing: border-box;
+  min-height: clamp(440px, 58vh, 720px);
   display: flex;
-  align-items: end;
-  padding: calc(var(--header-height) + var(--topbar-height) + 3rem) 0 3rem;
-  background: linear-gradient(120deg, var(--color-navy-deep), var(--color-navy));
+  align-items: flex-end;
+  overflow: hidden;
+  padding: clamp(4.5rem, 11vh, 7.5rem) 0 clamp(2.5rem, 6vh, 4rem);
+  background-color: var(--color-navy-deep);
+  background-image: linear-gradient(120deg, var(--color-navy-deep), var(--color-navy));
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   color: var(--color-white);
 }
 
@@ -75,6 +83,144 @@
   margin-bottom: 1rem;
 }
 
+.occasionNote {
+  margin: 0 0 1.35rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  color: var(--color-navy);
+  background: var(--color-sky-soft);
+}
+
+.occasionNote.live {
+  background: #e8f4fc;
+  box-shadow: inset 3px 0 0 var(--color-sky);
+}
+
+.occasionNote.recent {
+  background: var(--color-cream);
+  box-shadow: inset 3px 0 0 var(--color-navy);
+}
+
+.memory {
+  margin-top: 2rem;
+}
+
+.memory h2 {
+  font-size: 1.45rem;
+  color: var(--color-navy);
+  margin: 0 0 0.75rem;
+}
+
+.memoryIntro,
+.yearBlock p {
+  margin: 0 0 0.85rem;
+  color: var(--color-gray-text);
+}
+
+.updateList,
+.voiceList {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.updateCard {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 0.9rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--color-gray-border);
+  border-radius: var(--radius-md);
+  background: var(--color-off-white);
+  color: inherit;
+}
+
+.updateCard img {
+  width: 96px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.updateCard h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+  color: var(--color-navy);
+}
+
+.updateCard p {
+  margin: 0;
+  color: var(--color-gray-text);
+  font-size: 0.92rem;
+}
+
+.memoryMeta {
+  margin: 0 0 0.2rem !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-sky);
+}
+
+.yearBlock {
+  margin-bottom: 1.5rem;
+}
+
+.yearBlock h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+  color: var(--color-navy);
+}
+
+.yearGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.yearShot {
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--color-navy-deep);
+}
+
+.yearShot img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.voice {
+  margin: 0;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--color-gray-border);
+  border-radius: var(--radius-md);
+  background: var(--color-cream);
+}
+
+.voiceTitle {
+  margin: 0 0 0.45rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.voice footer {
+  margin-top: 0.65rem;
+  font-size: 0.9rem;
+  color: var(--color-gray-text);
+}
+
+.voice footer strong {
+  display: block;
+  color: var(--color-navy);
+}
+
 .backLink {
   display: inline-flex;
   margin-top: 1.75rem;
@@ -84,7 +230,7 @@
 
 .formCard {
   position: sticky;
-  top: calc(var(--header-height) + var(--topbar-height) + 1rem);
+  top: calc(var(--chrome-height) + 1rem);
   background: var(--color-white);
   border: 1px solid var(--color-gray-border);
   border-radius: var(--radius-md);
@@ -197,5 +343,13 @@
 
   .formCard {
     position: static;
+  }
+
+  .updateCard {
+    grid-template-columns: 1fr;
+  }
+
+  .yearGrid {
+    grid-template-columns: 1fr 1fr;
   }
 }
