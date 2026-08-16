@@ -111,7 +111,7 @@ class PilgrimageServiceSeeder extends Seeder
         foreach ($services as $service) {
             PilgrimageService::updateOrCreate(
                 ['slug' => $service['slug']],
-                array_merge($service, ['is_published' => true])
+                array_merge($service, ['is_published' => true, 'image' => '', 'detail_image' => ''])
             );
         }
     }

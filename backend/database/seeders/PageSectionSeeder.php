@@ -11,16 +11,20 @@ class PageSectionSeeder extends Seeder
     public function run(): void
     {
         $sections = [
+            'headers.default' => [
+                'label' => 'Default page header',
+                'content' => [
+                    'backgroundImage' => '/images/sanctuary/hero.jpg',
+                ],
+            ],
             'home.hero' => [
                 'label' => 'Home Hero',
                 'content' => [
                     'mode' => 'cover',
                     'heading' => 'Shrine of Our Lady of Kibeho',
-                    'caption' => 'The first Marian apparition site in Africa recognised by the Catholic Church — a place of conversion, prayer, and reconciliation for pilgrims of every nation.',
-                    'coverImage' => '/images/sanctuary/hero.jpg',
-                    'slides' => [
-                        ['id' => 1, 'src' => '/images/sanctuary/hero.jpg', 'duration' => 8000],
-                    ],
+                    'caption' => 'The first Marian apparition site in Africa recognised by the Catholic Church — a place of conversion, prayer, and reconciliation.',
+                    'coverImage' => '',
+                    'slides' => [],
                     'ctas' => [
                         'primary' => ['label' => 'Discover the Message', 'link' => '/our-lady'],
                         'secondary' => ['label' => 'Plan Your Pilgrimage', 'link' => '/pilgrimage/plan'],
@@ -33,7 +37,7 @@ class PageSectionSeeder extends Seeder
                     'eyebrow' => 'Our Lady of Kibeho',
                     'heading' => 'Recognised. Welcoming. A place of conversion.',
                     'text' => 'The Shrine of Our Lady of Kibeho is the first — and to date the only — Marian apparition site in Africa officially recognised by the Catholic Church. Pilgrims from every nation are welcome.',
-                    'image' => '/images/sanctuary/welcome.jpg',
+                    'image' => '',
                     'cta' => ['label' => 'Discover the Message', 'path' => '/our-lady'],
                 ],
             ],
@@ -41,7 +45,7 @@ class PageSectionSeeder extends Seeder
                 'label' => 'Home — At the Shrine',
                 'content' => [
                     'heading' => 'At the Shrine',
-                    'subline' => 'Explore the churches, apparition sites, Holy Spring, Way of the Cross, and liturgical life of the Shrine of Our Lady of Kibeho.',
+                    'subline' => 'Walk the churches, apparition sites, Holy Spring, and Way of the Cross — and join the daily prayer of Kibeho.',
                     'primaryCta' => ['label' => 'Explore the Shrine', 'path' => '/shrine'],
                     'secondaryCta' => ['label' => 'Mass Schedule', 'path' => '/shrine/mass-schedule'],
                 ],

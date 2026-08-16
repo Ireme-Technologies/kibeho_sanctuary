@@ -118,8 +118,8 @@ class CmsContentSeeder extends Seeder
             'phase' => 'Phase 1',
             'short_description' => 'Infrastructure and hospitality improvements to welcome more pilgrims with dignity.',
             'description' => '<p>Phase One focuses on pilgrim pathways, sanitation, and essential hospitality spaces around the Shrine.</p>',
-            'cover_image' => '/images/sanctuary/hills.jpg',
-            'gallery' => ['/images/sanctuary/welcome.jpg', '/images/sanctuary/church-wide.jpg'],
+            'cover_image' => '',
+            'gallery' => [],
             'funding_goal' => 'Seeking partners',
             'funding_raised' => null,
             'featured' => true,
@@ -133,7 +133,7 @@ class CmsContentSeeder extends Seeder
             'phase' => 'Phase 2',
             'short_description' => 'A dedicated centre for orientation, information, and pastoral accompaniment.',
             'description' => '<p>The Welcome Centre will help pilgrims prepare spiritually and practically for their visit.</p>',
-            'cover_image' => '/images/sanctuary/welcome.jpg',
+            'cover_image' => '',
             'gallery' => [],
             'funding_goal' => null,
             'funding_raised' => null,
@@ -143,53 +143,64 @@ class CmsContentSeeder extends Seeder
         ]);
 
         SacredPlace::query()->delete();
-        SacredPlace::create([
-            'slug' => 'main-shrine-church',
-            'type' => 'church',
-            'name' => 'Main Shrine Church',
-            'short_description' => 'The principal church of the Shrine of Our Lady of Kibeho.',
-            'description' => '<p>The Main Shrine Church gathers pilgrims for Mass, adoration, and Marian celebrations throughout the year.</p>',
-            'cover_image' => '/images/sanctuary/church.jpg',
-            'gallery' => ['/images/sanctuary/church.jpg', '/images/sanctuary/church-wide.jpg'],
-            'location' => 'Kibeho Sanctuary',
-            'sort_order' => 1,
-            'is_published' => true,
-        ]);
-        SacredPlace::create([
-            'slug' => 'shrine-chapel',
-            'type' => 'church',
-            'name' => 'Shrine Chapel',
-            'short_description' => 'A quieter chapel for weekday Mass and personal prayer.',
-            'description' => '<p>The chapel supports daily liturgy and smaller pilgrim groups.</p>',
-            'cover_image' => '/images/sanctuary/church-wide.jpg',
-            'gallery' => ['/images/sanctuary/church-wide.jpg'],
-            'location' => 'Kibeho Sanctuary',
-            'sort_order' => 2,
-            'is_published' => true,
-        ]);
-        SacredPlace::create([
-            'slug' => 'apparition-hill',
-            'type' => 'apparition_site',
-            'name' => 'Apparition Hill',
-            'short_description' => 'A sacred place of remembrance linked to the Marian apparitions.',
-            'description' => '<p>Pilgrims come here to pray the Rosary, reflect on the message of Kibeho, and entrust their intentions to Our Lady.</p>',
-            'cover_image' => '/images/sanctuary/hills.jpg',
-            'gallery' => ['/images/sanctuary/hills.jpg', '/images/sanctuary/mary.jpg'],
-            'location' => 'Kibeho',
-            'sort_order' => 1,
-            'is_published' => true,
-        ]);
-        SacredPlace::create([
-            'slug' => 'outdoor-prayer-spaces',
-            'type' => 'apparition_site',
-            'name' => 'Outdoor Prayer Spaces',
-            'short_description' => 'Open-air spaces for group prayer and quiet contemplation.',
-            'description' => '<p>These outdoor areas welcome large pilgrim groups for processions, teaching, and communal prayer.</p>',
-            'cover_image' => '/images/sanctuary/welcome.jpg',
-            'gallery' => ['/images/sanctuary/welcome.jpg', '/images/sanctuary/activity-spring.jpg'],
-            'location' => 'Kibeho Sanctuary grounds',
-            'sort_order' => 2,
-            'is_published' => true,
-        ]);
+        $places = [
+            [
+                'slug' => 'our-lady-of-sorrows',
+                'type' => 'church',
+                'name' => 'Church of Our Lady of Sorrows',
+                'short_description' => 'The church dedicated to the Mother of Sorrows at the Sanctuary.',
+                'description' => '<p>The church of Our Lady of Sorrows is the principal place of liturgical celebration at the Sanctuary of Our Lady of Kibeho.</p>',
+                'sort_order' => 1,
+            ],
+            [
+                'slug' => 'chapel-of-the-apparitions',
+                'type' => 'church',
+                'name' => 'Chapel of the Apparitions',
+                'short_description' => 'The former dormitory, transformed into the Chapel of the Apparitions.',
+                'description' => '<p>From 28 November 1981 to May 1982 the apparitions took place in the dormitory, later transformed into the Chapel of the Apparitions.</p>',
+                'sort_order' => 2,
+            ],
+            [
+                'slug' => 'chapel-of-adoration',
+                'type' => 'church',
+                'name' => 'Chapel of Adoration of the Blessed Sacrament',
+                'short_description' => 'A chapel for silent prayer before the Blessed Sacrament.',
+                'description' => '<p>The chapel of adoration of the Holy Sacrament is a place of silent prayer for pilgrims and the local community.</p>',
+                'sort_order' => 3,
+            ],
+            [
+                'slug' => 'place-of-the-apparitions',
+                'type' => 'apparition_site',
+                'name' => 'The place of the apparitions',
+                'short_description' => 'The site remembered for the apparitions of the Mother of the Word.',
+                'description' => '<p>Pilgrims come here to pray and to remember the apparitions recognised by the Church in 2001.</p>',
+                'sort_order' => 1,
+            ],
+            [
+                'slug' => 'esplanade-of-the-apparitions',
+                'type' => 'apparition_site',
+                'name' => 'The esplanade of the apparitions',
+                'short_description' => 'The open esplanade where public apparitions were held outdoors.',
+                'description' => '<p>From 31 May 1982 many apparitions were held outside the dormitory; a long part of them took place at the podium from 15 August 1982.</p>',
+                'sort_order' => 2,
+            ],
+            [
+                'slug' => 'source-of-mary',
+                'type' => 'apparition_site',
+                'name' => 'The source of Mary',
+                'short_description' => 'The Holy Spring — a sign of grace for pilgrims who come in faith.',
+                'description' => '<p>Pilgrims come to the source of Mary in faith, a call to interior purification and trust.</p>',
+                'sort_order' => 3,
+            ],
+        ];
+
+        foreach ($places as $place) {
+            SacredPlace::create(array_merge($place, [
+                'cover_image' => '',
+                'gallery' => [],
+                'location' => 'Kibeho Sanctuary',
+                'is_published' => true,
+            ]));
+        }
     }
 }

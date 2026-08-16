@@ -58,9 +58,9 @@ class FacilitySeeder extends Seeder
                 'rating' => 4.0,
                 'booking_url' => '/contact',
                 'website_url' => '',
-                'phone' => '+250 788 123 456',
-                'whatsapp' => '+250788123456',
-                'email' => 'info@kibehosanctuary.org',
+                'phone' => '',
+                'whatsapp' => '',
+                'email' => '',
                 'featured' => true,
                 'short_description' => 'Hotel stays with easy access to the shrine for pilgrims and visitors.',
                 'description' => '<p>A welcoming hotel near the sanctuary grounds, suited for pilgrims seeking comfortable rooms close to daily Mass and shrine activities.</p>',
@@ -275,7 +275,12 @@ class FacilitySeeder extends Seeder
         foreach ($facilities as $facility) {
             Facility::updateOrCreate(
                 ['slug' => $facility['slug']],
-                array_merge($facility, ['is_published' => true])
+                array_merge($facility, [
+                    'is_published' => true,
+                    'cover_image' => '',
+                    'featured_image' => '',
+                    'gallery' => [],
+                ])
             );
         }
     }

@@ -16,8 +16,8 @@ class UpcomingPilgrimageSeeder extends Seeder
                 'slug' => 'feast-of-the-assumption',
                 'title' => 'Feast of the Assumption',
                 'meta' => '15 August',
-                'short_description' => 'A major Marian gathering of prayer and thanksgiving at the shrine.',
-                'description' => '<p>Join pilgrims from across Rwanda and beyond for the Feast of the Assumption at the Shrine of Our Lady of Kibeho — a day of Mass, procession, confession, and thanksgiving.</p><p>Register your group or individual pilgrimage so the pilgrim office can welcome you and share the feast-day schedule.</p>',
+                'short_description' => 'Mass, procession, confession, and thanksgiving on 15 August — a major Marian gathering at Kibeho.',
+                'description' => '<p>Each year on 15 August, pilgrims from Rwanda and beyond gather at the Shrine of Our Lady of Kibeho for the Feast of the Assumption.</p><p>The day is marked by Holy Mass, procession, confession, and thanksgiving. Register your group or your own pilgrimage so the Pilgrimage Office can welcome you and share the feast-day schedule.</p>',
                 'image' => '/images/sanctuary/hero.jpg',
                 'archives' => [
                     [
@@ -54,8 +54,8 @@ class UpcomingPilgrimageSeeder extends Seeder
                 'slug' => 'marian-youth-pilgrimage',
                 'title' => 'Marian Youth Pilgrimage',
                 'meta' => 'Youth',
-                'short_description' => 'Young people journeying together in faith, song, and hope.',
-                'description' => '<p>A pilgrimage designed for young Catholics — prayer, catechesis, fellowship, and Marian devotion at Kibeho.</p><p>Parish youth leaders are invited to register groups early for accommodation guidance and program details.</p>',
+                'short_description' => 'Young people in prayer, catechesis, song, and Marian devotion at Kibeho.',
+                'description' => '<p>The Marian Youth Pilgrimage gathers young Catholics for prayer, catechesis, fellowship, and devotion to Our Lady of Kibeho.</p><p>Parish youth leaders are invited to register groups early for programme details and guidance on accommodation.</p>',
                 'image' => '/images/sanctuary/welcome.jpg',
                 'location' => 'Kibeho Sanctuary',
                 'starts_on' => '2026-09-12',
@@ -70,8 +70,8 @@ class UpcomingPilgrimageSeeder extends Seeder
                 'slug' => 'national-pilgrimage',
                 'title' => 'National Pilgrimage',
                 'meta' => 'National',
-                'short_description' => 'The Church in Rwanda united in prayer at Kibeho.',
-                'description' => '<p>Dioceses and movements from across Rwanda gather at Kibeho for a national pilgrimage of prayer, reconciliation, and hope.</p>',
+                'short_description' => 'Dioceses and movements of Rwanda gathered in one prayer of reconciliation and hope.',
+                'description' => '<p>The National Pilgrimage brings dioceses, parishes, and movements from across Rwanda to Kibeho for a common time of prayer, reconciliation, and hope.</p><p>Register your delegation with the Pilgrimage Office so liturgy and lodging can be prepared.</p>',
                 'image' => '/images/sanctuary/mary.jpg',
                 'location' => 'Kibeho Sanctuary',
                 'starts_on' => '2026-10-18',
@@ -86,8 +86,8 @@ class UpcomingPilgrimageSeeder extends Seeder
                 'slug' => 'international-pilgrimage',
                 'title' => 'International Pilgrimage',
                 'meta' => 'Worldwide',
-                'short_description' => 'Pilgrims from beyond Rwanda welcomed in one communion of faith.',
-                'description' => '<p>International pilgrims are warmly welcomed at Kibeho. Register your group to receive guidance on liturgy, lodging, and pastoral accompaniment.</p>',
+                'short_description' => 'Pilgrims from beyond Rwanda welcomed into the prayer of Kibeho.',
+                'description' => '<p>International pilgrims are received at the Shrine as one family in faith. Register your group to receive guidance on liturgy, lodging, and pastoral accompaniment.</p><p>The Pilgrimage Office will help you prepare a reverent and fruitful stay.</p>',
                 'image' => '/images/sanctuary/hills.jpg',
                 'location' => 'Kibeho Sanctuary',
                 'starts_on' => '2026-11-21',
@@ -103,14 +103,23 @@ class UpcomingPilgrimageSeeder extends Seeder
         foreach ($items as $item) {
             if (! Schema::hasColumn('upcoming_pilgrimages', 'archives')) {
                 unset($item['archives']);
+            } else {
+                $item['archives'] = [];
+            }
+            $payload = array_merge($item, [
+                'event_type' => str_contains($item['slug'], 'feast') ? 'feast' : 'pilgrimage',
+                'registration_open' => true,
+                'is_published' => true,
+                'image' => '',
+            ]);
+            if (Schema::hasColumn('upcoming_pilgrimages', 'archives')) {
+                $payload['archives'] = [];
+            } else {
+                unset($payload['archives']);
             }
             UpcomingPilgrimage::updateOrCreate(
                 ['slug' => $item['slug']],
-                array_merge($item, [
-                    'event_type' => str_contains($item['slug'], 'feast') ? 'feast' : 'pilgrimage',
-                    'registration_open' => true,
-                    'is_published' => true,
-                ])
+                $payload
             );
         }
 

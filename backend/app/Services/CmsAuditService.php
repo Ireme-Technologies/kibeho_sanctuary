@@ -77,17 +77,26 @@ class CmsAuditService
         $hero = is_array($contact['hero'] ?? null) ? $contact['hero'] : [];
         $socials = is_array($company['socials'] ?? null) ? $company['socials'] : [];
 
+        $offerings = $this->setting('offerings');
+        $accounts = is_array($offerings['accounts'] ?? null) ? $offerings['accounts'] : [];
+        $hasBank = collect($accounts)->contains(fn ($row) => is_array($row) && $this->filled($row['number'] ?? null));
+
         $checks = [
             $this->check('Site name', $this->filled($company['name'] ?? null), '/admin/settings?tab=brand'),
             $this->check('Tagline', $this->filled($company['tagline'] ?? null), '/admin/settings?tab=brand'),
             $this->check('Logo', $this->filled($company['logo'] ?? null), '/admin/settings?tab=brand'),
-            $this->check('Phone', $this->filled($company['phone'] ?? null), '/admin/settings?tab=contact'),
-            $this->check('Email', $this->filled($company['email'] ?? null), '/admin/settings?tab=contact'),
-            $this->check('WhatsApp', $this->filled($company['whatsapp'] ?? null), '/admin/settings?tab=contact'),
-            $this->check('Address', $this->filled($company['address'] ?? null), '/admin/settings?tab=contact'),
+            $this->check('Phone', $this->filled($company['phone'] ?? null) && ! $this->placeholderContact($company['phone'] ?? ''), '/admin/settings?tab=contact'),
+            $this->check('Second phone', $this->filled($company['phone2'] ?? $info['phone2'] ?? null), '/admin/settings?tab=contact'),
+            $this->check('Email', $this->filled($company['email'] ?? null) && ! str_contains(strtolower((string) ($company['email'] ?? '')), 'kibehosanctuary.org'), '/admin/settings?tab=contact'),
+            $this->check('WhatsApp', $this->filled($company['whatsapp'] ?? null) && ! $this->placeholderContact($company['whatsapp'] ?? ''), '/admin/settings?tab=contact'),
+            $this->check('Postal address', $this->filled($company['address'] ?? $info['address'] ?? null), '/admin/settings?tab=contact'),
+            $this->check('Plus Code / map pin', $this->filled($info['plusCode'] ?? $map['label'] ?? null), '/admin/settings?tab=map'),
+            $this->check('How to reach Kibeho', $this->filled($info['localization'] ?? null) || count($info['routes'] ?? []) > 0, '/admin/settings?tab=contact-page'),
             $this->check('Contact page heading', $this->filled($hero['headline'] ?? null) || $this->filled($info['heading'] ?? null), '/admin/settings?tab=contact-page'),
             $this->check('Map embed', $this->filled($map['embedSrc'] ?? null), '/admin/settings?tab=map'),
-            $this->check('Social links', collect($socials)->contains(fn ($row) => is_array($row) && $this->filled($row['href'] ?? null)), '/admin/settings?tab=contact'),
+            $this->check('Live social links', collect($socials)->contains(fn ($row) => is_array($row) && $this->realSocial($row['href'] ?? '')), '/admin/settings?tab=contact'),
+            $this->check('Donation bank accounts', $hasBank, '/admin/settings?tab=offerings'),
+            $this->check('MoMo Pay code', $this->filled($offerings['momoCode'] ?? null), '/admin/settings?tab=offerings'),
         ];
 
         return $this->section('settings', 'Settings', '/admin/settings', $checks);
@@ -101,13 +110,13 @@ class CmsAuditService
         $heroContent = is_array($hero?->content) ? $hero->content : [];
         $slides = is_array($heroContent['slides'] ?? null) ? $heroContent['slides'] : [];
         $hasSlide = collect($slides)->contains(fn ($slide) => $this->filled($slide['src'] ?? null));
-        $hasCover = $this->filled($heroContent['coverImage'] ?? null) || $this->filled($heroContent['heading'] ?? null);
+        $hasCover = $this->filled($heroContent['coverImage'] ?? null);
         $header = PageSection::query()->where('key', 'headers.default')->first();
         $headerImage = is_array($header?->content) ? ($header->content['backgroundImage'] ?? '') : '';
 
         $checks = [
             $this->check('Main menu has items', count($primary) > 0, '/admin/menus'),
-            $this->check('Home hero media', $hasSlide || $hasCover, '/admin/home-hero'),
+            $this->check('Home hero photo or slides', $hasSlide || $hasCover, '/admin/home-hero'),
             $this->check('Home hero heading', $this->filled($heroContent['heading'] ?? null), '/admin/home-hero'),
             $this->check('Default page header image', $this->filled($headerImage), '/admin/sections?tab=default-header'),
         ];
@@ -137,8 +146,8 @@ class CmsAuditService
             $itemsList = is_array($content['items'] ?? null) ? $content['items'] : [];
             $hero = $this->filled($content['heroImage'] ?? $content['image'] ?? $content['coverImage'] ?? null);
             $hasBody = $intro || count($blocks) > 0 || count($itemsList) > 0;
-            $okCount = (int) $title + (int) $hasBody + (int) $hero;
-            $itemPercent = $this->pct($okCount, 3);
+            $okCount = (int) $title + (int) $hasBody;
+            $itemPercent = $this->pct($okCount, 2);
             if ($hasBody) {
                 $withBody++;
             }
@@ -146,7 +155,7 @@ class CmsAuditService
                 $complete++;
             }
             $points += $okCount;
-            $max += 3;
+            $max += 2;
 
             $missing = [];
             if (! $title) {
@@ -156,7 +165,7 @@ class CmsAuditService
                 $missing[] = 'Text or layout';
             }
             if (! $hero) {
-                $missing[] = 'Header image';
+                $missing[] = 'Own header photo (using site default until you add one)';
             }
 
             $items[] = [
@@ -169,7 +178,11 @@ class CmsAuditService
         }
 
         $percent = $this->pct($points, max($max, 1));
-        $incomplete = array_values(array_filter($items, fn (array $item) => $item['percent'] < 90));
+        $defaultPhotoCount = count(array_filter(
+            $items,
+            fn (array $item) => in_array('Own header photo (using site default until you add one)', $item['missing'] ?? [], true)
+        ));
+        $incomplete = array_values(array_filter($items, fn (array $item) => count($item['missing'] ?? []) > 0));
 
         return [
             'id' => 'pages',
@@ -178,6 +191,7 @@ class CmsAuditService
             'count' => $rows->count(),
             'complete' => $complete,
             'withBody' => $withBody,
+            'defaultPhotoCount' => $defaultPhotoCount,
             'percent' => $percent,
             'status' => $this->status($percent),
             'incomplete' => array_slice($incomplete, 0, 40),
@@ -188,7 +202,7 @@ class CmsAuditService
     {
         return [
             $this->collection('accommodations', 'Accommodations', '/admin/projects', Facility::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
-                ['id' => 'photo', 'label' => 'Photo', 'fn' => fn ($row) => $this->filled($row->cover_image) || $this->filled($row->featured_image)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image) || $this->filled($row->featured_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description)],
                 ['id' => 'gallery', 'label' => 'Gallery', 'fn' => fn ($row) => count($row->gallery ?? []) > 0],
                 ['id' => 'amenities', 'label' => 'Amenities', 'fn' => fn ($row) => count($row->amenities ?? []) > 0],
@@ -198,45 +212,45 @@ class CmsAuditService
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['title', 'description'], $default, $languages),
             $this->collection('communities', 'Communities', '/admin/communities', Community::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->name, [
-                ['id' => 'photo', 'label' => 'Photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description)],
                 ['id' => 'location', 'label' => 'Location', 'fn' => fn ($row) => $this->filled($row->location)],
                 ['id' => 'gallery', 'label' => 'Gallery', 'fn' => fn ($row) => count($row->gallery ?? []) > 0],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['name', 'description', 'location'], $default, $languages),
             $this->collection('articles', 'Articles / News', '/admin/blog', NewsPost::query()->orderByDesc('id')->get(), fn ($row) => $row->title, [
-                ['id' => 'photo', 'label' => 'Cover image', 'fn' => fn ($row) => $this->filled($row->cover_image)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'body', 'label' => 'Article body', 'fn' => fn ($row) => $this->filled($row->body)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['title', 'excerpt', 'body'], $default, $languages),
             $this->collection('events', 'Pilgrimage events', '/admin/upcoming-pilgrimages', UpcomingPilgrimage::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
-                ['id' => 'photo', 'label' => 'Image', 'fn' => fn ($row) => $this->filled($row->image)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
                 ['id' => 'date', 'label' => 'Date', 'fn' => fn ($row) => $this->filled($row->starts_on)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['title', 'description', 'short_description'], $default, $languages),
             $this->collection('services', 'Pilgrimage services', '/admin/services', PilgrimageService::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
-                ['id' => 'photo', 'label' => 'Image', 'fn' => fn ($row) => $this->filled($row->image) || $this->filled($row->detail_image)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->image) || $this->filled($row->detail_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['title', 'description'], $default, $languages),
             $this->collection('experiences', 'Shrine experiences', '/admin/activities', Activity::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
-                ['id' => 'photo', 'label' => 'Image', 'fn' => fn ($row) => $this->filled($row->image)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['title', 'description', 'short_description'], $default, $languages),
             $this->collection('projects', 'Development projects', '/admin/shrine-projects', ShrineProject::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
-                ['id' => 'photo', 'label' => 'Photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['title', 'description', 'short_description'], $default, $languages),
             $this->collection('apparition-sites', 'Apparition sites', '/admin/apparition-sites', SacredPlace::query()->where('type', 'apparition_site')->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->name, [
-                ['id' => 'photo', 'label' => 'Photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['name', 'description', 'short_description'], $default, $languages),
             $this->collection('churches', 'Churches', '/admin/churches', SacredPlace::query()->where('type', 'church')->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->name, [
-                ['id' => 'photo', 'label' => 'Photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['name', 'description', 'short_description'], $default, $languages),
@@ -245,7 +259,7 @@ class CmsAuditService
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['title', 'day_label', 'notes'], $default, $languages),
             $this->collection('pastoral-team', 'Pastoral team', '/admin/pastoral-team', PastoralTeamMember::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->name, [
-                ['id' => 'photo', 'label' => 'Photo', 'fn' => fn ($row) => $this->filled($row->photo)],
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->photo)],
                 ['id' => 'role', 'label' => 'Role', 'fn' => fn ($row) => $this->filled($row->role)],
                 ['id' => 'bio', 'label' => 'Bio', 'fn' => fn ($row) => $this->filled($row->bio)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
@@ -480,10 +494,37 @@ class CmsAuditService
 
         if (($pages['percent'] ?? 100) < 70) {
             $items[] = [
-                'label' => 'Several site pages still need text or a header image',
+                'label' => 'Several site pages still need title or body text',
                 'href' => '/admin/sections',
                 'area' => 'Site pages',
                 'reason' => ($pages['percent'] ?? 0).'% complete',
+            ];
+        }
+
+        $missingPhotos = (int) ($pages['defaultPhotoCount'] ?? 0);
+        if ($missingPhotos >= 5) {
+            $items[] = [
+                'label' => $missingPhotos.' pages still use the default header photo',
+                'href' => '/admin/sections',
+                'area' => 'Site pages',
+                'reason' => 'Add a unique image on each page when you have one',
+            ];
+        }
+
+        $listingPhotos = 0;
+        foreach ($directories as $dir) {
+            foreach ($dir['incomplete'] ?? [] as $row) {
+                if (in_array('Own photo', $row['missing'] ?? [], true)) {
+                    $listingPhotos++;
+                }
+            }
+        }
+        if ($listingPhotos >= 5) {
+            $items[] = [
+                'label' => $listingPhotos.' listings still use the default photo',
+                'href' => '/admin/audit',
+                'area' => 'Directories',
+                'reason' => 'Upload a unique photo when one is available',
             ];
         }
 
@@ -563,6 +604,31 @@ class CmsAuditService
         $text = trim(preg_replace('/\s+/u', ' ', $text) ?? '');
 
         return $text !== '';
+    }
+
+    private function placeholderContact(string $value): bool
+    {
+        $digits = preg_replace('/\D+/', '', $value) ?? '';
+
+        return str_contains($digits, '788123456') || str_contains($value, '123 456');
+    }
+
+    private function realSocial(string $href): bool
+    {
+        $href = trim($href);
+        if ($href === '' || ! preg_match('#^https?://#i', $href)) {
+            return false;
+        }
+        $host = strtolower((string) parse_url($href, PHP_URL_HOST));
+        $path = trim((string) parse_url($href, PHP_URL_PATH), '/');
+        $placeholderHosts = [
+            'facebook.com', 'www.facebook.com',
+            'instagram.com', 'www.instagram.com',
+            'youtube.com', 'www.youtube.com',
+            'twitter.com', 'www.twitter.com', 'x.com', 'www.x.com',
+        ];
+
+        return ! (in_array($host, $placeholderHosts, true) && $path === '');
     }
 
     private function pct(int $ok, int $total): int

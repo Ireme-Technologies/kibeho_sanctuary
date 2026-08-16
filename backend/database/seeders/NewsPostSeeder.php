@@ -145,7 +145,7 @@ class NewsPostSeeder extends Seeder
         foreach ($posts as $post) {
             NewsPost::updateOrCreate(
                 ['slug' => $post['slug']],
-                array_merge($post, ['is_published' => true])
+                array_merge($post, ['is_published' => true, 'cover_image' => '', 'author_avatar' => ''])
             );
         }
     }

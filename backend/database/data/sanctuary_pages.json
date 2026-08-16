@@ -2,9 +2,9 @@
   "our-lady.index": {
     "eyebrow": "",
     "title": "Our Lady of Kibeho",
-    "subtitle": "The message of conversion, prayer, and reconciliation",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Discover the Marian apparitions at Kibeho — the first and, to date, the only Marian apparition site in Africa officially recognised by the Catholic Church.",
+    "subtitle": "Nyina wa Jambo — Mother of the Word",
+    "heroImage": "",
+    "intro": "<p>Kibeho is a remote site in Nyaruguru District, in the Southern Province of Rwanda. It is about a three-hour drive from Kigali and about 30 kilometres from Huye. The apparitions of the Virgin Mary have made Kibeho a place of prayer and pilgrimage.</p><p>Here seekers of God come to ask for the grace of conversion, to offer their intentions in reparation, and to promote reconciliation between persons, communities, and nations.</p>",
     "blocks": [],
     "links": [
       {
@@ -54,17 +54,24 @@
   "our-lady.apparitions": {
     "eyebrow": "",
     "title": "The Apparitions",
-    "subtitle": "1981–1989 · Kibeho, Rwanda",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Between 1981 and 1989, the Blessed Virgin Mary appeared in Kibeho under the name Nyina wa Jambo — Mother of the Word. The apparitions called the Church and the world to conversion, prayer, and reconciliation.",
+    "subtitle": "28 November 1981 – 28 November 1989",
+    "heroImage": "",
+    "intro": "<p>The first time the Virgin Mary appeared to Alphonsine Mumureke, a student in the school now called Groupe Scolaire Mère du Verbe Kibeho, was on 28 November 1981, in a dining hall. Alphonsine saw a beautiful woman who presented herself as <em>Nyina wa Jambo</em> — Mother of the Word.</p><p>On 12 January 1982 the Blessed Virgin appeared to Nathalie Mukamazimpaka in the dormitory, and on 2 March 1982 to Marie Claire Mukangango. Others reported visions, but only these three visionaries were approved by the Church in 2001 after a thorough investigation.</p>",
     "blocks": [
+      {
+        "type": "heading",
+        "text": "Where the apparitions took place"
+      },
+      {
+        "type": "paragraph",
+        "text": "<p>From 28 November 1981 to May 1982, the apparitions took place in the dormitory, later transformed into the Chapel of the Apparitions. From 31 May 1982 to 28 November 1989 they were held outside the dormitory; from 15 August 1982 a long part of them took place at the podium.</p>"
+      },
       {
         "type": "list",
         "items": [
-          "Public apparitions beginning on 28 November 1981",
-          "A call to conversion of heart and sincere prayer",
-          "A prophetic invitation to reconciliation and peace",
-          "Recognition of the authenticity of the apparitions by the Church"
+          "Alphonsine Mumureke — 28 November 1981 to 28 November 1989",
+          "Nathalie Mukamazimpaka — 12 January 1982 to 3 December 1983",
+          "Marie Claire Mukangango — 2 March 1982 to 15 September 1982"
         ]
       }
     ],
@@ -83,24 +90,24 @@
   "our-lady.visionaries": {
     "eyebrow": "",
     "title": "The Visionaries",
-    "subtitle": "Those who received the message",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "The Church recognised the authenticity of the apparitions associated with three visionaries of Kibeho. Their witness continues to invite pilgrims to listen to the Mother of the Word.",
+    "subtitle": "The three recognised visionaries of Kibeho",
+    "heroImage": "",
+    "intro": "<p>The Church recognised the authenticity of the apparitions associated with three students of Kibeho. Through them the Mother of the Word called the world to faith, conversion, and prayer.</p>",
     "blocks": [
       {
         "type": "cards",
         "items": [
           {
             "title": "Alphonsine Mumureke",
-            "text": "The first visionary; apparitions began on 28 November 1981."
+            "text": "<p>The first visionary. Apparitions began on 28 November 1981 in the school dining hall. She received the Virgin Mary until 28 November 1989.</p>"
           },
           {
             "title": "Nathalie Mukamazimpaka",
-            "text": "Called to a life of prayer, penance, and redemptive suffering."
+            "text": "<p>The Virgin Mary appeared to her on 12 January 1982 in the dormitory. Her apparitions continued until 3 December 1983. She was called to prayer, penance, and redemptive suffering.</p>"
           },
           {
             "title": "Marie Claire Mukangango",
-            "text": "Associated especially with the devotion of the Seven Sorrows Rosary."
+            "text": "<p>Apparitions from 2 March 1982 to 15 September 1982. She is especially linked with the devotion of the Rosary of the Seven Sorrows.</p>"
           }
         ]
       }
@@ -117,18 +124,23 @@
   "our-lady.messages": {
     "eyebrow": "",
     "title": "The Messages",
-    "subtitle": "Mother of the Word",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Our Lady of Kibeho invites conversion of the heart, the prayer of the Rosary — especially the Seven Sorrows — and a life of love, repentance, and reconciliation.",
+    "subtitle": "Faith, conversion, and prayer",
+    "heroImage": "",
+    "intro": "<p>Faith, conversion, and prayer were the heart of the Virgin Mary’s messages to the three girls — and through them to the whole world. She presented herself as a Mother calling her children: <em>Mwana</em> (Child) and <em>Ndi Nyina wa Jambo</em> (I am the Mother of the Word).</p><p>She said the world conducts itself very badly, hastens to its ruin, and is rebellious against God. “If you do not repent and do not convert your hearts, you will fall into the abyss.” This is a call to conversion and reconciliation.</p>",
     "blocks": [
       {
         "type": "list",
         "items": [
           "Convert while there is still time",
-          "Pray the Rosary and the Seven Sorrows Rosary",
-          "Love one another and seek reconciliation",
-          "Live the Gospel with humility and fidelity"
+          "Pray the Rosary, especially the Seven Sorrows Rosary",
+          "Offer reparation for your sins and the sins of the world",
+          "Seek reconciliation between persons, communities, and nations",
+          "Live as children of the Mother of the Word"
         ]
+      },
+      {
+        "type": "note",
+        "text": "<p>The first words at Kibeho remain fundamental: she is a Mother calling all her children — Mother of the Church (cf. Jn 19:27) and Mother of God (Council of Ephesus, 431).</p>"
       }
     ],
     "links": [],
@@ -146,9 +158,9 @@
   "our-lady.church-recognition": {
     "eyebrow": "",
     "title": "Church Recognition",
-    "subtitle": "Declared authentic by the Catholic Church",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "The Diocese of Gikongoro, after careful investigation, declared the apparitions of Kibeho authentic. Kibeho is the first — and to date the only — Marian apparition site in Africa officially recognised by the Church.",
+    "subtitle": "Declared authentic on 29 June 2001",
+    "heroImage": "",
+    "intro": "<p>After the supernatural events, some remained in doubt while others waited for the judgement of the Church. The investigations concluded by recognising the apparitions of Kibeho as authentic.</p><p>On 29 June 2001, after the approval of the Holy See, the Bishop of Gikongoro, Mgr Augustin Misago, issued the declaration bearing the final judgement on the apparitions of Kibeho. Bishop Jean Baptiste Gahamanyi had earlier created two commissions: medical (March 1982) and theological (May 1982).</p><p>Marian apparitions have been reported throughout the world; the Church has recognised a number of them, such as Guadalupe, Fatima, and Lourdes. Kibeho is among them — the first approved on the African continent.</p>",
     "blocks": [],
     "links": [],
     "cta": {
@@ -165,18 +177,37 @@
   "our-lady.history": {
     "eyebrow": "",
     "title": "History",
-    "subtitle": "From the apparitions to the shrine today",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "From the first apparitions in 1981 through Church recognition and the growth of pilgrimage, Kibeho has become a place of prayer for Rwanda and for the universal Church.",
+    "subtitle": "Before, during, and after the apparitions",
+    "heroImage": "",
+    "intro": "<p>Kibeho Sanctuary stands in a parish erected in 1934, born from Kansi Parish (1910), itself born from Save, the oldest parish in Rwanda. The parish was dedicated to the Mother of God (<em>Umubyeyi w’Imana</em>) and was known for strong Christian life and many vocations.</p>",
     "blocks": [
       {
-        "type": "list",
-        "items": [
-          "1981 — First apparitions at Kibeho",
-          "1982–1989 — Continuing apparitions and public witness",
-          "2001 — Declaration of authenticity by the Bishop of Gikongoro",
-          "Today — An international shrine welcoming pilgrims worldwide"
-        ]
+        "type": "heading",
+        "text": "Before"
+      },
+      {
+        "type": "paragraph",
+        "text": "<p>Kibeho College, where the apparitions happened, was founded in 1968 and entrusted to the Benebikira Sisters, who still serve there. It was a simple school like many others in Rwanda until 28 November 1981.</p>"
+      },
+      {
+        "type": "heading",
+        "text": "During"
+      },
+      {
+        "type": "paragraph",
+        "text": "<p>From 1981 to 1989 the history of Kibeho changed. To Alphonsine the Virgin Mary said “Ndi Nyina wa Jambo” — “I am the Mother of the Word.” People from every corner of Rwanda and from abroad began to come. Newspapers such as Kinyamateka and Imvaho, and radio, spoke of what was happening. Why Kibeho? The Virgin Mary said she appears to whom she wants and when she wants.</p>"
+      },
+      {
+        "type": "paragraph",
+        "text": "<p>Bishop Jean Baptiste Gahamanyi created two commissions: a medical commission in March 1982 and a theological commission in May 1982. The three recognised visionaries — Alphonsine Mumureke (28 November 1981 – 28 November 1989), Nathalie Mukamazimpaka (12 January 1982 – 3 December 1983), and Marie Claire Mukangango (2 March 1982 – 15 September 1982) — helped the Church understand and spread the message.</p>"
+      },
+      {
+        "type": "heading",
+        "text": "After"
+      },
+      {
+        "type": "paragraph",
+        "text": "<p>On 29 June 2001, after the approval of the Holy See, Bishop Augustin Misago of Gikongoro issued the declaration recognising the apparitions of Kibeho as authentic. Among Marian apparitions approved by the Church — such as Guadalupe, Lourdes, and Fatima — Kibeho is the first approved on the African continent.</p>"
       }
     ],
     "links": [],
@@ -192,7 +223,7 @@
     "eyebrow": "",
     "title": "Pastoral Team",
     "subtitle": "Those who serve pilgrims at the Shrine",
-    "heroImage": "/images/sanctuary/welcome.jpg",
+    "heroImage": "",
     "intro": "Meet the priests and pastoral workers who welcome pilgrims, celebrate the liturgy, and accompany the life of the Shrine of Our Lady of Kibeho.",
     "blocks": [],
     "links": [],
@@ -200,39 +231,35 @@
   },
   "our-lady.communities": {
     "eyebrow": "",
-    "title": "Communities around Kibeho",
-    "subtitle": "Parishes, villages, and religious houses near the Shrine",
-    "heroImage": "/images/sanctuary/hills.jpg",
-    "intro": "The message of Our Lady of Kibeho is lived first among the people of this hillside — parish families, neighbouring communities, and religious houses who welcome pilgrims year-round.",
+    "title": "Communities surrounding the Sanctuary",
+    "subtitle": "Religious families serving with the Shrine",
+    "heroImage": "",
+    "intro": "<p>Several religious communities live and serve around the Sanctuary of Our Lady of Kibeho. They support liturgy, hospitality, education, and the prayer of pilgrims.</p>",
     "blocks": [],
     "links": [],
     "cta": null
   },
   "our-lady.faq": {
     "eyebrow": "",
-    "title": "Frequently Asked Questions",
-    "subtitle": "About Our Lady of Kibeho and the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Answers to common questions about the apparitions, recognition by the Church, pilgrimage, and life at the Shrine.",
+    "title": "FAQ",
+    "subtitle": "Questions pilgrims often ask",
+    "heroImage": "",
+    "intro": "<p>Answers to common questions about the apparitions, Church recognition, pilgrimage, and life at the Shrine of Our Lady of Kibeho.</p>",
     "blocks": [
       {
         "type": "cards",
         "items": [
           {
             "title": "Are the apparitions recognised?",
-            "text": "Yes. The Catholic Church has declared authentic the apparitions associated with the three recognised visionaries of Kibeho."
+            "text": "<p>Yes. On 29 June 2001 the Bishop of Gikongoro declared authentic the apparitions to Alphonsine Mumureke, Nathalie Mukamazimpaka, and Marie Claire Mukangango.</p>"
           },
           {
-            "title": "Who can visit the Shrine?",
-            "text": "Pilgrims from Rwanda and every nation are welcome. Groups are encouraged to contact the Pilgrimage Office in advance."
+            "title": "Where is Kibeho?",
+            "text": "<p>In Nyaruguru District, Southern Province, Rwanda, in the Diocese of Gikongoro, not far from the border with Burundi. It is about three hours from Kigali and about 30 km from Huye.</p>"
           },
           {
-            "title": "What is the main message?",
-            "text": "Conversion, prayer (especially the Rosary and Seven Sorrows), and reconciliation — living the Gospel with sincerity."
-          },
-          {
-            "title": "How can I support the Shrine?",
-            "text": "Through prayer, pilgrimage, partnership, and donations toward pastoral life and the Master Plan."
+            "title": "How do I plan a visit?",
+            "text": "<p>Contact the Pilgrimage Office. Foreign pilgrims may also be helped by the St. Vincent Pallotti Pilgrimages Centre in Kigali.</p>"
           }
         ]
       }
@@ -252,44 +279,77 @@
   "shrine.index": {
     "eyebrow": "",
     "title": "The Shrine",
-    "subtitle": "A place of prayer, liturgy, and Marian devotion",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Explore the churches, apparition sites, Holy Spring, Way of the Cross, and liturgical life of the Shrine of Our Lady of Kibeho.",
-    "blocks": [],
-    "links": [
+    "subtitle": "A living place of prayer on the hills of Kibeho",
+    "heroImage": "",
+    "intro": "<p>The Shrine of Our Lady of Kibeho welcomes pilgrims who come to pray, to celebrate the sacraments, and to walk the places linked to the apparitions of the Mother of the Word. Here the Church gathers each day — and, on feast days, from across Rwanda and the world.</p>",
+    "blocks": [
       {
-        "label": "Welcome",
-        "path": "/shrine/welcome"
+        "type": "heading",
+        "text": "Life of prayer"
       },
       {
-        "label": "Churches",
-        "path": "/shrine/churches"
+        "type": "paragraph",
+        "text": "<p>Holy Mass, the Rosary, confession, and times of silence shape the ordinary day at the Shrine. On Marian feasts and major pilgrimages the liturgy is extended, and the grounds fill with parishes, dioceses, and visitors from many nations.</p>"
       },
       {
-        "label": "Apparition Sites",
-        "path": "/shrine/apparition-sites"
+        "type": "heading",
+        "text": "Places to visit"
       },
       {
-        "label": "Holy Spring",
-        "path": "/shrine/holy-spring"
+        "type": "paragraph",
+        "text": "<p>Begin with a welcome and orientation, then move through the churches, apparition sites, Holy Spring, and Way of the Cross at a prayerful pace. The Mass schedule and shrine map will help you plan the day.</p>"
       },
       {
-        "label": "Way of the Cross",
-        "path": "/shrine/way-of-the-cross"
+        "type": "cards",
+        "items": [
+          {
+            "title": "Welcome",
+            "text": "<p>Arrive in peace. Find orientation, pilgrim reception, and a first invitation to prayer.</p>",
+            "path": "/shrine/welcome"
+          },
+          {
+            "title": "Churches",
+            "text": "<p>Chapels and churches where the liturgical and pastoral life of the Shrine is celebrated.</p>",
+            "path": "/shrine/churches"
+          },
+          {
+            "title": "Apparition Sites",
+            "text": "<p>The places remembered for the apparitions of Our Lady of Kibeho — spaces of silence and thanksgiving.</p>",
+            "path": "/shrine/apparition-sites"
+          },
+          {
+            "title": "Holy Spring",
+            "text": "<p>Pilgrims come to the water in faith — a sign of God’s grace and a call to trust.</p>",
+            "path": "/shrine/holy-spring"
+          },
+          {
+            "title": "Way of the Cross",
+            "text": "<p>Walk the Stations with Christ, in the company of Our Lady of Sorrows.</p>",
+            "path": "/shrine/way-of-the-cross"
+          },
+          {
+            "title": "Eucharistic Adoration",
+            "text": "<p>Remain in silent prayer before the Blessed Sacrament, for your intentions and for the world.</p>",
+            "path": "/shrine/eucharistic-adorations"
+          },
+          {
+            "title": "Mass Schedule",
+            "text": "<p>Daily and festal Mass times for pilgrims and the local community. Confirm feast-day hours before you travel.</p>",
+            "path": "/shrine/mass-schedule"
+          },
+          {
+            "title": "Shrine Map",
+            "text": "<p>Find churches, apparition sites, the Holy Spring, the Way of the Cross, and pilgrim facilities.</p>",
+            "path": "/shrine/map"
+          }
+        ]
       },
       {
-        "label": "Eucharistic Adorations",
-        "path": "/shrine/eucharistic-adorations"
-      },
-      {
-        "label": "Mass Schedule",
-        "path": "/shrine/mass-schedule"
-      },
-      {
-        "label": "Shrine Map",
-        "path": "/shrine/map"
+        "type": "note",
+        "text": "<p>Group visits are asked to contact the Pilgrimage Office so liturgy, lodging, and a fitting welcome can be prepared.</p>"
       }
     ],
+    "links": [],
     "cta": {
       "primary": {
         "label": "Mass Schedule",
@@ -305,8 +365,8 @@
     "eyebrow": "",
     "title": "Welcome",
     "subtitle": "You are welcome at Kibeho",
-    "heroImage": "/images/sanctuary/welcome.jpg",
-    "intro": "The Shrine of Our Lady of Kibeho welcomes pilgrims from Rwanda and around the world. Come to pray, to celebrate the sacraments, and to encounter the Mother of the Word.",
+    "heroImage": "",
+    "intro": "<p>The Sanctuary of Our Lady of Kibeho welcomes pilgrims from Rwanda and around the world. Come to pray, to celebrate the sacraments, and to encounter the Mother of the Word.</p><p>Kibeho is a holy place with the Church of Our Lady of Sorrows, the Chapel of the Apparitions, the Chapel of Adoration, the Way of the Cross, the Way of the Rosary, the source of Mary, and other places of prayer.</p>",
     "blocks": [],
     "links": [],
     "cta": {
@@ -323,9 +383,9 @@
   "shrine.churches": {
     "eyebrow": "",
     "title": "Churches",
-    "subtitle": "Places of worship at the Shrine",
-    "heroImage": "/images/sanctuary/church.jpg",
-    "intro": "Discover the churches and chapels that serve the liturgical and pastoral life of the Shrine of Our Lady of Kibeho.",
+    "subtitle": "Places of worship at the Sanctuary",
+    "heroImage": "",
+    "intro": "<p>Until now the Sanctuary is constituted by the church of Our Lady of Sorrows, the Chapel of the Apparitions, and the chapel of adoration of the Blessed Sacrament, together with the open places of prayer on the grounds.</p>",
     "blocks": [],
     "links": [],
     "cta": {
@@ -339,9 +399,9 @@
   "shrine.apparition-sites": {
     "eyebrow": "",
     "title": "Apparition Sites",
-    "subtitle": "Where Our Lady appeared",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Visit the places associated with the apparitions of Our Lady of Kibeho — spaces of silence, prayer, and remembrance of the Mother of the Word.",
+    "subtitle": "The place and esplanade of the apparitions",
+    "heroImage": "",
+    "intro": "<p>Visit the place of the apparitions and the esplanade — spaces of silence, prayer, and remembrance of the Mother of the Word. From 1982 many public apparitions were held outdoors and at the podium.</p>",
     "blocks": [],
     "links": [],
     "cta": {
@@ -358,9 +418,9 @@
   "shrine.holy-spring": {
     "eyebrow": "",
     "title": "Holy Spring",
-    "subtitle": "The Water of Kibeho",
-    "heroImage": "/images/sanctuary/activity-spring.jpg",
-    "intro": "Pilgrims come to the Holy Spring in faith — a sign of God’s grace and a call to interior purification and trust.",
+    "subtitle": "The source of Mary",
+    "heroImage": "",
+    "intro": "<p>Pilgrims come to the source of Mary in faith — a sign of God’s grace and a call to interior purification and trust.</p>",
     "blocks": [],
     "links": [],
     "cta": {
@@ -378,8 +438,8 @@
     "eyebrow": "",
     "title": "Way of the Cross",
     "subtitle": "Walking with Christ",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Pray the Way of the Cross at the Shrine — a path of meditation on the Passion of Christ in the company of Our Lady of Sorrows.",
+    "heroImage": "",
+    "intro": "<p>Pray the Way of the Cross at the Sanctuary — a path of meditation on the Passion of Christ in the company of Our Lady of Sorrows.</p>",
     "blocks": [],
     "links": [],
     "cta": {
@@ -395,10 +455,10 @@
   },
   "shrine.eucharistic-adorations": {
     "eyebrow": "",
-    "title": "Eucharistic Adorations",
-    "subtitle": "Stay with Me",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Join times of Eucharistic Adoration at the Shrine — silent prayer before the Blessed Sacrament, for personal intentions and for the world.",
+    "title": "Eucharistic Adoration",
+    "subtitle": "The chapel of adoration of the Blessed Sacrament",
+    "heroImage": "",
+    "intro": "<p>Join times of silent prayer before the Blessed Sacrament in the chapel of adoration, for personal intentions and for the world.</p>",
     "blocks": [],
     "links": [],
     "cta": {
@@ -416,7 +476,7 @@
     "eyebrow": "",
     "title": "Mass Schedule",
     "subtitle": "Liturgical life of the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Join the daily and festal celebration of Holy Mass at the Shrine of Our Lady of Kibeho. Schedules may vary on feast days and major pilgrimages — confirm with the Pilgrimage Office when planning a group visit.",
     "blocks": [
       {
@@ -457,7 +517,7 @@
     "eyebrow": "",
     "title": "Shrine Map",
     "subtitle": "Find your way around the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "An interactive map of the Shrine grounds is planned. For now, ask at the Pilgrimage Office for orientation to churches, apparition sites, the Holy Spring, and pilgrim facilities.",
     "blocks": [
       {
@@ -487,7 +547,7 @@
     "eyebrow": "",
     "title": "Pilgrimage",
     "subtitle": "Prepare your journey to Kibeho",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Whether you come alone, with family, or with a parish group, the Shrine welcomes you. Prepare spiritually and practically for your pilgrimage.",
     "blocks": [],
     "links": [
@@ -535,27 +595,9 @@
     "eyebrow": "",
     "title": "Why Kibeho?",
     "subtitle": "A recognised Marian shrine in Africa",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Pilgrims come to Kibeho to encounter Our Lady, Mother of the Word — to pray for conversion, peace, and reconciliation, and to renew their life in Christ.",
-    "blocks": [
-      {
-        "type": "cards",
-        "items": [
-          {
-            "title": "Recognised by the Church",
-            "text": "The only Marian apparition site in Africa officially recognised by the Catholic Church."
-          },
-          {
-            "title": "A call to conversion",
-            "text": "The message of Kibeho invites a sincere return to God and to one another."
-          },
-          {
-            "title": "A living shrine",
-            "text": "Liturgy, prayer, and hospitality for pilgrims from every nation."
-          }
-        ]
-      }
-    ],
+    "heroImage": "",
+    "intro": "<p>The Apparitions of the Virgin Mary have made Kibeho a place of prayer and pilgrimage. Kibeho is a place of prayer for seekers of God who come to ask for the grace of conversion, offering their intentions in reparation for their own sins and the sins of the world, and to promote reconciliation between individuals, communities, and nations.</p><p>It is the first Marian apparition site on the African continent approved by the Catholic Church.</p>",
+    "blocks": [],
     "links": [],
     "cta": {
       "primary": {
@@ -568,20 +610,10 @@
   "pilgrimage.plan": {
     "eyebrow": "",
     "title": "Plan your Pilgrimage",
-    "subtitle": "Spiritual and practical preparation",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Prepare your heart through prayer, and organise travel, accommodation, and liturgy with the Pilgrimage Office — especially for groups and international pilgrims.",
-    "blocks": [
-      {
-        "type": "list",
-        "items": [
-          "Contact the Pilgrimage Office with dates and group size",
-          "Arrange accommodation and transportation",
-          "Prepare spiritually: Mass, Confession, Rosary",
-          "Review practical guidelines for the Shrine"
-        ]
-      }
-    ],
+    "subtitle": "Prepare your journey to the Sanctuary",
+    "heroImage": "",
+    "intro": "<p>Whether you come alone, with family, or with a parish group, the Sanctuary welcomes you. Register with the Pilgrimage Office so liturgy, lodging, and a fitting welcome can be prepared.</p><p>Pilgrims from abroad can fly to Kigali. From Kigali, the St. Vincent Pallotti Pilgrimages Centre can help you find facilities for your pilgrimage to Kibeho.</p>",
+    "blocks": [],
     "links": [],
     "cta": {
       "primary": {
@@ -598,7 +630,7 @@
     "eyebrow": "",
     "title": "Accommodation",
     "subtitle": "Places to stay near the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Find guest houses, retreat centres, and hotels near Kibeho. The Pilgrimage Office can advise groups on suitable options.",
     "blocks": [],
     "links": [],
@@ -616,17 +648,25 @@
   "pilgrimage.transportation": {
     "eyebrow": "",
     "title": "Transportation",
-    "subtitle": "How to reach Kibeho",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Kibeho is in Nyaruguru District, Southern Province, Rwanda. Pilgrims typically travel via Kigali or regional towns. Group organisers should plan transfers in advance.",
+    "subtitle": "How to reach the Sanctuary",
+    "heroImage": "",
+    "intro": "<p>The Sanctuary Our Lady of Kibeho is situated in the Diocese of Gikongoro, Nyaruguru District, in Southern Rwanda, not far from the Burundian border. It is about a three-hour drive from Kigali and about 30 kilometres from Huye.</p><p>Pilgrims from foreign countries can use the airplane that lands in Kigali, the capital city of Rwanda. From Kigali, the St. Vincent Pallotti Pilgrimages Centre can help you find facilities for your pilgrimage.</p>",
     "blocks": [
+      {
+        "type": "heading",
+        "text": "Kibeho — usual routes"
+      },
       {
         "type": "list",
         "items": [
-          "International arrivals via Kigali International Airport",
-          "Road travel to Nyaruguru / Kibeho",
-          "Local guidance available through the Pilgrimage Office"
+          "Kigali – Huye – Matyazo – Kibeho",
+          "Rusizi – Huye – Matyazo – Kibeho",
+          "Akanyaru – Cahinda – Kibeho"
         ]
+      },
+      {
+        "type": "note",
+        "text": "<p>Plus Code: 9H23+58 Kibeho. Confirm group transport with the Pilgrimage Office before you travel.</p>"
       }
     ],
     "links": [],
@@ -644,24 +684,24 @@
   "pilgrimage.office": {
     "eyebrow": "",
     "title": "Pilgrimage Office",
-    "subtitle": "Your first point of contact",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "The Pilgrimage Office assists individuals and groups with visit planning, liturgical arrangements, and practical questions about the Shrine.",
+    "subtitle": "Where to find us",
+    "heroImage": "",
+    "intro": "<p>The Pilgrimage Office assists individuals and groups with visit planning, liturgical arrangements, and practical questions.</p>",
     "blocks": [
       {
         "type": "cards",
         "items": [
           {
-            "title": "Group pilgrimages",
-            "text": "Schedule, liturgy, and hospitality coordination."
+            "title": "Address",
+            "text": "<p>Sanctuary Our Lady of Kibeho<br>B.P. 341 Butare / Rwanda</p>"
           },
           {
-            "title": "International pilgrims",
-            "text": "Guidance for travel, language, and pastoral accompaniment."
+            "title": "Telephone",
+            "text": "<p>+250 788 559 192<br>+250 788 307 376</p>"
           },
           {
-            "title": "General enquiries",
-            "text": "Mass times, shrine life, and visitor information."
+            "title": "Email",
+            "text": "<p>info@kibehosanctuary.rw</p>"
           }
         ]
       }
@@ -681,10 +721,40 @@
   "pilgrimage.calendar": {
     "eyebrow": "",
     "title": "Pilgrimage events",
-    "subtitle": "Feasts, gatherings, and registered pilgrimages",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Follow major Marian feasts, national and international pilgrimages, and opportunities to join organised groups at the Shrine.",
-    "blocks": [],
+    "subtitle": "Feast days, parish visits, and gatherings of the Church",
+    "heroImage": "",
+    "intro": "<p>This calendar lists public pilgrimages and celebrations at the Shrine of Our Lady of Kibeho. Open an event for dates, the spirit of the day, and a way to register your group or your own pilgrimage.</p>",
+    "blocks": [
+      {
+        "type": "heading",
+        "text": "How to take part"
+      },
+      {
+        "type": "paragraph",
+        "text": "<p>Individuals, families, and parish groups are welcome. Register so the Pilgrimage Office can share the programme, guide you on lodging, and receive you with care. Times may change around major feasts — confirm before you travel.</p>"
+      },
+      {
+        "type": "cards",
+        "items": [
+          {
+            "title": "Marian feast days",
+            "text": "<p>Annual celebrations such as the Assumption, with Mass, procession, confession, and thanksgiving.</p>"
+          },
+          {
+            "title": "National and international pilgrimages",
+            "text": "<p>Days when dioceses, movements, and visitors from beyond Rwanda pray together at Kibeho.</p>"
+          },
+          {
+            "title": "Youth and parish gatherings",
+            "text": "<p>Pilgrimages prepared for young people and for parish groups walking together in faith.</p>"
+          }
+        ]
+      },
+      {
+        "type": "note",
+        "text": "<p>Need a date that is not listed? Write to the Pilgrimage Office. Private parish visits can often be arranged alongside the public calendar.</p>"
+      }
+    ],
     "links": [],
     "cta": {
       "primary": {
@@ -701,7 +771,7 @@
     "eyebrow": "",
     "title": "Practical Information",
     "subtitle": "What pilgrims need to know",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Guidelines for dress, conduct, photography, offerings, and the rhythm of prayer at the Shrine — so every visit remains reverent and fruitful.",
     "blocks": [
       {
@@ -730,8 +800,8 @@
     "eyebrow": "",
     "title": "Spirituality",
     "subtitle": "Pray with the Shrine — near or far",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Deepen your spiritual life with the prayers, rosaries, novenas, and pastoral invitations of Our Lady of Kibeho. You may also send prayer intentions and request Masses.",
+    "heroImage": "",
+    "intro": "<p>Deepen your spiritual life with the prayers of Our Lady of Kibeho. You may light a candle, have a Mass said, pray the Rosary of the Seven Sorrows, and send intentions to the Sanctuary.</p>",
     "blocks": [],
     "links": [
       {
@@ -780,35 +850,45 @@
   },
   "spirituality.prayer-intentions": {
     "eyebrow": "",
-    "title": "Prayer Intentions",
-    "subtitle": "Entrust your intentions to the prayer of the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Share prayer intentions with the Shrine community. Online intention submission will be expanded; for now, send your request through the Pilgrimage Office contact form.",
-    "blocks": [],
+    "title": "Light a candle",
+    "subtitle": "Popular piety of the people",
+    "heroImage": "",
+    "intro": "<p>Lighting a candle is part of what is called popular piety, in other words the piety of the people.</p><p>This gesture can express thoughts or feelings that are sometimes difficult to formulate. The candle brings light that illuminates, warms, and serves to express what is important for the human heart.</p>",
+    "blocks": [
+      {
+        "type": "note",
+        "text": "<p>Unit price: USD 1 per candle. After you submit this request, use Mobile Money or a bank transfer and keep your reference for the Pilgrimage Office.</p>"
+      }
+    ],
     "links": [],
     "cta": {
       "primary": {
-        "label": "Send an intention",
-        "path": "/contact"
+        "label": "Have a Mass said",
+        "path": "/spirituality/request-a-mass"
       },
       "secondary": {
-        "label": "Request a Mass",
-        "path": "/spirituality/request-a-mass"
+        "label": "Donations",
+        "path": "/support/donations"
       }
     }
   },
   "spirituality.request-a-mass": {
     "eyebrow": "",
-    "title": "Request a Mass",
-    "subtitle": "Have Mass offered at the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Request that Holy Mass be celebrated at the Shrine of Our Lady of Kibeho for your intention. A dedicated online Mass-request service is planned; meanwhile, contact the Pilgrimage Office.",
-    "blocks": [],
+    "title": "Have a Mass said",
+    "subtitle": "An offering for a loved one, an intention, or a cause",
+    "heroImage": "",
+    "intro": "<p>By your offering, you wish to have a Mass said for a loved one, a particular intention, or a cause. The offering for a Mass is USD 20.</p>",
+    "blocks": [
+      {
+        "type": "note",
+        "text": "<p>Submit the form below, then complete Mobile Money or a bank transfer. The Pilgrimage Office will confirm your intention.</p>"
+      }
+    ],
     "links": [],
     "cta": {
       "primary": {
-        "label": "Contact the Office",
-        "path": "/contact"
+        "label": "Light a candle",
+        "path": "/spirituality/prayer-intentions"
       },
       "secondary": {
         "label": "Mass Schedule",
@@ -820,7 +900,7 @@
     "eyebrow": "",
     "title": "Rosary",
     "subtitle": "Pray with Mary",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Our Lady of Kibeho calls the faithful to pray the Rosary with faith and perseverance — a path of contemplation of the mysteries of Christ.",
     "blocks": [],
     "links": [],
@@ -839,7 +919,7 @@
     "eyebrow": "",
     "title": "Seven Sorrows Rosary",
     "subtitle": "A devotion especially linked to Kibeho",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Our Lady asked for the prayer of the Seven Sorrows Rosary — meditating on the sorrows of Mary and uniting our hearts to her Son.",
     "blocks": [
       {
@@ -871,7 +951,7 @@
     "eyebrow": "",
     "title": "Novena",
     "subtitle": "Nine days of prayer with Our Lady of Kibeho",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Pray a novena to Our Lady of Kibeho for conversion, peace, healing, and the needs of the Church and the world.",
     "blocks": [],
     "links": [],
@@ -890,7 +970,7 @@
     "eyebrow": "",
     "title": "Official Prayers",
     "subtitle": "Prayers of the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Official prayers associated with the Shrine of Our Lady of Kibeho — for personal devotion and communal prayer.",
     "blocks": [],
     "links": [],
@@ -909,7 +989,7 @@
     "eyebrow": "",
     "title": "Meditations",
     "subtitle": "Reflect on the Word and the message of Kibeho",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Spiritual meditations to accompany pilgrimage, the liturgical year, and daily prayer with Our Lady of Kibeho.",
     "blocks": [],
     "links": [],
@@ -928,7 +1008,7 @@
     "eyebrow": "",
     "title": "Testimonies",
     "subtitle": "Fruits of grace at Kibeho",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Pilgrims share how prayer at the Shrine has renewed faith, brought peace, and opened paths of reconciliation. Submit your testimony through the Pilgrimage Office.",
     "blocks": [],
     "links": [],
@@ -947,7 +1027,7 @@
     "eyebrow": "",
     "title": "Videos",
     "subtitle": "Watch and pray with the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Video messages, liturgical celebrations, and documentary material from the Shrine will be gathered here. Follow our YouTube channel and gallery for current media.",
     "blocks": [],
     "links": [],
@@ -965,9 +1045,9 @@
   "support.index": {
     "eyebrow": "",
     "title": "Support the Shrine",
-    "subtitle": "Pastoral mission and sustainable development",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Unlike long-established pilgrimage sites, Kibeho is still developing. Your partnership helps proclaim the message, welcome pilgrims, and build the infrastructure of the Shrine for generations to come.",
+    "subtitle": "Prayer and material support",
+    "heroImage": "",
+    "intro": "<p>Until now, the Sanctuary of Our Lady of Kibeho is constituted by the church of Our Lady of Sorrows, the Chapel of the Apparitions, the place and esplanade of the apparitions, the Way of the Rosary, the Way of the Rosary of the Seven Sorrows, the Way of the Cross, the chapel of adoration, the source of Mary, and a shop of devotional items.</p><p>Other projects are planned for a better welcome and a better service towards pilgrims. We are all invited to contribute, through prayer and material support, so that Kibeho may truly become the place of conversion and reconciliation that the Mother of God has appealed for.</p>",
     "blocks": [],
     "links": [
       {
@@ -1014,7 +1094,7 @@
     "eyebrow": "",
     "title": "Vision",
     "subtitle": "The official digital and pastoral gateway of the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "The Diocese of Gikongoro wishes the Shrine to welcome pilgrims from every nation, proclaim the message of Our Lady of Kibeho, and sustain long-term pastoral, spiritual, and infrastructural development.",
     "blocks": [],
     "links": [],
@@ -1033,7 +1113,7 @@
     "eyebrow": "",
     "title": "Master Plan",
     "subtitle": "Building the future of the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "The Master Plan guides future infrastructure, pilgrim hospitality, pastoral facilities, and environmental care at Kibeho. Detailed plans and project phases will be published here as they are approved.",
     "blocks": [
       {
@@ -1061,11 +1141,27 @@
   },
   "support.projects": {
     "eyebrow": "",
-    "title": "Development projects",
-    "subtitle": "Works underway at the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Follow current pastoral and infrastructure projects that sustain the life of the Shrine and improve the welcome of pilgrims.",
-    "blocks": [],
+    "title": "Sanctuary projects",
+    "subtitle": "What is already in place — and what is still to be built",
+    "heroImage": "",
+    "intro": "<p>The Sanctuary already includes the principal places of worship and prayer listed below. Further works are planned so pilgrims may be welcomed with greater dignity.</p>",
+    "blocks": [
+      {
+        "type": "list",
+        "items": [
+          "The church of Our Lady of Sorrows",
+          "The Chapel of the Apparitions",
+          "The place of the apparitions",
+          "The esplanade of the apparitions",
+          "The way of the Rosary",
+          "The way of the Rosary of Seven Sorrows",
+          "The way of the Cross",
+          "The chapel of adoration of the Blessed Sacrament",
+          "The source of Mary",
+          "Shop of devotional items"
+        ]
+      }
+    ],
     "links": [],
     "cta": {
       "primary": {
@@ -1081,29 +1177,50 @@
   "support.donations": {
     "eyebrow": "",
     "title": "Donations",
-    "subtitle": "Support the mission and development of the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
-    "intro": "Your gift helps welcome pilgrims, sustain liturgy and pastoral care, and advance the Master Plan. Online payment integration is planned; bank and diocesan channels are available via the Pilgrimage Office.",
+    "subtitle": "Bank transfer and Mobile Money",
+    "heroImage": "",
+    "intro": "<p>Whoever would like to make a donation may use the accounts of the Diocese of Gikongoro / Sanctuary of Kibeho. Please mention your name and intention as the payment reference.</p>",
     "blocks": [
+      {
+        "type": "heading",
+        "text": "Bank of Kigali (BK)"
+      },
       {
         "type": "list",
         "items": [
-          "Pastoral and liturgical life",
-          "Pilgrim hospitality",
-          "Infrastructure and Master Plan projects",
-          "Community and charitable outreach"
+          "Diocese Gikongoro / Sanct KIBEHO — 00266 00690793-01 — RWF",
+          "Diocese Gikongoro / Sanct KIBEHO — 00266 00690796-02 — EUR",
+          "Diocese Gikongoro / Sanct KIBEHO — 00266 00690797-03 — USD"
         ]
+      },
+      {
+        "type": "heading",
+        "text": "Banque Populaire du Rwanda (BPR)"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Diocese Gikongoro / Sanct KIBEHO — 475453520910197 — RWF"
+        ]
+      },
+      {
+        "type": "heading",
+        "text": "MoMo Pay"
+      },
+      {
+        "type": "paragraph",
+        "text": "<p><strong>*182*8*1*060974#</strong></p>"
       }
     ],
     "links": [],
     "cta": {
       "primary": {
-        "label": "Contact for donation details",
+        "label": "Contact us",
         "path": "/contact"
       },
       "secondary": {
-        "label": "Annual Reports",
-        "path": "/support/annual-reports"
+        "label": "Light a candle",
+        "path": "/spirituality/prayer-intentions"
       }
     }
   },
@@ -1111,7 +1228,7 @@
     "eyebrow": "",
     "title": "Annual Reports",
     "subtitle": "Accountability to pilgrims and partners",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Annual reports of the Shrine and related development initiatives will be published here to keep the faithful and partners informed.",
     "blocks": [],
     "links": [],
@@ -1130,7 +1247,7 @@
     "eyebrow": "",
     "title": "Transparency",
     "subtitle": "Trust in the service of the Gospel",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "The Diocese of Gikongoro is committed to transparent stewardship of gifts received for the Shrine — with clear reporting on pastoral priorities and development projects.",
     "blocks": [],
     "links": [],
@@ -1149,7 +1266,7 @@
     "eyebrow": "",
     "title": "Partners",
     "subtitle": "Walking together with the Shrine",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Parishes, religious communities, dioceses, and friends of Kibeho worldwide support the mission through prayer, pilgrimage, and collaboration. Contact us to explore partnership.",
     "blocks": [],
     "links": [],
@@ -1168,7 +1285,7 @@
     "eyebrow": "",
     "title": "FAQ",
     "subtitle": "Common questions",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "See the FAQ under Our Lady of Kibeho for answers about the apparitions, recognition, and visiting the Shrine.",
     "blocks": [],
     "links": [],
@@ -1184,7 +1301,7 @@
     "eyebrow": "",
     "title": "Accommodation near the Shrine",
     "subtitle": "Guest houses, hotels, and facilities",
-    "heroImage": "/images/sanctuary/hero.jpg",
+    "heroImage": "",
     "intro": "Browse places to stay and related facilities near the Shrine of Our Lady of Kibeho.",
     "blocks": [],
     "links": [],

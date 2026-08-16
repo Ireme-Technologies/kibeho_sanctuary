@@ -90,6 +90,7 @@ class ActivitySeeder extends Seeder
                 array_merge($item, [
                     'show_in_menu' => true,
                     'is_published' => true,
+                    'image' => '',
                 ])
             );
         }
