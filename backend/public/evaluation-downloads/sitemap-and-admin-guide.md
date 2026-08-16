@@ -226,10 +226,14 @@ Provide a **staging URL** and a **demo admin account** (Diocese-owned email pref
 6. Verify on `/news` in each language you filled.
 
 ### C. Update a menu
-1. Open **Settings & menus**.
-2. Edit navigation JSON / menu editor for primary or utility links (labels and paths).
-3. Save.
-4. Refresh the public site header/footer.
+1. Open **Site menus**.
+2. Choose Main menu, Top header, or Footer.
+3. Add an item by **picking a page** from the list. The URL is filled automatically and is the same in every language — you do not type slugs for Français, Ikinyarwanda, or Deutsch.
+4. Switch language tabs to check labels. Automatic translations come from **Translations**. Type a label only to correct a mistake.
+5. Use **Custom URL** only for a page that is not in the list, or an external link.
+6. Drag to reorder, Save, then refresh the public site.
+
+Do not create a different path per language (for example `/fr/apparitions`). Visitors switch language; the address stays `/our-lady/apparitions`.
 
 ### D. Replace images
 1. Open **Gallery / Media** (or image field on a page/article).

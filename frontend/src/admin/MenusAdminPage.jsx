@@ -13,8 +13,10 @@ import {
 } from '@data/navigation'
 import FlashMessage from './components/FlashMessage'
 import LocaleTabs from './components/LocaleTabs'
+import MenuPathFields from './components/MenuPathFields'
 import MenuTreeEditor from './components/MenuTreeEditor'
 import { ensureNavIds, persistNavItems } from './menuUtils'
+import { pageLabel } from './menuPages'
 import styles from './admin.module.css'
 
 const LOCATIONS = [
@@ -154,9 +156,9 @@ export default function MenusAdminPage() {
 
         <LocaleTabs value={menuLocale} onChange={setMenuLocale} defaultLocale={defaultLocale} />
         <p className={styles.muted}>
-          Labels in the default language are stored here. Other languages use automatic translations for known
-          page paths — type a label in a language tab only if you want to override that automatic text. Paths
-          stay the same in every language.
+          There is one menu and one URL per page for every language. Pick a page from the list — the path is
+          filled automatically and reused in Ikinyarwanda, Français, English, and Deutsch. Labels follow
+          Translations; type a label only if the automatic text is wrong.
         </p>
 
         {locationId === 'main' ? (
@@ -177,23 +179,31 @@ export default function MenusAdminPage() {
               <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
                 Header button (Faire un don)
               </h2>
-              <p className={styles.muted}>The white button on the far right of the dark top bar.</p>
+              <p className={styles.muted}>
+                The white button on the far right of the dark top bar. Choose the page it should open — the URL
+                is the same in every language.
+              </p>
               <div className={styles.fieldRow}>
                 <div className={styles.field}>
                   <label>Button label</label>
                   <input
                     value={navCTA.label}
                     onChange={(e) => setNavCTA({ ...navCTA, label: e.target.value })}
+                    placeholder={pageLabel(navCTA.path, menuLocale) || 'Donate'}
                   />
                 </div>
-                <div className={styles.field}>
-                  <label>Button link</label>
-                  <input
-                    value={navCTA.path}
-                    onChange={(e) => setNavCTA({ ...navCTA, path: e.target.value })}
-                    placeholder="/support/donations"
-                  />
-                </div>
+                <MenuPathFields
+                  path={navCTA.path}
+                  label="Opens this page"
+                  onChange={(path) =>
+                    setNavCTA({
+                      ...navCTA,
+                      path,
+                      label: navCTA.label || pageLabel(path, defaultLocale) || navCTA.label,
+                    })
+                  }
+                  placeholder="/support/donations"
+                />
               </div>
             </div>
             <MenuTreeEditor

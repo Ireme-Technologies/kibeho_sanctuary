@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { GripVertical } from 'lucide-react'
-import { t as uiTranslate } from '@i18n/locales'
-import { navKeyForPath } from '@i18n/navKeys'
 import {
   addNavItem,
   deleteNavNode,
@@ -13,12 +11,20 @@ import {
   setNavLabelForLocale,
   updateNavNode,
 } from '../menuUtils'
+import {
+  isKnownMenuPath,
+  pageLabel,
+  pathPatchForPage,
+  suggestPathFromLabel,
+} from '../menuPages'
 import { confirmDelete } from './confirmDelete'
+import MenuPathFields from './MenuPathFields'
 import styles from '../admin.module.css'
 
 const emptyAdd = {
   label: '',
   path: '',
+  pathTouched: false,
   placement: 'top',
   parentId: '',
 }
@@ -34,6 +40,7 @@ export default function MenuTreeEditor({
   pathPlaceholder = '/page-path',
 }) {
   const [add, setAdd] = useState(emptyAdd)
+  const [addKey, setAddKey] = useState(0)
   const [draggingId, setDraggingId] = useState(null)
   const [hint, setHint] = useState(null)
   const list = Array.isArray(items) ? items : []
@@ -44,18 +51,57 @@ export default function MenuTreeEditor({
 
   const setItems = (next) => onChange?.(next)
 
+  const handleAddPath = (nextPath) => {
+    setAdd((current) => {
+      const known = isKnownMenuPath(nextPath)
+      const autoDefault = pageLabel(nextPath, defaultLocale)
+      const autoLocale = pageLabel(nextPath, locale)
+      let label = current.label
+      if (known) {
+        label = isDefault ? autoDefault || current.label : autoLocale || current.label
+      }
+      return {
+        ...current,
+        path: nextPath,
+        pathTouched: known ? false : Boolean(nextPath) && !known,
+        label,
+      }
+    })
+  }
+
+  const handleAddLabel = (value) => {
+    setAdd((current) => {
+      const next = { ...current, label: value }
+      if (!isKnownMenuPath(current.path) && !current.pathTouched) {
+        next.path = suggestPathFromLabel(value)
+      }
+      return next
+    })
+  }
+
   const handleAdd = (event) => {
     event.preventDefault()
-    const label = add.label.trim()
-    const path = add.path.trim()
-    if (!label) return
+    const path = add.path.trim() || suggestPathFromLabel(add.label)
+    if (!path) return
+    const autoDefault = pageLabel(path, defaultLocale)
+    const autoLocale = pageLabel(path, locale)
+    const typed = add.label.trim()
+    const storedLabel = isDefault ? typed || autoDefault : autoDefault || typed
+    if (!storedLabel) return
+
+    const translations = {}
+    if (!isDefault && typed && typed !== autoLocale) {
+      translations[locale] = { label: typed }
+    }
+
     if (add.placement === 'sub' && allowChildren) {
       if (!add.parentId) return
-      setItems(addNavItem(list, { label, path, parentId: add.parentId }))
+      setItems(addNavItem(list, { label: storedLabel, path, parentId: add.parentId, translations }))
     } else {
-      setItems(addNavItem(list, { label, path }))
+      setItems(addNavItem(list, { label: storedLabel, path, translations }))
     }
     setAdd(emptyAdd)
+    setAddKey((value) => value + 1)
   }
 
   const handleDragOver = (event, row) => {
@@ -82,30 +128,25 @@ export default function MenuTreeEditor({
     setHint(null)
   }
 
+  const canAdd = Boolean(add.path.trim() || add.label.trim())
+  const placementName = `placement-${String(addTitle).replace(/\s+/g, '-').toLowerCase()}`
+
   return (
     <div className={styles.menuEditor}>
       <form className={styles.menuAddCard} onSubmit={handleAdd}>
         <h3>{addTitle}</h3>
         <p className={styles.muted}>
           {allowChildren
-            ? 'Choose whether this is a top-level item or a submenu, then pick which parent it belongs under.'
-            : 'Enter a label and path, then add it to this list. Drag items on the right to reorder.'}
+            ? 'Pick a page from the list. The URL is filled for every language. Then choose top-level or a submenu.'
+            : 'Pick a page from the list. The URL is filled for every language. Drag items on the right to reorder.'}
         </p>
+        <MenuPathFields key={addKey} path={add.path} onChange={handleAddPath} placeholder={pathPlaceholder} />
         <div className={styles.field}>
-          <label>Label</label>
+          <label>{isDefault ? 'Label' : 'Label (optional override)'}</label>
           <input
             value={add.label}
-            onChange={(e) => setAdd({ ...add, label: e.target.value })}
-            placeholder="Menu label"
-            required
-          />
-        </div>
-        <div className={styles.field}>
-          <label>Path</label>
-          <input
-            value={add.path}
-            onChange={(e) => setAdd({ ...add, path: e.target.value })}
-            placeholder={pathPlaceholder}
+            onChange={(e) => handleAddLabel(e.target.value)}
+            placeholder={isDefault ? 'Filled from the page' : pageLabel(add.path, locale) || 'Automatic translation'}
           />
         </div>
         {allowChildren ? (
@@ -114,7 +155,7 @@ export default function MenuTreeEditor({
             <label className={styles.menuRadio}>
               <input
                 type="radio"
-                name="placement"
+                name={placementName}
                 checked={add.placement === 'top'}
                 onChange={() => setAdd({ ...add, placement: 'top', parentId: '' })}
               />
@@ -123,7 +164,7 @@ export default function MenuTreeEditor({
             <label className={styles.menuRadio}>
               <input
                 type="radio"
-                name="placement"
+                name={placementName}
                 checked={add.placement === 'sub'}
                 onChange={() =>
                   setAdd({
@@ -147,7 +188,10 @@ export default function MenuTreeEditor({
                   <option value="">Select a parent…</option>
                   {parents.map((item) => (
                     <option key={item._id} value={item._id}>
-                      {navLabelForLocale(item, locale, defaultLocale) || item.label || item.path}
+                      {navLabelForLocale(item, locale, defaultLocale) ||
+                        pageLabel(item.path, locale) ||
+                        item.label ||
+                        item.path}
                     </option>
                   ))}
                 </select>
@@ -157,7 +201,7 @@ export default function MenuTreeEditor({
         ) : (
           <p className={styles.muted}>This location is a single list — new items are added at the end. Drag to reorder.</p>
         )}
-        <button className={styles.btn} type="submit" disabled={!add.label.trim()}>
+        <button className={styles.btn} type="submit" disabled={!canAdd}>
           Add to menu
         </button>
       </form>
@@ -171,10 +215,10 @@ export default function MenuTreeEditor({
         {!rows.length ? <p className={styles.muted}>{emptyText}</p> : null}
         <div className={styles.menuTree} onDragOver={(event) => event.preventDefault()}>
           {rows.map((row) => {
-            const autoLabel =
-              !isDefault && navKeyForPath(row.item.path)
-                ? uiTranslate(locale, navKeyForPath(row.item.path))
-                : ''
+            const autoLabel = pageLabel(row.item.path, locale) || row.item.label || ''
+            const stored = navLabelForLocale(row.item, locale, defaultLocale)
+            const displayLabel = stored || autoLabel
+            const usingAuto = !isDefault && !String(stored || '').trim() && Boolean(autoLabel)
             const drop = hint?.id === row.item._id ? hint.where : null
             return (
               <div
@@ -210,33 +254,49 @@ export default function MenuTreeEditor({
                 </span>
                 <div className={styles.menuRowFields}>
                   <div className={styles.field}>
-                    <label>Label</label>
+                    <label>{isDefault ? 'Label' : 'Label'}</label>
                     <input
-                      value={navLabelForLocale(row.item, locale, defaultLocale)}
+                      value={displayLabel}
                       placeholder={isDefault ? '' : autoLabel || row.item.label || ''}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const next = e.target.value
+                        const save = !isDefault && next.trim() === String(autoLabel).trim() ? '' : next
                         setItems(
                           updateNavNode(
                             list,
                             row.item._id,
-                            setNavLabelForLocale(row.item, locale, e.target.value, defaultLocale),
+                            setNavLabelForLocale(row.item, locale, save, defaultLocale),
                           ),
                         )
-                      }
+                      }}
                     />
-                  </div>
-                  {isDefault ? (
-                    <div className={styles.field}>
-                      <label>Path</label>
-                      <input
-                        value={row.item.path}
-                        placeholder={pathPlaceholder}
-                        onChange={(e) =>
-                          setItems(updateNavNode(list, row.item._id, { path: e.target.value }))
+                    {usingAuto ? (
+                      <p className={styles.menuHint}>Automatic translation. Type here only to correct it.</p>
+                    ) : !isDefault && stored ? (
+                      <button
+                        type="button"
+                        className={styles.menuResetLink}
+                        onClick={() =>
+                          setItems(
+                            updateNavNode(
+                              list,
+                              row.item._id,
+                              setNavLabelForLocale(row.item, locale, '', defaultLocale),
+                            ),
+                          )
                         }
-                      />
-                    </div>
-                  ) : null}
+                      >
+                        Use automatic label
+                      </button>
+                    ) : null}
+                  </div>
+                  <MenuPathFields
+                    path={row.item.path}
+                    placeholder={pathPlaceholder}
+                    onChange={(nextPath) =>
+                      setItems(updateNavNode(list, row.item._id, pathPatchForPage(row.item, nextPath, defaultLocale)))
+                    }
+                  />
                   {row.depth ? <p className={styles.menuBadge}>Submenu</p> : null}
                 </div>
                 <div className={styles.menuRowActions}>

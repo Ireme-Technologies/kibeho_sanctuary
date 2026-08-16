@@ -2472,6 +2472,43 @@
   min-width: 0;
 }
 
+.menuPathFields {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.menuPathMeta {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--admin-text-soft);
+}
+
+.menuPathMeta code {
+  font-size: 0.8rem;
+  color: var(--admin-text);
+}
+
+.menuHint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--admin-text-soft);
+  font-weight: 400;
+}
+
+.menuResetLink {
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--admin-primary);
+  cursor: pointer;
+  text-align: left;
+  text-decoration: underline;
+}
+
 .menuBadge {
   grid-column: 1 / -1;
   margin: 0;

@@ -756,13 +756,20 @@ export default function SitemapAdminGuidePage() {
             <ol>
               <li>Open <strong>Site menus</strong>.</li>
               <li>Choose <strong>Main menu</strong>, <strong>Top header</strong>, or <strong>Footer</strong> so you know which location you are editing.</li>
-              <li>Add an item as top-level or as a submenu under a parent, then drag to reorder.</li>
-              <li>Keep paths consistent with the sitemap (e.g. <code>/support/donations</code>).</li>
-              <li>Save menus, then refresh the public site.</li>
+              <li>
+                Add an item by <strong>picking a page</strong> from the list. The URL is filled automatically
+                and is the same in every language — you do not type slugs for Français, Ikinyarwanda, or Deutsch.
+              </li>
+              <li>
+                Switch language tabs to check labels. Automatic translations come from{' '}
+                <strong>Translations</strong>. Type a label only to correct a mistake.
+              </li>
+              <li>Use <strong>Custom URL</strong> only for a page that is not in the list, or an external link.</li>
+              <li>Drag to reorder, then save menus and refresh the public site.</li>
             </ol>
             <p>
-              Major pillar labels can also be aligned with keys in <strong>Translations</strong> so they
-              follow the active language.
+              Do not create a different path per language (for example <code>/fr/apparitions</code>). Visitors
+              switch language; the address stays <code>/our-lady/apparitions</code>.
             </p>
 
             <h2>9. Replace images and upload documents</h2>

@@ -40,11 +40,20 @@ export function navLabelForLocale(item, locale, defaultLocale) {
 
 export function setNavLabelForLocale(item, locale, value, defaultLocale) {
   if (locale === defaultLocale) return { ...item, label: value }
+  const translations = { ...(item.translations || {}) }
+  const trimmed = String(value || '').trim()
+  if (!trimmed) {
+    const next = { ...(translations[locale] || {}) }
+    delete next.label
+    if (!Object.keys(next).length) delete translations[locale]
+    else translations[locale] = next
+    return { ...item, translations }
+  }
   return {
     ...item,
     translations: {
-      ...(item.translations || {}),
-      [locale]: { ...(item.translations?.[locale] || {}), label: value },
+      ...translations,
+      [locale]: { ...(translations[locale] || {}), label: trimmed },
     },
   }
 }
@@ -184,13 +193,13 @@ export function updateNavNode(items, id, patch) {
   })
 }
 
-export function addNavItem(items, { label, path, parentId, afterId }) {
+export function addNavItem(items, { label, path, parentId, afterId, translations }) {
   const node = {
     _id: createNavId(),
     label: label || '',
     path: path || '',
     children: [],
-    translations: {},
+    translations: translations && typeof translations === 'object' ? translations : {},
   }
   if (parentId) {
     return (items || []).map((item) => {
