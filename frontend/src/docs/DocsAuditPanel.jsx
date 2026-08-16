@@ -80,7 +80,7 @@ export default function DocsAuditPanel() {
             ))}
           </ol>
         ) : (
-          <p>No urgent gaps right now. Still replace demo text and photos with official Shrine material.</p>
+          <p>No urgent gaps right now. Add unique photos and live social URLs when they are available.</p>
         )}
       </div>
     </div>

@@ -13,6 +13,7 @@ import FontPicker from './components/FontPicker'
 import ImageField from './components/ImageField'
 import ListEditor from './components/ListEditor'
 import RichTextEditor from './components/RichTextEditor'
+import { offerings as fallbackOfferings } from '@data/offerings'
 import styles from './admin.module.css'
 
 const TABS = [
@@ -20,6 +21,7 @@ const TABS = [
   { id: 'contact', label: 'Contact & social' },
   { id: 'contact-page', label: 'Contact page' },
   { id: 'map', label: 'Map' },
+  { id: 'offerings', label: 'Offerings & donations' },
 ]
 
 const SETTINGS_TAB_KEY = 'admin.settings.activeTab'
@@ -27,6 +29,8 @@ const SETTINGS_TAB_KEY = 'admin.settings.activeTab'
 const emptyHours = { day: '', hours: '' }
 const emptySocial = { label: '', href: '' }
 const emptyCustomSocial = { iconCode: '', label: '', href: '' }
+const emptyRoute = { route: '' }
+const emptyAccount = { bank: '', name: '', number: '', currency: 'RWF' }
 
 function readStoredTab() {
   try {
@@ -60,10 +64,13 @@ export default function SettingsAdminPage() {
     preloaderLogo: '',
     phone: '',
     phoneHref: '',
+    phone2: '',
     whatsapp: '',
     email: '',
     notifyEmail: '',
     address: '',
+    plusCode: '',
+    shortName: '',
   })
   const [theme, setTheme] = useState(DEFAULT_THEME)
   const [socials, setSocials] = useState([])
@@ -76,12 +83,28 @@ export default function SettingsAdminPage() {
     infoEyebrow: '',
     infoHeading: '',
     address: '',
+    postalAddress: '',
     phone: '',
+    phone2: '',
     email: '',
+    plusCode: '',
+    localization: '',
+    routes: [],
     whatsappNumber: '',
     whatsappLabel: '',
     responseNote: '',
     businessHours: [],
+  })
+  const [offerings, setOfferings] = useState({
+    candlePriceUsd: fallbackOfferings.candlePriceUsd,
+    massPriceUsd: fallbackOfferings.massPriceUsd,
+    momoCode: fallbackOfferings.momoCode,
+    momoLabel: fallbackOfferings.momoLabel,
+    onlinePaymentUrl: fallbackOfferings.onlinePaymentUrl || '',
+    onlinePaymentLabel: fallbackOfferings.onlinePaymentLabel,
+    bankLabel: fallbackOfferings.bankLabel,
+    giftAmounts: (fallbackOfferings.giftAmounts || []).join(', '),
+    accounts: fallbackOfferings.accounts,
   })
   const [map, setMap] = useState({
     label: '',
@@ -119,16 +142,19 @@ export default function SettingsAdminPage() {
         const nextTheme = normalizeTheme(data.theme || DEFAULT_THEME)
         setCompany({
           name: c.name || 'Shrine of Our Lady of Kibeho',
+          shortName: c.shortName || '',
           tagline: c.tagline || '',
           logo: c.logo || '/images/logo/logo-transparent.png',
           favicon: c.favicon || '/images/logo/favicon.svg',
           preloaderLogo: c.preloaderLogo || c.logo || '/images/logo/logo-transparent.png',
           phone: c.phone || '',
           phoneHref: c.phoneHref || '',
+          phone2: c.phone2 || '',
           whatsapp: c.whatsapp || '',
           email: c.email || '',
           notifyEmail: c.notifyEmail || '',
           address: c.address || '',
+          plusCode: c.plusCode || '',
         })
         setTheme(nextTheme)
         applyThemeToDocument(nextTheme)
@@ -166,8 +192,17 @@ export default function SettingsAdminPage() {
           infoEyebrow: contactData.info?.eyebrow || '',
           infoHeading: contactData.info?.heading || '',
           address: contactData.info?.address || c.address || '',
+          postalAddress: contactData.info?.postalAddress || '',
           phone: contactData.info?.phone || c.phone || '',
+          phone2: contactData.info?.phone2 || c.phone2 || '',
           email: contactData.info?.email || c.email || '',
+          plusCode: contactData.info?.plusCode || c.plusCode || '',
+          localization: contactData.info?.localization || '',
+          routes: Array.isArray(contactData.info?.routes)
+            ? contactData.info.routes.map((route) =>
+                typeof route === 'string' ? { route } : { route: route?.route || '' }
+              )
+            : [],
           whatsappNumber: contactData.info?.whatsappNumber || '',
           whatsappLabel: contactData.info?.whatsappLabel || 'Message on WhatsApp',
           responseNote: contactData.info?.responseNote || '',
@@ -175,6 +210,24 @@ export default function SettingsAdminPage() {
             Array.isArray(contactData.info?.businessHours) && contactData.info.businessHours.length
               ? contactData.info.businessHours
               : [{ ...emptyHours }],
+        })
+        const loadedOfferings = data.offerings || {}
+        setOfferings({
+          candlePriceUsd: loadedOfferings.candlePriceUsd ?? fallbackOfferings.candlePriceUsd,
+          massPriceUsd: loadedOfferings.massPriceUsd ?? fallbackOfferings.massPriceUsd,
+          momoCode: loadedOfferings.momoCode || fallbackOfferings.momoCode,
+          momoLabel: loadedOfferings.momoLabel || fallbackOfferings.momoLabel,
+          onlinePaymentUrl: loadedOfferings.onlinePaymentUrl || '',
+          onlinePaymentLabel:
+            loadedOfferings.onlinePaymentLabel || fallbackOfferings.onlinePaymentLabel,
+          bankLabel: loadedOfferings.bankLabel || fallbackOfferings.bankLabel,
+          giftAmounts: Array.isArray(loadedOfferings.giftAmounts)
+            ? loadedOfferings.giftAmounts.join(', ')
+            : loadedOfferings.giftAmounts || (fallbackOfferings.giftAmounts || []).join(', '),
+          accounts:
+            Array.isArray(loadedOfferings.accounts) && loadedOfferings.accounts.length
+              ? loadedOfferings.accounts
+              : fallbackOfferings.accounts,
         })
         setMap({
           label: contactData.map?.label || '',
@@ -206,35 +259,52 @@ export default function SettingsAdminPage() {
       await updateSettings({
         company: {
           name: company.name,
+          shortName: company.shortName,
           tagline: company.tagline,
           logo: company.logo,
           favicon: company.favicon,
           preloaderLogo: company.preloaderLogo || company.logo,
           phone: company.phone,
           phoneHref,
+          phone2: company.phone2,
           whatsapp: company.whatsapp,
           email: company.email,
           notifyEmail: company.notifyEmail,
           address: company.address,
+          plusCode: company.plusCode || contact.plusCode,
           socials: [
             ...socials
-              .filter((s) => String(s.href || '').trim())
+              .filter((s) => String(s.href || '').trim() || String(s.label || '').trim())
               .map((s) => ({
                 label: s.label || '',
-                href: String(s.href).trim(),
+                href: String(s.href || '').trim(),
                 iconKey: inferSocialKey(s),
               })),
             ...customSocials
-              .filter((s) => String(s.href || '').trim())
+              .filter((s) => String(s.href || '').trim() || String(s.label || '').trim())
               .map((s) => ({
                 label: s.label || '',
-                href: String(s.href).trim(),
+                href: String(s.href || '').trim(),
                 iconCode: String(s.iconCode || '').trim().toLowerCase(),
                 iconKey: inferSocialKey(s),
               })),
           ],
         },
         theme: normalizeTheme(theme),
+        offerings: {
+          candlePriceUsd: Number(offerings.candlePriceUsd) || 0,
+          massPriceUsd: Number(offerings.massPriceUsd) || 0,
+          momoCode: offerings.momoCode,
+          momoLabel: offerings.momoLabel,
+          onlinePaymentUrl: String(offerings.onlinePaymentUrl || '').trim(),
+          onlinePaymentLabel: offerings.onlinePaymentLabel,
+          bankLabel: offerings.bankLabel,
+          giftAmounts: String(offerings.giftAmounts || '')
+            .split(/[,\s]+/)
+            .map(Number)
+            .filter((n) => n > 0),
+          accounts: (offerings.accounts || []).filter((row) => row.bank || row.number),
+        },
         contact: {
           hero: {
             eyebrow: contact.heroEyebrow,
@@ -246,15 +316,20 @@ export default function SettingsAdminPage() {
             eyebrow: contact.infoEyebrow,
             heading: contact.infoHeading,
             address: contact.address,
-            phone: contact.phone,
-            email: contact.email,
+            postalAddress: contact.postalAddress,
+            phone: contact.phone || company.phone,
+            phone2: contact.phone2 || company.phone2,
+            email: contact.email || company.email,
+            plusCode: contact.plusCode || company.plusCode,
+            localization: contact.localization,
+            routes: (contact.routes || []).map((row) => row.route || row).filter(Boolean),
             whatsappNumber: contact.whatsappNumber,
             whatsappLabel: contact.whatsappLabel,
             responseNote: contact.responseNote,
             businessHours: contact.businessHours.filter((h) => h.day || h.hours),
           },
           map: {
-            label: map.label,
+            label: map.label || contact.plusCode || company.plusCode,
             title: map.title,
             subtitle: map.subtitle,
             embedSrc: map.embedSrc,
@@ -434,11 +509,28 @@ export default function SettingsAdminPage() {
                   />
                 </div>
                 <div className={styles.field}>
+                  <label>Second phone</label>
+                  <input
+                    value={company.phone2}
+                    onChange={(e) => setCompany({ ...company, phone2: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className={styles.fieldRow}>
+                <div className={styles.field}>
                   <label>WhatsApp number</label>
                   <input
                     value={company.whatsapp}
                     onChange={(e) => setCompany({ ...company, whatsapp: e.target.value })}
                     placeholder="+2507..."
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Plus Code</label>
+                  <input
+                    value={company.plusCode}
+                    onChange={(e) => setCompany({ ...company, plusCode: e.target.value })}
+                    placeholder="9H23+58 Kibeho"
                   />
                 </div>
               </div>
@@ -553,6 +645,30 @@ export default function SettingsAdminPage() {
                 </div>
               </div>
               <div className={styles.field}>
+                <label>Postal address</label>
+                <input
+                  value={contact.postalAddress}
+                  onChange={(e) => setContact({ ...contact, postalAddress: e.target.value })}
+                  placeholder="B.P. 341 Butare, RWANDA"
+                />
+              </div>
+              <div className={styles.field}>
+                <label>How to reach Kibeho</label>
+                <textarea
+                  value={contact.localization}
+                  onChange={(e) => setContact({ ...contact, localization: e.target.value })}
+                  rows={4}
+                />
+              </div>
+              <ListEditor
+                label="Travel routes"
+                items={contact.routes}
+                onChange={(routes) => setContact({ ...contact, routes })}
+                addLabel="Add route"
+                emptyItem={{ ...emptyRoute }}
+                fields={[{ key: 'route', label: 'Route', placeholder: 'Kigali – Huye – Matyazo – Kibeho' }]}
+              />
+              <div className={styles.field}>
                 <label>Response note</label>
                 <RichTextEditor
                   value={contact.responseNote}
@@ -589,13 +705,21 @@ export default function SettingsAdminPage() {
               </div>
               <div className={styles.fieldRow}>
                 <div className={styles.field}>
+                  <label>Plus Code / map pin</label>
+                  <input
+                    value={map.label}
+                    onChange={(e) => setMap({ ...map, label: e.target.value })}
+                    placeholder="9H23+58 Kibeho"
+                  />
+                </div>
+                <div className={styles.field}>
                   <label>Map title</label>
                   <input value={map.title} onChange={(e) => setMap({ ...map, title: e.target.value })} />
                 </div>
-                <div className={styles.field}>
-                  <label>Map subtitle</label>
-                  <input value={map.subtitle} onChange={(e) => setMap({ ...map, subtitle: e.target.value })} />
-                </div>
+              </div>
+              <div className={styles.field}>
+                <label>Map subtitle</label>
+                <input value={map.subtitle} onChange={(e) => setMap({ ...map, subtitle: e.target.value })} />
               </div>
               <div className={styles.fieldRow}>
                 <div className={styles.field}>
@@ -624,6 +748,112 @@ export default function SettingsAdminPage() {
                   />
                 </div>
               ) : null}
+            </div>
+          )}
+
+          {activeTab === 'offerings' && (
+            <div className={styles.tabPanel} role="tabpanel">
+              <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
+                Candle, Mass, and donations
+              </h2>
+              <p className={styles.muted}>
+              These channels appear on Light a candle, Have a Mass said, Donations, project gifts, and
+              pilgrimage registration. Visitors in Rwanda use the clickable MoMo Pay code. Visitors abroad
+              use the online payment link when it is set; if that link is empty, bank transfer is shown
+              instead. Invitation sentences and form buttons are edited under{' '}
+              <strong>Pages</strong> (title, subtitle, introduction) and <strong>Translations</strong>{' '}
+              (search for keys starting with <code>offer.</code>, <code>invite.</code>, or{' '}
+              <code>project.</code>).
+              </p>
+              <div className={styles.fieldRow}>
+                <div className={styles.field}>
+                  <label>Candle price (USD)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={offerings.candlePriceUsd}
+                    onChange={(e) => setOfferings({ ...offerings, candlePriceUsd: e.target.value })}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Mass offering (USD)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={offerings.massPriceUsd}
+                    onChange={(e) => setOfferings({ ...offerings, massPriceUsd: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className={styles.fieldRow}>
+                <div className={styles.field}>
+                  <label>MoMo Pay code</label>
+                  <input
+                    value={offerings.momoCode}
+                    onChange={(e) => setOfferings({ ...offerings, momoCode: e.target.value })}
+                    placeholder="*182*8*1*060974#"
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Mobile Money label</label>
+                  <input
+                    value={offerings.momoLabel}
+                    onChange={(e) => setOfferings({ ...offerings, momoLabel: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className={styles.field}>
+                <label>Online payment URL (cards and MoMo)</label>
+                <input
+                  value={offerings.onlinePaymentUrl}
+                  onChange={(e) => setOfferings({ ...offerings, onlinePaymentUrl: e.target.value })}
+                  placeholder="https://…"
+                />
+                <p className={styles.muted} style={{ marginTop: 6 }}>
+                  Leave empty until the gateway is ready. While empty, people outside Rwanda see bank
+                  transfer instead of “Pay online”.
+                </p>
+              </div>
+              <div className={styles.field}>
+                <label>Online payment button label</label>
+                <input
+                  value={offerings.onlinePaymentLabel}
+                  onChange={(e) => setOfferings({ ...offerings, onlinePaymentLabel: e.target.value })}
+                />
+              </div>
+              <div className={styles.field}>
+                <label>Suggested gift amounts (USD)</label>
+                <input
+                  value={offerings.giftAmounts}
+                  onChange={(e) => setOfferings({ ...offerings, giftAmounts: e.target.value })}
+                  placeholder="10, 25, 50, 100"
+                />
+                <p className={styles.muted} style={{ marginTop: 6 }}>
+                  Shown as chips on Donations and project gift forms. Separate amounts with commas.
+                </p>
+              </div>
+              <div className={styles.field}>
+                <label>Bank transfer label</label>
+                <input
+                  value={offerings.bankLabel}
+                  onChange={(e) => setOfferings({ ...offerings, bankLabel: e.target.value })}
+                />
+              </div>
+              <ListEditor
+                label="Bank accounts"
+                items={offerings.accounts}
+                onChange={(accounts) => setOfferings({ ...offerings, accounts })}
+                addLabel="Add account"
+                emptyItem={{ ...emptyAccount }}
+                fields={[
+                  { key: 'bank', label: 'Bank', placeholder: 'Bank of Kigali (BK)' },
+                  { key: 'name', label: 'Account name', placeholder: 'Diocese Gikongoro/Sanct KIBEHO' },
+                  { key: 'number', label: 'Account number' },
+                  { key: 'currency', label: 'Currency', placeholder: 'RWF' },
+                ]}
+              />
             </div>
           )}
 

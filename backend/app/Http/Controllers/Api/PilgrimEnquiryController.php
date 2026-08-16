@@ -30,7 +30,7 @@ class PilgrimEnquiryController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'subject' => ['nullable', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
-            'enquiry_type' => ['nullable', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass'])],
+            'enquiry_type' => ['nullable', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass', 'project', 'partnership'])],
             'upcoming_pilgrimage_id' => ['nullable', 'integer', 'exists:upcoming_pilgrimages,id'],
             'channel' => ['required', Rule::in(['email', 'whatsapp'])],
         ]);
@@ -143,7 +143,7 @@ class PilgrimEnquiryController extends Controller
         $data = $request->validate([
             'status' => ['sometimes', Rule::in(['new', 'in_progress', 'pending_client', 'closed'])],
             'is_read' => ['sometimes', 'boolean'],
-            'enquiry_type' => ['sometimes', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass'])],
+            'enquiry_type' => ['sometimes', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass', 'project', 'partnership'])],
         ]);
 
         $pilgrimEnquiry->update($data);
@@ -329,7 +329,7 @@ class PilgrimEnquiryController extends Controller
             'phone' => ['required', 'string', 'max:50'],
             'subject' => ['nullable', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
-            'enquiry_type' => ['nullable', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass'])],
+            'enquiry_type' => ['nullable', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass', 'project', 'partnership'])],
             'channel' => ['required', Rule::in(['email', 'whatsapp'])],
         ]);
 

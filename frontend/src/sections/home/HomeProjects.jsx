@@ -11,7 +11,8 @@ import {
 } from '@data/home/HomeProjects'
 import styles from './HomeProjects.module.css'
 
-function ProjectCard({ project, isHero, index, inView }) {
+function ProjectCard({ project, isHero, index, inView, defaultImage }) {
+  const src = (isHero ? project.featuredImage : project.coverImage) || defaultImage
   return (
     <Link
       to={`/projects/${project.slug}`}
@@ -23,7 +24,7 @@ function ProjectCard({ project, isHero, index, inView }) {
       <div className={styles.imageArea}>
         <img
           className={styles.image}
-          src={isHero ? project.featuredImage : project.coverImage}
+          src={src}
           alt=""
           aria-hidden="true"
         />
@@ -52,7 +53,7 @@ function ProjectCard({ project, isHero, index, inView }) {
 }
 
 export default function HomeProjects() {
-  const { projects, section } = useContent()
+  const { projects, section, defaultHeaderImage } = useContent()
   const homeProjects = section('home.projects')
   const projectsHeadingStart = homeProjects.headingStart || fbStart
   const projectsHeadingHighlight = homeProjects.headingHighlight || fbHighlight
@@ -76,7 +77,7 @@ export default function HomeProjects() {
         <div ref={sectionRef} className={styles.grid}>
           {featuredProject && (
             <div className={styles.heroWrapper}>
-              <ProjectCard project={featuredProject} isHero index={0} inView={inView} />
+              <ProjectCard project={featuredProject} isHero index={0} inView={inView} defaultImage={defaultHeaderImage} />
             </div>
           )}
 
@@ -88,6 +89,7 @@ export default function HomeProjects() {
                 isHero={false}
                 index={i + 1}
                 inView={inView}
+                defaultImage={defaultHeaderImage}
               />
             ))}
           </div>

@@ -12,26 +12,36 @@
 
 // ── CONTACT HERO ─────────────────────────────────────────
 export const contactHero = {
-  eyebrow: 'Reach Out',
-  headline: 'Contact Us',
-  'hero-bg-image': '/images/contact/contact-hero.jpeg',
+  eyebrow: 'Where to find us',
+  headline: 'Contact us',
+  'hero-bg-image': '',
   subline:
-    'Have questions about visiting Kibeho, group pilgrimages, or retreats? Our team is happy to help.',
+    'The Sanctuary Our Lady of Kibeho is situated in Gikongoro Diocese, Nyaruguru District, in Southern Rwanda, not far from the Burundian border.',
 }
 
 // ── CONTACT INFO (glass panel) ────────────────────────────
 export const contactInfo = {
   eyebrow: 'Get In Touch',
-  heading: 'Contact Information',
-  address: 'Kibeho, Nyaruguru District, Southern Province, Rwanda',
-  phone: '+250 788 123 456',
-  email: 'info@kibehosanctuary.org',
+  heading: 'Contact us',
+  address: 'Sanctuary Our Lady of Kibeho, B.P. 341 Butare / Rwanda',
+  postalAddress: 'B.P. 341 Butare, RWANDA',
+  phone: '+250 788 559 192',
+  phone2: '+250 788 307 376',
+  email: 'info@kibehosanctuary.rw',
+  plusCode: '9H23+58 Kibeho',
+  localization:
+    'Pilgrims from foreign countries can use the airplane that lands in Kigali. From Kigali, the St. Vincent Pallotti Pilgrimages Centre can help you find facilities for your pilgrimage to Kibeho.',
+  routes: [
+    'Kigali – Huye – Matyazo – Kibeho',
+    'Rusizi – Huye – Matyazo – Kibeho',
+    'Akanyaru – Cahinda – Kibeho',
+  ],
   businessHours: [
     { day: 'Monday – Saturday', hours: '7:00 AM – 6:00 PM' },
     { day: 'Sunday', hours: '6:00 AM – 8:00 PM (Pilgrimage Day)' },
     { day: 'Feast Days', hours: 'Extended hours — check schedule' },
   ],
-  whatsappNumber: '250788123456',
+  whatsappNumber: '250788559192',
   whatsappLabel: 'Message on WhatsApp',
   responseNote: 'We typically respond within 1–2 business days.',
 }
@@ -61,11 +71,10 @@ export const contactFormLabels = {
 
 // ── CONTACT MAP (small, standalone widget) ────────────────
 export const contactMap = {
-  label: 'Kibeho Sanctuary — Nyaruguru, Rwanda',
-  title: 'Kibeho Sanctuary',
-  subtitle: 'Shrine of Our Lady of Kibeho',
-  embedSrc:
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.5!2d29.556!3d-2.635!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sKibeho%2C%20Rwanda!5e0!3m2!1sen!2srw!4v1699000000000!5m2!1sen!2srw',
-  directionsLink: 'https://maps.google.com/?q=Kibeho,Nyaruguru,Rwanda',
+  label: '9H23+58 Kibeho',
+  title: 'Sanctuary Our Lady of Kibeho',
+  subtitle: 'Nyaruguru District · Diocese of Gikongoro',
+  embedSrc: 'https://www.google.com/maps?q=9H23%2B58+Kibeho&output=embed',
+  directionsLink: 'https://maps.google.com/?q=9H23+58+Kibeho',
   directionsLabel: 'Get Directions',
 }

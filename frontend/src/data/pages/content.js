@@ -7,12 +7,13 @@ const page = (partial) => ({
   eyebrow: '',
   title: '',
   subtitle: '',
-  heroImage: '/images/sanctuary/hero.jpg',
+  heroImage: '',
   intro: '',
   blocks: [],
   links: [],
   cta: null,
   ...partial,
+  heroImage: '',
 })
 
 export const pageFallbacks = {
@@ -247,42 +248,44 @@ export const pageFallbacks = {
 
   'shrine.index': page({
       title: "The Shrine",
-      subtitle: "A place of prayer, liturgy, and Marian devotion",
-      intro: "Explore the churches, apparition sites, Holy Spring, Way of the Cross, and liturgical life of the Shrine of Our Lady of Kibeho.",
-      links: [
+      subtitle: "A living place of prayer on the hills of Kibeho",
+      intro: "<p>The Shrine of Our Lady of Kibeho welcomes pilgrims who come to pray, to celebrate the sacraments, and to walk the places linked to the apparitions of the Mother of the Word. Here the Church gathers each day — and, on feast days, from across Rwanda and the world.</p>",
+      blocks: [
         {
-          label: "Welcome",
-          path: "/shrine/welcome",
+          type: "heading",
+          text: "Life of prayer",
         },
         {
-          label: "Churches",
-          path: "/shrine/churches",
+          type: "paragraph",
+          text: "<p>Holy Mass, the Rosary, confession, and times of silence shape the ordinary day at the Shrine. On Marian feasts and major pilgrimages the liturgy is extended, and the grounds fill with parishes, dioceses, and visitors from many nations.</p>",
         },
         {
-          label: "Apparition Sites",
-          path: "/shrine/apparition-sites",
+          type: "heading",
+          text: "Places to visit",
         },
         {
-          label: "Holy Spring",
-          path: "/shrine/holy-spring",
+          type: "paragraph",
+          text: "<p>Begin with a welcome and orientation, then move through the churches, apparition sites, Holy Spring, and Way of the Cross at a prayerful pace. The Mass schedule and shrine map will help you plan the day.</p>",
         },
         {
-          label: "Way of the Cross",
-          path: "/shrine/way-of-the-cross",
+          type: "cards",
+          items: [
+            { title: "Welcome", text: "<p>Arrive in peace. Find orientation, pilgrim reception, and a first invitation to prayer.</p>", path: "/shrine/welcome" },
+            { title: "Churches", text: "<p>Chapels and churches where the liturgical and pastoral life of the Shrine is celebrated.</p>", path: "/shrine/churches" },
+            { title: "Apparition Sites", text: "<p>The places remembered for the apparitions of Our Lady of Kibeho — spaces of silence and thanksgiving.</p>", path: "/shrine/apparition-sites" },
+            { title: "Holy Spring", text: "<p>Pilgrims come to the water in faith — a sign of God’s grace and a call to trust.</p>", path: "/shrine/holy-spring" },
+            { title: "Way of the Cross", text: "<p>Walk the Stations with Christ, in the company of Our Lady of Sorrows.</p>", path: "/shrine/way-of-the-cross" },
+            { title: "Eucharistic Adoration", text: "<p>Remain in silent prayer before the Blessed Sacrament, for your intentions and for the world.</p>", path: "/shrine/eucharistic-adorations" },
+            { title: "Mass Schedule", text: "<p>Daily and festal Mass times for pilgrims and the local community. Confirm feast-day hours before you travel.</p>", path: "/shrine/mass-schedule" },
+            { title: "Shrine Map", text: "<p>Find churches, apparition sites, the Holy Spring, the Way of the Cross, and pilgrim facilities.</p>", path: "/shrine/map" },
+          ],
         },
         {
-          label: "Eucharistic Adorations",
-          path: "/shrine/eucharistic-adorations",
-        },
-        {
-          label: "Mass Schedule",
-          path: "/shrine/mass-schedule",
-        },
-        {
-          label: "Shrine Map",
-          path: "/shrine/map",
+          type: "note",
+          text: "<p>Group visits are asked to contact the Pilgrimage Office so liturgy, lodging, and a fitting welcome can be prepared.</p>",
         },
       ],
+      links: [],
       cta: {
         primary: {
           label: "Mass Schedule",
@@ -642,8 +645,30 @@ export const pageFallbacks = {
 
   'pilgrimage.calendar': page({
       title: "Pilgrimage events",
-      subtitle: "Feasts, gatherings, and registered pilgrimages",
-      intro: "Follow major Marian feasts, national and international pilgrimages, and opportunities to join organised groups at the Shrine.",
+      subtitle: "Feast days, parish visits, and gatherings of the Church",
+      intro: "<p>This calendar lists public pilgrimages and celebrations at the Shrine of Our Lady of Kibeho. Open an event for dates, the spirit of the day, and a way to register your group or your own pilgrimage.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "How to take part",
+        },
+        {
+          type: "paragraph",
+          text: "<p>Individuals, families, and parish groups are welcome. Register so the Pilgrimage Office can share the programme, guide you on lodging, and receive you with care. Times may change around major feasts — confirm before you travel.</p>",
+        },
+        {
+          type: "cards",
+          items: [
+            { title: "Marian feast days", text: "<p>Annual celebrations such as the Assumption, with Mass, procession, confession, and thanksgiving.</p>" },
+            { title: "National and international pilgrimages", text: "<p>Days when dioceses, movements, and visitors from beyond Rwanda pray together at Kibeho.</p>" },
+            { title: "Youth and parish gatherings", text: "<p>Pilgrimages prepared for young people and for parish groups walking together in faith.</p>" },
+          ],
+        },
+        {
+          type: "note",
+          text: "<p>Need a date that is not listed? Write to the Pilgrimage Office. Private parish visits can often be arranged alongside the public calendar.</p>",
+        },
+      ],
       cta: {
         primary: {
           label: "View pilgrimage events",
@@ -734,29 +759,41 @@ export const pageFallbacks = {
     }),
 
   'spirituality.prayer-intentions': page({
-      title: "Prayer Intentions",
-      subtitle: "Entrust your intentions to the prayer of the Shrine",
-      intro: "Share prayer intentions with the Shrine community. Online intention submission will be expanded; for now, send your request through the Pilgrimage Office contact form.",
+      title: "Light a candle",
+      subtitle: "A light for someone you love",
+      intro: "<p>Leave a light burning at Kibeho — a prayer you do not have to find words for.</p>",
+      blocks: [
+        {
+          type: "note",
+          text: "<p>USD 1 per candle. Send this request by email or WhatsApp so the Pilgrimage Office has your intention. In Rwanda, tap MoMo Pay to open the dialer. From abroad, pay online when that link is ready — until then, use a bank transfer.</p>",
+        },
+      ],
       cta: {
         primary: {
-          label: "Send an intention",
-          path: "/contact",
+          label: "Have a Mass said",
+          path: "/spirituality/request-a-mass",
         },
         secondary: {
-          label: "Request a Mass",
-          path: "/spirituality/request-a-mass",
+          label: "Donations",
+          path: "/support/donations",
         },
       },
     }),
 
   'spirituality.request-a-mass': page({
-      title: "Request a Mass",
-      subtitle: "Have Mass offered at the Shrine",
-      intro: "Request that Holy Mass be celebrated at the Shrine of Our Lady of Kibeho for your intention. A dedicated online Mass-request service is planned; meanwhile, contact the Pilgrimage Office.",
+      title: "Have a Mass said",
+      subtitle: "An offering for a loved one, an intention, or a cause",
+      intro: "<p>Have Holy Mass offered at the Shrine for a loved one, an intention, or a cause.</p>",
+      blocks: [
+        {
+          type: "note",
+          text: "<p>Send the intention by email or WhatsApp, then complete payment. The Pilgrimage Office will confirm your Mass once the offering is received.</p>",
+        },
+      ],
       cta: {
         primary: {
-          label: "Contact the Office",
-          path: "/contact",
+          label: "Light a candle",
+          path: "/spirituality/prayer-intentions",
         },
         secondary: {
           label: "Mass Schedule",
@@ -895,6 +932,28 @@ export const pageFallbacks = {
       title: "Support the Shrine",
       subtitle: "Pastoral mission and sustainable development",
       intro: "Unlike long-established pilgrimage sites, Kibeho is still developing. Your partnership helps proclaim the message, welcome pilgrims, and build the infrastructure of the Shrine for generations to come.",
+      blocks: [
+        {
+          type: "cards",
+          items: [
+            {
+              title: "Onsite services",
+              text: "Light a candle, have a Mass said, or register for a pilgrimage. These requests go to the Pilgrimage Office.",
+              path: "/spirituality/prayer-intentions",
+            },
+            {
+              title: "Give to the mission",
+              text: "Support the Shrine generally, or choose a specific development project.",
+              path: "/support/donations",
+            },
+            {
+              title: "Partnership",
+              text: "Parishes, communities, and organisations walking with the Shrine in prayer, pilgrimage, and collaboration.",
+              path: "/support/partners",
+            },
+          ],
+        },
+      ],
       links: [
         {
           label: "Vision",
@@ -982,9 +1041,9 @@ export const pageFallbacks = {
     }),
 
   'support.projects': page({
-      title: "Development projects",
-      subtitle: "Works underway at the Shrine",
-      intro: "Follow current pastoral and infrastructure projects that sustain the life of the Shrine and improve the welcome of pilgrims.",
+      title: "Sanctuary projects",
+      subtitle: "These works still need hands, prayer, and friends",
+      intro: "<p>Kibeho is still becoming the place of welcome Our Lady asked for. Each project is a door you can walk through — with a gift, a pledge, or a partnership.</p>",
       cta: {
         primary: {
           label: "Master Plan",
@@ -998,28 +1057,18 @@ export const pageFallbacks = {
     }),
 
   'support.donations': page({
-      title: "Donations",
-      subtitle: "Support the mission and development of the Shrine",
-      intro: "Your gift helps welcome pilgrims, sustain liturgy and pastoral care, and advance the Master Plan. Online payment integration is planned; bank and diocesan channels are available via the Pilgrimage Office.",
-      blocks: [
-        {
-          type: "list",
-          items: [
-            "Pastoral and liturgical life",
-            "Pilgrim hospitality",
-            "Infrastructure and Master Plan projects",
-            "Community and charitable outreach",
-          ],
-        },
-      ],
+      eyebrow: "Support the Shrine",
+      title: "Give to the mission",
+      subtitle: "Walk with every pilgrim who comes to pray",
+      intro: "<p>Kibeho is still becoming the place of welcome Our Lady asked for. Your gift walks with every pilgrim who comes to pray.</p>",
       cta: {
         primary: {
-          label: "Contact for donation details",
+          label: "Contact us",
           path: "/contact",
         },
         secondary: {
-          label: "Annual Reports",
-          path: "/support/annual-reports",
+          label: "Light a candle",
+          path: "/spirituality/prayer-intentions",
         },
       },
     }),
@@ -1059,11 +1108,11 @@ export const pageFallbacks = {
   'support.partners': page({
       title: "Partners",
       subtitle: "Walking together with the Shrine",
-      intro: "Parishes, religious communities, dioceses, and friends of Kibeho worldwide support the mission through prayer, pilgrimage, and collaboration. Contact us to explore partnership.",
+      intro: "<p>Parishes, religious communities, dioceses, and friends of Kibeho worldwide support the mission through prayer, pilgrimage, and collaboration. Send a partnership enquiry below. If the partnership includes a gift, use Donations or a specific project so the office can match it.</p>",
       cta: {
         primary: {
-          label: "Become a partner",
-          path: "/contact",
+          label: "Give to the mission",
+          path: "/support/donations",
         },
         secondary: {
           label: "Vision",

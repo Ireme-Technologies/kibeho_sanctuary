@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Eye, Trash2 } from 'lucide-react'
-import { deleteEnquiry, fetchEnquiries, fetchEnquiryStats } from '@api/cms'
+import { deleteEnquiry, fetchCmsAudit, fetchEnquiries, fetchEnquiryStats } from '@api/cms'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
+import { AuditBar, AuditCriticalList, AuditScore } from './components/AuditPanel'
 import styles from './admin.module.css'
 
 function statusLabel(status) {
@@ -28,14 +29,17 @@ export default function DashboardPage() {
   const [flash, setFlash] = useState({ type: 'success', message: '' })
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
+  const [audit, setAudit] = useState(null)
 
   const load = async () => {
-    const [nextStats, list] = await Promise.all([
+    const [nextStats, list, report] = await Promise.all([
       fetchEnquiryStats(),
       fetchEnquiries(),
+      fetchCmsAudit().catch(() => null),
     ])
     setStats(nextStats || {})
     setItems(Array.isArray(list) ? list : [])
+    setAudit(report)
   }
 
   useEffect(() => {
@@ -67,13 +71,36 @@ export default function DashboardPage() {
     }
   }
 
+  const overall = audit?.overall
+  const areas = audit
+    ? [
+        { label: 'Settings', percent: audit.settings?.percent },
+        { label: 'Menus & home', percent: audit.setup?.percent },
+        { label: 'Pages', percent: audit.pages?.percent },
+        {
+          label: 'Listings',
+          percent: audit.directories?.length
+            ? Math.round(
+                audit.directories.reduce((sum, dir) => sum + (Number(dir.percent) || 0), 0) /
+                  audit.directories.length
+              )
+            : 0,
+        },
+        {
+          label: 'Translations',
+          percent: (() => {
+            const langs = audit.translations?.languages || []
+            if (!langs.length) return 0
+            return Math.round(langs.reduce((sum, lang) => sum + (Number(lang.percent) || 0), 0) / langs.length)
+          })(),
+        },
+      ]
+    : []
+
   return (
     <div>
       <div className={styles.topbar}>
-        <h1>Recent pilgrim enquiries</h1>
-        <Link to="/admin/enquiries" className={`${styles.btn} ${styles.btnSecondary}`}>
-          View all
-        </Link>
+        <h1>Dashboard</h1>
       </div>
 
       <FlashMessage
@@ -82,77 +109,55 @@ export default function DashboardPage() {
         onClear={() => setFlash({ type: 'success', message: '' })}
       />
 
-      <div className={styles.howtoGrid}>
-        <div className={styles.howtoCard}>
-          <h2>See what is still missing</h2>
-          <p>
-            Open <strong>CMS audit</strong> for a readiness score: settings, pages, accommodations,
-            communities, translations, and more. Each gap links to the screen where you can finish it.
+      <section className={styles.auditHero} aria-labelledby="cms-report">
+        <div>
+          <p className={styles.statLabel} id="cms-report">
+            Content management report
           </p>
-          <div className={styles.howtoLinks}>
-            <Link to="/admin/audit">Open CMS audit</Link>
-            <a href="/docs/sitemap-and-admin-guide#getting-started" target="_blank" rel="noreferrer">
-              User guide
-            </a>
-          </div>
+          {overall ? (
+            <>
+              <AuditScore percent={overall.percent} status={overall.status} size="lg" />
+              <AuditBar percent={overall.percent} />
+              <p className={styles.muted}>
+                {overall.critical
+                  ? `${overall.critical} item${overall.critical === 1 ? '' : 's'} need attention first.`
+                  : 'Core setup looks complete.'}
+              </p>
+              <ul className={styles.auditSummaryAreas}>
+                {areas.map((area) => (
+                  <li key={area.label}>
+                    <span>{area.label}</span>
+                    <strong>{area.percent ?? 0}%</strong>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p className={styles.muted}>Checking site content…</p>
+          )}
+          <Link to="/admin/audit" className={styles.btn}>
+            View full audit report
+          </Link>
         </div>
-        <div className={styles.howtoCard}>
-          <h2>Manage languages</h2>
-          <p>
-            In <strong>Translations</strong>, add a language, translate it in admin, then click{' '}
-            <strong>Show to visitors</strong> when it is ready. Draft languages stay on Pages, News, and
-            menus for staff, but they do not appear in the public language menu.
-          </p>
-          <p>
-            Lists show flag columns starting with the default language. A <strong>pencil</strong> means
-            that language has text. A <strong>plus</strong> means it is empty — click it to open the editor
-            on that language.
-          </p>
-          <div className={styles.howtoLinks}>
-            <Link to="/admin/translations">Add or publish a language</Link>
-            <Link to="/admin/sections">Pages &amp; layout</Link>
-            <Link to="/admin/blog">News articles</Link>
+        {audit ? (
+          <AuditCriticalList
+            items={(audit.critical || []).slice(0, 4)}
+            emptyText="No urgent gaps right now. Open the full report to review details."
+          />
+        ) : (
+          <div className={styles.auditEmpty}>
+            <p>Checking site content…</p>
           </div>
-        </div>
-        <div className={styles.howtoCard}>
-          <h2>Flexible page layout</h2>
-          <p>
-            In <strong>Pages</strong>, add layout blocks: heading, rich text, note, list, gallery, YouTube,
-            cards, steps, or schedule. Each language can have its own body layout.
-          </p>
-          <p>
-            Inside a text block, the formatting toolbar covers bold, lists, alignment, colour, tables, images,
-            and YouTube — then click <strong>Save page</strong>.
-          </p>
-          <div className={styles.howtoLinks}>
-            <Link to="/admin/sections">Site pages</Link>
-            <Link to="/admin/home-hero">Home hero</Link>
-          </div>
-        </div>
-        <div className={styles.howtoCard}>
-          <h2>Menus &amp; links</h2>
-          <p>
-            The public header, utility bar, and footer are edited in <strong>Site menus</strong>.
-            Choose Main menu, Top header, or Footer, then add an item as top-level or a submenu.
-            Drag items to reorder them.
-          </p>
-          <div className={styles.howtoLinks}>
-            <Link to="/admin/menus">Open site menus</Link>
-            <Link to="/admin/translations">Button labels</Link>
-          </div>
-        </div>
-        <div className={styles.howtoCard}>
-          <h2>Page list &amp; languages</h2>
-          <p>
-            <strong>Pages</strong> and <strong>News</strong> use a WordPress-style list: the title, then
-            Edit / View / Delete underneath, then flag columns for each language. Click a plus to add a
-            missing translation.
-          </p>
-          <div className={styles.howtoLinks}>
-            <Link to="/admin/sections">List of pages</Link>
-            <Link to="/admin/blog">News articles</Link>
-          </div>
-        </div>
+        )}
+      </section>
+
+      <div className={styles.topbar}>
+        <h2 className={styles.sectionTitle} style={{ margin: 0 }}>
+          Recent pilgrim enquiries
+        </h2>
+        <Link to="/admin/enquiries" className={`${styles.btn} ${styles.btnSecondary}`}>
+          View all
+        </Link>
       </div>
 
       <div className={styles.filterBar}>

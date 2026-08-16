@@ -1,4 +1,5 @@
 import { useLocale } from '@context/LocaleContext'
+import { useContent } from '@context/ContentContext'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { fetchSacredPlace } from '@api/cms'
@@ -8,6 +9,7 @@ import styles from './CatalogPage.module.css'
 
 export default function SacredPlaceDetailPage() {
   const { locale } = useLocale()
+  const { resolveHeaderImage } = useContent()
   const { slug } = useParams()
   const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -36,17 +38,15 @@ export default function SacredPlaceDetailPage() {
     item.type === 'apparition_site' ? '/shrine/apparition-sites' : '/shrine/churches'
   const backLabel = item.type === 'apparition_site' ? 'All apparition sites' : 'All churches'
 
+  const heroImage = resolveHeaderImage(item.coverImage)
+
   return (
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={
-          item.coverImage
-            ? {
-                backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${item.coverImage})`,
-              }
-            : undefined
-        }
+        style={{
+          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
+        }}
       >
         <div className="container">
           {item.location ? <p className={styles.subtitle}>{item.location}</p> : null}

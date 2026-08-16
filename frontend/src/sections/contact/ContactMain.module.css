@@ -343,6 +343,7 @@
 }
 
 .infoValueLink {
+  display: block;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   font-weight: 500;

@@ -14,7 +14,7 @@ function renderStars(rating) {
 }
 
 export default function HotelsPage() {
-  const { section, resolveHeaderImage } = useContent()
+  const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale } = useLocale()
   const hero = section('hotels.index', {})
   const [items, setItems] = useState([])
@@ -55,11 +55,9 @@ export default function HotelsPage() {
           {items.map((item) => (
             <article key={item.id} className={styles.card}>
               <Link to={`/hotels/${item.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                {(item.coverImage || item.featuredImage) && (
-                  <div className={styles.cardMedia}>
-                    <img src={item.coverImage || item.featuredImage} alt="" />
-                  </div>
-                )}
+                <div className={styles.cardMedia}>
+                  <img src={item.coverImage || item.featuredImage || defaultHeaderImage} alt="" />
+                </div>
                 <div className={styles.cardBody}>
                   {item.category ? <p className={styles.meta}>{item.category}</p> : null}
                   <h2>{item.title}</h2>

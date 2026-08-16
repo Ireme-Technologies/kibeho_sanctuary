@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { User, MessageCircle, ArrowRight } from 'lucide-react'
 import { useInView } from '@hooks/useInView'
 import BlogSidebar from '@components/blog/BlogSidebar'
+import Pagination from '@components/Pagination'
+import { PAGE_SIZE, paginate, sortByLatest } from '@utils/paginate'
 import { blogGridHeading, noResultsText } from '@data/blog/BlogGrid'
 import styles from './BlogGrid.module.css'
 import { useContent } from '@context/ContentContext'
@@ -53,14 +55,15 @@ function BlogCard({ post, index, inView, authors }) {
 export default function BlogGrid() {
   const { blogPosts, blogAuthors } = useContent()
   const [sectionRef, inView] = useInView(0.1)
-  const [searchParams] = useSearchParams()
-  const [query, setQuery] = useState(searchParams.get('q') || '')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const query = searchParams.get('q') || ''
   const category = (searchParams.get('category') || '').trim()
+  const page = Number(searchParams.get('page') || 1)
 
   const filteredPosts = useMemo(() => {
     const q = query.trim().toLowerCase()
     const cat = category.toLowerCase()
-    return blogPosts.filter((p) => {
+    const matched = blogPosts.filter((p) => {
       const matchesQuery =
         !q ||
         p.title.toLowerCase().includes(q) ||
@@ -74,7 +77,10 @@ export default function BlogGrid() {
         (cat === 'bishop' && postCat.includes('bishop'))
       return matchesQuery && matchesCategory
     })
+    return sortByLatest(matched, (p) => p.publishedAt)
   }, [blogPosts, query, category])
+
+  const paged = paginate(filteredPosts, page, PAGE_SIZE)
 
   const heading = category
     ? category === 'Rector'
@@ -84,6 +90,14 @@ export default function BlogGrid() {
         : category
     : blogGridHeading
 
+  const handleSearch = (value) => {
+    const next = new URLSearchParams(searchParams)
+    if (value) next.set('q', value)
+    else next.delete('q')
+    next.delete('page')
+    setSearchParams(next)
+  }
+
   return (
     <section className={styles.section}>
       <div className={`container ${styles.header} fade-in-up ${inView ? 'is-visible' : ''}`}>
@@ -92,16 +106,22 @@ export default function BlogGrid() {
 
       <div className={`container ${styles.layout}`}>
         <div ref={sectionRef} className={styles.grid}>
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post, i) => (
+          {paged.items.length > 0 ? (
+            paged.items.map((post, i) => (
               <BlogCard key={post.id} post={post} index={i} inView={inView} authors={blogAuthors} />
             ))
           ) : (
             <p className={styles.noResults}>{noResultsText}</p>
           )}
+          <Pagination
+            page={paged.page}
+            pageCount={paged.pageCount}
+            total={paged.total}
+            pageSize={PAGE_SIZE}
+          />
         </div>
 
-        <BlogSidebar initialQuery={query} onSearch={setQuery} />
+        <BlogSidebar initialQuery={query} onSearch={handleSearch} />
       </div>
     </section>
   )

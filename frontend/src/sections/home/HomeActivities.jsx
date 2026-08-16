@@ -9,7 +9,7 @@ import { cardExcerpt } from '@utils/text'
 import styles from './HomeActivities.module.css'
 
 export default function HomeActivities() {
-  const { section } = useContent()
+  const { section, defaultHeaderImage } = useContent()
   const meta = { ...fallbackMeta, ...section('home.activities', {}) }
   const items = meta.highlights?.length ? meta.highlights : fallbackHighlights
   const [ref, inView] = useInView(0.12)
@@ -34,7 +34,7 @@ export default function HomeActivities() {
               className={styles.card}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <img src={item.image || '/images/sanctuary/hero.jpg'} alt="" aria-hidden="true" />
+              <img src={item.image || defaultHeaderImage} alt="" aria-hidden="true" />
               <span className={styles.overlay} aria-hidden="true" />
               <div className={styles.cardContent}>
                 <h3 className={styles.cardTitle}>{item.title}</h3>

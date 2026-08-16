@@ -17,13 +17,28 @@ import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColum
 import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['title', 'description', 'status', 'phase']
+const LOCALE_FIELDS = [
+  'title',
+  'description',
+  'problem',
+  'solution',
+  'impact_local',
+  'impact_global',
+  'impact_church',
+  'status',
+  'phase',
+]
 
 const empty = {
   title: '',
   status: '',
   phase: '',
   description: '',
+  problem: '',
+  solution: '',
+  impact_local: '',
+  impact_global: '',
+  impact_church: '',
   cover_image: '',
   gallery: [],
   funding_goal: '',
@@ -68,6 +83,11 @@ export default function ShrineProjectsAdminPage() {
       status: item.status || '',
       phase: item.phase || '',
       description: item.description || '',
+      problem: item.problem || '',
+      solution: item.solution || '',
+      impact_local: item.impactLocal || '',
+      impact_global: item.impactGlobal || '',
+      impact_church: item.impactChurch || '',
       cover_image: item.coverImage || '',
       gallery: Array.isArray(item.gallery) ? item.gallery : [],
       funding_goal: item.fundingGoal || '',
@@ -238,6 +258,46 @@ export default function ShrineProjectsAdminPage() {
             />
             <p className={styles.muted}>Listings show the first 160 characters of this description.</p>
           </div>
+          <p className={styles.muted}>
+            Write the need, the work you will do, and the fruit for the local community, the Church, and
+            the wider world. Switch the language tab to translate each field. Add gallery photos of
+            progress or the expected outcome.
+          </p>
+          <div className={styles.field}>
+            <label>The need</label>
+            <RichTextEditor
+              value={getLocaleField(form, 'problem', localeTab, defaultLocale)}
+              onChange={(html) => setForm(setLocaleField(form, 'problem', localeTab, html, defaultLocale))}
+            />
+          </div>
+          <div className={styles.field}>
+            <label>What we will do</label>
+            <RichTextEditor
+              value={getLocaleField(form, 'solution', localeTab, defaultLocale)}
+              onChange={(html) => setForm(setLocaleField(form, 'solution', localeTab, html, defaultLocale))}
+            />
+          </div>
+          <div className={styles.field}>
+            <label>Impact — local community</label>
+            <RichTextEditor
+              value={getLocaleField(form, 'impact_local', localeTab, defaultLocale)}
+              onChange={(html) => setForm(setLocaleField(form, 'impact_local', localeTab, html, defaultLocale))}
+            />
+          </div>
+          <div className={styles.field}>
+            <label>Impact — the Church</label>
+            <RichTextEditor
+              value={getLocaleField(form, 'impact_church', localeTab, defaultLocale)}
+              onChange={(html) => setForm(setLocaleField(form, 'impact_church', localeTab, html, defaultLocale))}
+            />
+          </div>
+          <div className={styles.field}>
+            <label>Impact — the wider world</label>
+            <RichTextEditor
+              value={getLocaleField(form, 'impact_global', localeTab, defaultLocale)}
+              onChange={(html) => setForm(setLocaleField(form, 'impact_global', localeTab, html, defaultLocale))}
+            />
+          </div>
           <ImageField
             label="Cover image"
             value={form.cover_image}
@@ -245,7 +305,7 @@ export default function ShrineProjectsAdminPage() {
             folder="shrine-projects"
           />
           <MultiImageField
-            label="Gallery images"
+            label="Gallery — progress or expected outcome"
             value={form.gallery}
             onChange={(gallery) => setForm({ ...form, gallery })}
             folder="shrine-projects"

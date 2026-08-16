@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useLocale } from '@context/LocaleContext'
+import { useContent } from '@context/ContentContext'
 import { fetchCommunity } from '@api/cms'
 import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
@@ -8,6 +9,7 @@ import styles from './CatalogPage.module.css'
 
 export default function CommunityDetailPage() {
   const { locale } = useLocale()
+  const { resolveHeaderImage } = useContent()
   const { slug } = useParams()
   const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -32,17 +34,15 @@ export default function CommunityDetailPage() {
 
   if (notFound || !item) return <NotFoundPage />
 
+  const heroImage = resolveHeaderImage(item.coverImage)
+
   return (
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={
-          item.coverImage
-            ? {
-                backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${item.coverImage})`,
-              }
-            : undefined
-        }
+        style={{
+          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
+        }}
       >
         <div className="container">
           {item.location ? <p className={styles.subtitle}>{item.location}</p> : null}
@@ -52,7 +52,9 @@ export default function CommunityDetailPage() {
 
       <div className={`container ${styles.body}`}>
         <div className={styles.detailLayout}>
-          {item.coverImage ? <img src={item.coverImage} alt="" className={styles.detailCover} /> : null}
+          {item.coverImage ? (
+            <img src={item.coverImage} alt="" className={styles.detailCover} />
+          ) : null}
           {item.description ? <RichText html={item.description} className={styles.intro} /> : null}
           {item.gallery?.length ? (
             <div className={styles.gallery}>

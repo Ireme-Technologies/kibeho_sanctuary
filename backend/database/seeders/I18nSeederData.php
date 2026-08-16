@@ -225,8 +225,9 @@ class I18nSeederData
         ];
 
         $nav = NavI18nSeederData::byLocale();
+        $offer = OfferI18nSeederData::byLocale();
         foreach ($byLocale as $code => $map) {
-            $byLocale[$code] = array_merge($map, $nav[$code] ?? []);
+            $byLocale[$code] = array_merge($map, $nav[$code] ?? [], $offer[$code] ?? []);
         }
 
         $strings = [];

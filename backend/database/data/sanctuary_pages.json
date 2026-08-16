@@ -851,13 +851,13 @@
   "spirituality.prayer-intentions": {
     "eyebrow": "",
     "title": "Light a candle",
-    "subtitle": "Popular piety of the people",
+    "subtitle": "A light for someone you love",
     "heroImage": "",
-    "intro": "<p>Lighting a candle is part of what is called popular piety, in other words the piety of the people.</p><p>This gesture can express thoughts or feelings that are sometimes difficult to formulate. The candle brings light that illuminates, warms, and serves to express what is important for the human heart.</p>",
+    "intro": "<p>Leave a light burning at Kibeho — a prayer you do not have to find words for.</p>",
     "blocks": [
       {
         "type": "note",
-        "text": "<p>Unit price: USD 1 per candle. After you submit this request, use Mobile Money or a bank transfer and keep your reference for the Pilgrimage Office.</p>"
+        "text": "<p>USD 1 per candle. Send this request by email or WhatsApp so the Pilgrimage Office has your intention. In Rwanda, tap MoMo Pay to open the dialer. From abroad, pay online when that link is ready — until then, use a bank transfer.</p>"
       }
     ],
     "links": [],
@@ -877,11 +877,11 @@
     "title": "Have a Mass said",
     "subtitle": "An offering for a loved one, an intention, or a cause",
     "heroImage": "",
-    "intro": "<p>By your offering, you wish to have a Mass said for a loved one, a particular intention, or a cause. The offering for a Mass is USD 20.</p>",
+    "intro": "<p>Have Holy Mass offered at the Shrine for a loved one, an intention, or a cause.</p>",
     "blocks": [
       {
         "type": "note",
-        "text": "<p>Submit the form below, then complete Mobile Money or a bank transfer. The Pilgrimage Office will confirm your intention.</p>"
+        "text": "<p>Send the intention by email or WhatsApp, then complete payment. The Pilgrimage Office will confirm your Mass once the offering is received.</p>"
       }
     ],
     "links": [],
@@ -1048,7 +1048,28 @@
     "subtitle": "Prayer and material support",
     "heroImage": "",
     "intro": "<p>Until now, the Sanctuary of Our Lady of Kibeho is constituted by the church of Our Lady of Sorrows, the Chapel of the Apparitions, the place and esplanade of the apparitions, the Way of the Rosary, the Way of the Rosary of the Seven Sorrows, the Way of the Cross, the chapel of adoration, the source of Mary, and a shop of devotional items.</p><p>Other projects are planned for a better welcome and a better service towards pilgrims. We are all invited to contribute, through prayer and material support, so that Kibeho may truly become the place of conversion and reconciliation that the Mother of God has appealed for.</p>",
-    "blocks": [],
+    "blocks": [
+      {
+        "type": "cards",
+        "items": [
+          {
+            "title": "Onsite services",
+            "text": "Light a candle, have a Mass said, or register for a pilgrimage. These requests go to the Pilgrimage Office.",
+            "path": "/spirituality/prayer-intentions"
+          },
+          {
+            "title": "Give to the mission",
+            "text": "Support the Shrine generally, or choose a specific development project.",
+            "path": "/support/donations"
+          },
+          {
+            "title": "Partnership",
+            "text": "Parishes, communities, and organisations walking with the Shrine in prayer, pilgrimage, and collaboration.",
+            "path": "/support/partners"
+          }
+        ]
+      }
+    ],
     "links": [
       {
         "label": "Vision",
@@ -1142,26 +1163,10 @@
   "support.projects": {
     "eyebrow": "",
     "title": "Sanctuary projects",
-    "subtitle": "What is already in place — and what is still to be built",
+    "subtitle": "These works still need hands, prayer, and friends",
     "heroImage": "",
-    "intro": "<p>The Sanctuary already includes the principal places of worship and prayer listed below. Further works are planned so pilgrims may be welcomed with greater dignity.</p>",
-    "blocks": [
-      {
-        "type": "list",
-        "items": [
-          "The church of Our Lady of Sorrows",
-          "The Chapel of the Apparitions",
-          "The place of the apparitions",
-          "The esplanade of the apparitions",
-          "The way of the Rosary",
-          "The way of the Rosary of Seven Sorrows",
-          "The way of the Cross",
-          "The chapel of adoration of the Blessed Sacrament",
-          "The source of Mary",
-          "Shop of devotional items"
-        ]
-      }
-    ],
+    "intro": "<p>Kibeho is still becoming the place of welcome Our Lady asked for. Each project is a door you can walk through — with a gift, a pledge, or a partnership.</p>",
+    "blocks": [],
     "links": [],
     "cta": {
       "primary": {
@@ -1175,43 +1180,12 @@
     }
   },
   "support.donations": {
-    "eyebrow": "",
-    "title": "Donations",
-    "subtitle": "Bank transfer and Mobile Money",
+    "eyebrow": "Support the Shrine",
+    "title": "Give to the mission",
+    "subtitle": "Walk with every pilgrim who comes to pray",
     "heroImage": "",
-    "intro": "<p>Whoever would like to make a donation may use the accounts of the Diocese of Gikongoro / Sanctuary of Kibeho. Please mention your name and intention as the payment reference.</p>",
-    "blocks": [
-      {
-        "type": "heading",
-        "text": "Bank of Kigali (BK)"
-      },
-      {
-        "type": "list",
-        "items": [
-          "Diocese Gikongoro / Sanct KIBEHO — 00266 00690793-01 — RWF",
-          "Diocese Gikongoro / Sanct KIBEHO — 00266 00690796-02 — EUR",
-          "Diocese Gikongoro / Sanct KIBEHO — 00266 00690797-03 — USD"
-        ]
-      },
-      {
-        "type": "heading",
-        "text": "Banque Populaire du Rwanda (BPR)"
-      },
-      {
-        "type": "list",
-        "items": [
-          "Diocese Gikongoro / Sanct KIBEHO — 475453520910197 — RWF"
-        ]
-      },
-      {
-        "type": "heading",
-        "text": "MoMo Pay"
-      },
-      {
-        "type": "paragraph",
-        "text": "<p><strong>*182*8*1*060974#</strong></p>"
-      }
-    ],
+    "intro": "<p>Kibeho is still becoming the place of welcome Our Lady asked for. Your gift walks with every pilgrim who comes to pray.</p>",
+    "blocks": [],
     "links": [],
     "cta": {
       "primary": {
@@ -1267,13 +1241,13 @@
     "title": "Partners",
     "subtitle": "Walking together with the Shrine",
     "heroImage": "",
-    "intro": "Parishes, religious communities, dioceses, and friends of Kibeho worldwide support the mission through prayer, pilgrimage, and collaboration. Contact us to explore partnership.",
+    "intro": "<p>Parishes, religious communities, dioceses, and friends of Kibeho worldwide support the mission through prayer, pilgrimage, and collaboration. Send a partnership enquiry below. If the partnership includes a gift, use Donations or a specific project so the office can match it.</p>",
     "blocks": [],
     "links": [],
     "cta": {
       "primary": {
-        "label": "Become a partner",
-        "path": "/contact"
+        "label": "Give to the mission",
+        "path": "/support/donations"
       },
       "secondary": {
         "label": "Vision",

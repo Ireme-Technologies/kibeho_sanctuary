@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowRight, ExternalLink, Globe, Mail, Phone, Star } from 'lucide-react'
 import { fetchLodging, fetchProject } from '@api/cms'
+import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import LodgingIcon from '@components/ui/LodgingIcon'
@@ -64,6 +65,7 @@ function ActionLink({ href, className, children }) {
 
 export default function HotelDetailPage() {
   const { locale } = useLocale()
+  const { defaultHeaderImage } = useContent()
   const { slug } = useParams()
   const [item, setItem] = useState(null)
   const [related, setRelated] = useState([])
@@ -88,10 +90,11 @@ export default function HotelDetailPage() {
   }, [slug, locale])
 
   const photos = useMemo(() => {
-    if (!item) return []
+    if (!item) return defaultHeaderImage ? [defaultHeaderImage] : []
     const list = [item.coverImage, item.featuredImage, ...(item.gallery || [])].filter(Boolean)
-    return [...new Set(list)]
-  }, [item])
+    const unique = [...new Set(list)]
+    return unique.length ? unique : defaultHeaderImage ? [defaultHeaderImage] : []
+  }, [item, defaultHeaderImage])
 
   if (loading) {
     return (
@@ -256,11 +259,9 @@ export default function HotelDetailPage() {
             <div className={styles.relatedGrid}>
               {related.map((stay) => (
                 <article key={stay.slug} className={styles.relatedCard}>
-                  {stay.coverImage || stay.featuredImage ? (
                     <Link to={`/hotels/${stay.slug}`} className={styles.relatedMedia}>
-                      <img src={stay.coverImage || stay.featuredImage} alt="" />
+                      <img src={stay.coverImage || stay.featuredImage || defaultHeaderImage} alt="" />
                     </Link>
-                  ) : null}
                   <div className={styles.relatedBody}>
                     <h3>{stay.title}</h3>
                     <Link to={`/hotels/${stay.slug}`} className={styles.relatedLink}>

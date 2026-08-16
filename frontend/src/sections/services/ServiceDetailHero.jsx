@@ -1,9 +1,11 @@
 import { ChevronDown } from 'lucide-react'
+import { useContent } from '@context/ContentContext'
 import { excerpt } from '@utils/text'
 import styles from './ServiceDetailHero.module.css'
 
 export default function ServiceDetailHero({ service }) {
-  const heroImage = service?.detailImage || `/images/services/detail-heros/${service?.slug || 'service'}.jpg`
+  const { resolveHeaderImage } = useContent()
+  const heroImage = resolveHeaderImage(service?.detailImage || service?.image)
 
   const scrollToDetails = () => {
     const target = document.getElementById('service-details')

@@ -227,6 +227,20 @@ export default function ContactMain() {
         >
           <h2 className={styles.infoHeading}>{contactInfo.heading}</h2>
           <div className={styles.infoAccent} aria-hidden="true" />
+          {contactInfo.localization ? (
+            <p className={styles.responseNote}>{contactInfo.localization}</p>
+          ) : null}
+          {Array.isArray(contactInfo.routes) && contactInfo.routes.length ? (
+            <ul className={styles.infoList} style={{ marginBottom: '1rem' }}>
+              {contactInfo.routes.map((route) => (
+                <li key={route} className={styles.infoItem}>
+                  <div className={styles.infoText}>
+                    <span className={styles.infoValue}>{route}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : null}
 
           <ul className={styles.infoList}>
             <li className={styles.infoItem}>
@@ -236,6 +250,12 @@ export default function ContactMain() {
               <div className={styles.infoText}>
                 <span className={styles.infoLabel}>Address</span>
                 <span className={styles.infoValue}>{contactInfo.address}</span>
+                {contactInfo.postalAddress && contactInfo.postalAddress !== contactInfo.address ? (
+                  <span className={styles.infoValue}>{contactInfo.postalAddress}</span>
+                ) : null}
+                {contactInfo.plusCode ? (
+                  <span className={styles.infoValue}>Plus Code: {contactInfo.plusCode}</span>
+                ) : null}
               </div>
             </li>
 
@@ -251,6 +271,14 @@ export default function ContactMain() {
                 >
                   {contactInfo.phone}
                 </a>
+                {contactInfo.phone2 ? (
+                  <a
+                    href={`tel:${String(contactInfo.phone2).replace(/\s+/g, '')}`}
+                    className={styles.infoValueLink}
+                  >
+                    {contactInfo.phone2}
+                  </a>
+                ) : null}
               </div>
             </li>
 
@@ -292,23 +320,25 @@ export default function ContactMain() {
             {contactInfo.whatsappLabel}
           </a>
 
-          <div className={styles.socialRow}>
-            {socials.map((social, index) => {
-              const Icon = resolveSocialIcon(social)
-              return (
-                <a
-                  key={`${social.label || social.href}-${index}`}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialLink}
-                  aria-label={social.label || 'Social link'}
-                >
-                  <Icon size={16} />
-                </a>
-              )
-            })}
-          </div>
+          {socials.length ? (
+            <div className={styles.socialRow}>
+              {socials.map((social, index) => {
+                const Icon = resolveSocialIcon(social)
+                return (
+                  <a
+                    key={`${social.label || social.href}-${index}`}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialLink}
+                    aria-label={social.label || 'Social link'}
+                  >
+                    <Icon size={16} />
+                  </a>
+                )
+              })}
+            </div>
+          ) : null}
 
           <RichText html={contactInfo.responseNote} className={styles.responseNote} />
         </div>

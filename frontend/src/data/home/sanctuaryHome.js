@@ -6,7 +6,7 @@ export const homeWelcome = {
   heading: 'Recognised. Welcoming. A place of conversion.',
   text: 'The Shrine of Our Lady of Kibeho is the first — and to date the only — Marian apparition site in Africa officially recognised by the Catholic Church. Pilgrims from every nation are welcome.',
   cta: { label: 'Discover the Message', path: '/our-lady' },
-  image: '/images/sanctuary/welcome.jpg',
+  image: '',
 }
 
 export const quickLinks = [
@@ -43,7 +43,7 @@ export const quickLinks = [
 export const homeActivities = {
   heading: 'At the Shrine',
   subline:
-    'Explore the churches, apparition sites, Holy Spring, Way of the Cross, and liturgical life of the Shrine of Our Lady of Kibeho.',
+    'Walk the churches, apparition sites, Holy Spring, and Way of the Cross — and join the daily prayer of Kibeho.',
   primaryCta: { label: 'Explore the Shrine', path: '/shrine' },
   secondaryCta: { label: 'Mass Schedule', path: '/shrine/mass-schedule' },
 }
@@ -54,24 +54,24 @@ export const shrineHighlights = [
     id: 'holy-spring',
     title: 'Holy Spring',
     shortDescription:
-      'Pilgrims come to the spring in faith — a sign of God’s grace and a call to trust.',
-    image: '/images/sanctuary/activity-spring.jpg',
+      'Come to the spring in faith — a sign of God’s grace and a call to interior trust.',
+    image: '',
     path: '/shrine/holy-spring',
   },
   {
     id: 'way-of-the-cross',
     title: 'Way of the Cross',
     shortDescription:
-      'Walk the Stations in prayer with Christ, in the company of Our Lady of Sorrows.',
-    image: '/images/sanctuary/hills.jpg',
+      'Pray the Stations with Christ, walking with Our Lady of Sorrows.',
+    image: '',
     path: '/shrine/way-of-the-cross',
   },
   {
     id: 'apparition-sites',
     title: 'Apparition Sites',
     shortDescription:
-      'Visit the places associated with the apparitions of the Mother of the Word.',
-    image: '/images/sanctuary/mary.jpg',
+      'Visit the places remembered for the apparitions of the Mother of the Word.',
+    image: '',
     path: '/shrine/apparition-sites',
   },
 ]

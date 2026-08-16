@@ -81,6 +81,7 @@ class Locale
         }
 
         $strings = is_array($raw['strings'] ?? null) ? $raw['strings'] : [];
+        $strings = self::mergeSeededStrings($strings);
         $default = self::sanitizeCode($raw['defaultLocale'] ?? 'en') ?: 'en';
 
         $languages = self::hydrateLanguages($raw, $default);
@@ -403,6 +404,36 @@ class Locale
         ];
 
         return array_merge(['code' => $code], $catalog, ['public' => $public]);
+    }
+
+    /**
+     * Add newly seeded UI keys without overwriting staff translations.
+     *
+     * @param  array<string, mixed>  $strings
+     * @return array<string, mixed>
+     */
+    private static function mergeSeededStrings(array $strings): array
+    {
+        if (! class_exists(\Database\Seeders\I18nSeederData::class)) {
+            return $strings;
+        }
+
+        static $seed = null;
+        if ($seed === null) {
+            $payload = \Database\Seeders\I18nSeederData::payload();
+            $seed = is_array($payload['strings'] ?? null) ? $payload['strings'] : [];
+        }
+
+        foreach ($seed as $key => $row) {
+            if (! is_string($key) || ! is_array($row)) {
+                continue;
+            }
+            if (! isset($strings[$key]) || ! is_array($strings[$key])) {
+                $strings[$key] = $row;
+            }
+        }
+
+        return $strings;
     }
 
     private static function filled(mixed $value): bool

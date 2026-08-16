@@ -12,7 +12,6 @@ export const heroCaption =
 
 export const heroSlides = [
   { id: 1, src: '/images/sanctuary/hero.jpg', duration: 8000 },
-  { id: 2, src: '/images/sanctuary/welcome.jpg', duration: 8000 },
 ]
 
 export const heroVideo = { src: '', poster: '/images/sanctuary/hero.jpg' }

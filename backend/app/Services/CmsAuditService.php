@@ -95,7 +95,13 @@ class CmsAuditService
             $this->check('Contact page heading', $this->filled($hero['headline'] ?? null) || $this->filled($info['heading'] ?? null), '/admin/settings?tab=contact-page'),
             $this->check('Map embed', $this->filled($map['embedSrc'] ?? null), '/admin/settings?tab=map'),
             $this->check('Live social links', collect($socials)->contains(fn ($row) => is_array($row) && $this->realSocial($row['href'] ?? '')), '/admin/settings?tab=contact'),
-            $this->check('Donation bank accounts', $hasBank, '/admin/settings?tab=offerings'),
+            $this->check(
+                $this->filled($offerings['onlinePaymentUrl'] ?? null)
+                    ? 'Online payment link'
+                    : 'Donation bank accounts (shown until online payment is set)',
+                $this->filled($offerings['onlinePaymentUrl'] ?? null) || $hasBank,
+                '/admin/settings?tab=offerings'
+            ),
             $this->check('MoMo Pay code', $this->filled($offerings['momoCode'] ?? null), '/admin/settings?tab=offerings'),
         ];
 
@@ -242,8 +248,11 @@ class CmsAuditService
             $this->collection('projects', 'Development projects', '/admin/shrine-projects', ShrineProject::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
                 ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
+                ['id' => 'problem', 'label' => 'The need', 'fn' => fn ($row) => $this->filled($row->problem)],
+                ['id' => 'solution', 'label' => 'What we will do', 'fn' => fn ($row) => $this->filled($row->solution)],
+                ['id' => 'impact', 'label' => 'Impact', 'fn' => fn ($row) => $this->filled($row->impact_local) || $this->filled($row->impact_global) || $this->filled($row->impact_church)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
-            ], ['title', 'description', 'short_description'], $default, $languages),
+            ], ['title', 'description', 'short_description', 'problem', 'solution', 'impact_local', 'impact_global', 'impact_church'], $default, $languages),
             $this->collection('apparition-sites', 'Apparition sites', '/admin/apparition-sites', SacredPlace::query()->where('type', 'apparition_site')->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->name, [
                 ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],

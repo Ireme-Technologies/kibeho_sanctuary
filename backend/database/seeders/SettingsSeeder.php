@@ -85,8 +85,11 @@ class SettingsSeeder extends Seeder
                 'candlePriceUsd' => 1,
                 'massPriceUsd' => 20,
                 'momoCode' => '*182*8*1*060974#',
-                'momoLabel' => 'Mobile Money',
+                'momoLabel' => 'MoMo Pay',
+                'onlinePaymentUrl' => '',
+                'onlinePaymentLabel' => 'Pay online (card or MoMo)',
                 'bankLabel' => 'Bank transfer (Kibeho bank account)',
+                'giftAmounts' => [10, 25, 50, 100],
                 'accounts' => [
                     ['bank' => 'Bank of Kigali (BK)', 'name' => 'Diocese Gikongoro/Sanct KIBEHO', 'number' => '00266 00690793-01', 'currency' => 'RWF'],
                     ['bank' => 'Bank of Kigali (BK)', 'name' => 'Diocese Gikongoro/Sanct KIBEHO', 'number' => '00266 00690796-02', 'currency' => 'EUR'],

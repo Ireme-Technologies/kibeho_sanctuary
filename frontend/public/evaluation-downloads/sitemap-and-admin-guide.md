@@ -190,7 +190,7 @@ User creation for additional Diocese staff is available from **Users** (where th
 | Churches | Church directory |
 | Apparition sites | Apparition site directory |
 | Accommodations | Lodging / hotels for pilgrims |
-| Development projects | Fundraising & infrastructure projects at the Shrine |
+| Development projects | Sanctuary projects: the need, the work, impact, gallery, and gift form |
 | Testimonials | Pilgrim / spiritual testimonies |
 | News & clergy messages | Articles (categories, rich text, images) |
 | Pilgrimage Services | Structured pilgrimage programs |
@@ -198,11 +198,11 @@ User creation for additional Diocese staff is available from **Users** (where th
 | Videos (YouTube) | Video catalogue |
 | Home hero | Homepage hero slides / media / CTAs |
 | Pages | Informational pages: header, intro, and layout blocks (per language) |
-| Translations | Short UI labels only (Donate, Contact) — not page articles |
+| Translations | Short UI labels (Donate, Pay now, offer./invite./project. keys) — not page articles |
 | Gallery / Media | Upload images & documents; gallery flag |
-| Pilgrim Enquiries | Inbox, replies, documents |
+| Pilgrim Enquiries | Inbox for candle, Mass, donation, project, partnership, and pilgrimage requests |
 | Users | Create staff accounts (authorised managers) |
-| Settings & menus | Organisation details, contact, navigation, theme |
+| Settings & menus | Organisation details, contact, navigation, theme, Offerings & donations |
 
 ## 3.4 Live demonstration — tasks for a non-technical staff member
 
@@ -332,11 +332,25 @@ This screen does **not** edit page articles or layout.
 
 1. Open **Translations**.
 2. Select a language tab; the default-language column stays visible as the source.
-3. Search or edit keys (Donate, Contact, form hints).
+3. Search or edit keys (Donate, Contact, form hints). For candle, Mass, donation, and project wording, search `offer.`, `invite.`, or `project.`.
 4. Optionally set **Default language** for first-time visitors.
 5. Click **Save translations**.
 
 For long editorial content, use language tabs on Pages, News, Churches, etc., then Save that record.
+
+## Offerings, candles, Mass, donations, and projects
+
+Visitors can light a candle, have a Mass said, give to the mission, support a project, become a partner, or register for a pilgrimage. Each public page has **Pay now** (MoMo in Rwanda, or online / bank transfer from abroad) or **Submit a pledge** (email or WhatsApp).
+
+| You want to change… | Go to… |
+|---------------------|--------|
+| Candle price, Mass offering, gift chips, MoMo code, bank accounts, online payment URL | **Settings → Offerings & donations** |
+| Page title, subtitle, invitation paragraph | **Pages** (language tabs) — Light a candle, Have a Mass said, Give to the mission, Partners, Sanctuary projects |
+| Buttons: Pay now, Submit a pledge, form labels | **Translations** — search `offer.`, `invite.`, `project.` |
+| Project story (need, work, impact, gallery) | **Development projects → Edit** (language tabs) |
+| Incoming requests | **Pilgrim Enquiries** — filter by Type |
+
+**Payment:** Rwanda uses the MoMo Pay code. Abroad uses the online payment URL when set; if that URL is empty, bank accounts are shown instead. A pledge does not take money on the site.
 
 ## Mass schedules
 Add day, title, time, language, notes, and recurrence where needed. Verify `/shrine/mass-schedule`.
@@ -348,19 +362,19 @@ Create pilgrimage events with dates/times, recurrence (weekly/monthly/annual), r
 Create/edit directory entries with media and language tabs. Slugs auto-generate from titles.
 
 ## Accommodations, development projects, testimonials, pilgrimage services, shrine experiences, videos
-Same pattern: Edit → language tabs (Copy from default if helpful) → media/YouTube → Save → check public list/detail.
+Same pattern: Edit → language tabs (Copy from default if helpful) → media/YouTube → Save → check public list/detail. For **Development projects**, fill The need, What we will do, Impact (local / Church / world), and a progress gallery. Each project includes a gift form.
 
 ## Home hero
 Update homepage slides, headline, support line, and CTAs. Use language tabs for heading, caption, and button labels. Keep the first viewport focused.
 
 ## Pilgrim Enquiries
-Open threads from Dashboard or **Pilgrim Enquiries**, reply, attach documents, use WhatsApp link when helpful, update status.
+Open threads from Dashboard or **Pilgrim Enquiries**. Filter by Type (candle, mass, donation, project, partnership, pilgrimage). Reply, attach documents, use WhatsApp when helpful, update status.
 
 ## Users
 Authorised managers open **Users**, create Admin/Editor accounts, share credentials securely, require password change. Phase 1: both roles use the CMS; finer ACL is a future upgrade.
 
 ## Settings & branding
-Maintain organisation name, contact details, WhatsApp, social links, map embed, logo/theme options. Full backup steps are in the next section.
+Maintain organisation name, contact details, WhatsApp, social links, map embed, logo/theme options. Under **Offerings & donations**, set candle and Mass prices, suggested gift amounts, MoMo Pay, online payment URL (empty = bank accounts), and bank accounts. Full backup steps are in the next section.
 
 ## Backups — DigitalOcean and the admin ZIP
 

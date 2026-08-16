@@ -5,11 +5,12 @@ import { useLocale } from '@context/LocaleContext'
 import { fetchShrineProjects } from '@api/cms'
 import RichText from '@components/ui/RichText'
 import { cardExcerpt } from '@utils/text'
-import styles from './CatalogPage.module.css'
+import catalog from './CatalogPage.module.css'
+import styles from './SupportProject.module.css'
 
 export default function SupportProjectsPage() {
-  const { section, resolveHeaderImage } = useContent()
-  const { locale } = useLocale()
+  const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
+  const { locale, t } = useLocale()
   const hero = section('support.projects', {})
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
@@ -21,51 +22,73 @@ export default function SupportProjectsPage() {
   }, [locale])
 
   const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')
+  const staleIntro = /principal places of worship|listed below/i.test(String(hero.intro || ''))
 
   return (
-    <div className={styles.page}>
+    <div className={catalog.page}>
       <header
-        className={styles.hero}
+        className={catalog.hero}
         style={{
           backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
         }}
       >
         <div className="container">
-          <h1>{hero.title || 'Development projects'}</h1>
-          {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}
+          <h1>{hero.title || 'Sanctuary projects'}</h1>
+          <p className={catalog.subtitle}>
+            {hero.subtitle && !/already in place/i.test(hero.subtitle)
+              ? hero.subtitle
+              : t('project.listingSubtitle')}
+          </p>
         </div>
       </header>
 
-      <div className={`container ${styles.body}`}>
-        {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
+      <div className={`container ${catalog.body}`}>
+        {staleIntro || !hero.intro ? (
+          <p className={styles.lead}>{t('project.listingFallback')}</p>
+        ) : (
+          <RichText html={hero.intro} className={catalog.intro} />
+        )}
 
-        {error ? <p className={styles.empty}>{error}</p> : null}
+        {error ? <p className={catalog.empty}>{error}</p> : null}
 
         {!error && !items.length ? (
-          <p className={styles.empty}>Development projects will appear here once published.</p>
+          <p className={catalog.empty}>{t('project.emptyList')}</p>
         ) : null}
 
-        <div className={styles.grid}>
+        <div className={catalog.gridThree}>
           {items.map((item) => (
             <Link
               key={item.id}
               to={item.path || `/support/projects/${item.slug}`}
-              className={styles.card}
+              className={catalog.card}
             >
-              {item.coverImage ? (
-                <div className={styles.cardMedia}>
-                  <img src={item.coverImage} alt="" />
-                </div>
-              ) : null}
-              <div className={styles.cardBody}>
-                {item.status ? <p className={styles.meta}>{item.status}</p> : null}
+              <div className={catalog.cardMedia}>
+                <img src={item.coverImage || defaultHeaderImage} alt="" />
+              </div>
+              <div className={catalog.cardBody}>
+                {item.status ? <p className={catalog.meta}>{item.status}</p> : null}
                 <h2>{item.title}</h2>
-                {cardExcerpt(item) ? <p className={styles.excerpt}>{cardExcerpt(item)}</p> : null}
-                <span className={styles.cta}>View project →</span>
+                {cardExcerpt(item) ? <p className={catalog.excerpt}>{cardExcerpt(item)}</p> : null}
+                <span className={catalog.cta}>{t('project.cardCta')}</span>
               </div>
             </Link>
           ))}
         </div>
+
+        <p className={styles.funding}>
+          {t('project.orGift')
+            .split('{link}')
+            .map((part, index) =>
+              index === 0 ? (
+                part
+              ) : (
+                <span key="gift">
+                  <Link to="/support/donations">{t('project.generalGift')}</Link>
+                  {part}
+                </span>
+              )
+            )}
+        </p>
       </div>
     </div>
   )

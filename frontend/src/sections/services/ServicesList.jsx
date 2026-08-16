@@ -10,7 +10,7 @@ function shortText(text = '', max = 120) {
   return `${clean.slice(0, max).replace(/\s+\S*$/, '')}…`
 }
 
-function ServiceCard({ service, index }) {
+function ServiceCard({ service, index, defaultImage }) {
   const [ref, inView] = useInView(0.15)
 
   return (
@@ -21,7 +21,7 @@ function ServiceCard({ service, index }) {
     >
       <Link to={service.link} className={styles.cardLink} aria-label={`Learn more about ${service.title}`}>
         <div className={styles.media}>
-          <img src={service.image} alt="" aria-hidden="true" className={styles.image} loading="lazy" />
+          <img src={service.image || defaultImage} alt="" aria-hidden="true" className={styles.image} loading="lazy" />
           <span className={styles.numberBadge}>{String(index + 1).padStart(2, '0')}</span>
         </div>
 
@@ -41,12 +41,12 @@ function ServiceCard({ service, index }) {
 }
 
 export default function ServicesList() {
-  const { services } = useContent()
+  const { services, defaultHeaderImage } = useContent()
   return (
     <section className={styles.section} aria-label="Our Services">
       <div className={`container ${styles.grid}`}>
         {services.map((service, index) => (
-          <ServiceCard key={service.id} service={service} index={index} />
+          <ServiceCard key={service.id} service={service} index={index} defaultImage={defaultHeaderImage} />
         ))}
       </div>
     </section>

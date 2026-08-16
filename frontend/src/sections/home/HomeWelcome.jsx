@@ -6,13 +6,10 @@ import { homeWelcome as fallback } from '@data/home/sanctuaryHome'
 import styles from './HomeWelcome.module.css'
 
 export default function HomeWelcome() {
-  const { section } = useContent()
+  const { section, defaultHeaderImage } = useContent()
   const data = { ...fallback, ...section('home.welcome', {}) }
   const [ref, inView] = useInView(0.15)
-  const image =
-    !data.image || /our-story|construction|projects\//i.test(data.image)
-      ? fallback.image
-      : data.image
+  const image = data.image || defaultHeaderImage
 
   return (
     <section className={styles.section} ref={ref}>

@@ -8,7 +8,7 @@ import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
 
 export default function PastoralTeamPage() {
-  const { section, resolveHeaderImage } = useContent()
+  const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale } = useLocale()
   const hero = section('our-lady.pastoral-team', {})
   const [items, setItems] = useState([])
@@ -46,11 +46,9 @@ export default function PastoralTeamPage() {
         <div className={styles.grid}>
           {items.map((item) => (
             <Link key={item.id} to={item.path || `/our-lady/pastoral-team/${item.slug}`} className={styles.card}>
-              {(item.photo || item.coverImage) && (
-                <div className={styles.cardMedia}>
-                  <img src={item.photo || item.coverImage} alt="" />
-                </div>
-              )}
+              <div className={styles.cardMedia}>
+                <img src={item.photo || item.coverImage || defaultHeaderImage} alt="" />
+              </div>
               <div className={styles.cardBody}>
                 {item.role ? <p className={styles.meta}>{item.role}</p> : null}
                 <h2>{item.name}</h2>

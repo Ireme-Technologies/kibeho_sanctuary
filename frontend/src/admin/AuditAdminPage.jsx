@@ -52,8 +52,9 @@ export default function AuditAdminPage() {
         </button>
       </div>
       <p className={styles.muted} style={{ marginTop: 0, maxWidth: '46rem' }}>
-        A readiness score for this site. Open any red or amber item to add the missing photo, text, contact,
-        or translation. Demo sample content still counts until you replace it with official Shrine material.
+        A readiness score for this site. Official copy is seeded; photos are left empty on purpose so the
+        site uses the default header image until you upload the real ones. Open any red or amber item to
+        add a missing photo, social URL, contact detail, or translation.
       </p>
 
       <div className={styles.auditHero}>
@@ -109,7 +110,10 @@ export default function AuditAdminPage() {
           <div>
             <h2>Site pages</h2>
             <p className={styles.muted} style={{ margin: '0.2rem 0 0' }}>
-              {pages.complete} of {pages.count} look complete · {pages.withBody} have body text
+              {pages.complete} of {pages.count} have title and text
+              {pages.defaultPhotoCount
+                ? ` · ${pages.defaultPhotoCount} still use the default header photo`
+                : ''}
             </p>
           </div>
           <AuditScore percent={pages.percent} status={pages.status} />
@@ -129,15 +133,15 @@ export default function AuditAdminPage() {
             ))}
           </ul>
         ) : (
-          <p className={styles.muted}>All pages have a title, text, and header image.</p>
+          <p className={styles.muted}>All pages have title, text, and their own header photo.</p>
         )}
       </section>
 
       <section className={styles.auditBlock}>
         <h2>Directories</h2>
         <p className={styles.muted}>
-          Counts and completeness for listings the public can browse. Click a card, then fill the missing
-          fields on each item.
+          Counts and completeness for listings the public can browse. Items without their own photo still
+          show the site default image. Click a card, then fill the missing fields.
         </p>
         <div className={styles.auditDirGrid}>
           {directories.map((dir) => (

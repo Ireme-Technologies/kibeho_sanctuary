@@ -79,6 +79,11 @@ class ShrineProjectController extends Controller
             'phase' => ['nullable', 'string', 'max:100'],
             'short_description' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
+            'problem' => ['nullable', 'string'],
+            'solution' => ['nullable', 'string'],
+            'impact_local' => ['nullable', 'string'],
+            'impact_global' => ['nullable', 'string'],
+            'impact_church' => ['nullable', 'string'],
             'cover_image' => ['nullable', 'string', 'max:500'],
             'gallery' => ['nullable', 'array'],
             'gallery.*' => ['string'],
@@ -97,10 +102,18 @@ class ShrineProjectController extends Controller
                 'title' => $item->title,
                 'short_description' => $item->short_description,
                 'description' => $item->description,
+                'problem' => $item->problem,
+                'solution' => $item->solution,
+                'impact_local' => $item->impact_local,
+                'impact_global' => $item->impact_global,
+                'impact_church' => $item->impact_church,
                 'status' => $item->status,
                 'phase' => $item->phase,
             ];
-        $resolved = Locale::resolve($base, $item->translations, ['title', 'short_description', 'description', 'status', 'phase'], $locale);
+        $resolved = Locale::resolve($base, $item->translations, [
+            'title', 'short_description', 'description', 'problem', 'solution',
+            'impact_local', 'impact_global', 'impact_church', 'status', 'phase',
+        ], $locale);
 
         return [
             'id' => $item->id,
@@ -110,6 +123,11 @@ class ShrineProjectController extends Controller
             'phase' => $resolved['phase'],
             'shortDescription' => Locale::cardExcerpt($resolved),
             'description' => $resolved['description'],
+            'problem' => $resolved['problem'],
+            'solution' => $resolved['solution'],
+            'impactLocal' => $resolved['impact_local'],
+            'impactGlobal' => $resolved['impact_global'],
+            'impactChurch' => $resolved['impact_church'],
             'coverImage' => $item->cover_image,
             'gallery' => $item->gallery ?? [],
             'fundingGoal' => $item->funding_goal,

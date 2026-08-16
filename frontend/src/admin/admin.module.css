@@ -2514,12 +2514,29 @@
   }
 }
 
-.auditHero {
+.auditHero > div:first-child .btn {
+  margin-top: 0.85rem;
+}
+
+.auditSummaryAreas {
   display: grid;
-  grid-template-columns: minmax(16rem, 0.7fr) minmax(0, 1.3fr);
-  gap: 1.15rem;
-  margin-bottom: 1.5rem;
-  align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 0.85rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.auditSummaryAreas li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--admin-text-soft);
+}
+
+.auditSummaryAreas strong {
+  color: var(--admin-primary);
 }
 
 .auditHero > div:first-child,

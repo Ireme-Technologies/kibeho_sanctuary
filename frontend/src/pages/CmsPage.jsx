@@ -9,6 +9,8 @@ import { getPageFallback } from '@data/pages/content'
 import { navKeyForPath } from '@i18n/navKeys'
 import { parseYoutubeId, youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from '@utils/youtube'
 import ContentLocaleNotice, { hasLocaleTranslation } from '@components/ContentLocaleNotice'
+import OfferingForm from '@components/OfferingForm'
+import GiveInvite, { ActionInvite, InvolveMore, isStaleInviteCopy, isStalePaymentCopy } from '@components/payments/GiveInvite'
 import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
@@ -63,6 +65,40 @@ function YoutubeBlock({ block }) {
   )
 }
 
+function splitNamedItem(item) {
+  const parts = String(item || '').split(/\s+[—–-]\s+/)
+  if (parts.length < 2) return null
+  return { title: parts[0], meta: parts.slice(1).join(' — ') }
+}
+
+function ListBlock({ items }) {
+  const rows = (items || []).filter(Boolean)
+  if (!rows.length) return null
+  const named = rows.map(splitNamedItem)
+  if (named.every(Boolean)) {
+    return (
+      <ul className={styles.namedCards}>
+        {named.map((row) => (
+          <li key={row.title}>
+            <strong>{row.title}</strong>
+            <span>{row.meta}</span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  return (
+    <ol className={styles.inviteList}>
+      {rows.map((item, index) => (
+        <li key={item}>
+          <span className={styles.inviteNum}>{index + 1}</span>
+          <span>{item}</span>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
 function Block({ block }) {
   if (!block?.type) return null
 
@@ -79,13 +115,7 @@ function Block({ block }) {
   }
 
   if (block.type === 'list') {
-    return (
-      <ul className={styles.list}>
-        {(block.items || []).map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    )
+    return <ListBlock items={block.items} />
   }
 
   if (block.type === 'gallery') {
@@ -107,9 +137,10 @@ function Block({ block }) {
   }
 
   if (block.type === 'cards') {
+    const items = block.items || []
     return (
-      <div className={styles.cards}>
-        {(block.items || []).map((item) => {
+      <div className={`${styles.cards} ${items.length === 3 ? styles.cardsThree : ''}`}>
+        {items.map((item) => {
           const inner = (
             <>
               <h3>{item.title}</h3>
@@ -196,7 +227,7 @@ function Block({ block }) {
 
 export default function CmsPage() {
   const { pathname } = useLocation()
-  const { section, pages, company } = useContent()
+  const { section, pages, company, offerings, resolveHeaderImage } = useContent()
   const { t, locale, defaultLocale } = useLocale()
   const key = sectionKeyForPath(pathname)
   const fallback = (key && getPageFallback(key)) || {}
@@ -228,17 +259,49 @@ export default function CmsPage() {
     document.title = rawTitle ? `${rawTitle} | ${brand}` : brand
   }, [key, rawTitle, company?.name, t])
 
+  const heroImage = resolveHeaderImage(data.heroImage)
+  const actionPage = {
+    'spirituality.prayer-intentions': { kind: 'candle', heroCta: t('offer.lightCandle'), involve: 'candle' },
+    'spirituality.request-a-mass': { kind: 'mass', heroCta: t('offer.haveMass'), involve: 'mass' },
+    'support.donations': { kind: 'donation', heroCta: t('offer.giveNow'), involve: 'donation' },
+    'support.partners': { kind: 'partnership', heroCta: t('offer.beginPartnership'), involve: 'partnership' },
+  }[key]
+  const isAction = Boolean(actionPage)
+  const isDonations = actionPage?.kind === 'donation'
+  if (isDonations && isStalePaymentCopy(data.subtitle)) {
+    data.subtitle = t('invite.donationSubtitle')
+  }
+  if (key === 'spirituality.prayer-intentions' && /popular piety/i.test(data.subtitle || '')) {
+    data.subtitle = t('invite.candleSubtitle')
+  }
+
+  const priceLabel =
+    actionPage?.kind === 'candle'
+      ? `${t('offer.usd')} ${Number(offerings?.candlePriceUsd) || 1} ${t('offer.each')}`
+      : actionPage?.kind === 'mass'
+        ? `${t('offer.usd')} ${Number(offerings?.massPriceUsd) || 20}`
+        : null
+  const inviteIntro = actionPage && !isStaleInviteCopy(data.intro, actionPage.kind) ? data.intro : ''
+  const isStory =
+    !isAction &&
+    Boolean(
+        key?.startsWith('our-lady.') ||
+        key?.startsWith('spirituality.') ||
+        key?.startsWith('shrine.') ||
+        key?.startsWith('pilgrimage.') ||
+        key === 'support.vision' ||
+        key === 'support.master-plan',
+    )
+
   if (!key) return <NotFoundPage />
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${isStory ? styles.pageStory : ''}`}>
       <header
         className={styles.hero}
-        style={
-          data.heroImage
-            ? { backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${data.heroImage})` }
-            : undefined
-        }
+        style={{
+          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${heroImage})`,
+        }}
       >
         <div className="container">
           {data.eyebrow ? (
@@ -246,12 +309,25 @@ export default function CmsPage() {
           ) : null}
           <h1>{pageTitle}</h1>
           {data.subtitle ? <p className={styles.subtitle}>{data.subtitle}</p> : null}
+          {actionPage ? (
+            <a href="#pledge" className={styles.heroCta}>
+              {actionPage.heroCta}
+            </a>
+          ) : isStory ? (
+            <a href="#join" className={styles.heroCta}>
+              {t('story.bePart')}
+            </a>
+          ) : null}
         </div>
       </header>
 
-      <div className={`container ${styles.body}`}>
+      <div className={`container ${styles.body} ${isAction ? styles.bodyAction : ''} ${isStory ? styles.bodyStory : ''}`}>
         <ContentLocaleNotice translations={record?.translations} />
-        {data.intro ? <RichText html={data.intro} className={styles.intro} /> : null}
+        {isDonations ? <GiveInvite introHtml={inviteIntro} /> : null}
+        {actionPage && !isDonations ? (
+          <ActionInvite kind={actionPage.kind} priceLabel={priceLabel} introHtml={inviteIntro} />
+        ) : null}
+        {!isAction && data.intro ? <RichText html={data.intro} className={styles.intro} /> : null}
 
         {links.length > 0 ? (
           <nav className={styles.linkGrid} aria-label="Section pages">
@@ -263,11 +339,18 @@ export default function CmsPage() {
           </nav>
         ) : null}
 
-        {blocks.map((block, index) => (
-          <Block key={`${block.type}-${index}`} block={block} />
-        ))}
+        {!isAction
+          ? blocks.map((block, index) => <Block key={`${block.type}-${index}`} block={block} />)
+          : null}
 
-        {cta?.primary ? (
+        {actionPage?.kind === 'candle' ? <OfferingForm kind="candle" /> : null}
+        {actionPage?.kind === 'mass' ? <OfferingForm kind="mass" /> : null}
+        {actionPage?.kind === 'donation' ? <OfferingForm kind="donation" /> : null}
+        {actionPage?.kind === 'partnership' ? <OfferingForm kind="partnership" /> : null}
+        {actionPage ? <InvolveMore variant={actionPage.involve} /> : null}
+        {isStory ? <InvolveMore variant="story" /> : null}
+
+        {cta?.primary && !isAction ? (
           <div className={styles.ctaRow}>
             <Link to={cta.primary.path} className={styles.btn}>
               {cta.primary.label}

@@ -33,11 +33,15 @@ export function AuditScore({ percent, status, size = 'md' }) {
   )
 }
 
-export function AuditCriticalList({ items, title = 'Fix these first' }) {
+export function AuditCriticalList({
+  items,
+  title = 'Fix these first',
+  emptyText = 'Nothing urgent. Keep reviewing the sections below when you have time.',
+}) {
   if (!items?.length) {
     return (
       <div className={styles.auditEmpty}>
-        <p>Nothing urgent. Keep reviewing the sections below when you have time.</p>
+        <p>{emptyText}</p>
       </div>
     )
   }

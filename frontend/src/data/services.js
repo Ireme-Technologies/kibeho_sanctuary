@@ -19,8 +19,8 @@ export const services = [
     title: 'Holy Mass',
     description:
       'Join daily and feast-day celebrations of the Eucharist at the heart of Kibeho Sanctuary — the source and summit of our pilgrimage life.',
-    image: '/images/services/architectural-design.JPG',
-    detailImage: '/images/services/architectural-design-detail.jpg',
+    image: '',
+    detailImage: '',
     iconKey: 'architecture',
     link: '/pilgrimage/holy-mass',
     deliverables: [
@@ -37,8 +37,8 @@ export const services = [
     title: 'Confession',
     description:
       'Receive the sacrament of Reconciliation with priests available throughout the day — a grace Our Lady of Kibeho urged every pilgrim to seek.',
-    image: '/images/services/structural-engineering.JPG',
-    detailImage: '/images/services/structural-engineering-detail.jpg',
+    image: '',
+    detailImage: '',
     iconKey: 'structure',
     link: '/pilgrimage/confession',
     deliverables: [
@@ -55,8 +55,8 @@ export const services = [
     title: 'Adoration',
     description:
       'Spend time in silent prayer before the Blessed Sacrament — a quiet refuge for pilgrims seeking peace and deeper union with Christ.',
-    image: '/images/services/mep-engineering.JPG',
-    detailImage: '/images/services/mep-engineering-detail.jpg',
+    image: '',
+    detailImage: '',
     iconKey: 'mep',
     link: '/pilgrimage/adoration',
     deliverables: [
@@ -73,8 +73,8 @@ export const services = [
     title: 'Rosary',
     description:
       'Pray the Rosary together in the spirit of Our Lady of Kibeho — meditating on the mysteries of Christ\'s life through Mary\'s intercession.',
-    image: '/images/services/project-management.JPG',
-    detailImage: '/images/services/project-management-detail.jpg',
+    image: '',
+    detailImage: '',
     iconKey: 'management',
     link: '/pilgrimage/rosary',
     deliverables: [
@@ -91,8 +91,8 @@ export const services = [
     title: 'Retreats',
     description:
       'Deeper spiritual renewal through guided retreats — from day visits to multi-day programs of prayer, reflection, and community.',
-    image: '/images/services/construction-management.jpg',
-    detailImage: '/images/services/construction-management-detail.jpg',
+    image: '',
+    detailImage: '',
     iconKey: 'construction',
     link: '/pilgrimage/retreats',
     deliverables: [
@@ -109,8 +109,8 @@ export const services = [
     title: 'Spiritual Guidance',
     description:
       'Meet with a priest or spiritual director for personal counsel — helping pilgrims discern God\'s will and integrate their Kibeho experience.',
-    image: '/images/services/interior-design.jpg',
-    detailImage: '/images/services/interior-design-detail.jpg',
+    image: '',
+    detailImage: '',
     iconKey: 'interior',
     link: '/pilgrimage/spiritual-guidance',
     deliverables: [

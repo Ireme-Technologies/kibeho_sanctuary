@@ -5,26 +5,22 @@ import { cardExcerpt } from '@utils/text'
 import styles from './CmsPage.module.css'
 
 export default function ActivitiesPage() {
-  const { activities, section } = useContent()
+  const { activities, section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const data = section('activities.index', {
     title: 'Activities',
     subtitle: 'Pray with the Church at Kibeho',
     intro:
       'Participate in the Eucharist, pray the Rosary, walk the Road to the Cross, and grow in worship and meditation.',
-    heroImage: '/images/sanctuary/hero.jpg',
   })
+  const heroImage = resolveHeaderImage(data.heroImage)
 
   return (
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={
-          data.heroImage
-            ? {
-                backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${data.heroImage})`,
-              }
-            : undefined
-        }
+        style={{
+          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${heroImage})`,
+        }}
       >
         <div className="container">
           <h1>{data.title || 'Activities'}</h1>
@@ -40,13 +36,11 @@ export default function ActivitiesPage() {
             const summary = cardExcerpt(item)
             return (
             <Link key={item.id || item.slug} to={item.path || `/activities/${item.slug}`} className={styles.card}>
-              {item.image ? (
-                <img
-                  src={item.image}
-                  alt=""
-                  style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 6, marginBottom: 12 }}
-                />
-              ) : null}
+              <img
+                src={item.image || defaultHeaderImage}
+                alt=""
+                style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 6, marginBottom: 12 }}
+              />
               <h3>{item.title}</h3>
               {summary ? <p>{summary}</p> : null}
             </Link>

@@ -51,6 +51,21 @@
   font-weight: 600;
 }
 
+.heroCta {
+  display: inline-flex;
+  margin-top: 1.15rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-navy-deep, #1a365d);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.heroCta:hover {
+  filter: brightness(1.04);
+}
+
 .layout {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
@@ -229,6 +244,7 @@
 }
 
 .formCard {
+  scroll-margin-top: 5.5rem;
   position: sticky;
   top: calc(var(--chrome-height) + 1rem);
   background: var(--color-white);
@@ -242,6 +258,18 @@
   font-size: 1.45rem;
   color: var(--color-navy);
   margin-bottom: 0.5rem;
+}
+
+.formHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.formHeadRow h2 {
+  margin: 0;
 }
 
 .formIntro {

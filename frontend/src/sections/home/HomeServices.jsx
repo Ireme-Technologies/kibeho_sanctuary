@@ -20,7 +20,7 @@ function shortText(text = '', max = 110) {
   return `${clean.slice(0, max).replace(/\s+\S*$/, '')}…`
 }
 
-function ServiceCard({ service, index, inView }) {
+function ServiceCard({ service, index, inView, defaultImage }) {
   const Icon = icons[service.iconKey]
 
   return (
@@ -33,7 +33,7 @@ function ServiceCard({ service, index, inView }) {
       <div className={styles.media}>
         <img
           className={styles.image}
-          src={service.image}
+          src={service.image || defaultImage}
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -56,7 +56,7 @@ function ServiceCard({ service, index, inView }) {
 }
 
 export default function HomeServices() {
-  const { services, section } = useContent()
+  const { services, section, defaultHeaderImage } = useContent()
   const homeServices = section('home.services')
   const servicesHeading = homeServices.heading || fbHeading
   const viewAllServicesCTA = homeServices.viewAllCTA || fbCTA
@@ -73,7 +73,7 @@ export default function HomeServices() {
 
         <div ref={sectionRef} className={styles.grid}>
           {services.map((service, i) => (
-            <ServiceCard key={service.id} service={service} index={i} inView={inView} />
+            <ServiceCard key={service.id} service={service} index={i} inView={inView} defaultImage={defaultHeaderImage} />
           ))}
         </div>
 

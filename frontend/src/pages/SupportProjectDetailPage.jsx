@@ -1,17 +1,34 @@
 import { useLocale } from '@context/LocaleContext'
+import { useContent } from '@context/ContentContext'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { fetchShrineProject } from '@api/cms'
+import OfferingForm from '@components/OfferingForm'
+import ImageLightbox from '@components/ui/ImageLightbox'
 import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
-import styles from './CatalogPage.module.css'
+import catalog from './CatalogPage.module.css'
+import styles from './SupportProject.module.css'
+
+function StoryBlock({ kicker, title, html }) {
+  if (!html) return null
+  return (
+    <section className={styles.story}>
+      {kicker ? <p className={styles.kicker}>{kicker}</p> : null}
+      <h2>{title}</h2>
+      <RichText html={html} />
+    </section>
+  )
+}
 
 export default function SupportProjectDetailPage() {
-  const { locale } = useLocale()
+  const { locale, t } = useLocale()
+  const { resolveHeaderImage } = useContent()
   const { slug } = useParams()
   const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [lightbox, setLightbox] = useState({ open: false, index: 0 })
 
   useEffect(() => {
     setLoading(true)
@@ -20,12 +37,12 @@ export default function SupportProjectDetailPage() {
       .then(setItem)
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false))
-  }, [slug])
+  }, [slug, locale])
 
   if (loading) {
     return (
-      <div className={`container ${styles.body}`}>
-        <p className={styles.empty}>Loading…</p>
+      <div className={`container ${catalog.body}`}>
+        <p className={catalog.empty}>{t('loading')}</p>
       </div>
     )
   }
@@ -33,60 +50,116 @@ export default function SupportProjectDetailPage() {
   if (notFound || !item) return <NotFoundPage />
 
   const hasFunding = item.fundingGoal || item.fundingRaised
+  const hasStory = item.problem || item.solution || item.impactLocal || item.impactGlobal || item.impactChurch
+  const gallery = (item.gallery || []).filter(Boolean)
+  const heroImage = resolveHeaderImage(item.coverImage)
 
   return (
-    <div className={styles.page}>
+    <div className={catalog.page}>
       <header
-        className={styles.hero}
-        style={
-          item.coverImage
-            ? {
-                backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${item.coverImage})`,
-              }
-            : undefined
-        }
+        className={catalog.hero}
+        style={{
+          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
+        }}
       >
         <div className="container">
-          {item.status ? <p className={styles.subtitle}>{item.status}</p> : null}
+          {item.status ? <p className={catalog.subtitle}>{item.status}</p> : null}
           <h1>{item.title}</h1>
+          <a href="#pledge" className={catalog.heroCta}>
+            {t('offer.bePart')}
+          </a>
         </div>
       </header>
 
-      <div className={`container ${styles.body}`}>
-        <div className={styles.detailLayout}>
-          {item.coverImage ? <img src={item.coverImage} alt="" className={styles.detailCover} /> : null}
+      <div className={`container ${catalog.body}`}>
+        <div className={styles.layout}>
+          {item.phase ? <p className={catalog.meta}>{item.phase}</p> : null}
 
-          {item.phase ? <p className={styles.meta}>{item.phase}</p> : null}
-
-          {item.description ? (
-            <RichText html={item.description} className={styles.intro} />
-          ) : null}
+          {item.description ? <RichText html={item.description} className={styles.lead} /> : null}
 
           {hasFunding ? (
-            <div className={styles.intro}>
-              {item.fundingRaised ? <p><strong>Raised:</strong> {item.fundingRaised}</p> : null}
-              {item.fundingGoal ? <p><strong>Goal:</strong> {item.fundingGoal}</p> : null}
+            <p className={styles.funding}>
+              {item.fundingRaised ? <span>Raised {item.fundingRaised}</span> : null}
+              {item.fundingRaised && item.fundingGoal ? ' · ' : null}
+              {item.fundingGoal ? <span>Goal {item.fundingGoal}</span> : null}
+            </p>
+          ) : null}
+
+          {hasStory ? (
+            <div className={styles.storyList}>
+              <StoryBlock title={t('project.need')} html={item.problem} />
+              <StoryBlock title={t('project.solution')} html={item.solution} />
             </div>
           ) : null}
 
-          {item.gallery?.length ? (
-            <div className={styles.gallery}>
-              {item.gallery.map((src) => (
-                <img key={src} src={src} alt="" />
-              ))}
-            </div>
+          {item.impactLocal || item.impactGlobal || item.impactChurch ? (
+            <section className={styles.impact}>
+              <h2>{t('project.fruit')}</h2>
+              <div className={styles.impactGrid}>
+                {item.impactLocal ? (
+                  <article>
+                    <h3>{t('project.local')}</h3>
+                    <RichText html={item.impactLocal} />
+                  </article>
+                ) : null}
+                {item.impactChurch ? (
+                  <article>
+                    <h3>{t('project.church')}</h3>
+                    <RichText html={item.impactChurch} />
+                  </article>
+                ) : null}
+                {item.impactGlobal ? (
+                  <article>
+                    <h3>{t('project.world')}</h3>
+                    <RichText html={item.impactGlobal} />
+                  </article>
+                ) : null}
+              </div>
+            </section>
           ) : null}
 
-          <div className={styles.actions}>
-            <Link to="/support/projects" className={styles.btnGhost}>
-              All development projects
+          <section className={styles.galleryBlock}>
+            <h2>{t('project.gallery')}</h2>
+            {gallery.length ? (
+              <div className={styles.gallery}>
+                {gallery.map((src, index) => (
+                  <button
+                    key={src}
+                    type="button"
+                    className={styles.galleryBtn}
+                    onClick={() => setLightbox({ open: true, index })}
+                  >
+                    <img src={src} alt="" />
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.galleryHint}>
+                {t('project.galleryHint')}
+              </p>
+            )}
+          </section>
+
+          <OfferingForm kind="project" projectTitle={item.title} />
+
+          <div className={catalog.actions}>
+            <Link to="/support/projects" className={catalog.btnGhost}>
+              {t('project.allProjects')}
             </Link>
-            <Link to="/support/donations" className={styles.btn}>
-              Support the Shrine
+            <Link to="/support/donations" className={catalog.btn}>
+              {t('offer.giveMission')}
             </Link>
           </div>
         </div>
       </div>
+
+      <ImageLightbox
+        open={lightbox.open}
+        images={gallery}
+        index={lightbox.index}
+        onClose={() => setLightbox((prev) => ({ ...prev, open: false }))}
+        onChangeIndex={(index) => setLightbox((prev) => ({ ...prev, index }))}
+      />
     </div>
   )
 }

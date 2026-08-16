@@ -102,6 +102,14 @@ export default function Footer() {
               </span>
               <a href={company.phoneHref || `tel:${company.phone}`}>{company.phone}</a>
             </li>
+            {company.phone2 ? (
+              <li>
+                <span className={styles.contactIcon} aria-hidden="true">
+                  <Phone size={15} />
+                </span>
+                <a href={`tel:${String(company.phone2).replace(/\s+/g, '')}`}>{company.phone2}</a>
+              </li>
+            ) : null}
             <li>
               <span className={styles.contactIcon} aria-hidden="true">
                 <Mail size={15} />

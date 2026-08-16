@@ -9,7 +9,7 @@ import styles from './CatalogPage.module.css'
 
 export default function SacredPlacesPage({ type: typeProp }) {
   const { pathname } = useLocation()
-  const { section, resolveHeaderImage } = useContent()
+  const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale } = useLocale()
 
   const type = useMemo(() => {
@@ -65,11 +65,9 @@ export default function SacredPlacesPage({ type: typeProp }) {
               to={item.path || `${basePath}/${item.slug}`}
               className={styles.card}
             >
-              {item.coverImage ? (
-                <div className={styles.cardMedia}>
-                  <img src={item.coverImage} alt="" />
-                </div>
-              ) : null}
+              <div className={styles.cardMedia}>
+                <img src={item.coverImage || defaultHeaderImage} alt="" />
+              </div>
               <div className={styles.cardBody}>
                 {item.location ? <p className={styles.meta}>{item.location}</p> : null}
                 <h2>{item.name || item.title}</h2>

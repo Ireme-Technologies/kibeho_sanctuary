@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
 import { fetchTestimonials, submitEnquiry } from '@api/cms'
 import { formatEventWhen, formatRecurrence } from '@utils/eventTime'
 import {
@@ -12,15 +13,27 @@ import {
   statusLabel,
 } from '@utils/occasion'
 import ImageLightbox from '@components/ui/ImageLightbox'
+import PaymentOptions, { paymentLabel } from '@components/payments/PaymentOptions'
+import SharePageBar from '@components/payments/SharePageBar'
+import TimingChoice from '@components/payments/TimingChoice'
 import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
 import styles from './PilgrimageDetailPage.module.css'
 
-const initialForm = { name: '', email: '', phone: '', message: '', channel: 'email' }
+const initialForm = {
+  name: '',
+  email: '',
+  phone: '',
+  message: '',
+  channel: 'email',
+  audience: 'local',
+  timing: '',
+}
 
 export default function PilgrimageDetailPage() {
   const { slug } = useParams()
-  const { upcomingPilgrimages, blogPosts } = useContent()
+  const { upcomingPilgrimages, blogPosts, resolveHeaderImage, offerings } = useContent()
+  const { t } = useLocale()
   const pilgrimage = (upcomingPilgrimages || []).find((item) => item.slug === slug)
 
   const [values, setValues] = useState(initialForm)
@@ -71,12 +84,21 @@ export default function PilgrimageDetailPage() {
   const validate = () => {
     const next = {}
     if (!values.name.trim()) next.name = 'Name is required.'
-    if (values.channel === 'email') {
-      if (!values.email.trim()) next.email = 'Email is required.'
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) next.email = 'Enter a valid email.'
-    }
-    if (!values.phone.trim()) next.phone = 'Phone is required.'
     if (!values.message.trim()) next.message = 'Please share a short message or group details.'
+    if (!values.timing) next.timing = 'Choose pay now or submit a pledge.'
+    if (values.timing === 'later') {
+      if (values.channel === 'email') {
+        if (!values.email.trim()) next.email = 'Email is required.'
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) next.email = 'Enter a valid email.'
+      } else if (!values.phone.trim()) {
+        next.phone = 'WhatsApp number is required.'
+      }
+    } else if (values.timing === 'now') {
+      if (!values.email.trim() && !values.phone.trim()) next.email = 'Add email or phone.'
+      else if (values.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+        next.email = 'Enter a valid email.'
+      }
+    }
     return next
   }
 
@@ -89,42 +111,49 @@ export default function PilgrimageDetailPage() {
     setStatus('submitting')
     setStatusMessage('')
     try {
+      const channel =
+        values.timing === 'now' ? (values.email.trim() ? 'email' : 'whatsapp') : values.channel
       const result = await submitEnquiry({
         name: values.name.trim(),
         email: values.email.trim() || null,
         phone: values.phone.trim(),
         subject: `Pilgrimage registration: ${pilgrimage.title}`,
-        message: values.message.trim(),
+        message: [
+          values.message.trim(),
+          '',
+          `When: ${values.timing === 'now' ? 'Pay now' : 'Pledge — office to follow up'}`,
+          `Payment: ${paymentLabel(offerings, values.audience, values.timing)}`,
+          `Page: ${window.location.href}`,
+        ].join('\n'),
         enquiry_type: 'pilgrimage',
         upcoming_pilgrimage_id: pilgrimage.id,
-        channel: values.channel,
+        channel,
       })
-      if (values.channel === 'whatsapp' && result.whatsapp_url) {
+      if (values.timing !== 'now' && channel === 'whatsapp' && result.whatsapp_url) {
         window.open(result.whatsapp_url, '_blank', 'noopener,noreferrer')
       }
       setStatus('success')
       setStatusMessage(
-        result.message ||
-          'Thank you. Your registration enquiry was received and our pilgrim office will follow up.'
+        values.timing === 'now'
+          ? 'Saved. Complete payment below.'
+          : result.message || 'The pilgrim office has your registration.'
       )
-      setValues(initialForm)
+      setValues((prev) => ({ ...initialForm, audience: prev.audience, timing: prev.timing }))
     } catch (err) {
       setStatus('error')
       setStatusMessage(err.errors?.email?.[0] || err.message || 'Unable to submit. Please try again.')
     }
   }
 
+  const heroImage = resolveHeaderImage(pilgrimage.image)
+
   return (
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={
-          pilgrimage.image
-            ? {
-                backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.45)), url(${pilgrimage.image})`,
-              }
-            : undefined
-        }
+        style={{
+          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.45)), url(${heroImage})`,
+        }}
       >
         <div className="container">
           <p className={styles.eyebrow}>
@@ -137,6 +166,11 @@ export default function PilgrimageDetailPage() {
             {recurrenceLabel ? <span>{recurrenceLabel}</span> : null}
             {pilgrimage.location ? <span>{pilgrimage.location}</span> : null}
           </div>
+          {pilgrimage.registrationOpen !== false ? (
+            <a href="#register" className={styles.heroCta}>
+              {t('register')}
+            </a>
+          ) : null}
         </div>
       </header>
 
@@ -229,37 +263,15 @@ export default function PilgrimageDetailPage() {
         </div>
 
         <aside className={styles.formCard} id="register">
-          <h2>Register your interest</h2>
-          <p className={styles.formIntro}>
-            {pilgrimage.registrationOpen === false
-              ? 'Registration is currently closed for this pilgrimage. You may still send a message to the pilgrim office.'
-              : 'Send an enquiry to register yourself or your group for this pilgrimage.'}
-          </p>
+          <div className={styles.formHeadRow}>
+            <h2>Register</h2>
+            <SharePageBar title={pilgrimage.title} />
+          </div>
+          {pilgrimage.registrationOpen === false ? (
+            <p className={styles.formIntro}>Registration is closed. You may still send a message.</p>
+          ) : null}
 
           <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            <div className={styles.channelRow}>
-              <label className={values.channel === 'email' ? styles.channelActive : undefined}>
-                <input
-                  type="radio"
-                  name="channel"
-                  value="email"
-                  checked={values.channel === 'email'}
-                  onChange={handleChange('channel')}
-                />
-                Email
-              </label>
-              <label className={values.channel === 'whatsapp' ? styles.channelActive : undefined}>
-                <input
-                  type="radio"
-                  name="channel"
-                  value="whatsapp"
-                  checked={values.channel === 'whatsapp'}
-                  onChange={handleChange('channel')}
-                />
-                WhatsApp
-              </label>
-            </div>
-
             <label className={styles.field}>
               <span>Full name</span>
               <input value={values.name} onChange={handleChange('name')} />
@@ -267,29 +279,77 @@ export default function PilgrimageDetailPage() {
             </label>
 
             <label className={styles.field}>
-              <span>Email {values.channel === 'email' ? '' : '(optional)'}</span>
-              <input type="email" value={values.email} onChange={handleChange('email')} />
-              {errors.email ? <em>{errors.email}</em> : null}
-            </label>
-
-            <label className={styles.field}>
-              <span>Phone / WhatsApp</span>
-              <input value={values.phone} onChange={handleChange('phone')} />
-              {errors.phone ? <em>{errors.phone}</em> : null}
-            </label>
-
-            <label className={styles.field}>
               <span>Group size, dates, or message</span>
-              <textarea rows={5} value={values.message} onChange={handleChange('message')} />
+              <textarea rows={4} value={values.message} onChange={handleChange('message')} />
               {errors.message ? <em>{errors.message}</em> : null}
             </label>
+
+            <TimingChoice
+              value={values.timing}
+              onChange={(timing) => setValues((prev) => ({ ...prev, timing }))}
+              error={errors.timing}
+            />
+
+            {values.timing === 'later' ? (
+              <div className={styles.channelRow}>
+                <label className={values.channel === 'email' ? styles.channelActive : undefined}>
+                  <input
+                    type="radio"
+                    name="channel"
+                    value="email"
+                    checked={values.channel === 'email'}
+                    onChange={handleChange('channel')}
+                  />
+                  Email
+                </label>
+                <label className={values.channel === 'whatsapp' ? styles.channelActive : undefined}>
+                  <input
+                    type="radio"
+                    name="channel"
+                    value="whatsapp"
+                    checked={values.channel === 'whatsapp'}
+                    onChange={handleChange('channel')}
+                  />
+                  WhatsApp
+                </label>
+              </div>
+            ) : null}
+
+            {values.timing ? (
+              <>
+                <label className={styles.field}>
+                  <span>Email</span>
+                  <input type="email" value={values.email} onChange={handleChange('email')} />
+                  {errors.email ? <em>{errors.email}</em> : null}
+                </label>
+                <label className={styles.field}>
+                  <span>Phone / WhatsApp</span>
+                  <input value={values.phone} onChange={handleChange('phone')} />
+                  {errors.phone ? <em>{errors.phone}</em> : null}
+                </label>
+              </>
+            ) : null}
+
+            {values.timing === 'now' ? (
+              <PaymentOptions
+                offerings={offerings}
+                audience={values.audience}
+                onAudienceChange={(audience) => setValues((prev) => ({ ...prev, audience }))}
+              />
+            ) : null}
 
             {statusMessage ? (
               <p className={status === 'error' ? styles.error : styles.success}>{statusMessage}</p>
             ) : null}
 
             <button className={styles.submit} type="submit" disabled={status === 'submitting'}>
-              {status === 'submitting' ? 'Sending…' : 'Submit registration enquiry'}
+              {status === 'submitting'
+                ? 'Sending…'
+                : values.timing === 'now'
+                  ? 'Save request'
+                  : values.channel === 'whatsapp'
+                    ? 'Submit pledge on WhatsApp'
+                    : 'Submit pledge by email'}
             </button>
           </form>
         </aside>

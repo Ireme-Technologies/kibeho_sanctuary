@@ -106,7 +106,7 @@ function EnquiryDetail({ id }) {
           </button>
           <h1 style={{ marginTop: '0.75rem' }}>{enquiry.name}</h1>
           <p className={styles.muted}>
-            {enquiry.channel} · {enquiry.email || 'No email'} · {enquiry.phone || 'No phone'}
+            {enquiry.channel} · {enquiry.enquiry_type || 'general'} · {enquiry.email || 'No email'} · {enquiry.phone || 'No phone'}
           </p>
         </div>
         <div className={styles.actions}>
@@ -217,19 +217,21 @@ export default function EnquiriesAdminPage() {
   const [items, setItems] = useState([])
   const [channel, setChannel] = useState('')
   const [status, setStatus] = useState('')
+  const [enquiryType, setEnquiryType] = useState('')
   const [flash, setFlash] = useState({ type: 'success', message: '' })
 
   const load = async () => {
     const params = {}
     if (channel) params.channel = channel
     if (status) params.status = status
+    if (enquiryType) params.enquiry_type = enquiryType
     setItems(await fetchEnquiries(params))
   }
 
   useEffect(() => {
     if (id) return
     load().catch((err) => setFlash({ type: 'error', message: err.message }))
-  }, [id, channel, status])
+  }, [id, channel, status, enquiryType])
 
   if (id) return <EnquiryDetail id={id} />
 
@@ -266,6 +268,19 @@ export default function EnquiriesAdminPage() {
           </select>
         </div>
         <div className={styles.field}>
+          <label>Type</label>
+          <select value={enquiryType} onChange={(e) => setEnquiryType(e.target.value)}>
+            <option value="">All</option>
+            <option value="candle">Light a candle</option>
+            <option value="mass">Have a Mass said</option>
+            <option value="donation">Donation</option>
+            <option value="project">Project gift</option>
+            <option value="partnership">Partnership</option>
+            <option value="pilgrimage">Pilgrimage</option>
+            <option value="general">General</option>
+          </select>
+        </div>
+        <div className={styles.field}>
           <label>Status</label>
           <select value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">All</option>
@@ -285,6 +300,7 @@ export default function EnquiriesAdminPage() {
               <th>Client</th>
               <th>Phone</th>
               <th>Channel</th>
+              <th>Type</th>
               <th>Status</th>
               <th>Message</th>
               <th />
@@ -300,6 +316,7 @@ export default function EnquiriesAdminPage() {
                 </td>
                 <td>{item.phone || '—'}</td>
                 <td>{item.channel}</td>
+                <td>{item.enquiry_type || '—'}</td>
                 <td>
                   <span className={`${styles.badge} ${styles[`badge_${item.status}`] || ''}`}>
                     {statusLabel(item.status)}
@@ -317,7 +334,7 @@ export default function EnquiriesAdminPage() {
               </tr>
             ))}
             {!items.length && (
-              <tr><td colSpan={7} className={styles.muted}>No enquiries yet.</td></tr>
+              <tr><td colSpan={8} className={styles.muted}>No enquiries yet.</td></tr>
             )}
           </tbody>
         </table>

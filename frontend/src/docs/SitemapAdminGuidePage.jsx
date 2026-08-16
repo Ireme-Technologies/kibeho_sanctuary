@@ -7,6 +7,7 @@ const TOC = [
   { href: '#audit', label: 'CMS audit & readiness' },
   { href: '#getting-started', label: 'Sign in' },
   { href: '#settings', label: 'Settings' },
+  { href: '#offerings', label: 'Offerings & gifts' },
   { href: '#languages', label: 'Languages' },
   { href: '#menus-media', label: 'Menus & media' },
   { href: '#pages-news', label: 'Pages & news' },
@@ -81,8 +82,8 @@ export default function SitemapAdminGuidePage() {
           <section id="audit">
             <h2>2. CMS audit &amp; readiness</h2>
             <p>
-              The audit is a content report, not a technical test. A high score means fields are filled; you
-              should still replace demo wording and photos with official Shrine material. Click any critical
+              The audit is a content report, not a technical test. Official page copy is seeded; photos are
+              left empty so the site uses the default header until you upload real images. Click any critical
               item to open the editor.
             </p>
             <DocsAuditPanel />
@@ -195,7 +196,11 @@ export default function SitemapAdminGuidePage() {
             <h3>D. Spirituality</h3>
             <p>
               Hub and prayer/rosary/novena/meditation pages under <code>/spirituality/…</code> (CMS).
-              Testimonies: <code>/spirituality/testimonies</code> (Testimonials module).
+              Testimonies: <code>/spirituality/testimonies</code> (Testimonials module).{' '}
+              <strong>Light a candle</strong> (<code>/spirituality/prayer-intentions</code>) and{' '}
+              <strong>Have a Mass said</strong> (<code>/spirituality/request-a-mass</code>) are CMS pages
+              with a public offering form. Prices and payment channels are under Settings → Offerings &amp;
+              donations; invitation text is on Pages (language tabs) and short buttons in Translations.
             </p>
 
             <h3>E. News</h3>
@@ -237,8 +242,9 @@ export default function SitemapAdminGuidePage() {
             <h3>F. Support the Shrine</h3>
             <p>
               Hub, Vision, Master Plan, Donations, Annual Reports, Transparency, Partners (CMS). Development
-              projects: <code>/support/projects</code> (+ slug) via the Development projects admin module.
-              Public nav shortens this to <strong>Projects</strong>.
+              projects: <code>/support/projects</code> (+ slug) via the Development projects admin module —
+              each project has a story (the need, what we will do, the fruit) and a gift form. Public nav
+              shortens this to <strong>Projects</strong>.
             </p>
 
             <h3>Other</h3>
@@ -348,8 +354,9 @@ export default function SitemapAdminGuidePage() {
           <section id="getting-started">
             <h2>4. Getting started</h2>
             <div className={styles.notice}>
-              <strong>Demo content:</strong> Sample text and images will be replaced with official Shrine
-              content and photographs as they are provided by the Diocese.
+              <strong>Photos:</strong> Unique pictures are not seeded. Pages and listings use the default
+              header image until you add the real photograph in the matching admin screen. Social profile URLs
+              also need to be added under Settings → Contact & social.
             </div>
             <h3>Sign in (evaluation demo)</h3>
             <div className={styles.creds}>
@@ -411,7 +418,7 @@ export default function SitemapAdminGuidePage() {
                 </tr>
                 <tr>
                   <td>Development projects</td>
-                  <td>Describe fundraising / development projects</td>
+                  <td>Describe sanctuary projects: the need, the work, impact, gallery, and gift form</td>
                 </tr>
                 <tr>
                   <td>Testimonials</td>
@@ -454,7 +461,7 @@ export default function SitemapAdminGuidePage() {
                 </tr>
                 <tr>
                   <td>Pilgrim Enquiries</td>
-                  <td>Answer messages from visitors</td>
+                  <td>Answer candle, Mass, donation, project, partnership, and pilgrimage requests</td>
                 </tr>
                 <tr>
                   <td>Users</td>
@@ -466,7 +473,10 @@ export default function SitemapAdminGuidePage() {
                 </tr>
                 <tr>
                   <td>Settings</td>
-                  <td>Organisation info, contact, theme</td>
+                  <td>
+                    Organisation info, contact, theme, and Offerings &amp; donations (candle/Mass prices,
+                    MoMo, bank, online payment)
+                  </td>
                 </tr>
                 <tr>
                   <td>Backup &amp; restore</td>
@@ -481,6 +491,86 @@ export default function SitemapAdminGuidePage() {
               Deutsch. That bar is where long text and page layout are translated. The{' '}
               <strong>Translations</strong> menu is only for short buttons. Full steps:{' '}
               <a href="#languages">Best way to manage languages</a>.
+            </p>
+          </section>
+
+          <section id="offerings">
+            <h2>Offerings, candles, Mass, donations, and projects</h2>
+            <p>
+              Visitors can light a candle, have a Mass said, give to the mission, support a project, become a
+              partner, or register for a pilgrimage. Each public page has a form: <strong>Pay now</strong>{' '}
+              (MoMo in Rwanda, or online / bank transfer from abroad) or <strong>Submit a pledge</strong>{' '}
+              (email or WhatsApp so the office can follow up). Staff change the amounts, the invitation
+              wording, and the translations in the screens below — nothing is locked in the code.
+            </p>
+
+            <h3>What to edit where</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>You want to change…</th>
+                  <th>Go to…</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Candle price, Mass offering, suggested gift chips (10 / 25 / 50 / 100), MoMo code, bank accounts, online payment URL</td>
+                  <td>
+                    <a href="/admin/settings?tab=offerings">Settings → Offerings &amp; donations</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Page title, subtitle, and invitation paragraph (the warm lead above the form)</td>
+                  <td>
+                    <strong>Pages</strong> — Light a candle, Have a Mass said, Give to the mission, Partners,
+                    Sanctuary projects. Use the language tabs, then Save page.
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Buttons and short phrases: Pay now, Submit a pledge, Light a candle, form labels, “Other
+                    ways to walk with us”
+                  </td>
+                  <td>
+                    <strong>Translations</strong> — search <code>offer.</code>, <code>invite.</code>, or{' '}
+                    <code>project.</code>, then Save translations
+                  </td>
+                </tr>
+                <tr>
+                  <td>A project’s story: the need, what we will do, impact (local / Church / world), gallery</td>
+                  <td>
+                    <strong>Development projects</strong> → Edit — language tabs on each field, then Save
+                  </td>
+                </tr>
+                <tr>
+                  <td>Incoming candle, Mass, donation, project, partnership, or pilgrimage requests</td>
+                  <td>
+                    <strong>Pilgrim Enquiries</strong> — filter by Type
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>How payment works (so you set it correctly)</h3>
+            <ol>
+              <li>
+                <strong>Rwanda:</strong> the visitor taps MoMo Pay. Keep the USSD code accurate (including{' '}
+                <code>#</code>).
+              </li>
+              <li>
+                <strong>Abroad:</strong> if Online payment URL is filled, they see that button. If it is
+                empty, they see the bank accounts instead.
+              </li>
+              <li>
+                A pledge does not take money on the site. It sends email or WhatsApp so the office can
+                confirm and collect later.
+              </li>
+            </ol>
+            <p>
+              After you change Settings or Translations, open the public pages (
+              <code>/spirituality/prayer-intentions</code>, <code>/spirituality/request-a-mass</code>,{' '}
+              <code>/support/donations</code>, <code>/support/projects</code>, <code>/support/partners</code>
+              ) and switch RW · FR · EN · DE to confirm.
             </p>
           </section>
 
@@ -563,9 +653,22 @@ export default function SitemapAdminGuidePage() {
                   <td>Language tab → Save</td>
                 </tr>
                 <tr>
-                  <td>Buttons such as Donate, Contact, Read more</td>
+                  <td>Buttons such as Donate, Pay now, Light a candle, form hints</td>
                   <td>Translations</td>
-                  <td>Language tab → edit the label → Save translations</td>
+                  <td>
+                    Search <code>offer.</code>, <code>invite.</code>, or <code>project.</code> → edit → Save
+                    translations
+                  </td>
+                </tr>
+                <tr>
+                  <td>Candle price, Mass offering, MoMo code, bank accounts, gift chips</td>
+                  <td>Settings → Offerings &amp; donations</td>
+                  <td>Edit numbers and channels → Save settings</td>
+                </tr>
+                <tr>
+                  <td>A sanctuary project story (need, work, impact, gallery)</td>
+                  <td>Development projects → Edit</td>
+                  <td>Language tab → rich text + gallery → Save</td>
                 </tr>
                 <tr>
                   <td>Which language first-time visitors see</td>
@@ -608,7 +711,7 @@ export default function SitemapAdminGuidePage() {
                 On the blue <strong>Content language</strong> bar, choose the language you are editing. Finish
                 the default language first.
               </li>
-              <li>Edit eyebrow, title, subtitle, and introduction (rich text).</li>
+              <li>Edit eyebrow, title, subtitle, and introduction (rich text). On story pages such as The Apparitions or the Seven Sorrows Rosary, the introduction appears as a featured lead; lists become cards automatically.</li>
               <li>
                 Build the body with layout blocks: heading, paragraph, note, list, gallery, YouTube, cards,
                 steps, or schedule. Click a block type to add it. Use Up / Down to reorder.
@@ -685,8 +788,10 @@ export default function SitemapAdminGuidePage() {
           <section id="translations">
             <h2>10. Short UI labels (Translations menu)</h2>
             <p>
-              Use this screen only for repeating chrome: Donate, Contact, Read more, form field names, and
-              similar short phrases. It does <strong>not</strong> replace language tabs on Pages or News.
+              Use this screen only for repeating chrome: Donate, Contact, Read more, Pay now, Submit a
+              pledge, form field names, and similar short phrases. Search <code>offer.</code>,{' '}
+              <code>invite.</code>, or <code>project.</code> for candle, Mass, donation, and project wording.
+              It does <strong>not</strong> replace language tabs on Pages or News.
             </p>
             <ol>
               <li>Open <strong>Translations</strong>.</li>
@@ -729,7 +834,10 @@ export default function SitemapAdminGuidePage() {
             <p>
               Same pattern: click <strong>Edit</strong> → language tabs (Copy from default if helpful) → media
               → Save → check the matching public list and detail page. Videos store YouTube references rather
-              than large video files on the server.
+              than large video files on the server. For <strong>Development projects</strong>, fill The need,
+              What we will do, and Impact (local community, the Church, the wider world), plus a gallery of
+              progress or the expected outcome. Each project page includes the same gift form as Donations.
+              See <a href="#offerings">Offerings, candles, Mass, donations, and projects</a>.
             </p>
             <h3>Home hero</h3>
             <p>
@@ -741,9 +849,14 @@ export default function SitemapAdminGuidePage() {
 
           <section id="enquiries-users">
             <h2>12. Pilgrim enquiries</h2>
+            <p>
+              Requests from Light a candle, Have a Mass said, Donations, project gifts, partnership, and
+              pilgrimage registration all arrive here. Filter by <strong>Type</strong> (candle, mass,
+              donation, project, partnership, pilgrimage) as well as channel and status.
+            </p>
             <ol>
               <li>Open <strong>Pilgrim Enquiries</strong> (or use the Dashboard).</li>
-              <li>Open a thread to read the message and any documents.</li>
+              <li>Open a thread to read the message and any documents. The type is shown under the name.</li>
               <li>Reply from the admin; the pilgrim can receive email notification as configured.</li>
               <li>WhatsApp deep links may be available for quick follow-up.</li>
               <li>Update status as your pastoral office workflow requires.</li>
@@ -770,6 +883,11 @@ export default function SitemapAdminGuidePage() {
               <li>
                 <strong>Company / contact:</strong> official name, address, phones, email, WhatsApp, social
                 links, map embed.
+              </li>
+              <li>
+                <strong>Offerings &amp; donations:</strong> candle price, Mass offering, suggested gift
+                amounts, MoMo Pay code, online payment URL (empty = show bank accounts), and bank accounts.
+                See <a href="#offerings">Offerings, candles, Mass, donations, and projects</a>.
               </li>
               <li>
                 <strong>Theme:</strong> logo and configured visual options.

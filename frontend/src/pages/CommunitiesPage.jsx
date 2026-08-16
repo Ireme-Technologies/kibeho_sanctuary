@@ -8,7 +8,7 @@ import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
 
 export default function CommunitiesPage() {
-  const { section, resolveHeaderImage } = useContent()
+  const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale } = useLocale()
   const hero = section('our-lady.communities', {})
   const [items, setItems] = useState([])
@@ -46,11 +46,9 @@ export default function CommunitiesPage() {
         <div className={styles.grid}>
           {items.map((item) => (
             <Link key={item.id} to={item.path || `/our-lady/communities/${item.slug}`} className={styles.card}>
-              {item.coverImage ? (
-                <div className={styles.cardMedia}>
-                  <img src={item.coverImage} alt="" />
-                </div>
-              ) : null}
+              <div className={styles.cardMedia}>
+                <img src={item.coverImage || defaultHeaderImage} alt="" />
+              </div>
               <div className={styles.cardBody}>
                 {item.location ? <p className={styles.meta}>{item.location}</p> : null}
                 <h2>{item.name || item.title}</h2>

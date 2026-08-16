@@ -24,7 +24,13 @@ import {
   ensureOurLadyNavChildren,
 } from '@data/navigation'
 import { resolveNavLabel } from '@i18n/navKeys'
-import { contactHero, contactInfo, contactMap, contactFormLabels } from '@data/contact'
+import {
+  contactHero,
+  contactInfo,
+  contactMap,
+  contactFormLabels,
+} from '@data/contact'
+import { offerings as fallbackOfferings } from '@data/offerings'
 import { applyThemeToDocument, DEFAULT_THEME, normalizeTheme } from '@utils/theme'
 import {
   applyFavicon,
@@ -183,7 +189,7 @@ export function ContentProvider({ children }) {
     const contact = settings.contact || {}
 
     const defaultHeaderImage =
-      pageContent(pages, 'headers.default').backgroundImage || '/images/about/about-hero.jpg'
+      pageContent(pages, 'headers.default').backgroundImage || '/images/sanctuary/hero.jpg'
 
     const resolvedActivities = activities.length ? activities : fallbackActivities
     const resolvedPilgrimages = upcomingPilgrimages.length
@@ -235,6 +241,7 @@ export function ContentProvider({ children }) {
         message: t('message'),
         submit: t('sendMessage'),
       },
+      offerings: { ...fallbackOfferings, ...(settings.offerings || {}) },
       services: services.length ? services : fallbackServices,
       projects: projects.length ? projects : fallbackProjects,
       activities: resolvedActivities,
@@ -257,7 +264,7 @@ export function ContentProvider({ children }) {
       pages,
       defaultHeaderImage,
       resolveHeaderImage: (pageImage, fallback) =>
-        pageImage || defaultHeaderImage || fallback || '/images/about/about-hero.jpg',
+        pageImage || defaultHeaderImage || fallback || '/images/sanctuary/hero.jpg',
       section: (key, fallback = {}) => pageContent(pages, key, fallback),
       theme,
       locale,

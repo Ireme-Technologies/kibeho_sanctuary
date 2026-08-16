@@ -6,9 +6,10 @@ import styles from './CmsPage.module.css'
 
 export default function ActivityDetailPage() {
   const { slug } = useParams()
-  const { activities, section } = useContent()
+  const { activities, section, resolveHeaderImage } = useContent()
   const activity = (activities || []).find((item) => item.slug === slug)
   const index = section('activities.index', {})
+  const heroImage = resolveHeaderImage(activity?.image)
 
   if (!activity) return <NotFoundPage />
 
@@ -16,13 +17,9 @@ export default function ActivityDetailPage() {
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={
-          activity.image
-            ? {
-                backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${activity.image})`,
-              }
-            : undefined
-        }
+        style={{
+          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${heroImage})`,
+        }}
       >
         <div className="container">
           <p className={styles.eyebrow}>Activities</p>

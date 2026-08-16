@@ -1,5 +1,6 @@
 import { findLanguageMeta } from './languageCatalog'
 import { navStrings } from './navKeys'
+import { offerStrings } from './offerStrings'
 
 /**
  * Default sanctuary languages. Extra languages are added in CMS Translations
@@ -59,6 +60,7 @@ export const uiStrings = {
     pilgrimageCalendar: 'Pilgrimage events',
     emptyContent: 'Content will appear here soon.',
     ...navStrings.en,
+    ...offerStrings.en,
   },
   fr: {
     donate: 'Faire un don',
@@ -101,6 +103,7 @@ export const uiStrings = {
     pilgrimageCalendar: 'Événements de pèlerinage',
     emptyContent: 'Le contenu apparaîtra bientôt ici.',
     ...navStrings.fr,
+    ...offerStrings.fr,
   },
   rw: {
     donate: 'Tanga inkunga',
@@ -143,6 +146,7 @@ export const uiStrings = {
     pilgrimageCalendar: 'Ibirori by’urugendo',
     emptyContent: 'Ibirimo bizagaragara hano vuba.',
     ...navStrings.rw,
+    ...offerStrings.rw,
   },
   de: {
     donate: 'Spenden',
@@ -185,6 +189,7 @@ export const uiStrings = {
     pilgrimageCalendar: 'Pilgerveranstaltungen',
     emptyContent: 'Inhalte erscheinen hier in Kürze.',
     ...navStrings.de,
+    ...offerStrings.de,
   },
 }
 

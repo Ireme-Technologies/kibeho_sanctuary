@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useLocale } from '@context/LocaleContext'
+import { useContent } from '@context/ContentContext'
 import { fetchPastoralTeamMember } from '@api/cms'
 import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
@@ -8,6 +9,7 @@ import styles from './CatalogPage.module.css'
 
 export default function PastoralTeamDetailPage() {
   const { locale } = useLocale()
+  const { resolveHeaderImage } = useContent()
   const { slug } = useParams()
   const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -32,17 +34,15 @@ export default function PastoralTeamDetailPage() {
 
   if (notFound || !item) return <NotFoundPage />
 
+  const heroImage = resolveHeaderImage(item.photo || item.coverImage)
+
   return (
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={
-          item.photo || item.coverImage
-            ? {
-                backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${item.photo || item.coverImage})`,
-              }
-            : undefined
-        }
+        style={{
+          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
+        }}
       >
         <div className="container">
           {item.role ? <p className={styles.subtitle}>{item.role}</p> : null}
