@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, BookOpen, BadgeCheck, Church, Users, Star } from 'lucide-react'
 import { whyVisit } from '@data/home/sanctuaryHome'
+import { mergePageContent } from '@data/pages/mergePageContent'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { useInView } from '@hooks/useInView'
@@ -60,7 +61,17 @@ export default function HomePilgrimStrip() {
       })
       .slice(0, 4)
   }, [upcomingPilgrimages, occasion?.item?.slug])
-  const reasons = section('home.whyVisit', {}).items || whyVisit
+  const why = mergePageContent(
+    {
+      eyebrow: 'Why Kibeho?',
+      heading: 'Why make a pilgrimage here?',
+      items: whyVisit,
+      cta: { primary: { label: 'Read more', path: '/pilgrimage/why-kibeho' } },
+    },
+    section('home.whyVisit', {}),
+  )
+  const reasons = why.items?.length ? why.items : whyVisit
+  const whyCta = why.buttons?.[0] || why.cta?.primary || { label: 'Read more', path: '/pilgrimage/why-kibeho' }
   const [ref, inView] = useInView(0.12)
   const [active, setActive] = useState(0)
 
@@ -132,8 +143,8 @@ export default function HomePilgrimStrip() {
       <section className={styles.visitSection}>
         <div className={`container ${styles.visitLayout}`}>
           <div className={styles.whyPanel}>
-            <p className={styles.eyebrow}>Why Kibeho?</p>
-            <h2>Why make a pilgrimage here?</h2>
+            <p className={styles.eyebrow}>{why.eyebrow || 'Why Kibeho?'}</p>
+            <h2>{why.heading || why.title || 'Why make a pilgrimage here?'}</h2>
             <div className={styles.whyGrid}>
               {reasons.map((item) => {
                 const Icon = whyIcons[item.id] || Church
@@ -148,8 +159,8 @@ export default function HomePilgrimStrip() {
                 )
               })}
             </div>
-            <Link to="/pilgrimage/why-kibeho" className={styles.whyMore}>
-              Read more →
+            <Link to={whyCta.path || '/pilgrimage/why-kibeho'} className={styles.whyMore}>
+              {whyCta.label || 'Read more'} →
             </Link>
           </div>
 

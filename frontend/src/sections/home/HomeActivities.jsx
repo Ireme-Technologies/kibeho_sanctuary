@@ -5,13 +5,31 @@ import {
   homeActivities as fallbackMeta,
   shrineHighlights as fallbackHighlights,
 } from '@data/home/sanctuaryHome'
+import { mergePageContent } from '@data/pages/mergePageContent'
 import { cardExcerpt } from '@utils/text'
+import { useLocale } from '@context/LocaleContext'
 import styles from './HomeActivities.module.css'
 
 export default function HomeActivities() {
   const { section, defaultHeaderImage } = useContent()
-  const meta = { ...fallbackMeta, ...section('home.activities', {}) }
+  const { t } = useLocale()
+  const meta = mergePageContent(
+    {
+      heading: fallbackMeta.heading,
+      subline: fallbackMeta.subline,
+      highlights: fallbackHighlights,
+      primaryCta: fallbackMeta.primaryCta,
+      secondaryCta: fallbackMeta.secondaryCta,
+      cardLinkLabel: t('learnMore'),
+    },
+    section('home.activities', {}),
+  )
   const items = meta.highlights?.length ? meta.highlights : fallbackHighlights
+  const buttons = (
+    Array.isArray(meta.buttons) && meta.buttons.length
+      ? meta.buttons
+      : [meta.primaryCta, meta.secondaryCta]
+  ).filter((item) => item && (item.label || item.path))
   const [ref, inView] = useInView(0.12)
 
   if (!items.length) return null
@@ -21,9 +39,9 @@ export default function HomeActivities() {
       <div className="container">
         <div className={`${styles.intro} ${inView ? styles.visible : ''}`}>
           <h2 id="home-activities-heading" className={styles.heading}>
-            {meta.heading}
+            {meta.heading || meta.title}
           </h2>
-          <p className={styles.subline}>{meta.subline}</p>
+          <p className={styles.subline}>{meta.subline || meta.subtitle}</p>
           <span className={styles.divider} aria-hidden="true" />
         </div>
 
@@ -43,7 +61,7 @@ export default function HomeActivities() {
                     <p className={styles.cardDesc}>{cardExcerpt(item)}</p>
                   ) : null}
                   <Link to={item.path} className={styles.cardCta}>
-                    Learn more
+                    {meta.cardLinkLabel || t('learnMore')}
                   </Link>
                 </div>
               </div>
@@ -52,12 +70,15 @@ export default function HomeActivities() {
         </div>
 
         <div className={`${styles.actions} ${inView ? styles.visible : ''}`}>
-          <Link to={meta.primaryCta?.path || '/shrine'} className={styles.btn}>
-            {meta.primaryCta?.label || 'Explore the Shrine'}
-          </Link>
-          <Link to={meta.secondaryCta?.path || '/shrine/mass-schedule'} className={styles.btn}>
-            {meta.secondaryCta?.label || 'Mass Schedule'}
-          </Link>
+          {buttons.map((item) => (
+            <Link
+              key={`${item.path}-${item.label}`}
+              to={item.path || '/shrine'}
+              className={styles.btn}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
       </div>
     </section>

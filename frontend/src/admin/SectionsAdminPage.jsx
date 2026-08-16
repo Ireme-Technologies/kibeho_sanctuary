@@ -10,6 +10,17 @@ import RichTextEditor from './components/RichTextEditor'
 import LocaleTabs, { isFilledValue } from './components/LocaleTabs'
 import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
 import ListTitle from './components/ListTitle'
+import MenuPathFields from './components/MenuPathFields'
+import {
+  contentToForm,
+  emptyPageForm,
+  formToContent,
+  groupedPageKeys,
+  isHomeSectionKey,
+  isStoryPageKey,
+  pageKind,
+  pageOptionLabel,
+} from './pageForm'
 import styles from './admin.module.css'
 
 const PAGES_TAB_KEY = 'admin.pages.activeTab'
@@ -20,75 +31,9 @@ const TABS = [
   { id: 'page', label: 'All pages' },
 ]
 
-const emptyContent = () => ({
-  eyebrow: '',
-  title: '',
-  subtitle: '',
-  heroImage: '',
-  intro: '',
-  blocks: [],
-  links: [],
-  ctaPrimaryLabel: '',
-  ctaPrimaryPath: '',
-  ctaSecondaryLabel: '',
-  ctaSecondaryPath: '',
-})
+const ARRAY_FIELDS = ['blocks', 'links', 'buttons', 'highlights', 'items', 'involveLinks']
 
-function contentToForm(content = {}) {
-  const cta = content.cta || {}
-  const heroImage = content.heroImage || content.backgroundImage || ''
-  return {
-    eyebrow: content.eyebrow || '',
-    title: content.title || content.heading || (content.headlineLines || [])[0] || '',
-    subtitle: content.subtitle || content.subline || '',
-    heroImage,
-    intro: content.intro || '',
-    blocks: Array.isArray(content.blocks) ? content.blocks : [],
-    links: Array.isArray(content.links) ? content.links : [],
-    ctaPrimaryLabel: cta.primary?.label || '',
-    ctaPrimaryPath: cta.primary?.path || '',
-    ctaSecondaryLabel: cta.secondary?.label || '',
-    ctaSecondaryPath: cta.secondary?.path || '',
-  }
-}
-
-function formToContent(form, previous = {}) {
-  const cta =
-    form.ctaPrimaryLabel || form.ctaPrimaryPath
-      ? {
-          primary: {
-            label: form.ctaPrimaryLabel,
-            path: form.ctaPrimaryPath,
-          },
-          ...(form.ctaSecondaryLabel || form.ctaSecondaryPath
-            ? {
-                secondary: {
-                  label: form.ctaSecondaryLabel,
-                  path: form.ctaSecondaryPath,
-                },
-              }
-            : {}),
-        }
-      : null
-
-  return {
-    ...previous,
-    eyebrow: form.eyebrow,
-    title: form.title,
-    heading: form.title,
-    subtitle: form.subtitle,
-    subline: form.subtitle,
-    heroImage: form.heroImage,
-    // Keep header image fields in sync for pages that use PageHeader
-    backgroundImage: form.heroImage,
-    headlineLines: form.title ? [form.title] : [],
-    breadcrumbLabel: form.title,
-    intro: form.intro,
-    blocks: form.blocks,
-    links: (form.links || []).filter((link) => link.label || link.path),
-    cta,
-  }
-}
+const emptyContent = emptyPageForm
 
 function readStoredTab() {
   try {
@@ -132,13 +77,11 @@ function setPageLabel(label, translations, locale, value, defaultLocale) {
 
 function getPageContentField(form, translations, field, locale, defaultLocale) {
   if (locale === defaultLocale) {
-    if (field === 'blocks' || field === 'links') return Array.isArray(form[field]) ? form[field] : []
+    if (ARRAY_FIELDS.includes(field)) return Array.isArray(form[field]) ? form[field] : []
     return form[field] ?? ''
   }
   const overlay = translations?.[locale]?.content || {}
-  if (field === 'ctaPrimaryLabel') return overlay.cta?.primary?.label ?? ''
-  if (field === 'ctaSecondaryLabel') return overlay.cta?.secondary?.label ?? ''
-  if (field === 'blocks' || field === 'links') {
+  if (ARRAY_FIELDS.includes(field)) {
     return Array.isArray(overlay[field]) ? overlay[field] : []
   }
   return overlay[field] ?? ''
@@ -149,25 +92,11 @@ function setPageContentField(form, translations, field, locale, value, defaultLo
     return { form: { ...form, [field]: value }, translations }
   }
   const prevContent = translations?.[locale]?.content || {}
-  let contentPatch
-  if (field === 'ctaPrimaryLabel') {
-    contentPatch = {
-      ...prevContent,
-      cta: { ...prevContent.cta, primary: { ...prevContent.cta?.primary, label: value } },
-    }
-  } else if (field === 'ctaSecondaryLabel') {
-    contentPatch = {
-      ...prevContent,
-      cta: { ...prevContent.cta, secondary: { ...prevContent.cta?.secondary, label: value } },
-    }
-  } else {
-    contentPatch = { ...prevContent, [field]: value }
-  }
   return {
     form,
     translations: {
       ...(translations || {}),
-      [locale]: { ...(translations?.[locale] || {}), content: contentPatch },
+      [locale]: { ...(translations?.[locale] || {}), content: { ...prevContent, [field]: value } },
     },
   }
 }
@@ -181,20 +110,14 @@ function buildSectionTranslations(translations, defaultLocale) {
     const overlay = pack.content
     if (overlay && typeof overlay === 'object') {
       const content = {}
-      ;['eyebrow', 'title', 'subtitle', 'intro'].forEach((field) => {
-        if (overlay[field] != null && String(overlay[field]).trim() !== '') content[field] = overlay[field]
+      ;['eyebrow', 'title', 'subtitle', 'intro', 'heroCtaLabel', 'involveTitle', 'involveLead', 'cardLinkLabel'].forEach(
+        (field) => {
+          if (overlay[field] != null && String(overlay[field]).trim() !== '') content[field] = overlay[field]
+        },
+      )
+      ARRAY_FIELDS.forEach((field) => {
+        if (Array.isArray(overlay[field]) && overlay[field].length) content[field] = overlay[field]
       })
-      if (Array.isArray(overlay.blocks) && overlay.blocks.length) content.blocks = overlay.blocks
-      if (Array.isArray(overlay.links) && overlay.links.length) content.links = overlay.links
-      if (overlay.cta?.primary?.label?.trim()) {
-        content.cta = { ...content.cta, primary: { label: overlay.cta.primary.label } }
-      }
-      if (overlay.cta?.secondary?.label?.trim()) {
-        content.cta = {
-          ...content.cta,
-          secondary: { label: overlay.cta.secondary.label },
-        }
-      }
       if (Object.keys(content).length) cleaned.content = content
     }
     if (Object.keys(cleaned).length) result[locale] = cleaned
@@ -241,10 +164,14 @@ function copyPageLocaleFromDefault(form, label, translations, locale) {
         intro: form.intro || '',
         blocks: cloneJson(form.blocks || []),
         links: cloneJson(form.links || []),
-        cta: {
-          primary: { label: form.ctaPrimaryLabel || '' },
-          secondary: { label: form.ctaSecondaryLabel || '' },
-        },
+        buttons: cloneJson(form.buttons || []),
+        highlights: cloneJson(form.highlights || []),
+        items: cloneJson(form.items || []),
+        involveLinks: cloneJson(form.involveLinks || []),
+        heroCtaLabel: form.heroCtaLabel || '',
+        involveTitle: form.involveTitle || '',
+        involveLead: form.involveLead || '',
+        cardLinkLabel: form.cardLinkLabel || '',
       },
     },
   }
@@ -288,11 +215,16 @@ export default function SectionsAdminPage() {
 
   const load = async () => {
     const data = await fetchPages()
-    setSections(data || {})
+    const extras = {
+      'home.quickLinks': data?.['home.quickLinks'] || { label: 'Home — Quick links', content: {} },
+      'home.partners': data?.['home.partners'] || { label: 'Home — Partners', content: {} },
+    }
+    const next = { ...(data || {}), ...extras }
+    setSections(next)
     setDefaultImage(data?.['headers.default']?.content?.backgroundImage || '')
-    const keys = Object.keys(data || {}).filter(isEditablePageKey)
+    const keys = Object.keys(next).filter(isEditablePageKey)
     if (!keys.length) return
-    if (!selectedKey || !data?.[selectedKey] || !isEditablePageKey(selectedKey)) {
+    if (!selectedKey || !next?.[selectedKey] || !isEditablePageKey(selectedKey)) {
       selectPage(keys[0])
     }
   }
@@ -306,7 +238,7 @@ export default function SectionsAdminPage() {
     if (!selectedKey || !sections[selectedKey]) return
     const section = sections[selectedKey]
     setLabel(section.label || selectedKey)
-    setForm(contentToForm(section.content || {}))
+    setForm(contentToForm(section.content || {}, selectedKey))
     setSectionTranslations(section.translations || {})
   }, [selectedKey, sections])
 
@@ -331,6 +263,16 @@ export default function SectionsAdminPage() {
     const path = pathForSectionKey(key).toLowerCase()
     return label.includes(q) || key.toLowerCase().includes(q) || path.includes(q)
   })
+  const groupedKeys = groupedPageKeys(sectionKeys)
+  const kind = pageKind(selectedKey)
+  const isStory = isStoryPageKey(selectedKey)
+  const isDefaultLang = localeTab === defaultLocale
+
+  const patchField = (field, value) => {
+    const next = setPageContentField(form, sectionTranslations, field, localeTab, value, defaultLocale)
+    setForm(next.form)
+    setSectionTranslations(next.translations)
+  }
 
   const openPageEditor = (key, localeCode) => {
     pendingLocaleRef.current = localeCode || defaultLocale || 'en'
@@ -367,7 +309,7 @@ export default function SectionsAdminPage() {
       const previous = sections[selectedKey]?.content || {}
       await updatePageSection(selectedKey, {
         label,
-        content: formToContent(form, previous),
+        content: formToContent(form, previous, selectedKey),
         translations: buildSectionTranslations(sectionTranslations, defaultLocale),
       })
       await load()
@@ -387,8 +329,9 @@ export default function SectionsAdminPage() {
         <div>
           <h1>Pages</h1>
           <p className={styles.muted} style={{ margin: '0.25rem 0 0' }}>
-            All website pages are listed below. Open a page, switch language tabs, then edit header text and
-            body blocks. Each language can have its own layout.
+            All website pages and homepage sections are listed below. Open a page to edit the same text,
+            cards, and buttons visitors see. Empty fields are filled from the current public defaults so
+            you can correct them without retyping.
           </p>
         </div>
       </div>
@@ -468,9 +411,9 @@ export default function SectionsAdminPage() {
                   <td>
                     <ListTitle
                       title={sections[key]?.label || key}
-                      subtitle={key}
+                      subtitle={isHomeSectionKey(key) ? 'Homepage section' : pathForSectionKey(key)}
                       onEdit={() => openPageEditor(key)}
-                      viewHref={pathForSectionKey(key)}
+                      viewHref={isHomeSectionKey(key) ? '/' : pathForSectionKey(key)}
                     />
                   </td>
                   <LocaleColumnCells
@@ -478,7 +421,7 @@ export default function SectionsAdminPage() {
                     defaultLocale={defaultLocale}
                     onEditLocale={(code) => openPageEditor(key, code)}
                   />
-                  <td>{pathForSectionKey(key)}</td>
+                  <td>{isHomeSectionKey(key) ? 'Homepage' : pathForSectionKey(key)}</td>
                 </tr>
               ))}
               {!filteredKeys.length && (
@@ -508,12 +451,26 @@ export default function SectionsAdminPage() {
             <div className={styles.field}>
               <label>Page</label>
               <select value={selectedKey} onChange={(e) => selectPage(e.target.value)}>
-                {sectionKeys.map((key) => (
-                  <option key={key} value={key}>
-                    {sections[key].label || key}
-                  </option>
-                ))}
+                <optgroup label="Website pages">
+                  {groupedKeys.website.map((key) => (
+                    <option key={key} value={key}>
+                      {pageOptionLabel(key, sections[key])}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Homepage sections">
+                  {groupedKeys.home.map((key) => (
+                    <option key={key} value={key}>
+                      {pageOptionLabel(key, sections[key])}
+                    </option>
+                  ))}
+                </optgroup>
               </select>
+              <p className={styles.muted}>
+                {isHomeSectionKey(selectedKey)
+                  ? 'This is a strip on the homepage (/), not a full website page. Example: Home — At the Shrine is the homepage cards; The Shrine (/shrine) is the public shrine page.'
+                  : `Public URL: ${pathForSectionKey(selectedKey)}`}
+              </p>
             </div>
             <LocaleTabs
               value={localeTab}
@@ -601,99 +558,208 @@ export default function SectionsAdminPage() {
               <label>Intro description</label>
               <RichTextEditor
                 value={getPageContentField(form, sectionTranslations, 'intro', localeTab, defaultLocale)}
-                onChange={(html) => {
-                  const next = setPageContentField(form, sectionTranslations, 'intro', localeTab, html, defaultLocale)
-                  setForm(next.form)
-                  setSectionTranslations(next.translations)
-                }}
+                onChange={(html) => patchField('intro', html)}
               />
             </div>
 
-            <h2 className={styles.sectionTitle}>Quick links</h2>
-            {localeTab !== defaultLocale &&
-            !getPageContentField(form, sectionTranslations, 'links', localeTab, defaultLocale).length ? (
-              <p className={styles.muted}>
-                No links in this language yet. Use <strong>Copy from default</strong> above, then translate the labels.
-              </p>
+            {kind === 'home.activities' ? (
+              <>
+                <h2 className={styles.sectionTitle}>Highlight cards</h2>
+                <p className={styles.muted}>Cards on the homepage “At the Shrine” strip. Add, edit, reorder, or remove.</p>
+                <ListEditor
+                  label="Cards"
+                  items={getPageContentField(form, sectionTranslations, 'highlights', localeTab, defaultLocale)}
+                  onChange={(highlights) => patchField('highlights', highlights)}
+                  addLabel="Add card"
+                  emptyItem={{ title: '', shortDescription: '', path: '', image: '' }}
+                  fields={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'path', label: 'URL', placeholder: '/shrine/holy-spring' },
+                    { key: 'shortDescription', label: 'Description', type: 'textarea' },
+                    { key: 'image', label: 'Image URL (optional)' },
+                  ]}
+                />
+                <div className={styles.field}>
+                  <label>Card button label</label>
+                  <input
+                    value={getPageContentField(form, sectionTranslations, 'cardLinkLabel', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('cardLinkLabel', e.target.value)}
+                    placeholder="Learn more"
+                  />
+                </div>
+              </>
             ) : null}
+
+            {kind === 'home.whyVisit' || kind === 'home.items' || kind === 'home.partners' ? (
+              <>
+                <h2 className={styles.sectionTitle}>Items</h2>
+                <ListEditor
+                  label={kind === 'home.partners' ? 'Partner names' : 'Items'}
+                  items={getPageContentField(form, sectionTranslations, 'items', localeTab, defaultLocale)}
+                  onChange={(items) => patchField('items', items)}
+                  addLabel="Add item"
+                  emptyItem={
+                    kind === 'home.partners'
+                      ? { label: '' }
+                      : kind === 'home.items'
+                        ? { title: '', text: '', meta: '' }
+                        : { title: '', text: '' }
+                  }
+                  fields={
+                    kind === 'home.partners'
+                      ? [{ key: 'label', label: 'Name' }]
+                      : kind === 'home.items'
+                        ? [
+                            { key: 'title', label: 'Title' },
+                            { key: 'meta', label: 'Meta' },
+                            { key: 'text', label: 'Text', type: 'textarea' },
+                          ]
+                        : [
+                            { key: 'title', label: 'Title' },
+                            { key: 'text', label: 'Text', type: 'textarea' },
+                          ]
+                  }
+                />
+              </>
+            ) : null}
+
+            {kind === 'home.schedule' ? (
+              <>
+                <h2 className={styles.sectionTitle}>Schedule items</h2>
+                <ListEditor
+                  label="Times"
+                  items={getPageContentField(form, sectionTranslations, 'items', localeTab, defaultLocale)}
+                  onChange={(items) => patchField('items', items)}
+                  addLabel="Add row"
+                  emptyItem={{ title: '', time: '' }}
+                  fields={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'time', label: 'Time' },
+                  ]}
+                />
+              </>
+            ) : null}
+
+            {kind === 'cms' || kind === 'home.quickLinks' ? (
+              <>
+                <h2 className={styles.sectionTitle}>{kind === 'home.quickLinks' ? 'Quick link cards' : 'Quick links'}</h2>
+                <p className={styles.muted}>
+                  {kind === 'home.quickLinks'
+                    ? 'The four shortcut cards under the homepage hero. Add more if needed.'
+                    : 'Optional link cards under the introduction (used on hub pages such as Our Lady).'}
+                </p>
+                <ListEditor
+                  label="Link cards"
+                  items={getPageContentField(form, sectionTranslations, 'links', localeTab, defaultLocale)}
+                  onChange={(links) => patchField('links', links)}
+                  addLabel="Add link"
+                  emptyItem={{ label: '', path: '', text: '', icon: '' }}
+                  fields={[
+                    { key: 'label', label: 'Label' },
+                    { key: 'path', label: 'URL', placeholder: '/our-lady' },
+                    ...(kind === 'home.quickLinks'
+                      ? [
+                          { key: 'text', label: 'Description' },
+                          { key: 'icon', label: 'Icon', placeholder: 'info, users, calendar, heart' },
+                        ]
+                      : []),
+                  ]}
+                />
+              </>
+            ) : null}
+
+            {kind === 'cms' ? (
+              <>
+                <h2 className={styles.sectionTitle}>Body content</h2>
+                <p className={styles.muted}>
+                  Headings, paragraphs, notes, and cards (for example Places to visit on The Shrine). Add a Cards
+                  block to create a table of linked items.
+                </p>
+                <BlocksEditor
+                  blocks={getPageContentField(form, sectionTranslations, 'blocks', localeTab, defaultLocale)}
+                  onChange={(blocks) => patchField('blocks', blocks)}
+                />
+              </>
+            ) : null}
+
+            {kind === 'cms' && isStory ? (
+              <>
+                <h2 className={styles.sectionTitle}>Hero button</h2>
+                <p className={styles.muted}>
+                  The button on the header image (default: Be part of this). Leave blank to keep the automatic
+                  translation.
+                </p>
+                <div className={styles.field}>
+                  <label>Hero button label</label>
+                  <input
+                    value={getPageContentField(form, sectionTranslations, 'heroCtaLabel', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('heroCtaLabel', e.target.value)}
+                    placeholder="Be part of this"
+                  />
+                </div>
+                {isDefaultLang ? (
+                  <MenuPathFields
+                    path={form.heroCtaPath || '#join'}
+                    label="Hero button opens"
+                    placeholder="#join"
+                    onChange={(path) => setForm({ ...form, heroCtaPath: path })}
+                  />
+                ) : (
+                  <p className={styles.muted}>URL: {form.heroCtaPath || '#join'} · same in every language</p>
+                )}
+
+                <h2 className={styles.sectionTitle}>Invite cards</h2>
+                <p className={styles.muted}>
+                  The three cards near the bottom (Light a candle, Have a Mass said, Come on pilgrimage). Add or
+                  remove cards here — they belong to this page, not a separate buttons screen.
+                </p>
+                <div className={styles.field}>
+                  <label>Section title</label>
+                  <input
+                    value={getPageContentField(form, sectionTranslations, 'involveTitle', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('involveTitle', e.target.value)}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Section text</label>
+                  <textarea
+                    rows={3}
+                    value={getPageContentField(form, sectionTranslations, 'involveLead', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('involveLead', e.target.value)}
+                  />
+                </div>
+                <ListEditor
+                  label="Invite cards"
+                  items={getPageContentField(form, sectionTranslations, 'involveLinks', localeTab, defaultLocale)}
+                  onChange={(involveLinks) => patchField('involveLinks', involveLinks)}
+                  addLabel="Add card"
+                  emptyItem={{ label: '', text: '', path: '' }}
+                  fields={[
+                    { key: 'label', label: 'Title' },
+                    { key: 'path', label: 'URL', placeholder: '/pilgrimage/plan' },
+                    { key: 'text', label: 'Description', type: 'textarea' },
+                  ]}
+                />
+              </>
+            ) : null}
+
+            <h2 className={styles.sectionTitle}>Buttons</h2>
+            <p className={styles.muted}>
+              Buttons at the bottom of this page. Pick a page so the URL is filled automatically — the same URL
+              is used in every language. Add more buttons if this page needs them. Header Donate stays in Site
+              menus.
+            </p>
             <ListEditor
-              label="Link cards"
-              items={getPageContentField(form, sectionTranslations, 'links', localeTab, defaultLocale)}
-              onChange={(links) => {
-                const next = setPageContentField(form, sectionTranslations, 'links', localeTab, links, defaultLocale)
-                setForm(next.form)
-                setSectionTranslations(next.translations)
-              }}
-              addLabel="Add link"
+              label="Page buttons"
+              items={getPageContentField(form, sectionTranslations, 'buttons', localeTab, defaultLocale)}
+              onChange={(buttons) => patchField('buttons', buttons)}
+              addLabel="Add button"
               emptyItem={{ label: '', path: '' }}
               fields={[
                 { key: 'label', label: 'Label' },
-                { key: 'path', label: 'Path', placeholder: '/about/mass-times' },
+                { key: 'path', label: 'URL', placeholder: '/shrine/mass-schedule' },
               ]}
             />
-
-            <h2 className={styles.sectionTitle}>Body content</h2>
-            {localeTab !== defaultLocale &&
-            !getPageContentField(form, sectionTranslations, 'blocks', localeTab, defaultLocale).length ? (
-              <p className={styles.muted}>
-                This language has no page layout yet. Copy the default-language blocks, then translate the text —
-                or add new blocks below.
-              </p>
-            ) : null}
-            <BlocksEditor
-              blocks={getPageContentField(form, sectionTranslations, 'blocks', localeTab, defaultLocale)}
-              onChange={(blocks) => {
-                const next = setPageContentField(form, sectionTranslations, 'blocks', localeTab, blocks, defaultLocale)
-                setForm(next.form)
-                setSectionTranslations(next.translations)
-              }}
-            />
-
-            <h2 className={styles.sectionTitle}>Call to action</h2>
-            <div className={styles.fieldRow}>
-              <div className={styles.field}>
-                <label>Primary button label</label>
-                <input
-                  value={getPageContentField(form, sectionTranslations, 'ctaPrimaryLabel', localeTab, defaultLocale)}
-                  onChange={(e) => {
-                    const next = setPageContentField(form, sectionTranslations, 'ctaPrimaryLabel', localeTab, e.target.value, defaultLocale)
-                    setForm(next.form)
-                    setSectionTranslations(next.translations)
-                  }}
-                />
-              </div>
-              {localeTab === defaultLocale ? (
-                <div className={styles.field}>
-                  <label>Primary button path</label>
-                  <input
-                    value={form.ctaPrimaryPath}
-                    onChange={(e) => setForm({ ...form, ctaPrimaryPath: e.target.value })}
-                  />
-                </div>
-              ) : null}
-            </div>
-            <div className={styles.fieldRow}>
-              <div className={styles.field}>
-                <label>Secondary button label</label>
-                <input
-                  value={getPageContentField(form, sectionTranslations, 'ctaSecondaryLabel', localeTab, defaultLocale)}
-                  onChange={(e) => {
-                    const next = setPageContentField(form, sectionTranslations, 'ctaSecondaryLabel', localeTab, e.target.value, defaultLocale)
-                    setForm(next.form)
-                    setSectionTranslations(next.translations)
-                  }}
-                />
-              </div>
-              {localeTab === defaultLocale ? (
-                <div className={styles.field}>
-                  <label>Secondary button path</label>
-                  <input
-                    value={form.ctaSecondaryPath}
-                    onChange={(e) => setForm({ ...form, ctaSecondaryPath: e.target.value })}
-                  />
-                </div>
-              ) : null}
-            </div>
 
             {error && <p className={styles.error}>{error}</p>}
             <button className={styles.btn} type="submit" disabled={saving || !selectedKey}>

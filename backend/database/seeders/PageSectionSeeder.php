@@ -75,11 +75,39 @@ class PageSectionSeeder extends Seeder
             'home.whyVisit' => [
                 'label' => 'Home Why Kibeho',
                 'content' => [
+                    'eyebrow' => 'Why Kibeho?',
+                    'heading' => 'Why make a pilgrimage here?',
                     'items' => [
                         ['id' => 'message', 'title' => 'The Message', 'text' => 'Discover the call of Our Lady of Kibeho to conversion, prayer, and reconciliation.'],
                         ['id' => 'recognised', 'title' => 'Church Recognition', 'text' => 'The only Marian apparition site in Africa officially recognised by the Catholic Church.'],
                         ['id' => 'liturgy', 'title' => 'Liturgical Life', 'text' => 'Join Mass, Adoration, and the prayer life of the Shrine.'],
                         ['id' => 'pilgrimage', 'title' => 'A Living Pilgrimage', 'text' => 'Come alone or with your parish — prepare your journey with the Pilgrimage Office.'],
+                    ],
+                    'cta' => ['primary' => ['label' => 'Read more', 'path' => '/pilgrimage/why-kibeho']],
+                ],
+            ],
+            'home.quickLinks' => [
+                'label' => 'Home — Quick links',
+                'content' => [
+                    'links' => [
+                        ['id' => 'message', 'icon' => 'info', 'label' => 'The Message', 'text' => 'Apparitions & recognition', 'path' => '/our-lady'],
+                        ['id' => 'plan', 'icon' => 'users', 'label' => 'Pilgrimage', 'text' => 'Plan your visit', 'path' => '/pilgrimage/plan'],
+                        ['id' => 'pray', 'icon' => 'calendar', 'label' => 'Spirituality', 'text' => 'Pray with the Shrine', 'path' => '/spirituality'],
+                        ['id' => 'donate', 'icon' => 'heart', 'label' => 'Support', 'text' => 'Master Plan & gifts', 'path' => '/support'],
+                    ],
+                ],
+            ],
+            'home.partners' => [
+                'label' => 'Home — Partners',
+                'content' => [
+                    'eyebrow' => 'Partners',
+                    'heading' => 'Walking together in faith',
+                    'items' => [
+                        ['id' => 1, 'label' => 'Diocese of Gikongoro'],
+                        ['id' => 2, 'label' => 'Caritas'],
+                        ['id' => 3, 'label' => 'Radio Maria'],
+                        ['id' => 4, 'label' => 'Local Parishes'],
+                        ['id' => 5, 'label' => 'Friends of Kibeho'],
                     ],
                 ],
             ],

@@ -5,13 +5,14 @@ import { useLocale } from '@context/LocaleContext'
 import { fetchShrineProjects } from '@api/cms'
 import RichText from '@components/ui/RichText'
 import { cardExcerpt } from '@utils/text'
+import { resolveSectionContent } from '@data/pages/mergePageContent'
 import catalog from './CatalogPage.module.css'
 import styles from './SupportProject.module.css'
 
 export default function SupportProjectsPage() {
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale, t } = useLocale()
-  const hero = section('support.projects', {})
+  const hero = resolveSectionContent(section, 'support.projects')
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
 

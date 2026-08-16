@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchLodging } from '@api/cms'
+import { sectionKeyForPath } from '@data/pages/registry'
+import { resolveSectionContent } from '@data/pages/mergePageContent'
 import RichText from '@components/ui/RichText'
 import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
@@ -14,9 +16,12 @@ function renderStars(rating) {
 }
 
 export default function HotelsPage() {
+  const { pathname } = useLocation()
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale } = useLocale()
-  const hero = section('hotels.index', {})
+  const key = sectionKeyForPath(pathname) || 'hotels.index'
+  const extra = key === 'hotels.index' ? ['pilgrimage.accommodation'] : ['hotels.index']
+  const hero = resolveSectionContent(section, key, extra)
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
 

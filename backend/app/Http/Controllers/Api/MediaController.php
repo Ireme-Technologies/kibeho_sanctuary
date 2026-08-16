@@ -12,8 +12,14 @@ use Illuminate\Support\Str;
 
 class MediaController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, SiteAssetService $assets)
     {
+        try {
+            $assets->ensurePublicGallery();
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         $query = Media::query()->orderByDesc('created_at');
 
         if ($request->filled('folder')) {
@@ -27,8 +33,14 @@ class MediaController extends Controller
         return response()->json($query->get());
     }
 
-    public function gallery()
+    public function gallery(SiteAssetService $assets)
     {
+        try {
+            $assets->ensurePublicGallery();
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         $items = Media::query()
             ->where('show_in_gallery', true)
             ->orderBy('gallery_sort')
@@ -36,6 +48,29 @@ class MediaController extends Controller
             ->get();
 
         return response()->json($items);
+    }
+
+    public function usage(Media $media, SiteAssetService $assets)
+    {
+        return response()->json([
+            'url' => $media->url,
+            'usages' => $assets->findUsages($media->url),
+        ]);
+    }
+
+    public function siteAssetUsage(Request $request, SiteAssetService $assets)
+    {
+        $request->validate([
+            'path' => ['required', 'string', 'max:255'],
+        ]);
+
+        $path = ltrim((string) $request->input('path'), '/');
+        $url = '/'.$path;
+
+        return response()->json([
+            'url' => $url,
+            'usages' => $assets->findUsages($url),
+        ]);
     }
 
     public function siteAssets(SiteAssetService $assets)
@@ -156,10 +191,9 @@ class MediaController extends Controller
         return response()->json(['message' => 'Gallery order updated.']);
     }
 
-    public function destroy(Media $media)
+    public function destroy(Media $media, SiteAssetService $assets)
     {
-        Storage::disk($media->disk)->delete($media->path);
-        $media->delete();
+        $assets->deleteMediaRecord($media);
 
         return response()->json(['message' => 'Deleted.']);
     }

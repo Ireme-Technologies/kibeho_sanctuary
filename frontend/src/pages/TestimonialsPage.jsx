@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchTestimonials } from '@api/cms'
+import { resolveSectionContent } from '@data/pages/mergePageContent'
 import RichText from '@components/ui/RichText'
 import styles from './CatalogPage.module.css'
 
@@ -14,7 +15,7 @@ function renderStars(rating) {
 export default function TestimonialsPage() {
   const { section, resolveHeaderImage } = useContent()
   const { locale } = useLocale()
-  const hero = section('pilgrimage.testimonials', {})
+  const hero = resolveSectionContent(section, 'spirituality.testimonies', ['pilgrimage.testimonials'])
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
 

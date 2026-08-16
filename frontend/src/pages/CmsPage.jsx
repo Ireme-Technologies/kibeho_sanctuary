@@ -6,6 +6,7 @@ import { useLocale } from '@context/LocaleContext'
 import { displayTitleLabel, displayCapsLabel } from '@i18n/typography'
 import { sectionKeyForPath } from '@data/pages/registry'
 import { getPageFallback } from '@data/pages/content'
+import { mergePageContent } from '@data/pages/mergePageContent'
 import { navKeyForPath } from '@i18n/navKeys'
 import { parseYoutubeId, youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from '@utils/youtube'
 import ContentLocaleNotice, { hasLocaleTranslation } from '@components/ContentLocaleNotice'
@@ -100,6 +101,7 @@ function ListBlock({ items }) {
 }
 
 function Block({ block }) {
+  const { t } = useLocale()
   if (!block?.type) return null
 
   if (block.type === 'heading') {
@@ -172,7 +174,7 @@ function Block({ block }) {
               <RichText html={item.text} />
               {item.path ? (
                 <Link to={item.path} className={styles.inlineLink}>
-                  Learn more →
+                  {item.linkLabel || t('learnMore')} →
                 </Link>
               ) : null}
             </div>
@@ -225,6 +227,22 @@ function Block({ block }) {
   return null
 }
 
+function PageLink({ to, className, children }) {
+  if (!to) return null
+  if (to.startsWith('#') || /^https?:/i.test(to)) {
+    return (
+      <a href={to} className={className}>
+        {children}
+      </a>
+    )
+  }
+  return (
+    <Link to={to} className={className}>
+      {children}
+    </Link>
+  )
+}
+
 export default function CmsPage() {
   const { pathname } = useLocation()
   const { section, pages, company, offerings, resolveHeaderImage } = useContent()
@@ -233,7 +251,8 @@ export default function CmsPage() {
   const fallback = (key && getPageFallback(key)) || {}
   const record = key ? pages?.[key] : null
   const translated = hasLocaleTranslation(record?.translations, locale, defaultLocale)
-  const data = { ...fallback, ...(key ? section(key, {}) : {}) }
+  const live = key ? section(key, {}) : {}
+  const data = mergePageContent(fallback, live)
   if (key && !translated) {
     const navKey = navKeyForPath(pathname)
     if (navKey) {
@@ -249,7 +268,16 @@ export default function CmsPage() {
   }
   const blocks = data.blocks?.length ? data.blocks : fallback.blocks || []
   const links = data.links?.length ? data.links : fallback.links || []
-  const cta = data.cta || fallback.cta
+  const buttons = (Array.isArray(data.buttons) && data.buttons.length
+    ? data.buttons
+    : [data.cta?.primary, data.cta?.secondary].filter((item) => item && (item.label || item.path))
+  ).map((item) => {
+    const path = item.path || item.link || ''
+    const linkKey = navKeyForPath(path)
+    const label =
+      !translated && linkKey ? t(linkKey) : item.label
+    return { label, path }
+  })
   const rawTitle = data.title || fallback.title
   const pageTitle = displayTitleLabel(rawTitle, locale)
 
@@ -314,9 +342,9 @@ export default function CmsPage() {
               {actionPage.heroCta}
             </a>
           ) : isStory ? (
-            <a href="#join" className={styles.heroCta}>
-              {t('story.bePart')}
-            </a>
+            <PageLink to={data.heroCtaPath || '#join'} className={styles.heroCta}>
+              {data.heroCtaLabel || t('story.bePart')}
+            </PageLink>
           ) : null}
         </div>
       </header>
@@ -348,18 +376,26 @@ export default function CmsPage() {
         {actionPage?.kind === 'donation' ? <OfferingForm kind="donation" /> : null}
         {actionPage?.kind === 'partnership' ? <OfferingForm kind="partnership" /> : null}
         {actionPage ? <InvolveMore variant={actionPage.involve} /> : null}
-        {isStory ? <InvolveMore variant="story" /> : null}
+        {isStory ? (
+          <InvolveMore
+            variant="story"
+            title={data.involveTitle}
+            lead={data.involveLead}
+            links={data.involveLinks}
+          />
+        ) : null}
 
-        {cta?.primary && !isAction ? (
+        {!isAction && buttons.length ? (
           <div className={styles.ctaRow}>
-            <Link to={cta.primary.path} className={styles.btn}>
-              {cta.primary.label}
-            </Link>
-            {cta.secondary ? (
-              <Link to={cta.secondary.path} className={styles.btnGhost}>
-                {cta.secondary.label}
-              </Link>
-            ) : null}
+            {buttons.map((item, index) => (
+              <PageLink
+                key={`${item.path}-${item.label}`}
+                to={item.path}
+                className={index === 0 ? styles.btn : styles.btnGhost}
+              >
+                {item.label}
+              </PageLink>
+            ))}
           </div>
         ) : null}
       </div>

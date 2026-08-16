@@ -199,7 +199,7 @@ User creation for additional Diocese staff is available from **Users** (where th
 | Home hero | Homepage hero slides / media / CTAs |
 | Pages | Informational pages: header, intro, and layout blocks (per language) |
 | Translations | Short UI labels (Donate, Pay now, offer./invite./project. keys) — not page articles |
-| Gallery / Media | Upload images & documents; gallery flag |
+| Gallery / Media | Upload images & documents; public gallery vs permanent delete |
 | Pilgrim Enquiries | Inbox for candle, Mass, donation, project, partnership, and pilgrimage requests |
 | Users | Create staff accounts (authorised managers) |
 | Settings & menus | Organisation details, contact, navigation, theme, Offerings & donations |
@@ -238,7 +238,7 @@ Do not create a different path per language (for example `/fr/apparitions`). Vis
 ### D. Replace images
 1. Open **Gallery / Media** (or image field on a page/article).
 2. Upload a new file.
-3. Select it on the page or mark **show in gallery**.
+3. Select it on the page, or add it to **Public gallery** for `/gallery`.
 4. Save and check the public page.
 
 ### E. Upload documents
@@ -326,10 +326,11 @@ On **Pages**, add blocks with the type buttons (heading, rich text, note, list, 
 
 ## Gallery / Media (images & PDFs)
 1. Open **Gallery / Media**.
-2. Upload images or PDF documents.
-3. Optionally flag images for `/gallery`.
-4. Select uploads inside page/news/directory forms, or link PDFs from Support → Annual Reports content.
-5. Prefer compressed web-sized images for mobile visitors.
+2. Upload images or PDF documents on **Uploads**.
+3. **Public gallery** is the curated list for `/gallery`. Add photos from the library or upload new ones. Removing an image there only hides it.
+4. **Site images** lists every photo. Removing a file there deletes it permanently after a check of where it is used — replace those places first.
+5. Select uploads inside page/news/directory forms, or link PDFs from Support → Annual Reports content.
+6. Prefer compressed web-sized images for mobile visitors.
 
 ## Translations (short UI labels only)
 This screen does **not** edit page articles or layout.

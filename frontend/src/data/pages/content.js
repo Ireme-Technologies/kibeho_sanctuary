@@ -13,7 +13,6 @@ const page = (partial) => ({
   links: [],
   cta: null,
   ...partial,
-  heroImage: '',
 })
 
 export const pageFallbacks = {

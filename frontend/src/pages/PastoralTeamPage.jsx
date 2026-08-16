@@ -5,12 +5,13 @@ import { useLocale } from '@context/LocaleContext'
 import { fetchPastoralTeam } from '@api/cms'
 import RichText from '@components/ui/RichText'
 import { cardExcerpt } from '@utils/text'
+import { resolveSectionContent } from '@data/pages/mergePageContent'
 import styles from './CatalogPage.module.css'
 
 export default function PastoralTeamPage() {
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale } = useLocale()
-  const hero = section('our-lady.pastoral-team', {})
+  const hero = resolveSectionContent(section, 'our-lady.pastoral-team')
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
 

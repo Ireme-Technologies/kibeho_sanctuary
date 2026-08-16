@@ -4,6 +4,8 @@ import {
   deleteMedia,
   deleteSiteAsset,
   fetchMedia,
+  fetchMediaUsage,
+  fetchSiteAssetUsage,
   fetchSiteAssets,
   reorderMedia,
   replaceMediaFile,
@@ -13,8 +15,11 @@ import {
 } from '@api/cms'
 import { useContent } from '@context/ContentContext'
 import FlashMessage from './components/FlashMessage'
-import { confirmDelete } from './components/confirmDelete'
+import Modal from './components/Modal'
+import { confirmDelete, confirmPermanentDelete } from './components/confirmDelete'
 import styles from './admin.module.css'
+
+const isImage = (item) => (item.mime_type || '').startsWith('image/')
 
 const MAX_BYTES = 700 * 1024
 const TABS = [
@@ -43,7 +48,7 @@ function ReplaceButton({ onFile, disabled, label = 'Replace' }) {
   )
 }
 
-function AssetCard({ item, busy, onReplace, onRemove }) {
+function AssetCard({ item, busy, onReplace, onRemove, removeLabel = 'Remove' }) {
   return (
     <article className={styles.assetCard}>
       <div className={styles.assetPreview}>
@@ -66,7 +71,7 @@ function AssetCard({ item, busy, onReplace, onRemove }) {
               disabled={busy}
               onClick={() => onRemove(item)}
             >
-              Remove
+              {removeLabel}
             </button>
           ) : null}
         </div>
@@ -87,6 +92,8 @@ export default function GalleryAdminPage() {
   const [flash, setFlash] = useState({ type: 'success', message: '' })
   const [uploading, setUploading] = useState(false)
   const [busyKey, setBusyKey] = useState('')
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const [pickerSelected, setPickerSelected] = useState(() => new Set())
 
   const loadUploads = async () => setItems(await fetchMedia())
 
@@ -124,6 +131,18 @@ export default function GalleryAdminPage() {
     )
   })
 
+  const imageUploads = items.filter(isImage)
+  const filteredImageUploads = imageUploads.filter((item) => {
+    if (!query.trim()) return true
+    const q = query.toLowerCase()
+    return (
+      (item.original_name || '').toLowerCase().includes(q) ||
+      (item.path || '').toLowerCase().includes(q) ||
+      (item.url || '').toLowerCase().includes(q)
+    )
+  })
+  const pickerCandidates = imageUploads.filter((item) => !item.show_in_gallery)
+
   const handleUpload = async (fileList) => {
     const files = Array.from(fileList || []).filter(Boolean)
     if (!files.length) return
@@ -148,7 +167,9 @@ export default function GalleryAdminPage() {
     try {
       for (const file of files) {
         try {
-          await uploadMedia(file, 'gallery', { show_in_gallery: tab === 'gallery' ? 1 : 0 })
+          await uploadMedia(file, tab === 'gallery' ? 'gallery' : 'uploads', {
+            show_in_gallery: tab === 'gallery' ? 1 : 0,
+          })
           uploaded += 1
         } catch (err) {
           failures.push(err.errors?.file?.[0] || err.message || file.name)
@@ -200,17 +221,19 @@ export default function GalleryAdminPage() {
   }
 
   const handleRemoveSite = async (item) => {
-    if (
-      !(await confirmDelete(
-        `Remove ${item.label || item.path}? Pages still using this path will lose the picture until you upload a replacement.`,
-        { confirmLabel: 'Remove', title: 'Remove site image' }
-      ))
-    ) {
-      return
-    }
-    setBusyKey(item.role + item.path)
+    const key = (item.role || 'site') + item.path
+    setBusyKey(key)
     setFlash({ type: 'success', message: '' })
     try {
+      const data = await fetchSiteAssetUsage(item.path)
+      if (
+        !(await confirmPermanentDelete({
+          name: item.label || item.path,
+          usages: data.usages || [],
+        }))
+      ) {
+        return
+      }
       const result = await deleteSiteAsset(item.path)
       applyInventory(result.inventory)
       await refresh()
@@ -225,7 +248,10 @@ export default function GalleryAdminPage() {
         setFlash({ type: 'success', message: `${item.label || item.path} removed.` })
       }
     } catch (err) {
-      setFlash({ type: 'error', message: err.errors?.path?.[0] || err.message || 'Remove failed' })
+      setFlash({
+        type: 'error',
+        message: err.errors?.path?.[0] || err.message || 'Could not remove this image.',
+      })
     } finally {
       setBusyKey('')
     }
@@ -236,7 +262,7 @@ export default function GalleryAdminPage() {
     if (!count) return
     if (
       !(await confirmDelete(
-        `Remove all ${count} seeded site images? Logo and brand files stay. Content that pointed at these files will be cleared until you upload new photos.`,
+        `Remove all ${count} bundled site images? Logo, brand files, and uploaded photos stay. Content that pointed at these files will be cleared until you upload new photos.`,
         {
           confirmLabel: 'Remove all',
           title: 'Remove all site images',
@@ -316,14 +342,57 @@ export default function GalleryAdminPage() {
     }
   }
 
-  const handleDelete = async (id) => {
-    if (!(await confirmDelete('Delete this media file permanently?'))) return
+  const togglePickerItem = (id) => {
+    setPickerSelected((current) => {
+      const next = new Set(current)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const addFromLibrary = async () => {
+    const ids = [...pickerSelected]
+    if (!ids.length) return
+    setBusyKey('gallery-add')
     try {
-      await deleteMedia(id)
+      for (const id of ids) {
+        await updateMedia(id, { show_in_gallery: true })
+      }
       await loadUploads()
-      setFlash({ type: 'success', message: 'Media deleted successfully.' })
+      setPickerOpen(false)
+      setPickerSelected(new Set())
+      setFlash({
+        type: 'success',
+        message: ids.length === 1 ? 'Image added to the public gallery.' : `${ids.length} images added to the public gallery.`,
+      })
+    } catch (err) {
+      setFlash({ type: 'error', message: err.message || 'Failed to add images to the gallery.' })
+    } finally {
+      setBusyKey('')
+    }
+  }
+
+  const handleDelete = async (item) => {
+    setBusyKey(`media-${item.id}`)
+    setFlash({ type: 'success', message: '' })
+    try {
+      const data = await fetchMediaUsage(item.id)
+      if (
+        !(await confirmPermanentDelete({
+          name: item.original_name || item.path,
+          usages: data.usages || [],
+        }))
+      ) {
+        return
+      }
+      await deleteMedia(item.id)
+      await loadUploads()
+      setFlash({ type: 'success', message: 'Image deleted permanently.' })
     } catch (err) {
       setFlash({ type: 'error', message: err.message || 'Failed to delete media.' })
+    } finally {
+      setBusyKey('')
     }
   }
 
@@ -332,7 +401,7 @@ export default function GalleryAdminPage() {
       <div className={styles.topbar}>
         <h1>Media library</h1>
         <label className={styles.btn} style={{ cursor: uploading ? 'default' : 'pointer' }}>
-          {uploading ? 'Uploading…' : 'Upload images'}
+          {uploading ? 'Uploading…' : tab === 'gallery' ? 'Upload to gallery' : 'Upload images'}
           <input
             type="file"
             accept="image/*"
@@ -392,20 +461,20 @@ export default function GalleryAdminPage() {
       {tab === 'site' && (
         <div className={styles.card}>
           <div className={styles.topbar} style={{ marginBottom: '0.75rem' }}>
-            <h2 style={{ margin: 0 }}>Seeded & bundled site images</h2>
+            <h2 style={{ margin: 0 }}>All site images</h2>
             <button
               type="button"
               className={`${styles.btn} ${styles.btnDanger}`}
               disabled={!site.length || busyKey === 'site-all'}
               onClick={handleRemoveAllSite}
             >
-              {busyKey === 'site-all' ? 'Removing…' : 'Remove all site images'}
+              {busyKey === 'site-all' ? 'Removing…' : 'Remove all bundled images'}
             </button>
           </div>
           <p className={styles.muted}>
-            These are the static <code>/images/…</code> files used by seeders and fallbacks. Remove them when you
-            want the live site to use only photos you upload. Logo and brand files stay on the Logo & brand tab.
-            Removals are stored on the server so the next deploy will not copy these files back.
+            Every photo lives here: uploaded files and bundled <code>/images/…</code> files. Removing an
+            image here deletes it permanently after you review where it is used. To hide a photo from the
+            public gallery without deleting it, use the <strong>Public gallery</strong> tab.
           </p>
           <div className={styles.field} style={{ maxWidth: 360, marginBottom: '1rem' }}>
             <label htmlFor="site-search">Filter</label>
@@ -416,6 +485,37 @@ export default function GalleryAdminPage() {
               placeholder="hero.jpg, sanctuary, lodging…"
             />
           </div>
+
+          <h3>Uploaded photos</h3>
+          <p className={styles.muted}>These are the files in your media library. Delete only after replacing any live uses.</p>
+          <div className={styles.assetGrid}>
+            {filteredImageUploads.map((item) => (
+              <AssetCard
+                key={`upload-${item.id}`}
+                item={{
+                  role: 'upload',
+                  label: item.original_name || item.path,
+                  hint: item.show_in_gallery ? 'Uploaded · also in public gallery' : 'Uploaded library',
+                  path: item.path,
+                  url: item.url,
+                  preview: item.url,
+                  exists: true,
+                  size: item.size,
+                }}
+                busy={busyKey === `media-${item.id}` || busyKey === 'site-all'}
+                onReplace={(_card, file) => handleReplaceUpload(item, file)}
+                onRemove={() => handleDelete(item)}
+                removeLabel="Delete"
+              />
+            ))}
+            {!filteredImageUploads.length && <p className={styles.muted}>No uploaded photos yet.</p>}
+          </div>
+
+          <h3 style={{ marginTop: '1.75rem' }}>Bundled /images files</h3>
+          <p className={styles.muted}>
+            Static files used by seeders and fallbacks. Logo and brand files stay on the Logo & brand tab.
+            Removals are stored on the server so the next deploy will not copy these files back.
+          </p>
           <div className={styles.assetGrid}>
             {filteredSite.map((item) => (
               <AssetCard
@@ -424,9 +524,10 @@ export default function GalleryAdminPage() {
                 busy={busyKey === (item.role || 'site') + item.path || busyKey === 'site-all'}
                 onReplace={handleReplaceSite}
                 onRemove={handleRemoveSite}
+                removeLabel="Delete"
               />
             ))}
-            {!filteredSite.length && <p className={styles.muted}>No matching site images.</p>}
+            {!filteredSite.length && <p className={styles.muted}>No matching bundled site images.</p>}
           </div>
         </div>
       )}
@@ -435,7 +536,9 @@ export default function GalleryAdminPage() {
         <div className={styles.card}>
           <h2 style={{ marginTop: 0 }}>Uploaded media</h2>
           <p className={styles.muted}>
-            Replace keeps the same URL so existing pages, news, and galleries update without editing each record.
+            This is the full library. Replace keeps the same URL so existing pages update. Add a photo to the
+            public gallery here, or open <strong>Public gallery</strong>. Permanent delete is on{' '}
+            <strong>Site images</strong>, after a check of where the file is used.
           </p>
           <div className={styles.field} style={{ maxWidth: 360, marginBottom: '1rem' }}>
             <label htmlFor="upload-search">Filter</label>
@@ -480,10 +583,7 @@ export default function GalleryAdminPage() {
                       onFile={(file) => handleReplaceUpload(item, file)}
                     />
                     <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => toggleGallery(item)}>
-                      {item.show_in_gallery ? 'Hide' : 'Show in gallery'}
-                    </button>
-                    <button type="button" className={`${styles.btn} ${styles.btnDanger}`} onClick={() => handleDelete(item.id)}>
-                      Delete
+                      {item.show_in_gallery ? 'Hide from gallery' : 'Add to gallery'}
                     </button>
                   </td>
                 </tr>
@@ -502,10 +602,38 @@ export default function GalleryAdminPage() {
 
       {tab === 'gallery' && (
         <div className={styles.card}>
-          <h2 style={{ marginTop: 0 }}>Public gallery order</h2>
+          <div className={styles.topbar} style={{ marginBottom: '0.75rem' }}>
+            <h2 style={{ margin: 0 }}>Public gallery</h2>
+            <div className={styles.assetActions}>
+              <button
+                type="button"
+                className={`${styles.btn} ${styles.btnSecondary}`}
+                onClick={() => {
+                  setPickerSelected(new Set())
+                  setPickerOpen(true)
+                }}
+              >
+                Add from library
+              </button>
+              <label className={styles.btn} style={{ cursor: uploading ? 'default' : 'pointer' }}>
+                {uploading ? 'Uploading…' : 'Upload new'}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  hidden
+                  disabled={uploading}
+                  onChange={(e) => {
+                    handleUpload(e.target.files)
+                    e.target.value = ''
+                  }}
+                />
+              </label>
+            </div>
+          </div>
           <p className={styles.muted}>
-            Images marked “show in gallery” appear on the public gallery page. For YouTube videos, use{' '}
-            <strong>Admin → Videos (YouTube)</strong>.
+            This list is what visitors see on <code>/gallery</code>. Removing an image here only hides it — the
+            file stays in Uploads and Site images. For YouTube videos, use <strong>Admin → Videos (YouTube)</strong>.
           </p>
           <table className={styles.table}>
             <thead>
@@ -536,7 +664,7 @@ export default function GalleryAdminPage() {
                       onFile={(file) => handleReplaceUpload(item, file)}
                     />
                     <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => toggleGallery(item)}>
-                      Hide from gallery
+                      Remove from gallery
                     </button>
                   </td>
                 </tr>
@@ -544,7 +672,7 @@ export default function GalleryAdminPage() {
               {!galleryItems.length && (
                 <tr>
                   <td colSpan={4} className={styles.muted}>
-                    No gallery images yet.
+                    No gallery images yet. Add photos from the library or upload new ones.
                   </td>
                 </tr>
               )}
@@ -552,6 +680,52 @@ export default function GalleryAdminPage() {
           </table>
         </div>
       )}
+
+      <Modal
+        open={pickerOpen}
+        wide
+        title="Add images to the public gallery"
+        onClose={() => {
+          setPickerOpen(false)
+          setPickerSelected(new Set())
+        }}
+      >
+        <p className={styles.muted}>
+          Choose photos already in the library. They stay in Uploads and Site images if you later remove them
+          from the gallery.
+        </p>
+        {pickerCandidates.length ? (
+          <div className={styles.mediaGrid} style={{ maxHeight: 360 }}>
+            {pickerCandidates.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`${styles.mediaThumb} ${pickerSelected.has(item.id) ? styles.mediaThumbActive : ''}`}
+                onClick={() => togglePickerItem(item.id)}
+                title={item.original_name || item.path}
+              >
+                <img src={item.url} alt="" />
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.muted}>All uploaded images are already in the gallery, or none have been uploaded yet.</p>
+        )}
+        <div className={styles.assetActions} style={{ marginTop: '1rem' }}>
+          <button
+            type="button"
+            className={styles.btn}
+            disabled={!pickerSelected.size || busyKey === 'gallery-add'}
+            onClick={addFromLibrary}
+          >
+            {busyKey === 'gallery-add'
+              ? 'Adding…'
+              : pickerSelected.size
+                ? `Add ${pickerSelected.size} to gallery`
+                : 'Add to gallery'}
+          </button>
+        </div>
+      </Modal>
     </div>
   )
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class SiteAssetService
@@ -72,6 +73,176 @@ class SiteAssetService
         $this->rewriteStoredUrls($oldUrl, $newUrl);
 
         return $media->fresh();
+    }
+
+    public function deleteMediaRecord(Media $media): void
+    {
+        $this->rewriteStoredUrls($media->url, '');
+        Storage::disk($media->disk ?: 'public')->delete($media->path);
+        $media->delete();
+    }
+
+    /**
+     * Flag existing uploads (or copy a few bundled sanctuary photos) into the public gallery once.
+     */
+    public function ensurePublicGallery(int $limit = 8): int
+    {
+        if (Setting::query()->where('key', 'public_gallery_seeded')->exists()) {
+            return 0;
+        }
+
+        $added = 0;
+
+        if (! Media::query()->where('show_in_gallery', true)->exists()) {
+            $sort = (int) Media::query()->max('gallery_sort');
+
+            $existing = Media::query()
+                ->where('mime_type', 'like', 'image/%')
+                ->orderByDesc('id')
+                ->limit($limit)
+                ->get();
+
+            if ($existing->isNotEmpty()) {
+                foreach ($existing as $media) {
+                    $sort++;
+                    $media->update([
+                        'show_in_gallery' => true,
+                        'gallery_sort' => $sort,
+                    ]);
+                    $added++;
+                }
+            } else {
+                $candidates = [
+                    'images/sanctuary/hero.jpg',
+                    'images/sanctuary/welcome.jpg',
+                    'images/sanctuary/church.jpg',
+                    'images/sanctuary/hills.jpg',
+                    'images/sanctuary/mary.jpg',
+                    'images/sanctuary/church-wide.jpg',
+                    'images/sanctuary/activity-candle.jpg',
+                    'images/sanctuary/activity-spring.jpg',
+                ];
+                foreach ($candidates as $relative) {
+                    if ($added >= $limit) {
+                        break;
+                    }
+                    $abs = $this->firstExisting($relative);
+                    if (! $abs) {
+                        continue;
+                    }
+                    $sort++;
+                    $this->importPublicFileToGallery($abs, $relative, $sort);
+                    $added++;
+                }
+            }
+        }
+
+        Setting::updateOrCreate(
+            ['key' => 'public_gallery_seeded'],
+            ['value' => ['count' => $added, 'at' => now()->toIso8601String()]]
+        );
+
+        return $added;
+    }
+
+    /**
+     * @return list<array{area: string, label: string, adminHref: string|null}>
+     */
+    public function findUsages(string $rawUrl): array
+    {
+        $targets = $this->urlMatchSet($rawUrl);
+        if (! $targets) {
+            return [];
+        }
+
+        $hits = [];
+        $record = function (string $area, string $label, ?string $href = null) use (&$hits) {
+            $key = $area.'|'.$label;
+            if (! isset($hits[$key])) {
+                $hits[$key] = [
+                    'area' => $area,
+                    'label' => $label,
+                    'adminHref' => $href,
+                ];
+            }
+        };
+
+        foreach (Setting::query()->get() as $setting) {
+            if ($setting->key === 'public_gallery_seeded' || $setting->key === self::REMOVED_SETTING_KEY) {
+                continue;
+            }
+            if (! $this->valueContainsUrl($setting->value, $targets)) {
+                continue;
+            }
+            $record(
+                $setting->key === 'company' ? 'Organisation settings' : 'Settings',
+                $this->settingUsageLabel($setting, $targets),
+                '/admin/settings'
+            );
+        }
+
+        if (Schema::hasTable('page_sections')) {
+            $cols = ['key', 'label', 'content'];
+            if (Schema::hasColumn('page_sections', 'translations')) {
+                $cols[] = 'translations';
+            }
+            foreach (DB::table('page_sections')->get($cols) as $row) {
+                $content = json_decode($row->content ?? '', true);
+                $translations = isset($row->translations) ? json_decode($row->translations ?? '', true) : null;
+                if ($this->valueContainsUrl($content, $targets) || $this->valueContainsUrl($translations, $targets)) {
+                    $record('Pages', $row->label ?: $row->key, '/admin/sections');
+                }
+            }
+        }
+
+        foreach ($this->contentUsageTables() as $table => $meta) {
+            if (! Schema::hasTable($table)) {
+                continue;
+            }
+            $titleCol = Schema::hasColumn($table, $meta['title']) ? $meta['title'] : null;
+            $columns = array_values(array_filter(
+                $meta['columns'],
+                fn ($col) => Schema::hasColumn($table, $col)
+            ));
+            if (! $columns) {
+                continue;
+            }
+            $select = array_values(array_unique(array_filter(['id', $titleCol, ...$columns, $meta['extra'] ?? null])));
+            foreach (DB::table($table)->get($select) as $row) {
+                $matched = false;
+                foreach ($columns as $col) {
+                    $decoded = json_decode($row->{$col} ?? '', true);
+                    $value = $decoded === null ? $row->{$col} : $decoded;
+                    if ($this->valueContainsUrl($value, $targets)) {
+                        $matched = true;
+                        break;
+                    }
+                }
+                if (! $matched) {
+                    continue;
+                }
+                $label = $titleCol ? (string) ($row->{$titleCol} ?? '') : '';
+                $href = $meta['href'];
+                if ($table === 'sacred_places' && isset($row->type)) {
+                    $href = ($row->type ?? '') === 'apparition_site'
+                        ? '/admin/apparition-sites'
+                        : '/admin/churches';
+                }
+                $record($meta['area'], $label !== '' ? $label : $meta['area'].' #'.$row->id, $href);
+            }
+        }
+
+        $inGallery = Media::query()
+            ->where('show_in_gallery', true)
+            ->get(['url', 'original_name']);
+        foreach ($inGallery as $media) {
+            if ($this->valueContainsUrl($media->url, $targets)) {
+                $record('Public gallery', $media->original_name ?: 'Shown on /gallery', '/admin/gallery');
+                break;
+            }
+        }
+
+        return array_values($hits);
     }
 
     private function branding(array $company): array
@@ -556,7 +727,166 @@ class SiteAssetService
             'testimonials' => ['author_avatar'],
             'shrine_projects' => ['cover_image', 'gallery'],
             'sacred_places' => ['cover_image', 'gallery'],
+            'pastoral_team_members' => ['photo'],
+            'communities' => ['cover_image', 'gallery'],
         ];
+    }
+
+    private function contentUsageTables(): array
+    {
+        return [
+            'news_posts' => [
+                'area' => 'News',
+                'href' => '/admin/blog',
+                'title' => 'title',
+                'columns' => ['cover_image', 'author_avatar'],
+            ],
+            'facilities' => [
+                'area' => 'Lodging',
+                'href' => '/admin/projects',
+                'title' => 'title',
+                'columns' => ['cover_image', 'featured_image', 'gallery'],
+            ],
+            'activities' => [
+                'area' => 'Activities',
+                'href' => '/admin/activities',
+                'title' => 'title',
+                'columns' => ['image'],
+            ],
+            'upcoming_pilgrimages' => [
+                'area' => 'Pilgrimage events',
+                'href' => '/admin/upcoming-pilgrimages',
+                'title' => 'title',
+                'columns' => ['image', 'archives'],
+            ],
+            'videos' => [
+                'area' => 'Videos',
+                'href' => '/admin/videos',
+                'title' => 'title',
+                'columns' => ['thumbnail_url'],
+            ],
+            'testimonials' => [
+                'area' => 'Testimonies',
+                'href' => '/admin/testimonials',
+                'title' => 'author_name',
+                'columns' => ['author_avatar'],
+            ],
+            'shrine_projects' => [
+                'area' => 'Shrine projects',
+                'href' => '/admin/shrine-projects',
+                'title' => 'title',
+                'columns' => ['cover_image', 'gallery'],
+            ],
+            'sacred_places' => [
+                'area' => 'Sacred places',
+                'href' => '/admin/churches',
+                'title' => 'name',
+                'columns' => ['cover_image', 'gallery'],
+                'extra' => 'type',
+            ],
+            'pilgrimage_services' => [
+                'area' => 'Services',
+                'href' => '/admin/services',
+                'title' => 'title',
+                'columns' => ['image', 'detail_image'],
+            ],
+            'pastoral_team_members' => [
+                'area' => 'Pastoral team',
+                'href' => '/admin/pastoral-team',
+                'title' => 'name',
+                'columns' => ['photo'],
+            ],
+            'communities' => [
+                'area' => 'Communities',
+                'href' => '/admin/communities',
+                'title' => 'name',
+                'columns' => ['cover_image', 'gallery'],
+            ],
+        ];
+    }
+
+    private function importPublicFileToGallery(string $abs, string $relative, int $sort): void
+    {
+        $ext = strtolower(pathinfo($abs, PATHINFO_EXTENSION)) ?: 'jpg';
+        $basename = pathinfo($relative, PATHINFO_FILENAME);
+        $path = 'gallery/'.Str::slug($basename).'-'.Str::random(6).'.'.$ext;
+        Storage::disk('public')->put($path, File::get($abs));
+
+        Media::create([
+            'disk' => 'public',
+            'path' => $path,
+            'url' => '/storage/'.ltrim($path, '/'),
+            'original_name' => basename($relative),
+            'mime_type' => File::mimeType($abs) ?: 'image/jpeg',
+            'size' => Storage::disk('public')->size($path),
+            'folder' => 'gallery',
+            'alt' => str_replace('-', ' ', $basename),
+            'show_in_gallery' => true,
+            'gallery_sort' => $sort,
+        ]);
+    }
+
+    private function urlMatchSet(string $raw): array
+    {
+        $raw = trim($raw);
+        if ($raw === '') {
+            return [];
+        }
+        $path = parse_url($raw, PHP_URL_PATH);
+        if (! is_string($path) || $path === '') {
+            $path = strtok($raw, '?') ?: $raw;
+        }
+        $path = '/'.ltrim($path, '/');
+        $bare = strtok($raw, '?') ?: $raw;
+
+        return array_values(array_unique(array_filter([
+            $raw,
+            $bare,
+            $path,
+            ltrim($path, '/'),
+        ])));
+    }
+
+    private function valueContainsUrl(mixed $value, array $targets): bool
+    {
+        if (is_string($value)) {
+            if ($value === '') {
+                return false;
+            }
+            $bare = strtok($value, '?') ?: $value;
+            $path = parse_url($value, PHP_URL_PATH);
+            $path = is_string($path) && $path !== '' ? '/'.ltrim($path, '/') : $bare;
+
+            return in_array($value, $targets, true)
+                || in_array($bare, $targets, true)
+                || in_array($path, $targets, true)
+                || in_array(ltrim($path, '/'), $targets, true);
+        }
+        if (is_array($value)) {
+            foreach ($value as $child) {
+                if ($this->valueContainsUrl($child, $targets)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function settingUsageLabel($setting, array $targets): string
+    {
+        if ($setting->key === 'company' && is_array($setting->value)) {
+            $fields = [];
+            foreach (['logo' => 'Site logo', 'favicon' => 'Favicon', 'preloaderLogo' => 'Preloader'] as $field => $label) {
+                if ($this->valueContainsUrl($setting->value[$field] ?? null, $targets)) {
+                    $fields[] = $label;
+                }
+            }
+
+            return $fields ? implode(', ', $fields) : 'Organisation';
+        }
+
+        return (string) $setting->key;
     }
 
     private function rewriteStoredUrls(?string $from, string $to): void

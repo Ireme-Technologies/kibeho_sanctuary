@@ -4,6 +4,7 @@ import { useLocale } from '@context/LocaleContext'
 import { fetchMassSchedules } from '@api/cms'
 import { formatMassTime, formatRecurrence } from '@utils/eventTime'
 import RichText from '@components/ui/RichText'
+import { resolveSectionContent } from '@data/pages/mergePageContent'
 import styles from './CatalogPage.module.css'
 
 const stripHtml = (html) =>
@@ -15,7 +16,7 @@ const stripHtml = (html) =>
 export default function MassSchedulePage() {
   const { section, resolveHeaderImage } = useContent()
   const { locale } = useLocale()
-  const hero = section('shrine.mass-schedule', {})
+  const hero = resolveSectionContent(section, 'shrine.mass-schedule')
   const [rows, setRows] = useState([])
   const [error, setError] = useState('')
 

@@ -158,10 +158,12 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
 
     Route::get('/media', [MediaController::class, 'index']);
     Route::get('/media/site-assets', [MediaController::class, 'siteAssets']);
+    Route::get('/media/site-assets/usage', [MediaController::class, 'siteAssetUsage']);
     Route::post('/media', [MediaController::class, 'store']);
     Route::post('/media/site-assets/replace', [MediaController::class, 'replaceSiteAsset']);
     Route::post('/media/site-assets/delete', [MediaController::class, 'destroySiteAsset']);
     Route::post('/media/site-assets/delete-all', [MediaController::class, 'destroyAllSiteAssets']);
+    Route::get('/media/{media}/usage', [MediaController::class, 'usage']);
     Route::post('/media/{media}/replace', [MediaController::class, 'replace']);
     Route::put('/media/reorder', [MediaController::class, 'reorder']);
     Route::put('/media/{media}', [MediaController::class, 'update']);

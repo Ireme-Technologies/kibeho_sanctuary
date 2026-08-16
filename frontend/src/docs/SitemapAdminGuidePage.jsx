@@ -457,7 +457,7 @@ export default function SitemapAdminGuidePage() {
                 </tr>
                 <tr>
                   <td>Gallery / Media</td>
-                  <td>Upload images &amp; documents</td>
+                  <td>Upload images &amp; documents; public gallery vs permanent delete</td>
                 </tr>
                 <tr>
                   <td>Pilgrim Enquiries</td>
@@ -777,8 +777,13 @@ export default function SitemapAdminGuidePage() {
               <li>Open <strong>Gallery / Media</strong>.</li>
               <li>Upload JPG/PNG/WebP for images or PDF for documents (reports, leaflets).</li>
               <li>
-                Optionally mark an image <strong>show in gallery</strong> so it appears on{' '}
-                <code>/gallery</code>.
+                Open the <strong>Public gallery</strong> tab to choose which photos appear on{' '}
+                <code>/gallery</code>. Add from the library or upload a new file. Removing an image there
+                only hides it — the file stays until you delete it on <strong>Site images</strong>.
+              </li>
+              <li>
+                On <strong>Site images</strong>, you will see every photo. Removing a file there deletes it
+                permanently after a list of pages that still use it — replace those first.
               </li>
               <li>
                 On a page, news item, or directory entry, choose the uploaded file as the featured or block

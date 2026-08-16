@@ -66,6 +66,13 @@ export default function ListEditor({
                         </option>
                       ))}
                     </select>
+                  ) : field.type === 'textarea' ? (
+                    <textarea
+                      rows={field.rows || 3}
+                      value={row[field.key] || ''}
+                      placeholder={field.placeholder || ''}
+                      onChange={(e) => updateRow(index, field.key, e.target.value)}
+                    />
                   ) : (
                     <input
                       value={row[field.key] || ''}

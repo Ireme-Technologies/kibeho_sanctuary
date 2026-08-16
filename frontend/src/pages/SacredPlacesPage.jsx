@@ -4,13 +4,14 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchSacredPlaces } from '@api/cms'
 import RichText from '@components/ui/RichText'
+import { resolveSectionContent } from '@data/pages/mergePageContent'
 import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
 
 export default function SacredPlacesPage({ type: typeProp }) {
   const { pathname } = useLocation()
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
-  const { locale } = useLocale()
+  const { locale, t } = useLocale()
 
   const type = useMemo(() => {
     if (typeProp) return typeProp
@@ -18,7 +19,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
   }, [typeProp, pathname])
 
   const sectionKey = type === 'apparition_site' ? 'shrine.apparition-sites' : 'shrine.churches'
-  const hero = section(sectionKey, {})
+  const hero = resolveSectionContent(section, sectionKey)
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
 
@@ -72,7 +73,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
                 {item.location ? <p className={styles.meta}>{item.location}</p> : null}
                 <h2>{item.name || item.title}</h2>
                 {cardExcerpt(item) ? <p className={styles.excerpt}>{cardExcerpt(item)}</p> : null}
-                <span className={styles.cta}>Learn more →</span>
+                <span className={styles.cta}>{t('learnMore')} →</span>
               </div>
             </Link>
           ))}

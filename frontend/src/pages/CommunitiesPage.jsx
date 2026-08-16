@@ -4,13 +4,14 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchCommunities } from '@api/cms'
 import RichText from '@components/ui/RichText'
+import { resolveSectionContent } from '@data/pages/mergePageContent'
 import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
 
 export default function CommunitiesPage() {
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
-  const { locale } = useLocale()
-  const hero = section('our-lady.communities', {})
+  const { locale, t } = useLocale()
+  const hero = resolveSectionContent(section, 'our-lady.communities')
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
 
@@ -53,7 +54,7 @@ export default function CommunitiesPage() {
                 {item.location ? <p className={styles.meta}>{item.location}</p> : null}
                 <h2>{item.name || item.title}</h2>
                 {cardExcerpt(item) ? <p className={styles.excerpt}>{cardExcerpt(item)}</p> : null}
-                <span className={styles.cta}>Learn more →</span>
+                <span className={styles.cta}>{t('learnMore')} →</span>
               </div>
             </Link>
           ))}

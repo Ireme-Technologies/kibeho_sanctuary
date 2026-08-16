@@ -45,6 +45,7 @@ export function closeNotify() {
 export function confirmAction({
   title = 'Please confirm',
   text,
+  html,
   confirmLabel = 'Continue',
   cancelLabel = 'Cancel',
   icon = 'question',
@@ -54,7 +55,7 @@ export function confirmAction({
     .fire({
       icon,
       title,
-      text,
+      ...(html ? { html } : { text }),
       showCancelButton: true,
       focusCancel: true,
       reverseButtons: true,

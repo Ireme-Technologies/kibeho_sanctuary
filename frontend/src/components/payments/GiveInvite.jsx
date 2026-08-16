@@ -111,19 +111,33 @@ const INVOLVE = {
   },
 }
 
-export function InvolveMore({ variant = 'donation' }) {
+export function InvolveMore({ variant = 'donation', title, lead, links }) {
   const { t } = useLocale()
   const data = INVOLVE[variant] || INVOLVE.donation
+  const heading = title || t(data.title)
+  const intro = lead || t(data.lead)
+  const cards =
+    Array.isArray(links) && links.length
+      ? links.map((item) => ({
+          to: item.path || item.to,
+          title: item.label || t(item.title),
+          text: item.label ? item.text : t(item.text),
+        }))
+      : data.links.map((item) => ({
+          to: item.to,
+          title: t(item.title),
+          text: t(item.text),
+        }))
 
   return (
     <section className={styles.involve} id="join" aria-labelledby="involve-heading">
-      <h2 id="involve-heading">{t(data.title)}</h2>
-      <p className={styles.involveLead}>{t(data.lead)}</p>
+      <h2 id="involve-heading">{heading}</h2>
+      <p className={styles.involveLead}>{intro}</p>
       <nav className={styles.involveGrid}>
-        {data.links.map((item) => (
+        {cards.map((item) => (
           <Link key={item.to} to={item.to} className={styles.involveCard}>
-            <strong>{t(item.title)}</strong>
-            <span>{t(item.text)}</span>
+            <strong>{item.title}</strong>
+            <span>{item.text}</span>
           </Link>
         ))}
       </nav>

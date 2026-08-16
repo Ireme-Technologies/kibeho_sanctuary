@@ -281,6 +281,15 @@ export async function fetchSiteAssets() {
   return api('/api/media/site-assets')
 }
 
+export async function fetchMediaUsage(id) {
+  return api(`/api/media/${id}/usage`)
+}
+
+export async function fetchSiteAssetUsage(path) {
+  const query = new URLSearchParams({ path }).toString()
+  return api(`/api/media/site-assets/usage?${query}`)
+}
+
 export async function replaceSiteAsset(file, path, role = 'site') {
   await ensureCsrf()
   const form = new FormData()

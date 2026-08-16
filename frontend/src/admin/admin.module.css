@@ -2100,6 +2100,10 @@
   margin-top: 0.45rem;
 }
 
+.topbar .assetActions {
+  margin-top: 0;
+}
+
 @media (max-width: 900px) {
   .shell {
     grid-template-columns: 1fr;
