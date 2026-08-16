@@ -291,10 +291,12 @@ export async function replaceSiteAsset(file, path, role = 'site') {
 }
 
 export async function deleteSiteAsset(path) {
+  await ensureCsrf()
   return api('/api/media/site-assets/delete', { method: 'POST', body: { path } })
 }
 
 export async function deleteAllSiteAssets() {
+  await ensureCsrf()
   return api('/api/media/site-assets/delete-all', { method: 'POST', body: {} })
 }
 

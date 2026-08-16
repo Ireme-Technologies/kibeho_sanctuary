@@ -19,6 +19,9 @@ rm -rf "$PUBLIC_DIR/assets" "$PUBLIC_DIR/.vite"
 
 npm run build
 
+cd "$ROOT_DIR/backend"
+php artisan site:prune-removed-assets || true
+
 if [[ ! -f "$PUBLIC_DIR/index.html" ]]; then
   echo "ERROR: build did not write backend/public/index.html" >&2
   exit 1

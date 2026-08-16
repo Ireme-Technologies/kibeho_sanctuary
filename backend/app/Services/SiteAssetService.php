@@ -15,10 +15,13 @@ class SiteAssetService
 {
     private const IMAGE_EXT = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'ico'];
 
+    private const REMOVED_SETTING_KEY = 'site_removed_assets';
+
     public function __construct(private ImageOptimizer $optimizer) {}
 
     public function inventory(): array
     {
+        $this->pruneRemovedFiles();
         $company = $this->company();
 
         return [
@@ -30,6 +33,7 @@ class SiteAssetService
     public function replacePublicPath(string $rawPath, UploadedFile $file, ?string $role = null): array
     {
         $relative = $this->normalizePublicPath($rawPath);
+        $this->unmarkRemoved($relative);
         $processed = $this->optimizer->process($file);
         $written = $this->writePublicFile($relative, $processed['contents']);
         $versioned = '/'.$relative.'?v='.time();
@@ -101,6 +105,7 @@ class SiteAssetService
 
     private function siteImages(array $company): array
     {
+        $removed = array_flip($this->removedPaths());
         $paths = [];
         foreach ($this->imageRoots() as $root) {
             if (! is_dir($root)) {
@@ -111,14 +116,23 @@ class SiteAssetService
                 if (! in_array($ext, self::IMAGE_EXT, true)) {
                     continue;
                 }
+                if ((int) $file->getSize() <= 0) {
+                    continue;
+                }
                 $relative = 'images/'.ltrim(str_replace('\\', '/', $file->getRelativePathname()), '/');
+                if (isset($removed[$relative])) {
+                    continue;
+                }
                 $paths[$relative] = true;
             }
         }
 
         foreach ($this->collectImageUrls() as $url) {
             $path = ltrim(parse_url($url, PHP_URL_PATH) ?: '', '/');
-            if (str_starts_with($path, 'images/')) {
+            if (! str_starts_with($path, 'images/') || isset($removed[$path])) {
+                continue;
+            }
+            if ($this->firstExisting($path)) {
                 $paths[$path] = true;
             }
         }
@@ -127,14 +141,18 @@ class SiteAssetService
 
         $items = [];
         foreach (array_keys($paths) as $relative) {
-            if (in_array($relative, $brandingPaths, true)) {
+            if (in_array($relative, $brandingPaths, true) || $this->isBrandingPath($relative)) {
                 continue;
             }
-            $items[] = $this->decoratePublicItem([
+            $item = $this->decoratePublicItem([
                 'role' => 'site',
                 'label' => basename($relative),
                 'path' => $relative,
             ]);
+            if ($item['exists'] === false || (int) ($item['size'] ?? 0) <= 0) {
+                continue;
+            }
+            $items[] = $item;
         }
 
         usort($items, fn ($a, $b) => strcasecmp($a['path'], $b['path']));
@@ -151,12 +169,19 @@ class SiteAssetService
             ]);
         }
 
-        $deleted = $this->deletePublicFiles($relative);
+        $this->markRemoved($relative);
+        $files = $this->deletePublicFiles($relative);
         $this->clearStoredPublicUrl($relative);
+        $gone = ! $this->liveFileStillPresent($relative);
 
         return [
             'path' => $relative,
-            'deleted' => $deleted > 0,
+            'deleted' => $gone,
+            'files' => $files,
+            'pending' => ! $gone,
+            'message' => $gone
+                ? null
+                : 'The file is marked removed. If it is still visible on the live site, the web server could not delete a git-owned file; it will be deleted on the next deploy.',
             'inventory' => $this->inventory(),
         ];
     }
@@ -166,22 +191,62 @@ class SiteAssetService
         $items = $this->siteImages($this->company());
         $removed = 0;
         $files = 0;
+        $pending = [];
 
         foreach ($items as $item) {
             $relative = $item['path'] ?? '';
             if (! $relative || $this->isBrandingPath($relative)) {
                 continue;
             }
+            $this->markRemoved($relative);
             $files += $this->deletePublicFiles($relative);
             $this->clearStoredPublicUrl($relative);
             $removed++;
+            if ($this->liveFileStillPresent($relative)) {
+                $pending[] = $relative;
+            }
         }
+
+        $this->pruneRemovedFiles();
 
         return [
             'removed' => $removed,
             'files' => $files,
+            'pending' => count($pending),
+            'pending_paths' => $pending,
+            'deleted' => $removed > 0 && ! $pending,
+            'message' => $pending
+                ? count($pending).' file(s) are marked removed but could not be deleted yet. They will be removed from the live web root on the next deploy.'
+                : null,
             'inventory' => $this->inventory(),
         ];
+    }
+
+    public function pruneRemovedFiles(): array
+    {
+        $deleted = 0;
+        $missing = 0;
+        $failed = 0;
+        $errors = [];
+
+        foreach ($this->removedPaths() as $relative) {
+            if ($this->isBrandingPath($relative)) {
+                continue;
+            }
+            $before = $this->liveFileStillPresent($relative);
+            $count = $this->deletePublicFiles($relative);
+            $deleted += $count;
+            if (! $this->liveFileStillPresent($relative)) {
+                if (! $before) {
+                    $missing++;
+                }
+                continue;
+            }
+            $failed++;
+            $errors[] = $relative;
+        }
+
+        return compact('deleted', 'missing', 'failed', 'errors');
     }
 
     private function brandingPaths(): array
@@ -205,12 +270,122 @@ class SiteAssetService
     {
         $deleted = 0;
         foreach ($this->writeTargets($relative) as $abs) {
-            if (is_file($abs) && File::delete($abs)) {
+            if ($this->forceDeleteFile($abs)) {
                 $deleted++;
             }
         }
 
         return $deleted;
+    }
+
+    private function forceDeleteFile(string $abs): bool
+    {
+        clearstatcache(true, $abs);
+        if (is_link($abs)) {
+            @chmod($abs, 0666);
+            if (@unlink($abs)) {
+                return true;
+            }
+        }
+        if (! is_file($abs)) {
+            return true;
+        }
+
+        @chmod(dirname($abs), 0775);
+        @chmod($abs, 0666);
+
+        if (@unlink($abs) || File::delete($abs)) {
+            clearstatcache(true, $abs);
+
+            return ! is_file($abs);
+        }
+
+        $handle = @fopen($abs, 'c+');
+        if ($handle) {
+            @ftruncate($handle, 0);
+            @fclose($handle);
+            @unlink($abs);
+        } else {
+            @file_put_contents($abs, '');
+            @unlink($abs);
+        }
+
+        clearstatcache(true, $abs);
+        if (! is_file($abs)) {
+            return true;
+        }
+
+        return is_writable($abs) && @file_put_contents($abs, '') !== false && (int) filesize($abs) === 0;
+    }
+
+    private function liveFileStillPresent(string $relative): bool
+    {
+        $abs = public_path($relative);
+        clearstatcache(true, $abs);
+
+        return is_file($abs) && (int) filesize($abs) > 0;
+    }
+
+    private function removedPaths(): array
+    {
+        $fromSettings = [];
+        $raw = Setting::query()->where('key', self::REMOVED_SETTING_KEY)->value('value');
+        if (is_string($raw)) {
+            $raw = json_decode($raw, true);
+        }
+        if (is_array($raw)) {
+            $fromSettings = $raw['paths'] ?? (array_is_list($raw) ? $raw : []);
+        }
+
+        $fromFile = [];
+        $file = $this->removedStoragePath();
+        if (is_file($file)) {
+            $decoded = json_decode((string) File::get($file), true);
+            if (is_array($decoded)) {
+                $fromFile = $decoded['paths'] ?? (array_is_list($decoded) ? $decoded : []);
+            }
+        }
+
+        $paths = [];
+        foreach ([...$fromSettings, ...$fromFile] as $path) {
+            $path = ltrim(str_replace('\\', '/', (string) $path), '/');
+            if ($path !== '' && str_starts_with($path, 'images/')) {
+                $paths[$path] = true;
+            }
+        }
+
+        return array_keys($paths);
+    }
+
+    private function markRemoved(string $relative): void
+    {
+        $paths = $this->removedPaths();
+        if (! in_array($relative, $paths, true)) {
+            $paths[] = $relative;
+        }
+        $this->saveRemovedPaths($paths);
+    }
+
+    private function unmarkRemoved(string $relative): void
+    {
+        $this->saveRemovedPaths(array_values(array_filter(
+            $this->removedPaths(),
+            fn ($path) => $path !== $relative
+        )));
+    }
+
+    private function saveRemovedPaths(array $paths): void
+    {
+        $paths = array_values(array_unique(array_filter($paths)));
+        $payload = ['paths' => $paths];
+        Setting::updateOrCreate(['key' => self::REMOVED_SETTING_KEY], ['value' => $payload]);
+        File::ensureDirectoryExists(dirname($this->removedStoragePath()));
+        File::put($this->removedStoragePath(), json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    }
+
+    private function removedStoragePath(): string
+    {
+        return storage_path('app/removed-site-assets.json');
     }
 
     private function clearStoredPublicUrl(string $relative): void

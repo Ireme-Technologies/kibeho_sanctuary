@@ -214,7 +214,16 @@ export default function GalleryAdminPage() {
       const result = await deleteSiteAsset(item.path)
       applyInventory(result.inventory)
       await refresh()
-      setFlash({ type: 'success', message: `${item.label || item.path} removed.` })
+      if (result.deleted === false || result.pending) {
+        setFlash({
+          type: 'error',
+          message:
+            result.message ||
+            `${item.label || item.path} is marked removed but the live file could not be deleted yet.`,
+        })
+      } else {
+        setFlash({ type: 'success', message: `${item.label || item.path} removed.` })
+      }
     } catch (err) {
       setFlash({ type: 'error', message: err.errors?.path?.[0] || err.message || 'Remove failed' })
     } finally {
@@ -244,10 +253,19 @@ export default function GalleryAdminPage() {
       applyInventory(result.inventory)
       await refresh()
       const n = result.removed ?? count
-      setFlash({
-        type: 'success',
-        message: n === 1 ? '1 site image removed.' : `${n} site images removed.`,
-      })
+      if (result.pending) {
+        setFlash({
+          type: 'error',
+          message:
+            result.message ||
+            `${n} marked removed, but ${result.pending} file(s) could not be deleted from the live folder yet.`,
+        })
+      } else {
+        setFlash({
+          type: 'success',
+          message: n === 1 ? '1 site image removed.' : `${n} site images removed.`,
+        })
+      }
     } catch (err) {
       setFlash({ type: 'error', message: err.message || 'Failed to remove site images.' })
     } finally {
@@ -387,6 +405,7 @@ export default function GalleryAdminPage() {
           <p className={styles.muted}>
             These are the static <code>/images/…</code> files used by seeders and fallbacks. Remove them when you
             want the live site to use only photos you upload. Logo and brand files stay on the Logo & brand tab.
+            Removals are stored on the server so the next deploy will not copy these files back.
           </p>
           <div className={styles.field} style={{ maxWidth: 360, marginBottom: '1rem' }}>
             <label htmlFor="site-search">Filter</label>

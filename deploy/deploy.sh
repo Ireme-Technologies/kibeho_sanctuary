@@ -30,10 +30,22 @@ if [[ "${BUILD_FRONTEND:-0}" == "1" ]]; then
   npm ci
   rm -rf "$BACKEND_DIR/public/assets" "$BACKEND_DIR/public/.vite"
   npm run build
+  cd "$BACKEND_DIR"
 else
   echo "Skipping frontend build (using committed backend/public SPA)."
   echo "To build on the server anyway: BUILD_FRONTEND=1 $0"
 fi
+
+# Media library "Remove" must survive git pull + the copy above.
+cd "$BACKEND_DIR"
+if [[ -d "$BACKEND_DIR/public/images" ]]; then
+  chmod -R u+rwX,g+rwX "$BACKEND_DIR/public/images" || true
+  WEB_USER="${WEB_USER:-www-data}"
+  if id "$WEB_USER" >/dev/null 2>&1; then
+    chgrp -R "$WEB_USER" "$BACKEND_DIR/public/images" || true
+  fi
+fi
+php artisan site:prune-removed-assets || true
 
 if [[ ! -f "$BACKEND_DIR/public/index.html" ]]; then
   echo "ERROR: backend/public/index.html is missing."
