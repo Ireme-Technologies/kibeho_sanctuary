@@ -1,0 +1,201 @@
+.wrap {
+  margin: 0 0 2rem;
+}
+
+.plan {
+  margin-bottom: 1.75rem;
+  padding: 1.25rem 1.25rem 1.5rem;
+  border-radius: 22px;
+  background: #fffdf8;
+  border: 1px solid #eadfce;
+}
+
+.planLabel {
+  margin: 0 0 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-sky);
+}
+
+.hill {
+  position: relative;
+  min-height: 280px;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    url('/images/sanctuary/hills.jpg') center / cover no-repeat;
+}
+
+.hill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 40, 71, 0.38);
+}
+
+.pin {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 16rem;
+  padding: 0.4rem 0.7rem 0.4rem 0.4rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-navy-deep);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.pin span {
+  display: grid;
+  place-items: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  background: var(--color-navy);
+  color: #fff;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.pin:hover {
+  background: var(--color-sky-light);
+}
+
+.arrival { top: 12%; left: 8%; }
+.liturgy { top: 28%; left: 42%; }
+.memory { top: 48%; left: 18%; }
+.spring { top: 62%; right: 8%; left: auto; }
+.path { bottom: 14%; left: 28%; }
+.silence { top: 18%; right: 10%; left: auto; }
+
+.stops {
+  list-style: none;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.stop {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.65rem;
+  border-radius: 18px;
+  background: #fffdf8;
+  border: 1px solid #eadfce;
+  color: inherit;
+  text-decoration: none;
+}
+
+.stop img {
+  width: 100%;
+  height: 5.5rem;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.stop h3 {
+  margin: 0.2rem 0 0.35rem;
+  font-size: 1.15rem;
+  color: var(--color-navy);
+}
+
+.stop p {
+  margin: 0;
+  color: var(--color-gray-text);
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+.num {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--color-navy);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.directory h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+  color: var(--color-navy);
+}
+
+.directory ul {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.directory a {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--color-gray-border);
+  background: var(--color-white);
+  color: inherit;
+  text-decoration: none;
+}
+
+.directory em {
+  font-style: normal;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-sky);
+}
+
+.directory strong {
+  color: var(--color-navy);
+}
+
+.directory span {
+  color: var(--color-gray-text);
+  font-size: 0.95rem;
+}
+
+.note {
+  margin: 0;
+  padding: 1.1rem 1.2rem;
+  border-left: 4px solid #c4a056;
+  background: #fffdf8;
+  color: var(--color-navy-deep);
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 720px) {
+  .hill {
+    min-height: 220px;
+  }
+
+  .pin {
+    max-width: 46%;
+    font-size: 0.78rem;
+  }
+
+  .stop {
+    grid-template-columns: 1fr;
+  }
+
+  .stop img {
+    height: 8rem;
+  }
+}

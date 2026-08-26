@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
 import { useInView } from '@hooks/useInView'
 import styles from './HomeNewsSimple.module.css'
 
@@ -34,6 +35,7 @@ function formatDate(value) {
 
 export default function HomeNewsSimple() {
   const { blogPosts } = useContent()
+  const { t } = useLocale()
   const posts = (blogPosts || []).slice(0, 3)
   const [ref, inView] = useInView(0.12)
 
@@ -42,12 +44,12 @@ export default function HomeNewsSimple() {
       <div className="container">
         <div className={styles.head}>
           <div>
-            <p className={styles.eyebrow}>From the Sanctuary</p>
-            <h2>Latest News</h2>
-            <p>Activities, recent events, and announcements for pilgrims.</p>
+            <p className={styles.eyebrow}>{t('home.newsEyebrow')}</p>
+            <h2>{t('home.newsHeading')}</h2>
+            <p>{t('home.newsSubtext')}</p>
           </div>
           <Link to="/news" className={styles.more}>
-            All news →
+            {t('home.allNews')} →
           </Link>
         </div>
         <div className={`${styles.grid} ${inView ? styles.visible : ''}`}>

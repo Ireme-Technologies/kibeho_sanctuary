@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, BookOpen, BadgeCheck, Church, Users, Star } from 'lucide-react'
+import { ChevronLeft, ChevronRight, BookOpen, BadgeCheck, Church, Users } from 'lucide-react'
 import { whyVisit } from '@data/home/sanctuaryHome'
 import { mergePageContent } from '@data/pages/mergePageContent'
 import { useContent } from '@context/ContentContext'
@@ -19,32 +19,6 @@ const whyIcons = {
 }
 
 const ACCOMMODATION_CATEGORIES = ['Hotel', 'Guest House', 'Apartment']
-
-function Stars({ rating }) {
-  if (rating == null || Number.isNaN(Number(rating))) return null
-  const value = Math.max(0, Math.min(5, Number(rating)))
-  const full = Math.floor(value)
-  const hasHalf = value - full >= 0.25 && value - full < 0.75
-  const roundedUp = value - full >= 0.75
-
-  return (
-    <div className={styles.stars} aria-label={`${value} out of 5 stars`}>
-      {Array.from({ length: 5 }, (_, i) => {
-        const filled = i < full || (i === full && roundedUp) || (i === full && hasHalf)
-        return (
-          <Star
-            key={i}
-            size={15}
-            className={filled ? styles.starFilled : styles.starEmpty}
-            fill={i < full || (i === full && roundedUp) ? 'currentColor' : 'none'}
-            aria-hidden="true"
-          />
-        )
-      })}
-      <span className={styles.ratingValue}>{value.toFixed(1)}</span>
-    </div>
-  )
-}
 
 export default function HomePilgrimStrip() {
   const { section, upcomingPilgrimages, projects } = useContent()
@@ -185,21 +159,23 @@ export default function HomePilgrimStrip() {
                     />
                   </div>
                   <div className={styles.stayBody}>
-                    <span className={styles.stayCategory}>{current.category}</span>
+                    <span className={styles.stayCategory}>
+                      {[current.category, current.distance].filter(Boolean).join(' · ') || t('accommodation')}
+                    </span>
                     <h3>{current.title}</h3>
-                    <Stars rating={current.rating} />
                     {(() => {
                       const bookTo =
                         current.bookingUrl ||
                         `/contact?topic=accommodation&facility=${encodeURIComponent(current.slug || '')}`
                       const isExternal = /^https?:\/\//i.test(bookTo)
+                      const label = current.bookingUrl ? t('bookNow') : t('askOffice')
                       return isExternal ? (
                         <a href={bookTo} className={styles.bookBtn} target="_blank" rel="noopener noreferrer">
-                          {t('bookNow')}
+                          {label}
                         </a>
                       ) : (
                         <Link to={bookTo} className={styles.bookBtn}>
-                          {t('bookNow')}
+                          {label}
                         </Link>
                       )
                     })()}

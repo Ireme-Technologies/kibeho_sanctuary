@@ -1,7 +1,7 @@
 export const DEFAULT_LOGO = '/images/logo/logo-transparent.png'
 export const DEFAULT_FAVICON = '/images/logo/favicon.svg'
-export const PRELOADER_NAME = 'Kibeho Sanctuary'
-export const PRELOADER_TAG = 'Shrine of Our Lady of Kibeho'
+export const PRELOADER_NAME = 'Shrine of Our Lady of Kibeho'
+export const PRELOADER_TAG = 'Diocese of Gikongoro'
 
 export function isStaleBrandAsset(value) {
   return /rvg|royal\s*ventures/i.test(String(value || ''))

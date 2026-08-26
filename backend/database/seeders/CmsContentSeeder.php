@@ -208,7 +208,7 @@ class CmsContentSeeder extends Seeder
             SacredPlace::create(array_merge($place, [
                 'cover_image' => '',
                 'gallery' => [],
-                'location' => 'Kibeho Sanctuary',
+                'location' => 'Shrine of Our Lady of Kibeho',
                 'is_published' => true,
             ]));
         }

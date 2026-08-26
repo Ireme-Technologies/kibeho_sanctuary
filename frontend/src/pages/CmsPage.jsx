@@ -12,7 +12,9 @@ import { parseYoutubeId, youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } fro
 import ContentLocaleNotice, { hasLocaleTranslation } from '@components/ContentLocaleNotice'
 import OfferingForm from '@components/OfferingForm'
 import GiveInvite, { ActionInvite, InvolveMore, isStaleInviteCopy, isStalePaymentCopy } from '@components/payments/GiveInvite'
+import ShrineMapGuide from '@components/shrine/ShrineMapGuide'
 import RichText from '@components/ui/RichText'
+import { applyPageSeo, stripHtml } from '@utils/seo'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
 
@@ -283,9 +285,13 @@ export default function CmsPage() {
 
   useEffect(() => {
     if (!key) return
-    const brand = company?.name || t('brand.name')
-    document.title = rawTitle ? `${rawTitle} | ${brand}` : brand
-  }, [key, rawTitle, company?.name, t])
+    applyPageSeo({
+      title: rawTitle || company?.name || t('brand.name'),
+      description: data.seoDescription || stripHtml(data.intro) || data.subtitle,
+      image: data.heroImage,
+      path: pathname,
+    })
+  }, [key, rawTitle, company?.name, t, data.seoDescription, data.intro, data.subtitle, data.heroImage, pathname])
 
   const heroImage = resolveHeaderImage(data.heroImage)
   const actionPage = {
@@ -318,7 +324,9 @@ export default function CmsPage() {
         key?.startsWith('shrine.') ||
         key?.startsWith('pilgrimage.') ||
         key === 'support.vision' ||
-        key === 'support.master-plan',
+        key === 'support.master-plan' ||
+        key === 'support.transparency' ||
+        key === 'support.annual-reports',
     )
 
   if (!key) return <NotFoundPage />
@@ -370,6 +378,8 @@ export default function CmsPage() {
         {!isAction
           ? blocks.map((block, index) => <Block key={`${block.type}-${index}`} block={block} />)
           : null}
+
+        {key === 'shrine.map' ? <ShrineMapGuide /> : null}
 
         {actionPage?.kind === 'candle' ? <OfferingForm kind="candle" /> : null}
         {actionPage?.kind === 'mass' ? <OfferingForm kind="mass" /> : null}

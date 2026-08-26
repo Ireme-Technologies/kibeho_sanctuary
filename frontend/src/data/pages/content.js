@@ -69,27 +69,33 @@ export const pageFallbacks = {
   'our-lady.apparitions': page({
       title: "The Apparitions",
       subtitle: "1981–1989 · Kibeho, Rwanda",
-      intro: "Between 1981 and 1989, the Blessed Virgin Mary appeared in Kibeho under the name Nyina wa Jambo — Mother of the Word. The apparitions called the Church and the world to conversion, prayer, and reconciliation.",
+      seoDescription:
+        "Between 1981 and 1989 the Blessed Virgin Mary appeared in Kibeho as Nyina wa Jambo — Mother of the Word. A call to conversion, prayer, and reconciliation.",
+      intro: "<p>The first time the Virgin Mary appeared to Alphonsine Mumureke, a student in the school now called Groupe Scolaire Mère du Verbe Kibeho, was on 28 November 1981, in a dining hall. Alphonsine saw a beautiful woman who presented herself as <em>Nyina wa Jambo</em> — Mother of the Word.</p><p>On 12 January 1982 the Blessed Virgin appeared to Nathalie Mukamazimpaka in the dormitory, and on 2 March 1982 to Marie Claire Mukangango. Others reported visions, but only these three visionaries were approved by the Church in 2001 after a thorough investigation.</p>",
       blocks: [
         {
-          type: "list",
+          type: "heading",
+          text: "A chronology",
+        },
+        {
+          type: "steps",
           items: [
-            "Public apparitions beginning on 28 November 1981",
-            "A call to conversion of heart and sincere prayer",
-            "A prophetic invitation to reconciliation and peace",
-            "Recognition of the authenticity of the apparitions by the Church",
+            { title: "28 November 1981", text: "<p>First apparition to Alphonsine Mumureke in the school dining hall.</p>" },
+            { title: "12 January 1982", text: "<p>Apparitions begin for Nathalie Mukamazimpaka, in the dormitory.</p>" },
+            { title: "2 March 1982", text: "<p>Apparitions begin for Marie Claire Mukangango, later linked with the Seven Sorrows Rosary.</p>" },
+            { title: "15 August 1982 onward", text: "<p>Many public apparitions are held outdoors and at the podium, as crowds grow.</p>" },
+            { title: "28 November 1989", text: "<p>The cycle of recognised apparitions associated with Alphonsine comes to its close.</p>" },
+            { title: "29 June 2001", text: "<p>The Bishop of Gikongoro declares the apparitions of the three visionaries authentic.</p>", path: "/our-lady/church-recognition", linkLabel: "Church Recognition" },
           ],
+        },
+        {
+          type: "note",
+          text: "<p>From 28 November 1981 to May 1982, apparitions took place in the dormitory, later transformed into the Chapel of the Apparitions.</p>",
         },
       ],
       cta: {
-        primary: {
-          label: "The Visionaries",
-          path: "/our-lady/visionaries",
-        },
-        secondary: {
-          label: "Church Recognition",
-          path: "/our-lady/church-recognition",
-        },
+        primary: { label: "The Visionaries", path: "/our-lady/visionaries" },
+        secondary: { label: "Church Recognition", path: "/our-lady/church-recognition" },
       },
     }),
 
@@ -154,17 +160,31 @@ export const pageFallbacks = {
 
   'our-lady.church-recognition': page({
       title: "Church Recognition",
-      subtitle: "Declared authentic by the Catholic Church",
-      intro: "The Diocese of Gikongoro, after careful investigation, declared the apparitions of Kibeho authentic. Kibeho is the first — and to date the only — Marian apparition site in Africa officially recognised by the Church.",
+      subtitle: "Declared authentic on 29 June 2001",
+      seoDescription:
+        "On 29 June 2001 the Bishop of Gikongoro declared the apparitions of Kibeho authentic — the first approved Marian apparition site on the African continent.",
+      intro: "<p>On 29 June 2001, after the approval of the Holy See, the Bishop of Gikongoro, Mgr Augustin Misago, issued the declaration bearing the final judgement on the apparitions of Kibeho. Bishop Jean Baptiste Gahamanyi had earlier created two commissions: medical (March 1982) and theological (May 1982).</p><p>Kibeho stands with Guadalupe, Lourdes, and Fatima as a recognised Marian apparition — the first approved on the African continent.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "What the Church recognised",
+        },
+        {
+          type: "paragraph",
+          text: "<p>The Church recognised the authenticity of the apparitions associated with three visionaries: Alphonsine Mumureke, Nathalie Mukamazimpaka, and Marie Claire Mukangango. Other reported visions were not included in that declaration.</p>",
+        },
+        {
+          type: "cards",
+          items: [
+            { title: "1982", text: "<p>Medical and theological commissions begin their work in the Diocese.</p>" },
+            { title: "29 June 2001", text: "<p>Public declaration of authenticity by the Bishop of Gikongoro.</p>" },
+            { title: "Today", text: "<p>Pilgrims from Rwanda and every nation come to pray at the Shrine.</p>" },
+          ],
+        },
+      ],
       cta: {
-        primary: {
-          label: "History",
-          path: "/our-lady/history",
-        },
-        secondary: {
-          label: "Welcome to the Shrine",
-          path: "/shrine/welcome",
-        },
+        primary: { label: "History", path: "/our-lady/history" },
+        secondary: { label: "Welcome to the Shrine", path: "/shrine/welcome" },
       },
     }),
 
@@ -301,16 +321,24 @@ export const pageFallbacks = {
       title: "Welcome",
       subtitle: "You are welcome at Kibeho",
       heroImage: "/images/sanctuary/welcome.jpg",
-      intro: "The Shrine of Our Lady of Kibeho welcomes pilgrims from Rwanda and around the world. Come to pray, to celebrate the sacraments, and to encounter the Mother of the Word.",
+      intro: "<p>The Shrine of Our Lady of Kibeho welcomes pilgrims from Rwanda and around the world. Come to pray, to celebrate the sacraments, and to encounter the Mother of the Word.</p><p>On ordinary days the grounds are quiet. On Marian feasts they fill with parishes, dioceses, and visitors from many nations. Either way, you are expected in peace.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "When you arrive",
+        },
+        {
+          type: "steps",
+          items: [
+            { title: "Make yourself known", text: "<p>Groups should contact the Pilgrimage Office before travelling, then present themselves at reception.</p>", path: "/pilgrimage/office", linkLabel: "Pilgrimage Office" },
+            { title: "Join the prayer of the day", text: "<p>Mass times, confession, and adoration are published on the schedule. Feast days may differ.</p>", path: "/shrine/mass-schedule", linkLabel: "Mass Schedule" },
+            { title: "Walk the holy places", text: "<p>Begin with the churches and apparition sites, then the Holy Spring and the Way of the Cross, at a prayerful pace.</p>", path: "/shrine/map", linkLabel: "Shrine Map" },
+          ],
+        },
+      ],
       cta: {
-        primary: {
-          label: "Practical Information",
-          path: "/pilgrimage/practical-information",
-        },
-        secondary: {
-          label: "Pilgrimage Office",
-          path: "/pilgrimage/office",
-        },
+        primary: { label: "Practical Information", path: "/pilgrimage/practical-information" },
+        secondary: { label: "Pilgrimage Office", path: "/pilgrimage/office" },
       },
     }),
 
@@ -346,50 +374,71 @@ export const pageFallbacks = {
 
   'shrine.holy-spring': page({
       title: "Holy Spring",
-      subtitle: "The Water of Kibeho",
+      subtitle: "The source of Mary",
       heroImage: "/images/sanctuary/activity-spring.jpg",
-      intro: "Pilgrims come to the Holy Spring in faith — a sign of God’s grace and a call to interior purification and trust.",
+      intro: "<p>Pilgrims come to the source of Mary in faith — a sign of God’s grace and a call to interior purification and trust. It is not a tourist stop. Approach in silence, with the prayer you brought, or with none.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "How pilgrims come to the water",
+        },
+        {
+          type: "paragraph",
+          text: "<p>Ask at reception for the path if you are visiting for the first time. Dress modestly, as at every holy place of the Shrine. Take only what you need; leave the spring as you found it, for those who come after you.</p>",
+        },
+        {
+          type: "note",
+          text: "<p>The spring is one place among the ways of Kibeho. Pair your visit with Mass, confession, or a slow walk of the Way of the Cross.</p>",
+        },
+      ],
       cta: {
-        primary: {
-          label: "Activities at the Shrine",
-          path: "/activities",
-        },
-        secondary: {
-          label: "Welcome",
-          path: "/shrine/welcome",
-        },
+        primary: { label: "Shrine Map", path: "/shrine/map" },
+        secondary: { label: "Welcome", path: "/shrine/welcome" },
       },
     }),
 
   'shrine.way-of-the-cross': page({
       title: "Way of the Cross",
       subtitle: "Walking with Christ",
-      intro: "Pray the Way of the Cross at the Shrine — a path of meditation on the Passion of Christ in the company of Our Lady of Sorrows.",
+      heroImage: "/images/sanctuary/activity-rock.jpg",
+      intro: "<p>Pray the Way of the Cross at the Shrine — a path of meditation on the Passion of Christ in the company of Our Lady of Sorrows. Walk it slowly. The hillside of Kibeho is itself a teacher of patience.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "On the path",
+        },
+        {
+          type: "paragraph",
+          text: "<p>Fourteen stations mark the journey of Jesus to Calvary. At Kibeho this walk sits beside the devotion of the Seven Sorrows, which Our Lady asked the visionaries to pray. Groups may request a guided hour through the Pilgrimage Office.</p>",
+        },
+        {
+          type: "cards",
+          items: [
+            { title: "Alone or with others", text: "<p>Come in the quiet of the morning, or with your parish after Mass.</p>" },
+            { title: "Seven Sorrows", text: "<p>The Rosary of the Seven Sorrows is the distinctive prayer of Kibeho.</p>", path: "/spirituality/seven-sorrows-rosary" },
+            { title: "Find the path", text: "<p>The shrine map shows how the Way sits among the churches and the spring.</p>", path: "/shrine/map" },
+          ],
+        },
+      ],
       cta: {
-        primary: {
-          label: "Seven Sorrows Rosary",
-          path: "/spirituality/seven-sorrows-rosary",
-        },
-        secondary: {
-          label: "Meditations",
-          path: "/spirituality/meditations",
-        },
+        primary: { label: "Seven Sorrows Rosary", path: "/spirituality/seven-sorrows-rosary" },
+        secondary: { label: "Meditations", path: "/spirituality/meditations" },
       },
     }),
 
   'shrine.eucharistic-adorations': page({
-      title: "Eucharistic Adorations",
+      title: "Eucharistic Adoration",
       subtitle: "Stay with Me",
-      intro: "Join times of Eucharistic Adoration at the Shrine — silent prayer before the Blessed Sacrament, for personal intentions and for the world.",
+      intro: "<p>Join times of silent prayer before the Blessed Sacrament in the chapel of adoration — for personal intentions and for the world. Hours follow the liturgical life of the Shrine and are extended on feast days.</p>",
+      blocks: [
+        {
+          type: "paragraph",
+          text: "<p>Confirm the day’s hours on the Mass schedule, or ask at reception. You may leave an intention with the office, or simply sit.</p>",
+        },
+      ],
       cta: {
-        primary: {
-          label: "Mass Schedule",
-          path: "/shrine/mass-schedule",
-        },
-        secondary: {
-          label: "Request a Mass",
-          path: "/spirituality/request-a-mass",
-        },
+        primary: { label: "Mass Schedule", path: "/shrine/mass-schedule" },
+        secondary: { label: "Request a Mass", path: "/spirituality/request-a-mass" },
       },
     }),
 
@@ -435,28 +484,18 @@ export const pageFallbacks = {
   'shrine.map': page({
       title: "Shrine Map",
       subtitle: "Find your way around the Shrine",
-      intro: "An interactive map of the Shrine grounds is planned. For now, ask at the Pilgrimage Office for orientation to churches, apparition sites, the Holy Spring, and pilgrim facilities.",
+      seoDescription:
+        "A prayerful order of visit to the churches, apparition sites, Holy Spring, Way of the Cross, and chapel of adoration at the Shrine of Our Lady of Kibeho.",
+      intro: "<p>Use this guide to walk the Shrine without hurry. The numbered path is a suggestion, not a rule. On feast days, follow the ushers and the liturgy of the day.</p>",
       blocks: [
         {
-          type: "list",
-          items: [
-            "Churches and chapels",
-            "Apparition sites",
-            "Holy Spring",
-            "Way of the Cross",
-            "Pilgrim reception and facilities",
-          ],
+          type: "note",
+          text: "<p>The labelled plan below is for orientation. For GPS directions to Kibeho itself, see Transportation. Groups should still present themselves at reception.</p>",
         },
       ],
       cta: {
-        primary: {
-          label: "Welcome",
-          path: "/shrine/welcome",
-        },
-        secondary: {
-          label: "Getting here",
-          path: "/pilgrimage/transportation",
-        },
+        primary: { label: "Welcome", path: "/shrine/welcome" },
+        secondary: { label: "Getting here", path: "/pilgrimage/transportation" },
       },
     }),
 
@@ -540,28 +579,56 @@ export const pageFallbacks = {
 
   'pilgrimage.plan': page({
       title: "Plan your Pilgrimage",
-      subtitle: "Spiritual and practical preparation",
-      intro: "Prepare your heart through prayer, and organise travel, accommodation, and liturgy with the Pilgrimage Office — especially for groups and international pilgrims.",
+      subtitle: "Who is travelling, when, how, and whom to write",
+      seoDescription:
+        "Prepare a pilgrimage to the Shrine of Our Lady of Kibeho: dates, group size, travel from Kigali, lodging, and contact with the Pilgrimage Office.",
+      intro: "<p>Whether you come alone, with family, or with a parish group, the Shrine welcomes you. Follow these steps, then write to the Pilgrimage Office so liturgy, lodging, and a fitting welcome can be prepared.</p>",
       blocks: [
         {
-          type: "list",
+          type: "heading",
+          text: "A simple path",
+        },
+        {
+          type: "steps",
           items: [
-            "Contact the Pilgrimage Office with dates and group size",
-            "Arrange accommodation and transportation",
-            "Prepare spiritually: Mass, Confession, Rosary",
-            "Review practical guidelines for the Shrine",
+            {
+              title: "Who is coming?",
+              text: "<p>One person, a family, or a parish group. Note languages spoken and whether you need a priest or a local guide.</p>",
+            },
+            {
+              title: "When will you come?",
+              text: "<p>Ordinary days are quieter. Marian feasts and national pilgrimages are crowded — confirm dates on the calendar before you book travel.</p>",
+              path: "/pilgrimage/calendar",
+              linkLabel: "Pilgrimage calendar",
+            },
+            {
+              title: "How will you arrive?",
+              text: "<p>International pilgrims fly to Kigali (about three hours by road). Usual routes include Kigali–Huye–Matyazo–Kibeho.</p>",
+              path: "/pilgrimage/transportation",
+              linkLabel: "Transportation",
+            },
+            {
+              title: "Where will you stay?",
+              text: "<p>Guest houses and hotels near the Shrine are listed here. The office can advise groups on suitable options.</p>",
+              path: "/pilgrimage/accommodation",
+              linkLabel: "Accommodation",
+            },
+            {
+              title: "Write to the office",
+              text: "<p>Send dates, numbers, and any liturgical request. Individuals may also register interest for a public pilgrimage.</p>",
+              path: "/pilgrimage/office",
+              linkLabel: "Pilgrimage Office",
+            },
           ],
+        },
+        {
+          type: "note",
+          text: "<p>Prepare the heart as well as the journey: Mass, confession, and the Rosary of the Seven Sorrows. Practical notes on dress, climate, and feast-day crowding are on Practical Information.</p>",
         },
       ],
       cta: {
-        primary: {
-          label: "Pilgrimage Office",
-          path: "/pilgrimage/office",
-        },
-        secondary: {
-          label: "Register interest",
-          path: "/pilgrimages",
-        },
+        primary: { label: "Pilgrimage Office", path: "/pilgrimage/office" },
+        secondary: { label: "Practical Information", path: "/pilgrimage/practical-information" },
       },
     }),
 
@@ -819,9 +886,23 @@ export const pageFallbacks = {
 
   'spirituality.seven-sorrows-rosary': page({
       title: "Seven Sorrows Rosary",
-      subtitle: "A devotion especially linked to Kibeho",
-      intro: "Our Lady asked for the prayer of the Seven Sorrows Rosary — meditating on the sorrows of Mary and uniting our hearts to her Son.",
+      subtitle: "The distinctive devotion of Kibeho",
+      seoDescription:
+        "Pray the Rosary of the Seven Sorrows, the devotion Our Lady of Kibeho asked of Marie Claire Mukangango and of the Church.",
+      intro: "<p>Our Lady asked, especially through Marie Claire Mukangango, that the faithful pray the Rosary of the Seven Sorrows — meditating on the sorrows of Mary and uniting our hearts to her Son. This is the prayer most closely bound to Kibeho.</p>",
       blocks: [
+        {
+          type: "heading",
+          text: "How to pray",
+        },
+        {
+          type: "paragraph",
+          text: "<p>Begin with an Act of Contrition. For each sorrow: one Our Father and seven Hail Marys, with a brief meditation on that mystery. End with three Hail Marys in honour of the tears of Our Lady.</p>",
+        },
+        {
+          type: "heading",
+          text: "The seven sorrows",
+        },
         {
           type: "list",
           items: [
@@ -834,16 +915,14 @@ export const pageFallbacks = {
             "The Burial of Jesus",
           ],
         },
+        {
+          type: "note",
+          text: "<p>Pray it at home if you cannot yet come. When you do come, you may walk the Way of the Cross on the hillside after Mass.</p>",
+        },
       ],
       cta: {
-        primary: {
-          label: "The Messages",
-          path: "/our-lady/messages",
-        },
-        secondary: {
-          label: "Novena",
-          path: "/spirituality/novena",
-        },
+        primary: { label: "The Messages", path: "/our-lady/messages" },
+        secondary: { label: "Way of the Cross", path: "/shrine/way-of-the-cross" },
       },
     }),
 
@@ -866,16 +945,28 @@ export const pageFallbacks = {
   'spirituality.official-prayers': page({
       title: "Official Prayers",
       subtitle: "Prayers of the Shrine",
-      intro: "Official prayers associated with the Shrine of Our Lady of Kibeho — for personal devotion and communal prayer.",
+      intro: "<p>Pray with the Shrine of Our Lady of Kibeho — at home or on the hillside. Liturgical texts used in the sanctuary are those of the Church; the prayers below accompany personal devotion. Approved booklets from the Shrine remain the reference for communal use.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "A prayer to Our Lady of Kibeho",
+        },
+        {
+          type: "paragraph",
+          text: "<p>Blessed Virgin Mary, Mother of the Word, Mother of all who believe in Him: we thank you for the gift of your apparitions at Kibeho. Obtain for us the grace of conversion, a sincere love of the Cross, and reconciliation with God and with one another. Teach us to pray the Rosary, especially the Rosary of your Seven Sorrows. Mother of the Word, pray for Rwanda, for Africa, and for the whole world. Amen.</p>",
+        },
+        {
+          type: "cards",
+          items: [
+            { title: "Seven Sorrows Rosary", text: "<p>The devotion Our Lady asked at Kibeho.</p>", path: "/spirituality/seven-sorrows-rosary" },
+            { title: "Rosary", text: "<p>The mysteries of Christ, prayed with Mary.</p>", path: "/spirituality/rosary" },
+            { title: "Send an intention", text: "<p>Ask the Shrine to keep a light or a Mass for you.</p>", path: "/spirituality/prayer-intentions" },
+          ],
+        },
+      ],
       cta: {
-        primary: {
-          label: "Meditations",
-          path: "/spirituality/meditations",
-        },
-        secondary: {
-          label: "Rosary",
-          path: "/spirituality/rosary",
-        },
+        primary: { label: "Meditations", path: "/spirituality/meditations" },
+        secondary: { label: "Rosary", path: "/spirituality/rosary" },
       },
     }),
 
@@ -997,45 +1088,56 @@ export const pageFallbacks = {
 
   'support.vision': page({
       title: "Vision",
-      subtitle: "The official digital and pastoral gateway of the Shrine",
-      intro: "The Diocese of Gikongoro wishes the Shrine to welcome pilgrims from every nation, proclaim the message of Our Lady of Kibeho, and sustain long-term pastoral, spiritual, and infrastructural development.",
+      subtitle: "A shrine still becoming what Our Lady asked",
+      intro: "<p>The Diocese of Gikongoro wishes the Shrine to welcome pilgrims from every nation, proclaim the message of Our Lady of Kibeho, and sustain long-term pastoral, spiritual, and infrastructural development.</p><p>Unlike long-established pilgrimage sites, Kibeho is still being formed. The website, the liturgy, and the buildings must all say the same thing: conversion, prayer, and a dignified welcome.</p>",
+      blocks: [
+        {
+          type: "cards",
+          items: [
+            { title: "Proclaim the message", text: "<p>Nyina wa Jambo — conversion, the Rosary, reconciliation.</p>", path: "/our-lady/messages" },
+            { title: "Welcome every pilgrim", text: "<p>From the hills of Nyaruguru and from every continent.</p>", path: "/pilgrimage/plan" },
+            { title: "Build with transparency", text: "<p>Master Plan, projects, and accountable stewardship of gifts.</p>", path: "/support/master-plan" },
+          ],
+        },
+      ],
       cta: {
-        primary: {
-          label: "Master Plan",
-          path: "/support/master-plan",
-        },
-        secondary: {
-          label: "Partners",
-          path: "/support/partners",
-        },
+        primary: { label: "Master Plan", path: "/support/master-plan" },
+        secondary: { label: "Partners", path: "/support/partners" },
       },
     }),
 
   'support.master-plan': page({
       title: "Master Plan",
       subtitle: "Building the future of the Shrine",
-      intro: "The Master Plan guides future infrastructure, pilgrim hospitality, pastoral facilities, and environmental care at Kibeho. Detailed plans and project phases will be published here as they are approved.",
+      seoDescription:
+        "The Master Plan of the Shrine of Our Lady of Kibeho: pilgrim hospitality, liturgy, accessibility, and environmental care — still being built, in need of partners.",
+      intro: "<p>Unlike older pilgrimage sites, Kibeho is still becoming the place of welcome the Mother of the Word asked for. The Master Plan orders that work: not prestige, but dignity for those who come to pray — on feast days when thousands arrive, and on quiet weekdays.</p>",
       blocks: [
         {
-          type: "list",
+          type: "heading",
+          text: "What the plan holds together",
+        },
+        {
+          type: "cards",
           items: [
-            "Pilgrim reception and hospitality",
-            "Liturgical and pastoral facilities",
-            "Infrastructure and accessibility",
-            "Environmental stewardship",
-            "International partnership opportunities",
+            { title: "Pilgrim reception", text: "<p>Orientation, sanitation, and hospitality so first-time visitors are not lost.</p>" },
+            { title: "Liturgy and pastoral care", text: "<p>Spaces where Mass, confession, and accompaniment can unfold without strain.</p>" },
+            { title: "Paths and access", text: "<p>Safe ways between churches, the apparition sites, the spring, and the Way of the Cross.</p>" },
+            { title: "Care of the hillside", text: "<p>Environmental stewardship of a living shrine, not a building site without end.</p>" },
           ],
+        },
+        {
+          type: "heading",
+          text: "How to take part",
+        },
+        {
+          type: "paragraph",
+          text: "<p>Phase One and the Welcome Centre are published as projects you can walk through — with a gift, a pledge, or a partnership. Figures and reports will be added as the Diocese releases them.</p>",
         },
       ],
       cta: {
-        primary: {
-          label: "Projects",
-          path: "/support/projects",
-        },
-        secondary: {
-          label: "Donate",
-          path: "/support/donations",
-        },
+        primary: { label: "Current projects", path: "/support/projects" },
+        secondary: { label: "Donate", path: "/support/donations" },
       },
     }),
 
@@ -1075,32 +1177,59 @@ export const pageFallbacks = {
   'support.annual-reports': page({
       title: "Annual Reports",
       subtitle: "Accountability to pilgrims and partners",
-      intro: "Annual reports of the Shrine and related development initiatives will be published here to keep the faithful and partners informed.",
+      intro: "<p>The Diocese of Gikongoro will publish annual reports of the Shrine here — pastoral life, development works, and the use of gifts. Until a new report is released, the current projects and the transparency page explain how support is directed.</p>",
+      blocks: [
+        {
+          type: "cards",
+          items: [
+            { title: "Current projects", text: "<p>Need, solution, and impact of works now seeking partners.</p>", path: "/support/projects" },
+            { title: "How gifts are used", text: "<p>Pastoral priorities and the path from donation to work on the hillside.</p>", path: "/support/transparency" },
+          ],
+        },
+        {
+          type: "note",
+          text: "<p>When a report PDF is approved, it will be added to this page through the media library. Partners may also write to the office for the latest available statement.</p>",
+        },
+      ],
       cta: {
-        primary: {
-          label: "Transparency",
-          path: "/support/transparency",
-        },
-        secondary: {
-          label: "Partners",
-          path: "/support/partners",
-        },
+        primary: { label: "Transparency", path: "/support/transparency" },
+        secondary: { label: "Partners", path: "/support/partners" },
       },
     }),
 
   'support.transparency': page({
       title: "Transparency",
       subtitle: "Trust in the service of the Gospel",
-      intro: "The Diocese of Gikongoro is committed to transparent stewardship of gifts received for the Shrine — with clear reporting on pastoral priorities and development projects.",
+      intro: "<p>Gifts to the Shrine are received by the Diocese of Gikongoro for the pastoral mission and the development of Kibeho. We will not ask the faithful to trust a slogan. This page states how money is directed, and where you may read more.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "Where support goes",
+        },
+        {
+          type: "cards",
+          items: [
+            { title: "Prayer and liturgy", text: "<p>Mass, confession, adoration, and the daily welcome of pilgrims.</p>" },
+            { title: "A dignified welcome", text: "<p>Paths, sanitation, orientation, and care of the holy places.</p>" },
+            { title: "Named projects", text: "<p>You may give to the mission generally, or walk through a published project.</p>", path: "/support/projects" },
+          ],
+        },
+        {
+          type: "heading",
+          text: "How we account for it",
+        },
+        {
+          type: "paragraph",
+          text: "<p>Bank and mobile-money details are published on Donations. Project pages show need and intended fruit. Annual reports, once issued, appear as downloads on this site. For a partnership that includes a gift, write first so the office can match it to a work.</p>",
+        },
+        {
+          type: "note",
+          text: "<p>The Diocese remains the steward. This website records what the Shrine can already show; it does not replace the accounts of the Diocese.</p>",
+        },
+      ],
       cta: {
-        primary: {
-          label: "Annual Reports",
-          path: "/support/annual-reports",
-        },
-        secondary: {
-          label: "Donate",
-          path: "/support/donations",
-        },
+        primary: { label: "Annual Reports", path: "/support/annual-reports" },
+        secondary: { label: "Donate", path: "/support/donations" },
       },
     }),
 

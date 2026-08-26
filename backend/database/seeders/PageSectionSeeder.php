@@ -111,6 +111,14 @@ class PageSectionSeeder extends Seeder
                     ],
                 ],
             ],
+            'home.supportProjects' => [
+                'label' => 'Home — Support projects',
+                'content' => [
+                    'eyebrow' => 'Support the Shrine',
+                    'heading' => 'Kibeho is still being built',
+                    'subtext' => 'Unlike older pilgrimage sites, the Shrine still needs pathways, welcome, and care. These works need friends.',
+                ],
+            ],
         ];
 
         $pagesPath = database_path('data/sanctuary_pages.json');

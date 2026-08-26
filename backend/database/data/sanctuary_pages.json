@@ -518,17 +518,11 @@
     "title": "Shrine Map",
     "subtitle": "Find your way around the Shrine",
     "heroImage": "",
-    "intro": "An interactive map of the Shrine grounds is planned. For now, ask at the Pilgrimage Office for orientation to churches, apparition sites, the Holy Spring, and pilgrim facilities.",
+    "intro": "<p>Use this guide to walk the Shrine without hurry. The numbered path is a suggestion, not a rule. On feast days, follow the ushers and the liturgy of the day.</p>",
     "blocks": [
       {
-        "type": "list",
-        "items": [
-          "Churches and chapels",
-          "Apparition sites",
-          "Holy Spring",
-          "Way of the Cross",
-          "Pilgrim reception and facilities"
-        ]
+        "type": "note",
+        "text": "<p>The labelled plan below is for orientation. For GPS directions to Kibeho itself, see Transportation. Groups should still present themselves at reception.</p>"
       }
     ],
     "links": [],
@@ -612,8 +606,46 @@
     "title": "Plan your Pilgrimage",
     "subtitle": "Prepare your journey to the Sanctuary",
     "heroImage": "",
-    "intro": "<p>Whether you come alone, with family, or with a parish group, the Sanctuary welcomes you. Register with the Pilgrimage Office so liturgy, lodging, and a fitting welcome can be prepared.</p><p>Pilgrims from abroad can fly to Kigali. From Kigali, the St. Vincent Pallotti Pilgrimages Centre can help you find facilities for your pilgrimage to Kibeho.</p>",
-    "blocks": [],
+    "intro": "<p>Whether you come alone, with family, or with a parish group, the Sanctuary welcomes you. Follow the path on this page, then write to the Pilgrimage Office so liturgy, lodging, and a fitting welcome can be prepared.</p><p>Pilgrims from abroad can fly to Kigali. From Kigali, the St. Vincent Pallotti Pilgrimages Centre can help you find facilities for your pilgrimage to Kibeho.</p>",
+    "blocks": [
+      {
+        "type": "heading",
+        "text": "A simple path"
+      },
+      {
+        "type": "steps",
+        "items": [
+          {
+            "title": "Who is coming?",
+            "text": "<p>One person, a family, or a parish group. Note languages spoken and whether you need a priest or a local guide.</p>"
+          },
+          {
+            "title": "When will you come?",
+            "text": "<p>Ordinary days are quieter. Marian feasts and national pilgrimages are crowded — confirm dates on the calendar before you book travel.</p>",
+            "path": "/pilgrimage/calendar",
+            "linkLabel": "Pilgrimage calendar"
+          },
+          {
+            "title": "How will you arrive?",
+            "text": "<p>International pilgrims fly to Kigali (about three hours by road). Usual routes include Kigali–Huye–Matyazo–Kibeho.</p>",
+            "path": "/pilgrimage/transportation",
+            "linkLabel": "Transportation"
+          },
+          {
+            "title": "Where will you stay?",
+            "text": "<p>Guest houses and hotels near the Shrine are listed here. The office can advise groups on suitable options.</p>",
+            "path": "/pilgrimage/accommodation",
+            "linkLabel": "Accommodation"
+          },
+          {
+            "title": "Write to the office",
+            "text": "<p>Send dates, numbers, and any liturgical request. Individuals may also register interest for a public pilgrimage.</p>",
+            "path": "/pilgrimage/office",
+            "linkLabel": "Pilgrimage Office"
+          }
+        ]
+      }
+    ],
     "links": [],
     "cta": {
       "primary": {
@@ -918,10 +950,22 @@
   "spirituality.seven-sorrows-rosary": {
     "eyebrow": "",
     "title": "Seven Sorrows Rosary",
-    "subtitle": "A devotion especially linked to Kibeho",
+    "subtitle": "The distinctive devotion of Kibeho",
     "heroImage": "",
-    "intro": "Our Lady asked for the prayer of the Seven Sorrows Rosary — meditating on the sorrows of Mary and uniting our hearts to her Son.",
+    "intro": "<p>Our Lady asked, especially through Marie Claire Mukangango, that the faithful pray the Rosary of the Seven Sorrows — meditating on the sorrows of Mary and uniting our hearts to her Son. This is the prayer most closely bound to Kibeho.</p>",
     "blocks": [
+      {
+        "type": "heading",
+        "text": "How to pray"
+      },
+      {
+        "type": "paragraph",
+        "text": "<p>Begin with an Act of Contrition. For each sorrow: one Our Father and seven Hail Marys, with a brief meditation on that mystery. End with three Hail Marys in honour of the tears of Our Lady.</p>"
+      },
+      {
+        "type": "heading",
+        "text": "The seven sorrows"
+      },
       {
         "type": "list",
         "items": [
@@ -933,6 +977,10 @@
           "Mary receives the Body of Jesus",
           "The Burial of Jesus"
         ]
+      },
+      {
+        "type": "note",
+        "text": "<p>Pray it at home if you cannot yet come. When you do come, you may walk the Way of the Cross on the hillside after Mass.</p>"
       }
     ],
     "links": [],
@@ -942,8 +990,8 @@
         "path": "/our-lady/messages"
       },
       "secondary": {
-        "label": "Novena",
-        "path": "/spirituality/novena"
+        "label": "Way of the Cross",
+        "path": "/shrine/way-of-the-cross"
       }
     }
   },
@@ -1135,7 +1183,7 @@
     "title": "Master Plan",
     "subtitle": "Building the future of the Shrine",
     "heroImage": "",
-    "intro": "The Master Plan guides future infrastructure, pilgrim hospitality, pastoral facilities, and environmental care at Kibeho. Detailed plans and project phases will be published here as they are approved.",
+    "intro": "<p>Unlike older pilgrimage sites, Kibeho is still becoming the place of welcome the Mother of the Word asked for. The Master Plan orders that work: not prestige, but dignity for those who come to pray — on feast days when thousands arrive, and on quiet weekdays.</p>",
     "blocks": [
       {
         "type": "list",
