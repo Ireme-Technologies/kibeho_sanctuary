@@ -1,14 +1,10 @@
-import { useContent } from '@context/ContentContext'
-import { PRELOADER_NAME, PRELOADER_TAG, resolvePreloaderLogo } from '@utils/brand'
+import { PRELOADER_NAME, PRELOADER_TAG, DEFAULT_FAVICON } from '@utils/brand'
 import styles from './PageLoader.module.css'
 
 export default function PageLoader() {
-  const { company } = useContent()
-  const logo = resolvePreloaderLogo(company)
-
   return (
     <div className={styles.loader} role="status" aria-live="polite">
-      <img src={logo} alt={PRELOADER_NAME} className={styles.logo} />
+      <img src={DEFAULT_FAVICON} alt="" className={styles.logo} />
       <span className={styles.brand}>{PRELOADER_NAME}</span>
       <span className={styles.tag}>{PRELOADER_TAG}</span>
       <span className={styles.bar} />

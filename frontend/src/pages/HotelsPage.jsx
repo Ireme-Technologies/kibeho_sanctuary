@@ -7,13 +7,8 @@ import { sectionKeyForPath } from '@data/pages/registry'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import RichText from '@components/ui/RichText'
 import { cardExcerpt } from '@utils/text'
+import { displayFacilityName } from '@utils/displayName'
 import styles from './CatalogPage.module.css'
-
-function renderStars(rating) {
-  const n = Math.round(Number(rating) || 0)
-  if (!n) return null
-  return '★'.repeat(Math.min(n, 5))
-}
 
 export default function HotelsPage() {
   const { pathname } = useLocation()
@@ -65,12 +60,7 @@ export default function HotelsPage() {
                 </div>
                 <div className={styles.cardBody}>
                   {item.category ? <p className={styles.meta}>{item.category}</p> : null}
-                  <h2>{item.title}</h2>
-                  {item.rating ? (
-                    <p className={styles.stars} aria-label={`${item.rating} out of 5 stars`}>
-                      {renderStars(item.rating)}
-                    </p>
-                  ) : null}
+                  <h2>{displayFacilityName(item.title)}</h2>
                   {cardExcerpt(item) ? (
                     <p className={styles.excerpt}>{cardExcerpt(item)}</p>
                   ) : null}

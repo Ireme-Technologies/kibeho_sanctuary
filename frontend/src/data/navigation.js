@@ -7,7 +7,7 @@
 export const primaryNav = [
   {
     label: 'Our Lady of Kibeho',
-    path: '/',
+    path: '/our-lady',
     children: [
       { label: 'The Apparitions', path: '/our-lady/apparitions' },
       { label: 'The Visionaries', path: '/our-lady/visionaries' },
@@ -64,7 +64,6 @@ export const primaryNav = [
     label: 'News',
     path: '/news',
     children: [
-      { label: 'News', path: '/news' },
       { label: 'Events', path: '/news?category=Events' },
       { label: 'Photos', path: '/gallery' },
       { label: 'Videos', path: '/news/videos' },
@@ -124,6 +123,31 @@ export const languages = [
 
 function navPath(item) {
   return String(item?.path || '').replace(/\/+$/, '') || '/'
+}
+
+/** Home is the portal; the first pillar opens the story hub. */
+export function ensureOurLadyNavPath(items) {
+  if (!Array.isArray(items)) return items
+  return items.map((item) => {
+    const path = navPath(item)
+    const label = String(item.label || '').toLowerCase()
+    const isOurLady = path === '/' || path === '/our-lady' || label.includes('our lady')
+    if (!isOurLady) return item
+    return { ...item, path: '/our-lady' }
+  })
+}
+
+/** Parent News already lists the feed — do not repeat it as the first child. */
+export function ensureNewsNavChildren(items) {
+  if (!Array.isArray(items)) return items
+  return items.map((item) => {
+    const path = navPath(item)
+    const label = String(item.label || '').toLowerCase()
+    const isNews = path === '/news' || label === 'news'
+    if (!isNews || !Array.isArray(item.children)) return item
+    const children = item.children.filter((child) => navPath(child) !== '/news')
+    return { ...item, children: children.length ? children : item.children }
+  })
 }
 
 export function ensureOurLadyNavChildren(items) {

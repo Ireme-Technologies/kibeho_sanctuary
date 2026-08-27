@@ -18,7 +18,7 @@ const TOC = [
   { href: '#sitemap', label: 'Public sitemap' },
   { href: '#content-types', label: 'Content types' },
   { href: '#checklist', label: 'Checklist' },
-  { href: '#new-server', label: 'New server (technical)' },
+  { href: '#new-server', label: 'New server' },
   { href: '#future', label: 'Future upgrades' },
 ]
 
@@ -961,9 +961,8 @@ export default function SitemapAdminGuidePage() {
               </li>
             </ol>
             <p>
-              If the ZIP is too large for the browser, the developer can restore it on the server with{' '}
-              <code>php artisan site:restore</code> (see <a href="#new-server">New server &amp; source code</a>
-              ).
+              If the ZIP is too large for the browser, ask the developer to restore it on the server (see{' '}
+              <a href="/docs/server-requirements">Server requirements</a>).
             </p>
             <p>
               Ireme Tech can help with a scheduled backup, a restore test, or a move to new hosting — ask
@@ -975,122 +974,17 @@ export default function SitemapAdminGuidePage() {
             <h2>16. New server, source code, and developer support</h2>
             <p>
               Moving host or rebuilding after a total crash is a <strong>developer task</strong>, with sanctuary
-              staff providing the latest admin ZIP. The GitHub repository holds the website code (design and
-              application). Live news, translations, and uploaded photos live in the database and the backup ZIP
-              — a git clone alone is not a content backup.
+              staff providing the latest admin ZIP. The GitHub repository holds the website code (React public
+              site, admin panel, and Node.js tooling). Live news, translations, and uploaded photos live in the
+              database and the backup ZIP — a git clone alone is not a content backup.
             </p>
-
-            <h3>What the new server needs</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Requirement</th>
-                  <th>Minimum / note</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Account ownership</td>
-                  <td>Hosting and domain in the name of the Diocese / Shrine</td>
-                </tr>
-                <tr>
-                  <td>PHP</td>
-                  <td>8.1 or newer, with zip, GD (images), OpenSSL, Mbstring, JSON, Fileinfo</td>
-                </tr>
-                <tr>
-                  <td>Database</td>
-                  <td>MySQL 5.7+ / 8.x or MariaDB</td>
-                </tr>
-                <tr>
-                  <td>Web server</td>
-                  <td>Nginx or Apache with HTTPS (Let’s Encrypt or host SSL)</td>
-                </tr>
-                <tr>
-                  <td>Composer</td>
-                  <td>Required on the server to install the Laravel (PHP) application</td>
-                </tr>
-                <tr>
-                  <td>Node.js &amp; npm</td>
-                  <td>
-                    Needed to <em>build</em> the React public site and admin. The live server does{' '}
-                    <strong>not</strong> need Node if the developer builds on a laptop and deploys the compiled
-                    files (the usual production method). Node is required on a machine that runs{' '}
-                    <code>npm run build</code> or <code>./deploy/build-local.sh</code>.
-                  </td>
-                </tr>
-                <tr>
-                  <td>Git / GitHub</td>
-                  <td>SSH or Git to pull the source. The developer can grant repository access.</td>
-                </tr>
-                <tr>
-                  <td>Email</td>
-                  <td>SMTP or an API (e.g. Resend) so enquiry notifications can send</td>
-                </tr>
-                <tr>
-                  <td>Disk</td>
-                  <td>Room for the application plus the media library (photos and PDFs grow over time)</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <h3>Artisan commands the developer uses</h3>
             <p>
-              Laravel is driven from the <code>backend/</code> folder with <code>php artisan …</code>. Staff
-              do not need these day to day; they matter on a new server or a restore.
-            </p>
-            <table>
-              <thead>
-                <tr>
-                  <th>Command</th>
-                  <th>When it is used</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <code>php artisan key:generate</code>
-                  </td>
-                  <td>First setup of a new server (creates <code>APP_KEY</code> in <code>.env</code>)</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>php artisan migrate</code>
-                  </td>
-                  <td>
-                    Create or update database tables. Do <strong>not</strong> run{' '}
-                    <code>migrate:fresh --seed</code> on a live restore — that wipes content.
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>php artisan storage:link</code>
-                  </td>
-                  <td>Makes uploaded photos and PDFs visible at <code>/storage/…</code></td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>php artisan site:backup</code>
-                  </td>
-                  <td>Writes a full ZIP on the server (same contents as Admin → Backup &amp; restore)</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>php artisan site:restore /path/to/backup.zip</code>
-                  </td>
-                  <td>Restores that ZIP when the file is too large to upload in the browser</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>./deploy/deploy.sh</code>
-                  </td>
-                  <td>On the droplet: git pull, Composer, migrate, copy public images (no Node required)</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              Typical move: clone the GitHub repository → configure <code>.env</code> → Composer → migrate →
-              restore the admin ZIP → <code>storage:link</code> → point the domain DNS at the new host. The
-              domain registrar is independent of DigitalOcean.
+              Full hosting checklist (SSH / Git — not FTP, Node.js, MySQL, document root, shared-hosting
+              limits):{' '}
+              <a href="/docs/server-requirements">
+                <strong>Server requirements &amp; deployment access</strong>
+              </a>
+              . Share that page with Diocese IT when they offer server logins.
             </p>
 
             <h3>GitHub source code and help from Ireme Tech</h3>
@@ -1100,13 +994,12 @@ export default function SitemapAdminGuidePage() {
                 (organisation or invited accounts), so the Shrine is not locked to one laptop.
               </li>
               <li>
-                Ireme Tech remains <strong>available to help with migrating, backups, restores, and DigitalOcean
-                snapshots</strong> — including turning on droplet backups, testing a restore, or moving to
-                another host.
+                Ireme Tech remains <strong>available to help with migrating, backups, restores, and hosting
+                snapshots</strong> — including testing a restore or moving to another host.
               </li>
               <li>
                 Day-to-day publishing (pages, news, photos, languages) stays in <code>/admin</code> and does
-                not require GitHub.
+                not require GitHub or SSH.
               </li>
             </ul>
             <p>
@@ -1220,7 +1113,7 @@ export default function SitemapAdminGuidePage() {
 
           <DocsCrossNav
             prev={{ to: '/docs/proposed-solution', label: 'Proposed solution' }}
-            next={{ to: '/docs', label: 'Back to documentation hub' }}
+            next={{ to: '/docs/server-requirements', label: 'Server requirements' }}
           />
         </article>
       </div>

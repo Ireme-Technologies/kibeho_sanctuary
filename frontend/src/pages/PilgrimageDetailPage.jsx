@@ -257,7 +257,7 @@ export default function PilgrimageDetailPage() {
             </section>
           ) : null}
 
-          <Link to="/pilgrimages" className={styles.backLink}>
+          <Link to="/pilgrimage/calendar" className={styles.backLink}>
             ← All pilgrimage events
           </Link>
         </div>

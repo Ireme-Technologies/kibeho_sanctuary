@@ -269,6 +269,7 @@ export default function HomeHero() {
               </>
             ) : (
               <>
+                <p className={styles.kicker}>{t('brand.diocese')}</p>
                 <h1 className={styles.headline}>{displayTitleLabel(heading, locale)}</h1>
                 {caption ? (
                   <p className={styles.subline}>{String(caption).replace(/<[^>]+>/g, '')}</p>

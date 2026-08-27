@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { MapPin, Phone, Mail, ExternalLink, Heart } from 'lucide-react'
-import { googleReviews } from '@data/googleReviews'
+import { MapPin, Phone, Mail, Heart } from 'lucide-react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
@@ -36,9 +35,13 @@ export default function Footer() {
           <NavLink to="/" className={styles.logo}>
             <img
               src={company.logo || '/images/logo/logo-transparent.png'}
-              alt={brandName}
+              alt=""
               className={styles.logoImg}
             />
+            <span className={styles.brandText}>
+              <span className={styles.brandName}>{brandName}</span>
+              <span className={styles.brandTag}>{t('brand.diocese')}</span>
+            </span>
           </NavLink>
           <div className={styles.socials}>
             {socials.map((social, index) => {
@@ -68,10 +71,7 @@ export default function Footer() {
               </li>
             ))}
             <li>
-              <a href={googleReviews.profileUrl} target="_blank" rel="noopener noreferrer">
-                {t('pilgrimReviews')}
-                <ExternalLink size={12} className={styles.externalIcon} aria-hidden="true" />
-              </a>
+              <NavLink to="/spirituality/testimonies">{t('pilgrimReviews')}</NavLink>
             </li>
           </ul>
         </div>

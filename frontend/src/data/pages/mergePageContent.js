@@ -23,7 +23,7 @@ export function isPlaceholderCopy(value) {
     .replace(/\s+/g, ' ')
     .trim()
   if (!text) return false
-  return /interactive map of the Shrine grounds is planned|Detailed plans and project phases will be published|Annual reports of the Shrine and related development initiatives will be published|committed to transparent stewardship of gifts received for the Shrine/i.test(
+  return /interactive map of the Shrine grounds is planned|Detailed plans and project phases will be published|Annual reports of the Shrine and related development initiatives will be published|committed to transparent stewardship of gifts received for the Shrine|Kibeho is a remote site|principal places of worship|listed below/i.test(
     text
   )
 }

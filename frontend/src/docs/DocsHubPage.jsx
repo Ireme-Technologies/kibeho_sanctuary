@@ -75,6 +75,22 @@ export default function DocsHubPage() {
             </a>
           </div>
         </article>
+
+        <article className={styles.card}>
+          <h2>5. Server requirements</h2>
+          <p>
+            Hosting checklist for Diocese IT: React + Node.js stack, Git/SSH (not FTP), MySQL, and what to
+            send instead of FTP logins when migrating to your vhost.
+          </p>
+          <div className={styles.cardActions}>
+            <Link className={styles.btnPrimary} to="/docs/server-requirements">
+              Open requirements
+            </Link>
+            <a className={styles.btnGhost} href="/evaluation-downloads/server-requirements.md" download>
+              Download .md
+            </a>
+          </div>
+        </article>
       </div>
 
       <div className={styles.notice} style={{ marginTop: '1.25rem' }}>
@@ -136,6 +152,12 @@ export default function DocsHubPage() {
               </td>
             </tr>
             <tr>
+              <td>Server requirements (handover / IT)</td>
+              <td>
+                <code>/docs/server-requirements</code>
+              </td>
+            </tr>
+            <tr>
               <td>Public website demo</td>
               <td>
                 <code>/</code>
@@ -157,6 +179,12 @@ export default function DocsHubPage() {
               <td>Download — sitemap &amp; admin guide</td>
               <td>
                 <code>/evaluation-downloads/sitemap-and-admin-guide.md</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Download — server requirements</td>
+              <td>
+                <code>/evaluation-downloads/server-requirements.md</code>
               </td>
             </tr>
           </tbody>

@@ -26,9 +26,6 @@ const MassSchedulesAdminPage = lazy(() => import('@admin/MassSchedulesAdminPage'
 const TestimonialsAdminPage = lazy(() => import('@admin/TestimonialsAdminPage'))
 const ShrineProjectsAdminPage = lazy(() => import('@admin/ShrineProjectsAdminPage'))
 const SacredPlacesAdminPage = lazy(() => import('@admin/SacredPlacesAdminPage'))
-const ActivitiesPage = lazy(() => import('@pages/ActivitiesPage'))
-const ActivityDetailPage = lazy(() => import('@pages/ActivityDetailPage'))
-const PilgrimagesPage = lazy(() => import('@pages/PilgrimagesPage'))
 const PilgrimageDetailPage = lazy(() => import('@pages/PilgrimageDetailPage'))
 const VideosPage = lazy(() => import('@pages/VideosPage'))
 const MassSchedulePage = lazy(() => import('@pages/MassSchedulePage'))
@@ -62,6 +59,7 @@ const DocsLayout = lazy(() => import('../docs/DocsLayout'))
 const DocsHubPage = lazy(() => import('../docs/DocsHubPage'))
 const ProposedSolutionPage = lazy(() => import('../docs/ProposedSolutionPage'))
 const SitemapAdminGuidePage = lazy(() => import('../docs/SitemapAdminGuidePage'))
+const ServerRequirementsPage = lazy(() => import('../docs/ServerRequirementsPage'))
 
 const Wrap = ({ Component, ...props }) => (
   <Suspense fallback={<PageLoader />}>
@@ -80,6 +78,23 @@ function ApparitionSitesAdmin() {
 function RedirectNewsSlug() {
   const { slug } = useParams()
   return <Navigate to={`/news/${slug}`} replace />
+}
+
+const ACTIVITY_REDIRECTS = {
+  'touch-the-rock': '/shrine/apparition-sites',
+  'light-a-candle': '/spirituality/prayer-intentions',
+  water: '/shrine/holy-spring',
+  'holy-mass': '/shrine/mass-schedule',
+  'mass-readings': '/shrine/mass-schedule',
+  'worship-meditation': '/shrine/eucharistic-adorations',
+  'rosary-7-sorrows': '/spirituality/seven-sorrows-rosary',
+  rosary: '/spirituality/rosary',
+  'road-to-the-cross': '/shrine/way-of-the-cross',
+}
+
+function RedirectActivitySlug() {
+  const { slug } = useParams()
+  return <Navigate to={ACTIVITY_REDIRECTS[slug] || '/shrine'} replace />
 }
 
 /** Permanent CMS pages (ToR IA) — entity-driven routes are listed separately */
@@ -118,7 +133,6 @@ const cmsPaths = [
   'support/annual-reports',
   'support/transparency',
   'support/partners',
-  'faq',
 ]
 
 const router = createBrowserRouter([
@@ -129,6 +143,7 @@ const router = createBrowserRouter([
       { index: true, element: <Wrap Component={DocsHubPage} /> },
       { path: 'proposed-solution', element: <Wrap Component={ProposedSolutionPage} /> },
       { path: 'sitemap-and-admin-guide', element: <Wrap Component={SitemapAdminGuidePage} /> },
+      { path: 'server-requirements', element: <Wrap Component={ServerRequirementsPage} /> },
     ],
   },
   {
@@ -186,9 +201,9 @@ const router = createBrowserRouter([
         path,
         element: <Wrap Component={CmsPage} />,
       })),
-      { path: 'activities', element: <Wrap Component={ActivitiesPage} /> },
-      { path: 'activities/:slug', element: <Wrap Component={ActivityDetailPage} /> },
-      { path: 'pilgrimages', element: <Wrap Component={PilgrimagesPage} /> },
+      { path: 'activities', element: <Navigate to="/shrine" replace /> },
+      { path: 'activities/:slug', element: <RedirectActivitySlug /> },
+      { path: 'pilgrimages', element: <Navigate to="/pilgrimage/calendar" replace /> },
       { path: 'pilgrimages/:slug', element: <Wrap Component={PilgrimageDetailPage} /> },
       { path: 'pilgrimage/calendar', element: <Wrap Component={CalendarPage} /> },
       { path: 'pilgrimage/accommodation', element: <Wrap Component={HotelsPage} /> },
@@ -204,8 +219,9 @@ const router = createBrowserRouter([
       { path: 'spirituality/testimonies', element: <Wrap Component={TestimonialsPage} /> },
       { path: 'support/projects', element: <Wrap Component={SupportProjectsPage} /> },
       { path: 'support/projects/:slug', element: <Wrap Component={SupportProjectDetailPage} /> },
-      { path: 'hotels', element: <Wrap Component={HotelsPage} /> },
+      { path: 'hotels', element: <Navigate to="/pilgrimage/accommodation" replace /> },
       { path: 'hotels/:slug', element: <Wrap Component={HotelDetailPage} /> },
+      { path: 'faq', element: <Navigate to="/our-lady/faq" replace /> },
       { path: 'news', element: <Wrap Component={BlogPage} /> },
       { path: 'news/videos', element: <Wrap Component={VideosPage} /> },
       { path: 'news/:slug', element: <Wrap Component={BlogPostPage} /> },
@@ -239,7 +255,7 @@ const router = createBrowserRouter([
       { path: 'support/volunteer', element: <Navigate to="/support/partners" replace /> },
       { path: 'support/friends', element: <Navigate to="/support/partners" replace /> },
       { path: 'services', element: <Navigate to="/pilgrimage" replace /> },
-      { path: 'programs', element: <Navigate to="/activities" replace /> },
+      { path: 'programs', element: <Navigate to="/shrine" replace /> },
       { path: 'projects', element: <Navigate to="/support/projects" replace /> },
       { path: 'careers', element: <Navigate to="/support/partners" replace /> },
     ],

@@ -68,19 +68,19 @@ export default function HomeSupportProjects() {
   if (!items.length) return null
 
   return (
-    <section className={styles.section} ref={ref} aria-labelledby="home-projects-heading">
+    <section className={local.band} ref={ref} aria-labelledby="home-projects-heading">
       <div className="container">
-        <div className={styles.head}>
+        <div className={`${styles.head} ${local.head}`}>
           <div>
-            <p className={styles.eyebrow}>{meta.eyebrow}</p>
+            <p className={`${styles.eyebrow} ${local.kicker}`}>{meta.eyebrow}</p>
             <h2 id="home-projects-heading">{meta.heading}</h2>
-            <p>{meta.subtext}</p>
+            <p className={local.lead}>{meta.subtext}</p>
           </div>
           <div className={local.links}>
-            <Link to="/support/master-plan" className={styles.more}>
+            <Link to="/support/master-plan" className={`${styles.more} ${local.more}`}>
               {t('home.viewMasterPlan')} →
             </Link>
-            <Link to="/support/projects" className={styles.more}>
+            <Link to="/support/projects" className={`${styles.more} ${local.more}`}>
               {t('home.viewProjects')} →
             </Link>
           </div>

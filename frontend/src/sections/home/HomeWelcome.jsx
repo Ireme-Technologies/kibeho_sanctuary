@@ -11,9 +11,12 @@ export default function HomeWelcome() {
   const data = mergePageContent(fallback, section('home.welcome', {}))
   const [ref, inView] = useInView(0.15)
   const image = data.image || data.heroImage || defaultHeaderImage
-  const cta = data.cta?.label
+  const raw = data.cta?.label
     ? data.cta
     : data.cta?.primary || data.buttons?.[0] || fallback.cta
+  const cta = /discover the message/i.test(raw?.label || '')
+    ? fallback.cta
+    : raw
 
   return (
     <section className={styles.section} ref={ref}>

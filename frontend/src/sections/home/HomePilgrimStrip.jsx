@@ -9,6 +9,7 @@ import { useInView } from '@hooks/useInView'
 import { formatEventWhen, formatRecurrence } from '@utils/eventTime'
 import { classifyEvent, pickSiteOccasion, statusLabel } from '@utils/occasion'
 import { cardExcerpt } from '@utils/text'
+import { displayFacilityName } from '@utils/displayName'
 import styles from './HomePilgrimStrip.module.css'
 
 const whyIcons = {
@@ -77,7 +78,7 @@ export default function HomePilgrimStrip() {
         <div className="container">
           <div className={styles.head}>
             <div>
-              <p className={styles.eyebrow}>{t('pilgrimageCalendar')}</p>
+              <p className={styles.eyebrow}>{t('home.calendarEyebrow')}</p>
               <h2>{t('upcomingPilgrimages')}</h2>
             </div>
             <Link to="/pilgrimage/calendar" className={styles.more}>
@@ -162,13 +163,13 @@ export default function HomePilgrimStrip() {
                     <span className={styles.stayCategory}>
                       {[current.category, current.distance].filter(Boolean).join(' · ') || t('accommodation')}
                     </span>
-                    <h3>{current.title}</h3>
+                    <h3>{displayFacilityName(current.title)}</h3>
                     {(() => {
                       const bookTo =
                         current.bookingUrl ||
                         `/contact?topic=accommodation&facility=${encodeURIComponent(current.slug || '')}`
                       const isExternal = /^https?:\/\//i.test(bookTo)
-                      const label = current.bookingUrl ? t('bookNow') : t('askOffice')
+                      const label = isExternal ? t('bookNow') : t('askOffice')
                       return isExternal ? (
                         <a href={bookTo} className={styles.bookBtn} target="_blank" rel="noopener noreferrer">
                           {label}

@@ -88,7 +88,7 @@ export const offerStrings = {
     'invite.projectText': 'Choose a work still underway at the Shrine.',
     'invite.candleSubtitle': 'A light for someone you love',
     'invite.donationSubtitle': 'Walk with every pilgrim who comes to pray',
-    'story.bePart': 'Be part of this',
+    'story.bePart': 'Begin here',
     'story.joinTitle': 'This call is still being lived at Kibeho',
     'story.joinLead': 'Read, then walk with the pilgrims — in prayer, at Mass, or on the road to the Shrine.',
     'story.planTitle': 'Come on pilgrimage',

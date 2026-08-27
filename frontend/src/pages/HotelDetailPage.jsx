@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowRight, ExternalLink, Globe, Mail, Phone, Star } from 'lucide-react'
+import { ArrowRight, ExternalLink, Globe, Mail, Phone } from 'lucide-react'
 import { fetchLodging, fetchProject } from '@api/cms'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
@@ -9,7 +9,7 @@ import LodgingIcon from '@components/ui/LodgingIcon'
 import RichText from '@components/ui/RichText'
 import { LODGING_AMENITIES, LODGING_SERVICES, resolveLodgingItems } from '@data/lodgingCatalog'
 import { cardExcerpt } from '@utils/text'
-import NotFoundPage from './NotFoundPage'
+import { displayFacilityName } from '@utils/displayName'
 import styles from './HotelDetailPage.module.css'
 
 function digits(value) {
@@ -18,34 +18,6 @@ function digits(value) {
 
 function isExternal(url) {
   return /^https?:\/\//i.test(url || '')
-}
-
-function HotelStars({ rating }) {
-  const value = Number(rating)
-  if (rating == null || rating === '' || Number.isNaN(value) || value <= 0) return null
-  const clamped = Math.max(0, Math.min(5, value))
-  const full = Math.floor(clamped + 1e-9)
-  const fraction = clamped - full
-  const roundedUp = fraction >= 0.75
-  const label = clamped % 1 === 0 ? String(clamped) : clamped.toFixed(1)
-
-  return (
-    <p className={styles.stars} aria-label={`${label} out of 5 stars`}>
-      {Array.from({ length: 5 }, (_, i) => {
-        const filled = i < full || (i === full && roundedUp)
-        return (
-          <Star
-            key={i}
-            size={18}
-            className={filled ? styles.starFilled : styles.starEmpty}
-            fill={filled ? 'currentColor' : 'none'}
-            aria-hidden="true"
-          />
-        )
-      })}
-      <span className={styles.starsNumber}>{label}</span>
-    </p>
-  )
 }
 
 function ActionLink({ href, className, children }) {
@@ -120,11 +92,10 @@ export default function HotelDetailPage() {
     <div className={styles.page}>
       <div className={`container ${styles.inner}`}>
         <p className={styles.crumb}>
-          <Link to="/hotels">Accommodation</Link>
+          <Link to="/pilgrimage/accommodation">Accommodation</Link>
           {item.category ? <span> · {item.category}</span> : null}
         </p>
-        <h1 className={`${styles.title} ${item.rating ? styles.titleWithStars : ''}`}>{item.title}</h1>
-        <HotelStars rating={item.rating} />
+        <h1 className={styles.title}>{displayFacilityName(item.title)}</h1>
 
         <div className={`${styles.topGrid} ${amenities.length ? '' : styles.topGridSolo}`}>
           <div className={styles.gallery}>
@@ -263,7 +234,7 @@ export default function HotelDetailPage() {
                       <img src={stay.coverImage || stay.featuredImage || defaultHeaderImage} alt="" />
                     </Link>
                   <div className={styles.relatedBody}>
-                    <h3>{stay.title}</h3>
+                    <h3>{displayFacilityName(stay.title)}</h3>
                     <Link to={`/hotels/${stay.slug}`} className={styles.relatedLink}>
                       View details <ArrowRight size={14} />
                     </Link>

@@ -162,9 +162,13 @@ export default function Navbar({ hasHero = false }) {
           <NavLink to="/" className={styles.logo} aria-label={brandName}>
             <img
               src={company.logo || '/images/logo/logo-transparent.png'}
-              alt={brandName}
+              alt=""
               className={styles.logoImg}
             />
+            <span className={styles.brandText}>
+              <span className={styles.brandName}>{brandName}</span>
+              <span className={styles.brandTag}>{t('brand.diocese')}</span>
+            </span>
           </NavLink>
 
           <nav className={styles.desktopNav} aria-label="Primary">

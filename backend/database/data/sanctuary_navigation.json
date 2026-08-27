@@ -2,7 +2,7 @@
   "primaryNav": [
     {
       "label": "Our Lady of Kibeho",
-      "path": "/",
+      "path": "/our-lady",
       "children": [
         {
           "label": "The Apparitions",
@@ -152,10 +152,6 @@
       "label": "News",
       "path": "/news",
       "children": [
-        {
-          "label": "News",
-          "path": "/news"
-        },
         {
           "label": "Events",
           "path": "/news?category=Events"

@@ -410,48 +410,26 @@ The ZIP includes pages, menus, translations, news, schedules, directories, enqui
 2. On **Backup & restore**, choose the ZIP, tick the confirmation box, then confirm twice.
 3. Restore replaces all current content with the file. After a move to a new server, sign in with an administrator account that existed in that backup.
 
-If the ZIP is too large for the browser, the developer can restore it on the server with `php artisan site:restore`.
+If the ZIP is too large for the browser, ask the developer to restore it on the server. See the **Server requirements** document: https://demo.iremetech.com/docs/server-requirements
 
 Ireme Tech can help with a scheduled backup, a restore test, or a move to new hosting.
 
 ## New server, source code, and developer support
 
-Moving host or rebuilding after a total crash is a **developer task**, with sanctuary staff providing the latest admin ZIP. The GitHub repository holds the website code (design and application). Live news, translations, and uploaded photos live in the database and the backup ZIP — a git clone alone is not a content backup.
+Moving host or rebuilding after a total crash is a **developer task**, with sanctuary staff providing the latest admin ZIP. The GitHub repository holds the website code (React public site, admin panel, and Node.js tooling). Live news, translations, and uploaded photos live in the database and the backup ZIP — a git clone alone is not a content backup.
 
-### What the new server needs
+Full hosting checklist (SSH / Git — not FTP, Node.js, MySQL, document root, shared-hosting limits):
 
-| Requirement | Minimum / note |
-|-------------|----------------|
-| Account ownership | Hosting and domain in the name of the Diocese / Shrine |
-| PHP | 8.1 or newer, with zip, GD (images), OpenSSL, Mbstring, JSON, Fileinfo |
-| Database | MySQL 5.7+ / 8.x or MariaDB |
-| Web server | Nginx or Apache with HTTPS (Let’s Encrypt or host SSL) |
-| Composer | Required on the server to install the Laravel (PHP) application |
-| Node.js & npm | Needed to *build* the React public site and admin. The live server does **not** need Node if the developer builds on a laptop and deploys the compiled files (the usual production method). Node is required on a machine that runs `npm run build` or `./deploy/build-local.sh`. |
-| Git / GitHub | SSH or Git to pull the source. The developer can grant repository access. |
-| Email | SMTP or an API (e.g. Resend) so enquiry notifications can send |
-| Disk | Room for the application plus the media library (photos and PDFs grow over time) |
+**https://demo.iremetech.com/docs/server-requirements**  
+Download: https://demo.iremetech.com/evaluation-downloads/server-requirements.md
 
-### Artisan commands the developer uses
-
-Laravel is driven from the `backend/` folder with `php artisan …`. Staff do not need these day to day; they matter on a new server or a restore.
-
-| Command | When it is used |
-|---------|-----------------|
-| `php artisan key:generate` | First setup of a new server (creates `APP_KEY` in `.env`) |
-| `php artisan migrate` | Create or update database tables. Do **not** run `migrate:fresh --seed` on a live restore — that wipes content. |
-| `php artisan storage:link` | Makes uploaded photos and PDFs visible at `/storage/…` |
-| `php artisan site:backup` | Writes a full ZIP on the server (same contents as Admin → Backup & restore) |
-| `php artisan site:restore /path/to/backup.zip` | Restores that ZIP when the file is too large to upload in the browser |
-| `./deploy/deploy.sh` | On the droplet: git pull, Composer, migrate, copy public images (no Node required) |
-
-Typical move: clone the GitHub repository → configure `.env` → Composer → migrate → restore the admin ZIP → `storage:link` → point the domain DNS at the new host. The domain registrar is independent of DigitalOcean.
+Share that page with Diocese IT when they offer server logins.
 
 ### GitHub source code and help from Ireme Tech
 
 - The developer can **share access to the source code on GitHub** with Diocese IT (organisation or invited accounts), so the Shrine is not locked to one laptop.
-- Ireme Tech remains **available to help with migrating, backups, restores, and DigitalOcean snapshots** — including turning on droplet backups, testing a restore, or moving to another host.
-- Day-to-day publishing (pages, news, photos, languages) stays in `/admin` and does not require GitHub.
+- Ireme Tech remains **available to help with migrating, backups, restores, and hosting snapshots** — including testing a restore or moving to another host.
+- Day-to-day publishing (pages, news, photos, languages) stays in `/admin` and does not require GitHub or SSH.
 
 Contact: https://iremetech.com
 

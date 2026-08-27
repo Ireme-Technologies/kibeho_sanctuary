@@ -22,6 +22,8 @@ import {
   navCTA as fallbackNavCTA,
   utilityNav as fallbackUtilityNav,
   ensureOurLadyNavChildren,
+  ensureOurLadyNavPath,
+  ensureNewsNavChildren,
 } from '@data/navigation'
 import { resolveNavLabel } from '@i18n/navKeys'
 import {
@@ -63,14 +65,6 @@ function isStalePrimaryNav(apiPrimary) {
       labels.includes('contact') ||
       labels.includes('support us')
     )
-  }
-  const ourLady = apiPrimary.find((item) =>
-    String(item?.label || '')
-      .toLowerCase()
-      .includes('our lady')
-  )
-  if (ourLady && String(ourLady.path || '').replace(/\/$/, '') === '/our-lady') {
-    return true
   }
   return false
 }
@@ -222,7 +216,12 @@ export function ContentProvider({ children }) {
       fromApi,
       refresh: () => load(locale),
       company,
-      primaryNav: translateNav(ensureOurLadyNavChildren(primaryNavRaw), t, locale, defaultLocale),
+      primaryNav: translateNav(
+        ensureNewsNavChildren(ensureOurLadyNavPath(ensureOurLadyNavChildren(primaryNavRaw))),
+        t,
+        locale,
+        defaultLocale,
+      ),
       utilityNav: translateNav(utilityNavRaw, t, locale, defaultLocale),
       footerLinks: translateNav(footerLinksRaw, t, locale, defaultLocale),
       footerServiceLinks: translateNav(footerServiceLinksRaw, t, locale, defaultLocale),

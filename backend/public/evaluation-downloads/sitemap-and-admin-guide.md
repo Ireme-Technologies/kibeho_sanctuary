@@ -199,7 +199,7 @@ User creation for additional Diocese staff is available from **Users** (where th
 | Home hero | Homepage hero slides / media / CTAs |
 | Pages | Informational pages: header, intro, and layout blocks (per language) |
 | Translations | Short UI labels (Donate, Pay now, offer./invite./project. keys) — not page articles |
-| Gallery / Media | Upload images & documents; gallery flag |
+| Gallery / Media | Upload images & documents; public gallery vs permanent delete |
 | Pilgrim Enquiries | Inbox for candle, Mass, donation, project, partnership, and pilgrimage requests |
 | Users | Create staff accounts (authorised managers) |
 | Settings & menus | Organisation details, contact, navigation, theme, Offerings & donations |
@@ -238,7 +238,7 @@ Do not create a different path per language (for example `/fr/apparitions`). Vis
 ### D. Replace images
 1. Open **Gallery / Media** (or image field on a page/article).
 2. Upload a new file.
-3. Select it on the page or mark **show in gallery**.
+3. Select it on the page, or add it to **Public gallery** for `/gallery`.
 4. Save and check the public page.
 
 ### E. Upload documents
@@ -326,10 +326,11 @@ On **Pages**, add blocks with the type buttons (heading, rich text, note, list, 
 
 ## Gallery / Media (images & PDFs)
 1. Open **Gallery / Media**.
-2. Upload images or PDF documents.
-3. Optionally flag images for `/gallery`.
-4. Select uploads inside page/news/directory forms, or link PDFs from Support → Annual Reports content.
-5. Prefer compressed web-sized images for mobile visitors.
+2. Upload images or PDF documents on **Uploads**.
+3. **Public gallery** is the curated list for `/gallery`. Add photos from the library or upload new ones. Removing an image there only hides it.
+4. **Site images** lists every photo. Removing a file there deletes it permanently after a check of where it is used — replace those places first.
+5. Select uploads inside page/news/directory forms, or link PDFs from Support → Annual Reports content.
+6. Prefer compressed web-sized images for mobile visitors.
 
 ## Translations (short UI labels only)
 This screen does **not** edit page articles or layout.
@@ -409,48 +410,26 @@ The ZIP includes pages, menus, translations, news, schedules, directories, enqui
 2. On **Backup & restore**, choose the ZIP, tick the confirmation box, then confirm twice.
 3. Restore replaces all current content with the file. After a move to a new server, sign in with an administrator account that existed in that backup.
 
-If the ZIP is too large for the browser, the developer can restore it on the server with `php artisan site:restore`.
+If the ZIP is too large for the browser, ask the developer to restore it on the server. See the **Server requirements** document: https://demo.iremetech.com/docs/server-requirements
 
 Ireme Tech can help with a scheduled backup, a restore test, or a move to new hosting.
 
 ## New server, source code, and developer support
 
-Moving host or rebuilding after a total crash is a **developer task**, with sanctuary staff providing the latest admin ZIP. The GitHub repository holds the website code (design and application). Live news, translations, and uploaded photos live in the database and the backup ZIP — a git clone alone is not a content backup.
+Moving host or rebuilding after a total crash is a **developer task**, with sanctuary staff providing the latest admin ZIP. The GitHub repository holds the website code (React public site, admin panel, and Node.js tooling). Live news, translations, and uploaded photos live in the database and the backup ZIP — a git clone alone is not a content backup.
 
-### What the new server needs
+Full hosting checklist (SSH / Git — not FTP, Node.js, MySQL, document root, shared-hosting limits):
 
-| Requirement | Minimum / note |
-|-------------|----------------|
-| Account ownership | Hosting and domain in the name of the Diocese / Shrine |
-| PHP | 8.1 or newer, with zip, GD (images), OpenSSL, Mbstring, JSON, Fileinfo |
-| Database | MySQL 5.7+ / 8.x or MariaDB |
-| Web server | Nginx or Apache with HTTPS (Let’s Encrypt or host SSL) |
-| Composer | Required on the server to install the Laravel (PHP) application |
-| Node.js & npm | Needed to *build* the React public site and admin. The live server does **not** need Node if the developer builds on a laptop and deploys the compiled files (the usual production method). Node is required on a machine that runs `npm run build` or `./deploy/build-local.sh`. |
-| Git / GitHub | SSH or Git to pull the source. The developer can grant repository access. |
-| Email | SMTP or an API (e.g. Resend) so enquiry notifications can send |
-| Disk | Room for the application plus the media library (photos and PDFs grow over time) |
+**https://demo.iremetech.com/docs/server-requirements**  
+Download: https://demo.iremetech.com/evaluation-downloads/server-requirements.md
 
-### Artisan commands the developer uses
-
-Laravel is driven from the `backend/` folder with `php artisan …`. Staff do not need these day to day; they matter on a new server or a restore.
-
-| Command | When it is used |
-|---------|-----------------|
-| `php artisan key:generate` | First setup of a new server (creates `APP_KEY` in `.env`) |
-| `php artisan migrate` | Create or update database tables. Do **not** run `migrate:fresh --seed` on a live restore — that wipes content. |
-| `php artisan storage:link` | Makes uploaded photos and PDFs visible at `/storage/…` |
-| `php artisan site:backup` | Writes a full ZIP on the server (same contents as Admin → Backup & restore) |
-| `php artisan site:restore /path/to/backup.zip` | Restores that ZIP when the file is too large to upload in the browser |
-| `./deploy/deploy.sh` | On the droplet: git pull, Composer, migrate, copy public images (no Node required) |
-
-Typical move: clone the GitHub repository → configure `.env` → Composer → migrate → restore the admin ZIP → `storage:link` → point the domain DNS at the new host. The domain registrar is independent of DigitalOcean.
+Share that page with Diocese IT when they offer server logins.
 
 ### GitHub source code and help from Ireme Tech
 
 - The developer can **share access to the source code on GitHub** with Diocese IT (organisation or invited accounts), so the Shrine is not locked to one laptop.
-- Ireme Tech remains **available to help with migrating, backups, restores, and DigitalOcean snapshots** — including turning on droplet backups, testing a restore, or moving to another host.
-- Day-to-day publishing (pages, news, photos, languages) stays in `/admin` and does not require GitHub.
+- Ireme Tech remains **available to help with migrating, backups, restores, and hosting snapshots** — including testing a restore or moving to another host.
+- Day-to-day publishing (pages, news, photos, languages) stays in `/admin` and does not require GitHub or SSH.
 
 Contact: https://iremetech.com
 

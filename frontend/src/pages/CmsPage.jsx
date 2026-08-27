@@ -316,6 +316,15 @@ export default function CmsPage() {
         ? `${t('offer.usd')} ${Number(offerings?.massPriceUsd) || 20}`
         : null
   const inviteIntro = actionPage && !isStaleInviteCopy(data.intro, actionPage.kind) ? data.intro : ''
+  const isHub = [
+    'our-lady.index',
+    'shrine.index',
+    'pilgrimage.index',
+    'spirituality.index',
+    'support.index',
+    'support.vision',
+    'support.master-plan',
+  ].includes(key)
   const isStory =
     !isAction &&
     Boolean(
@@ -349,9 +358,9 @@ export default function CmsPage() {
             <a href="#pledge" className={styles.heroCta}>
               {actionPage.heroCta}
             </a>
-          ) : isStory ? (
-            <PageLink to={data.heroCtaPath || '#join'} className={styles.heroCta}>
-              {data.heroCtaLabel || t('story.bePart')}
+          ) : isHub ? (
+            <PageLink to={data.heroCtaPath || data.cta?.primary?.path || '#join'} className={styles.heroCta}>
+              {data.heroCtaLabel || data.cta?.primary?.label || t('story.bePart')}
             </PageLink>
           ) : null}
         </div>
@@ -386,7 +395,7 @@ export default function CmsPage() {
         {actionPage?.kind === 'donation' ? <OfferingForm kind="donation" /> : null}
         {actionPage?.kind === 'partnership' ? <OfferingForm kind="partnership" /> : null}
         {actionPage ? <InvolveMore variant={actionPage.involve} /> : null}
-        {isStory ? (
+        {isHub ? (
           <InvolveMore
             variant="story"
             title={data.involveTitle}

@@ -111,6 +111,8 @@ export const navStrings = {
     'nav.contact': 'Contact',
     welcomeBar: 'Peace to all who visit the Shrine of Our Lady of Kibeho.',
     'brand.name': 'Shrine of Our Lady of Kibeho',
+    'brand.diocese': 'Diocese of Gikongoro',
+    'brand.diocese': 'Diocese of Gikongoro',
   },
   fr: {
     'nav.ourLady': 'Notre-Dame de Kibeho',
@@ -166,6 +168,7 @@ export const navStrings = {
     'nav.contact': 'Contact',
     welcomeBar: 'Paix à tous ceux qui visitent le Sanctuaire de Notre-Dame de Kibeho.',
     'brand.name': 'Sanctuaire de Notre-Dame de Kibeho',
+    'brand.diocese': 'Diocèse de Gikongoro',
   },
   rw: {
     'nav.ourLady': 'Nyina wa Kibeho',
@@ -221,6 +224,7 @@ export const navStrings = {
     'nav.contact': 'Twandikire',
     welcomeBar: 'Amahoro ku bose basura Umwibutso wa Nyina wa Kibeho.',
     'brand.name': 'Umwibutso wa Nyina wa Kibeho',
+    'brand.diocese': 'Diyosezi ya Gikongoro',
   },
   de: {
     'nav.ourLady': 'Unsere Liebe Frau von Kibeho',
@@ -276,6 +280,7 @@ export const navStrings = {
     'nav.contact': 'Kontakt',
     welcomeBar: 'Friede allen, die das Heiligtum Unserer Lieben Frau von Kibeho besuchen.',
     'brand.name': 'Heiligtum Unserer Lieben Frau von Kibeho',
+    'brand.diocese': 'Bistum Gikongoro',
   },
 }
 

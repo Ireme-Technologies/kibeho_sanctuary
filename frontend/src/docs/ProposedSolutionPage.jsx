@@ -4,7 +4,7 @@ import { DocsToolbar, DocsCrossNav, DocsToc } from './DocsChrome'
 const TOC = [
   { href: '#purpose', label: 'Purpose of this document' },
   { href: '#why-not-wordpress', label: 'Why not WordPress' },
-  { href: '#why-react-laravel', label: 'Why React & Laravel API' },
+  { href: '#why-react-laravel', label: 'Why React & Node.js' },
   { href: '#functional', label: 'Functional requirements' },
   { href: '#multilingual', label: 'Multilingual concept' },
   { href: '#architecture', label: 'Technical architecture' },
@@ -42,7 +42,7 @@ export default function ProposedSolutionPage() {
               The Diocese asked for a clear shared understanding of requirements, responsibilities, costs,
               and sustainability—before continuing development. This document describes the system already
               built for the Shrine of Our Lady of Kibeho (six-pillar Terms of Reference) using a dedicated
-              React + Laravel CMS hosted on infrastructure registered in the client’s name.
+              React + Node.js CMS hosted on infrastructure registered in the client’s name.
             </p>
             <p>
               <strong>Demo content note:</strong> Text and images shown on the live demo are provisional.
@@ -76,8 +76,9 @@ export default function ProposedSolutionPage() {
                 forms update without full page reloads—better perceived loading speed on mobile.
               </li>
               <li>
-                A <strong>Laravel API</strong> is built for today’s needs: connecting later to payment
-                gateways, members management, and other Diocese/external services without rebuilding the site.
+                A <strong>Node.js</strong> application layer is built for today’s needs: connecting later to
+                payment gateways, members management, and other Diocese/external services without rebuilding
+                the site.
               </li>
               <li>
                 Multilingual (Kinyarwanda, French, English, German) is designed in from the start, with room
@@ -88,8 +89,8 @@ export default function ProposedSolutionPage() {
                 marketplace lock-in.
               </li>
               <li>
-                Runs on existing shared or dedicated hosting (PHP + MySQL) when Git/SSH or an agreed deploy
-                path is available—the same class of hosting WordPress uses.
+                Runs on existing Diocese vhost or VPS hosting (MySQL + HTTPS) when Git/SSH is available —
+                see <a href="/docs/server-requirements">server requirements</a> (FTP is not used).
               </li>
               <li>
                 Dual backup: DigitalOcean snapshots (configured by the web developer) plus an admin ZIP that
@@ -103,7 +104,7 @@ export default function ProposedSolutionPage() {
           </section>
 
           <section id="why-react-laravel">
-            <h2>3. Why React.js and a Laravel API</h2>
+            <h2>3. Why React.js and Node.js</h2>
             <h3>React.js — interactive experience and loading speed</h3>
             <p>
               The public website and the administration panel are built with <strong>React.js</strong>. This
@@ -129,9 +130,9 @@ export default function ProposedSolutionPage() {
                 site stays lean for international visitors.
               </li>
             </ul>
-            <h3>Laravel API — ready for external services</h3>
+            <h3>Node.js — ready for external services</h3>
             <p>
-              Content and business logic run through a <strong>Laravel API</strong> (PHP). A clean API layer
+              Content and business logic run through a <strong>Node.js</strong> application layer. A clean API
               is what organisations need today when the website must talk to other systems—not only display
               pages:
             </p>
@@ -154,7 +155,7 @@ export default function ProposedSolutionPage() {
               </li>
             </ul>
             <p>
-              In short: <strong>React</strong> serves interactive users quickly; <strong>Laravel</strong>
+              In short: <strong>React</strong> serves interactive users quickly; <strong>Node.js</strong>
               exposes a durable API so the Shrine can grow into payments, membership, and other external
               services when the Diocese is ready—without locking the project into WordPress plugins that are
               hard to control long term.
@@ -284,13 +285,14 @@ export default function ProposedSolutionPage() {
                 <tr>
                   <td>Public website &amp; admin UI</td>
                   <td>
-                    React 18 (Vite) — interactive experience and fast updates after first load
+                    React (Vite / Node.js) — interactive experience and fast updates after first load
                   </td>
                 </tr>
                 <tr>
                   <td>API &amp; business logic</td>
                   <td>
-                    Laravel (PHP 8.1+) — CMS plus API ready for payments, members, and other services
+                    Node.js application services — CMS plus API ready for payments, members, and other
+                    services
                   </td>
                 </tr>
                 <tr>
@@ -299,7 +301,7 @@ export default function ProposedSolutionPage() {
                 </tr>
                 <tr>
                   <td>Authentication</td>
-                  <td>Laravel Sanctum (secure session for admin)</td>
+                  <td>Secure session for admin (cookie-based)</td>
                 </tr>
                 <tr>
                   <td>Rich text</td>
@@ -320,17 +322,23 @@ export default function ProposedSolutionPage() {
               </tbody>
             </table>
             <p>
-              <strong>React</strong> delivers a smooth public site and admin for interactive users;
-              <strong> Laravel</strong> exposes the API that modern shrines need to connect payment gateways,
-              membership tools, and other Diocese systems later—without rebuilding the whole website.
-              Production is a single deployable app: the React build is served from Laravel’s public folder
-              on one client-owned hosting account (Nginx or Apache + HTTPS).
+              <strong>React</strong> delivers a smooth public site and admin for interactive users;{' '}
+              <strong>Node.js</strong> powers the application services and API that modern shrines need to
+              connect payment gateways, membership tools, and other Diocese systems later—without rebuilding
+              the whole website. Production is a single deployable app on one client-owned hosting account
+              (Nginx or Apache + HTTPS). See{' '}
+              <a href="/docs/server-requirements">server requirements</a> for Git/SSH deploy (not FTP).
             </p>
             <h3>Hosting requirements</h3>
+            <p>
+              Full checklist for Diocese IT (React + Node.js, MySQL, Git/SSH — not FTP, shared-hosting
+              limits):{' '}
+              <a href="/docs/server-requirements">Server requirements &amp; deployment access</a>.
+            </p>
             <ul>
               <li>Account ownership in the name of the Diocese / Shrine</li>
-              <li>PHP 8.1+ with standard extensions; MySQL; HTTPS</li>
-              <li>Git/SSH preferred, or build-then-upload workflow</li>
+              <li>Node.js (LTS) for building the React application; MySQL; HTTPS</li>
+              <li>Git over SSH for install and updates (FTP is not used)</li>
               <li>Disk capacity for media growth (photos, PDFs)</li>
             </ul>
           </section>
@@ -470,6 +478,9 @@ export default function ProposedSolutionPage() {
                 <a href="/docs/sitemap-and-admin-guide">Sitemap &amp; admin user guide</a>
               </li>
               <li>
+                <a href="/docs/server-requirements">Server requirements &amp; deployment access</a>
+              </li>
+              <li>
                 <a href="/" target="_blank" rel="noreferrer">
                   Live public demo
                 </a>
@@ -484,7 +495,7 @@ export default function ProposedSolutionPage() {
 
           <DocsCrossNav
             prev={{ to: '/docs', label: 'Documentation hub' }}
-            next={{ to: '/docs/sitemap-and-admin-guide', label: 'Sitemap & admin guide' }}
+            next={{ to: '/docs/server-requirements', label: 'Server requirements' }}
           />
         </article>
       </div>

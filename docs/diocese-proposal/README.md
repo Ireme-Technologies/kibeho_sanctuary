@@ -13,10 +13,12 @@ Share these with the Diocese evaluation committee:
 | **Start here — documentation hub** | `https://demo.iremetech.com/docs` |
 | Proposed solution (detailed) | `https://demo.iremetech.com/docs/proposed-solution` |
 | Sitemap & admin user guide | `https://demo.iremetech.com/docs/sitemap-and-admin-guide` |
+| Server requirements (IT / handover) | `https://demo.iremetech.com/docs/server-requirements` |
 | Public website demo | `https://demo.iremetech.com/` |
 | CMS admin login | `https://demo.iremetech.com/admin/login` |
 | Download — proposed solution | `https://demo.iremetech.com/evaluation-downloads/proposed-solution.md` |
 | Download — sitemap & admin guide | `https://demo.iremetech.com/evaluation-downloads/sitemap-and-admin-guide.md` |
+| Download — server requirements | `https://demo.iremetech.com/evaluation-downloads/server-requirements.md` |
 
 **Demo admin:** `admin@kibeho.org` / `KibehoAdmin@202!`  
 
@@ -38,6 +40,7 @@ On each document page, **Print / Save as PDF** is available in the toolbar (A4 m
 | [07-SCOPE-SCHEDULE-ACCEPTANCE.md](./07-SCOPE-SCHEDULE-ACCEPTANCE.md) | Scope, milestones, acceptance criteria |
 | [08-FINANCIAL-QUOTATION.md](./08-FINANCIAL-QUOTATION.md) | Quotation template (fill amounts before send) |
 | [09-OWNERSHIP-HANDOVER.md](./09-OWNERSHIP-HANDOVER.md) | Ownership, accounts, source code, handover |
+| Live docs: Server requirements | `https://demo.iremetech.com/docs/server-requirements` (Git/SSH — not FTP; React + Node.js hosting checklist) |
 | [10-REFERENCES.md](./10-REFERENCES.md) | References (fill with real client sites) |
 
 ## Before sending to the Diocese
@@ -52,7 +55,7 @@ On each document page, **Print / Save as PDF** is available in the toolbar (A4 m
 |-------|--------|
 | Public website | React (Vite) |
 | Administration panel | Same application (`/admin`) |
-| API & business logic | Laravel (PHP) |
+| API & business logic | Node.js application services (React front end) |
 | Database | MySQL |
-| Hosting | Existing Diocese/Shrine hosting account (shared or dedicated) **in the client’s name** |
+| Hosting | Existing Diocese/Shrine hosting account (vhost / VPS with SSH) **in the client’s name** |
 | Ownership | Domains, hosting, source code, database, and admin accounts belong to the Diocese |

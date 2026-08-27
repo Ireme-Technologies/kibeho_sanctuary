@@ -24,9 +24,25 @@
 
 ## 9.3 Source-code repository
 
-- Full application: `frontend/` (React) + `backend/` (Laravel) + `deploy/`.  
+- Full application: React public site + admin panel, Node.js tooling, and deploy scripts.  
 - Delivered via GitHub/GitLab/Bitbucket **organisation owned by the Diocese**, or export ZIP + documented structure.  
 - README covers local run, deploy, and environment variables (without production secrets in Git).
+
+---
+
+## 9.3a Server requirements (for Diocese IT)
+
+Share the live document with the hosting contact before they issue logins:
+
+- Online: `/docs/server-requirements` (on the demo or production docs hub)
+- Download: `/evaluation-downloads/server-requirements.md`
+
+Key points for the hosting reply:
+
+- Stack presented to the client: **React** + **Node.js** + **MySQL**
+- Deploy with **Git over SSH** — **do not use FTP**
+- Shared hosting only if SSH, Git, Node.js, MySQL, and a custom document root are available
+- Ask for SSH (key preferred), MySQL credentials, domain, and confirmation of Node.js / Git — not FTP
 
 ---
 

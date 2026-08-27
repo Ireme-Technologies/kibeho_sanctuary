@@ -18,8 +18,12 @@ const page = (partial) => ({
 export const pageFallbacks = {
   'our-lady.index': page({
       title: "Our Lady of Kibeho",
-      subtitle: "The message of conversion, prayer, and reconciliation",
-      intro: "Discover the Marian apparitions at Kibeho — the first and, to date, the only Marian apparition site in Africa officially recognised by the Catholic Church.",
+      subtitle: "Nyina wa Jambo — Mother of the Word",
+      heroCtaLabel: "Read the Apparitions",
+      heroCtaPath: "/our-lady/apparitions",
+      seoDescription:
+        "Our Lady of Kibeho — Nyina wa Jambo, Mother of the Word. The first Marian apparition site in Africa recognised by the Catholic Church.",
+      intro: "<p>She presented herself as <em>Nyina wa Jambo</em> — Mother of the Word — and called the world to conversion, to prayer, and to reconciliation. Through three schoolgirls of Kibeho the Church received a message that still gathers pilgrims from Rwanda and from every nation.</p><p>Walk the apparitions, the visionaries, and the 2001 recognition. Then come: this call is lived at the Shrine, not only remembered.</p>",
       links: [
         {
           label: "The Apparitions",
@@ -268,6 +272,8 @@ export const pageFallbacks = {
   'shrine.index': page({
       title: "The Shrine",
       subtitle: "A living place of prayer on the hills of Kibeho",
+      heroCtaLabel: "Walk the Shrine",
+      heroCtaPath: "/shrine/welcome",
       intro: "<p>The Shrine of Our Lady of Kibeho welcomes pilgrims who come to pray, to celebrate the sacraments, and to walk the places linked to the apparitions of the Mother of the Word. Here the Church gathers each day — and, on feast days, from across Rwanda and the world.</p>",
       blocks: [
         {
@@ -502,6 +508,8 @@ export const pageFallbacks = {
   'pilgrimage.index': page({
       title: "Pilgrimage",
       subtitle: "Prepare your journey to Kibeho",
+      heroCtaLabel: "Plan your visit",
+      heroCtaPath: "/pilgrimage/plan",
       intro: "Whether you come alone, with family, or with a parish group, the Shrine welcomes you. Prepare spiritually and practically for your pilgrimage.",
       links: [
         {
@@ -540,7 +548,7 @@ export const pageFallbacks = {
         },
         secondary: {
           label: "Pilgrimage events",
-          path: "/pilgrimages",
+          path: "/pilgrimage/calendar",
         },
       },
     }),
@@ -638,8 +646,8 @@ export const pageFallbacks = {
       intro: "Find guest houses, retreat centres, and hotels near Kibeho. The Pilgrimage Office can advise groups on suitable options.",
       cta: {
         primary: {
-          label: "Browse facilities",
-          path: "/hotels",
+          label: "Ask the Pilgrimage Office",
+          path: "/pilgrimage/office",
         },
         secondary: {
           label: "Contact the Office",
@@ -704,7 +712,7 @@ export const pageFallbacks = {
         },
         secondary: {
           label: "Pilgrimage events",
-          path: "/pilgrimages",
+          path: "/pilgrimage/calendar",
         },
       },
     }),
@@ -737,8 +745,8 @@ export const pageFallbacks = {
       ],
       cta: {
         primary: {
-          label: "View pilgrimage events",
-          path: "/pilgrimages",
+          label: "Plan your Pilgrimage",
+          path: "/pilgrimage/plan",
         },
         secondary: {
           label: "Mass Schedule",
@@ -777,6 +785,8 @@ export const pageFallbacks = {
   'spirituality.index': page({
       title: "Spirituality",
       subtitle: "Pray with the Shrine — near or far",
+      heroCtaLabel: "Pray the Seven Sorrows",
+      heroCtaPath: "/spirituality/seven-sorrows-rosary",
       intro: "Deepen your spiritual life with the prayers, rosaries, novenas, and pastoral invitations of Our Lady of Kibeho. You may also send prayer intentions and request Masses.",
       links: [
         {
@@ -1021,6 +1031,8 @@ export const pageFallbacks = {
   'support.index': page({
       title: "Support the Shrine",
       subtitle: "Pastoral mission and sustainable development",
+      heroCtaLabel: "See the Master Plan",
+      heroCtaPath: "/support/master-plan",
       intro: "Unlike long-established pilgrimage sites, Kibeho is still developing. Your partnership helps proclaim the message, welcome pilgrims, and build the infrastructure of the Shrine for generations to come.",
       blocks: [
         {

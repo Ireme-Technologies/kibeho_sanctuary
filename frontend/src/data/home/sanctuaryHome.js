@@ -3,9 +3,9 @@ export const welcomeMessage =
 
 export const homeWelcome = {
   eyebrow: 'Our Lady of Kibeho',
-  heading: 'Recognised. Welcoming. A place of conversion.',
-  text: 'The Shrine of Our Lady of Kibeho is the first — and to date the only — Marian apparition site in Africa officially recognised by the Catholic Church. Pilgrims from every nation are welcome.',
-  cta: { label: 'Discover the Message', path: '/our-lady' },
+  heading: 'Nyina wa Jambo — Mother of the Word',
+  text: 'She came as a mother calling her children to conversion, to the Rosary, and to reconciliation. That call is still lived on these hills — in the liturgy, in the silence of the apparition sites, and in every pilgrim who comes to pray.',
+  cta: { label: 'Read the Apparitions', path: '/our-lady/apparitions' },
   image: '',
 }
 
@@ -114,23 +114,23 @@ export const todaySchedule = [
 export const whyVisit = [
   {
     id: 'message',
-    title: 'The Message',
-    text: 'Discover the call of Our Lady of Kibeho to conversion, prayer, and reconciliation.',
+    title: 'A call to conversion',
+    text: 'Our Lady asked for a sincere return to God — prayer, the Rosary, and a change of heart.',
   },
   {
     id: 'recognised',
-    title: 'Church Recognition',
-    text: 'The only Marian apparition site in Africa officially recognised by the Catholic Church.',
+    title: 'Reconciliation',
+    text: 'Kibeho is a place to make peace with God and with one another, for Rwanda and for the world.',
   },
   {
     id: 'liturgy',
-    title: 'Liturgical Life',
-    text: 'Join Mass, Adoration, and the prayer life of the Shrine.',
+    title: 'Seven Sorrows',
+    text: 'The Rosary of the Seven Sorrows is the devotion she taught here. Come and pray it with the Shrine.',
   },
   {
     id: 'pilgrimage',
-    title: 'A Living Pilgrimage',
-    text: 'Come alone or with your parish — prepare your journey with the Pilgrimage Office.',
+    title: 'A shrine still rising',
+    text: 'The hillside is still being formed. Walk with the work — through pilgrimage, prayer, and partnership.',
   },
 ]
 
