@@ -58,7 +58,7 @@ const CommunitiesAdminPage = lazy(() => import('@admin/CommunitiesAdminPage'))
 const DocsLayout = lazy(() => import('../docs/DocsLayout'))
 const DocsHubPage = lazy(() => import('../docs/DocsHubPage'))
 const ProposedSolutionPage = lazy(() => import('../docs/ProposedSolutionPage'))
-const SitemapAdminGuidePage = lazy(() => import('../docs/SitemapAdminGuidePage'))
+const AdminGuidePage = lazy(() => import('../docs/guide/AdminGuidePage'))
 const ServerRequirementsPage = lazy(() => import('../docs/ServerRequirementsPage'))
 
 const Wrap = ({ Component, ...props }) => (
@@ -142,7 +142,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Wrap Component={DocsHubPage} /> },
       { path: 'proposed-solution', element: <Wrap Component={ProposedSolutionPage} /> },
-      { path: 'sitemap-and-admin-guide', element: <Wrap Component={SitemapAdminGuidePage} /> },
+      { path: 'sitemap-and-admin-guide', element: <Wrap Component={AdminGuidePage} /> },
+      { path: 'sitemap-and-admin-guide/:section', element: <Wrap Component={AdminGuidePage} /> },
       { path: 'server-requirements', element: <Wrap Component={ServerRequirementsPage} /> },
     ],
   },

@@ -18,8 +18,8 @@ export default function DocsHubPage() {
         <article className={styles.card}>
           <h2>1. Administrator guide</h2>
           <p>
-            Sign in, open CMS audit for a readiness score, then follow settings, languages, pages, listings,
-            and backup. Critical gaps appear in the guide when you are signed in.
+            Sign in, open CMS audit for a readiness score, then follow short chapters (settings, languages,
+            pages, listings, backup). Use Back / Next between chapters.
           </p>
           <div className={styles.cardActions}>
             <Link className={styles.btnPrimary} to="/docs/sitemap-and-admin-guide">
@@ -41,7 +41,7 @@ export default function DocsHubPage() {
             <a className={styles.btnPrimary} href="/admin/login" target="_blank" rel="noreferrer">
               Open admin login
             </a>
-            <Link className={styles.btnSoft} to="/docs/sitemap-and-admin-guide#languages">
+            <Link className={styles.btnSoft} to="/docs/sitemap-and-admin-guide/languages">
               How to manage languages
             </Link>
           </div>
@@ -118,8 +118,8 @@ export default function DocsHubPage() {
         </dl>
         <p>
           Use these credentials only on the evaluation demo. Follow the{' '}
-          <Link to="/docs/sitemap-and-admin-guide#admin-guide">administrator user guide</Link> while
-          signed in. Change passwords on handover to production.
+          <Link to="/docs/sitemap-and-admin-guide">administrator user guide</Link> while signed in.
+          Change passwords on handover to production.
         </p>
       </section>
 
@@ -146,13 +146,14 @@ export default function DocsHubPage() {
               </td>
             </tr>
             <tr>
-              <td>Sitemap &amp; admin user guide</td>
+              <td>Administrator guide (chaptered)</td>
               <td>
-                <code>/docs/sitemap-and-admin-guide</code>
+                <code>/docs/sitemap-and-admin-guide</code> (then <code>/…/audit</code>,{' '}
+                <code>/…/settings</code>, …)
               </td>
             </tr>
             <tr>
-              <td>Server requirements (handover / IT)</td>
+              <td>Server requirements (share with IT)</td>
               <td>
                 <code>/docs/server-requirements</code>
               </td>

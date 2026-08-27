@@ -268,7 +268,7 @@ export default function ProposedSolutionPage() {
               future language is configuration + translation entry—not a full rebuild. Official prayers and
               episcopal texts must come from approved Diocese sources; the CMS stores and displays them.
               Step-by-step staff instructions:{' '}
-              <a href="/docs/sitemap-and-admin-guide#languages">Best way to manage languages</a>.
+              <a href="/docs/sitemap-and-admin-guide/languages">Best way to manage languages</a>.
             </p>
           </section>
 
@@ -365,7 +365,7 @@ export default function ProposedSolutionPage() {
                 <strong>Admin ZIP (sanctuary staff):</strong> Administrators download a full content + media
                 backup from <strong>Admin → Backup &amp; restore</strong> and store it off the server (Diocese
                 computer or Drive). The same page restores the ZIP on this or a new host. See the{' '}
-                <a href="/docs/sitemap-and-admin-guide#backup">administrator user guide — Backups</a>.
+                <a href="/docs/sitemap-and-admin-guide/backup">administrator user guide — Backups</a>.
               </li>
               <li>
                 <strong>Recovery / migration:</strong> re-provision hosting, clone the GitHub repository

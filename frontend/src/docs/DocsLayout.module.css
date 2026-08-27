@@ -373,6 +373,24 @@
   color: var(--docs-accent);
 }
 
+.toc a.tocActive,
+.tocActive {
+  background: #e8eef8;
+  color: var(--docs-primary);
+  font-weight: 700;
+}
+
+.tocDivider {
+  border: 0;
+  border-top: 1px solid var(--docs-line);
+  margin: 0.65rem 0;
+}
+
+.tocExternal {
+  font-weight: 600;
+  color: var(--docs-accent) !important;
+}
+
 .article {
   background: var(--docs-surface);
   border: 1px solid var(--docs-line);

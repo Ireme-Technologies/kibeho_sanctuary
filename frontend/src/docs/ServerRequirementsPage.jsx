@@ -263,8 +263,8 @@ export default function ServerRequirementsPage() {
           </section>
 
           <DocsCrossNav
-            prev={{ to: '/docs/sitemap-and-admin-guide', label: 'Administrator guide' }}
-            next={{ to: '/docs', label: 'Back to documentation hub' }}
+            prev={{ to: '/docs/sitemap-and-admin-guide/future', label: 'Future upgrades' }}
+            next={{ to: '/docs', label: 'Documentation hub' }}
           />
         </article>
       </div>
