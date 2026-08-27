@@ -392,29 +392,28 @@ No mandatory proprietary CMS licence (unlike some commercial page builders). Ong
 
 ---
 
-## 5.6 Backup and recovery (server + manual)
+## 5.6 Backup and recovery
 
-As agreed with the client:
+Use **all three** layers. DigitalOcean snapshots alone are not enough if that account or region is unavailable, or if you move host.
 
-### A. Server-side backup
-- Enable the hosting provider’s backup (daily/weekly as offered).
-- Document restore steps with the host’s panel.
-- Retention period: [FILL — e.g. 7–30 days per host plan].
+### A. DigitalOcean server backup (web developer)
+- Enable droplet backups or weekly snapshots in the DigitalOcean panel. Ireme Tech configures and checks this.
+- These restore the whole server quickly **only while DigitalOcean still holds them**.
+- Retention is limited (often a few weeks). They are not a copy you can take to another company.
 
-### B. Manual / exportable backup (independent of host panel)
-- **Database:** export full MySQL dump (`mysqldump` or phpMyAdmin → Export) on a defined schedule (e.g. weekly) and after major content campaigns.
-- **Media:** copy `storage` / uploads directory.
-- **Application:** Git repository is the source of truth for code; tagged release on handover.
-- Store copies **off the web server** (Diocese drive / encrypted archive).
+### B. Admin export ZIP (sanctuary staff)
+Administrators download a ZIP from **Admin → Backup & restore**. It includes live CMS data, uploaded media, and site images. Store it **off the web server**. Restore from the same page (two-step confirmation), or `php artisan site:restore` if the file is large.
 
-### C. Migration resilience
-If server backup fails, we can still:
-1. Provision hosting again under the Diocese name,
-2. Clone the repository,
-3. Import the latest database export + media archive,
-4. Re-link environment and SSL.
+Full staff steps: administrator user guide → Backups.
 
-An optional small **admin “Export database”** button or scheduled dump script can be added in a later phase; the **documented manual export** is included in Phase 1 handover.
+### C. Application code and GitHub
+- Git is the source of truth for the frontend and backend code. The developer can share GitHub access with Diocese IT.
+- A git clone without a content backup restores the empty/seeded demo, not live Diocese content.
+- Node.js is used to *build* the React app; the live server does not need Node if compiled files are deployed.
+- Ireme Tech is available to help with migrating, backups, and restores.
+
+### D. Domain
+- The domain registrar is independent of DigitalOcean. Point DNS at the new host when moving.
 
 ---
 
