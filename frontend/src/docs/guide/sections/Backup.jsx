@@ -39,7 +39,7 @@ export default function GuideBackup() {
                   </ol>
                   <p>
                     If the ZIP is too large for the browser, ask the developer to restore it on the server (see{' '}
-                    <a href="/docs/server-requirements">Server requirements</a>).
+                    <a href="/docs/server-requirements/backups">Technical details — Backups</a>).
                   </p>
                   <p>
                     Ireme Tech can help with a scheduled backup, a restore test, or a move to new hosting — ask

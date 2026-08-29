@@ -20,10 +20,10 @@ export const GUIDE_CHAPTERS = [
   { slug: 'future', label: 'Future upgrades', title: 'Future upgrades', page: 'Future' },
 ]
 
-/** Shareable server requirements page (not nested inside the guide). */
+/** Shareable technical details / hosting handoff (not nested inside the guide). */
 export const SERVER_REQUIREMENTS = {
   to: '/docs/server-requirements',
-  label: 'Server requirements',
+  label: 'Technical details',
 }
 
 export function guidePath(slug) {

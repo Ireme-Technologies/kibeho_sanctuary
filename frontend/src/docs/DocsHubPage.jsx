@@ -8,9 +8,8 @@ export default function DocsHubPage() {
         <p className={styles.brandEyebrow}>Start here</p>
         <h1>System documentation for Diocese evaluation</h1>
         <p className={styles.lede}>
-          Start with the administrator guide and CMS audit if you will manage the site. The proposed
-          solution document is for evaluation of the platform. The live demo and admin panel are linked
-          below.
+          Start with the administrator guide and CMS audit if you will manage the site. Share technical
+          details with the hosting partner. The proposed solution is for evaluation of the platform.
         </p>
       </div>
 
@@ -77,14 +76,14 @@ export default function DocsHubPage() {
         </article>
 
         <article className={styles.card}>
-          <h2>5. Server requirements</h2>
+          <h2>5. Technical details</h2>
           <p>
-            Hosting checklist for Diocese IT: React + Node.js stack, Git/SSH (not FTP), MySQL, and what to
-            send instead of FTP logins when migrating to your vhost.
+            React + Laravel handoff for the client and hosting partner: recommended DigitalOcean droplet
+            (~$7/month), SSH not FTP, database, email, backups. One chapter per topic with Back / Next.
           </p>
           <div className={styles.cardActions}>
             <Link className={styles.btnPrimary} to="/docs/server-requirements">
-              Open requirements
+              Open technical details
             </Link>
             <a className={styles.btnGhost} href="/evaluation-downloads/server-requirements.md" download>
               Download .md
@@ -153,9 +152,10 @@ export default function DocsHubPage() {
               </td>
             </tr>
             <tr>
-              <td>Server requirements (share with IT)</td>
+              <td>Technical details (share with hosting partner)</td>
               <td>
-                <code>/docs/server-requirements</code>
+                <code>/docs/server-requirements</code> (then <code>/…/hosting</code>,{' '}
+                <code>/…/database</code>, …)
               </td>
             </tr>
             <tr>
@@ -183,7 +183,7 @@ export default function DocsHubPage() {
               </td>
             </tr>
             <tr>
-              <td>Download — server requirements</td>
+              <td>Download — technical details</td>
               <td>
                 <code>/evaluation-downloads/server-requirements.md</code>
               </td>

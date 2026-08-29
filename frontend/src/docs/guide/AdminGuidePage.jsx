@@ -75,8 +75,8 @@ export default function AdminGuidePage() {
         <h1>{current.title}</h1>
         <p className={styles.lede}>
           Short chapters so staff can follow one topic at a time. Use <strong>Back</strong> /{' '}
-          <strong>Next</strong> below, or jump from the chapter list. Server requirements for Diocese IT:{' '}
-          <Link to={SERVER_REQUIREMENTS.to}>{SERVER_REQUIREMENTS.to}</Link>
+          <strong>Next</strong> below, or jump from the chapter list. Technical details for Diocese IT and
+          the hosting partner: <Link to={SERVER_REQUIREMENTS.to}>{SERVER_REQUIREMENTS.to}</Link>
         </p>
       </div>
 

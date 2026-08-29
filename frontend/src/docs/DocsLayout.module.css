@@ -391,6 +391,63 @@
   color: var(--docs-accent) !important;
 }
 
+.inventory {
+  list-style: none;
+  margin: 0.85rem 0 1.35rem;
+  padding: 0;
+  border: 1px solid var(--docs-line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.article .inventory {
+  padding-left: 0;
+}
+
+.inventory > li {
+  margin: 0;
+  padding: 0;
+}
+
+.inventoryRow {
+  display: grid;
+  grid-template-columns: 11.5rem 1fr;
+  gap: 0.85rem;
+  padding: 0.95rem 1.1rem;
+  border-bottom: 1px solid var(--docs-line);
+  text-decoration: none;
+  color: inherit;
+  align-items: start;
+}
+
+.inventoryRow:last-child {
+  border-bottom: 0;
+}
+
+a.inventoryRow:hover {
+  background: #eef3f9;
+}
+
+.inventoryLabel {
+  color: var(--docs-primary);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.inventoryMeta {
+  color: var(--docs-muted);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .inventoryRow {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
+
 .article {
   background: var(--docs-surface);
   border: 1px solid var(--docs-line);
@@ -574,7 +631,8 @@
 
   .notice,
   .creds,
-  .card {
+  .card,
+  .inventory {
     break-inside: avoid;
     page-break-inside: avoid;
   }

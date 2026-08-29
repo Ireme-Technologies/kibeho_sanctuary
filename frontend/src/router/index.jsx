@@ -59,7 +59,7 @@ const DocsLayout = lazy(() => import('../docs/DocsLayout'))
 const DocsHubPage = lazy(() => import('../docs/DocsHubPage'))
 const ProposedSolutionPage = lazy(() => import('../docs/ProposedSolutionPage'))
 const AdminGuidePage = lazy(() => import('../docs/guide/AdminGuidePage'))
-const ServerRequirementsPage = lazy(() => import('../docs/ServerRequirementsPage'))
+const TechDetailsPage = lazy(() => import('../docs/tech/TechDetailsPage'))
 
 const Wrap = ({ Component, ...props }) => (
   <Suspense fallback={<PageLoader />}>
@@ -144,7 +144,8 @@ const router = createBrowserRouter([
       { path: 'proposed-solution', element: <Wrap Component={ProposedSolutionPage} /> },
       { path: 'sitemap-and-admin-guide', element: <Wrap Component={AdminGuidePage} /> },
       { path: 'sitemap-and-admin-guide/:section', element: <Wrap Component={AdminGuidePage} /> },
-      { path: 'server-requirements', element: <Wrap Component={ServerRequirementsPage} /> },
+      { path: 'server-requirements', element: <Wrap Component={TechDetailsPage} /> },
+      { path: 'server-requirements/:section', element: <Wrap Component={TechDetailsPage} /> },
     ],
   },
   {

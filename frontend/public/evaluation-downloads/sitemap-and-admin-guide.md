@@ -410,7 +410,7 @@ The ZIP includes pages, menus, translations, news, schedules, directories, enqui
 2. On **Backup & restore**, choose the ZIP, tick the confirmation box, then confirm twice.
 3. Restore replaces all current content with the file. After a move to a new server, sign in with an administrator account that existed in that backup.
 
-If the ZIP is too large for the browser, ask the developer to restore it on the server. See the **Server requirements** document: https://demo.iremetech.com/docs/server-requirements
+If the ZIP is too large for the browser, ask the developer to restore it on the server. See **Technical details — Backups**: https://demo.iremetech.com/docs/server-requirements/backups
 
 Ireme Tech can help with a scheduled backup, a restore test, or a move to new hosting.
 

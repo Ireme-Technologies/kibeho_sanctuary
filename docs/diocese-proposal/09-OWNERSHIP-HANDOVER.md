@@ -34,15 +34,16 @@
 
 Share the live document with the hosting contact before they issue logins:
 
-- Online: `/docs/server-requirements` (on the demo or production docs hub)
+- Online: `/docs/server-requirements` (technical details — hosting handoff)
 - Download: `/evaluation-downloads/server-requirements.md`
 
 Key points for the hosting reply:
 
-- Stack presented to the client: **React** + **Node.js** + **MySQL**
-- Deploy with **Git over SSH** — **do not use FTP**
-- Shared hosting only if SSH, Git, Node.js, MySQL, and a custom document root are available
-- Ask for SSH (key preferred), MySQL credentials, domain, and confirmation of Node.js / Git — not FTP
+- Stack: **React** + **Laravel (PHP 8.1+)** + **MySQL**
+- Deploy with **Git over SSH + Composer** — **do not use FTP**
+- **Recommended:** Diocese-owned DigitalOcean Basic droplet (~$6–7/month), same as this demo
+- Existing Diocese vhost works only if SSH, PHP 8.1+, Composer, MySQL, and Laravel document root are available
+- Ask for SSH (key preferred), MySQL credentials, domain — not FTP
 
 ---
 
