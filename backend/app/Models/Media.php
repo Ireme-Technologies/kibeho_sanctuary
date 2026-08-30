@@ -19,6 +19,7 @@ class Media extends Model
         'height',
         'folder',
         'alt',
+        'translations',
         'show_in_gallery',
         'gallery_sort',
     ];
@@ -29,5 +30,6 @@ class Media extends Model
         'width' => 'integer',
         'height' => 'integer',
         'gallery_sort' => 'integer',
+        'translations' => 'array',
     ];
 }

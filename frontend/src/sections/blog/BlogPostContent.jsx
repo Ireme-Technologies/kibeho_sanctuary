@@ -24,24 +24,18 @@ import { displayTitleLabel } from '@i18n/typography'
 import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import {
   postNotFoundText,
-  backToBlogLabel,
-  shareLabel,
-  relatedPostsLabel,
   commentsLabel,
   leaveCommentLabel,
   commentFormDisclaimer,
   commentFormFields,
 } from '@data/blog/BlogPostContent'
+import { formatLocaleDate } from '@utils/localeDate'
 import styles from './BlogPostContent.module.css'
 
 const socialIcons = { facebook: Facebook, instagram: Instagram, linkedin: Linkedin, x: X }
 
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+function formatDate(dateStr, locale) {
+  return formatLocaleDate(dateStr, locale)
 }
 
 function collectPostImages(post) {
@@ -171,7 +165,7 @@ function CommentForm() {
 export default function BlogPostContent() {
   const { slug } = useParams()
   const { blogPosts, blogAuthors } = useContent()
-  const { locale } = useLocale()
+  const { locale, t } = useLocale()
   const [lightboxIndex, setLightboxIndex] = useState(null)
   const currentIndex = blogPosts.findIndex((p) => p.slug === slug)
   const post = blogPosts[currentIndex]
@@ -182,7 +176,7 @@ export default function BlogPostContent() {
         <div className={`container ${styles.notFound}`}>
           <p>{postNotFoundText}</p>
           <Link to="/news" className={styles.backLink}>
-            <ArrowLeft size={16} /> {backToBlogLabel}
+            <ArrowLeft size={16} /> {t('backToNews')}
           </Link>
         </div>
       </section>
@@ -233,7 +227,7 @@ export default function BlogPostContent() {
               <User size={14} /> {author?.name ?? 'Kibeho Sanctuary Team'}
             </span>
             <span className={styles.metaItem}>
-              <Calendar size={14} /> {formatDate(post.publishedAt)}
+              <Calendar size={14} /> {formatDate(post.publishedAt, locale)}
             </span>
             <span className={styles.metaItem}>
               <MessageCircle size={14} /> {(post.comments || []).length}
@@ -255,7 +249,7 @@ export default function BlogPostContent() {
               ))}
             </div>
             <div className={styles.share}>
-              <span className={styles.shareLabel}>{shareLabel}</span>
+              <span className={styles.shareLabel}>{t('share')}:</span>
               {Object.entries(shareLinks).map(([key, href]) => {
                 const Icon = socialIcons[key]
                 return (
@@ -302,7 +296,7 @@ export default function BlogPostContent() {
             </div>
           )}
 
-          <nav className={styles.prevNext} aria-label={relatedPostsLabel}>
+          <nav className={styles.prevNext} aria-label={t('moreArticles')}>
             <Link to={`/news/${prevPost.slug}`} className={styles.prevNextLink}>
               <ArrowLeft size={16} />
               <div>

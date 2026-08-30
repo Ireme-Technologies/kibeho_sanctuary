@@ -2,26 +2,28 @@ import { useEffect, useState } from 'react'
 import PageHeader from '@components/ui/PageHeader'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
 import { fetchGallery } from '@api/cms'
 import styles from './GalleryPage.module.css'
 
 export default function GalleryPage() {
   const { section, resolveHeaderImage } = useContent()
+  const { locale, t } = useLocale()
   const hero = section('gallery.hero')
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
   const [lightboxIndex, setLightboxIndex] = useState(null)
 
   useEffect(() => {
-    fetchGallery()
+    fetchGallery({ locale })
       .then(setItems)
       .catch((err) => setError(err.message))
-  }, [])
+  }, [locale])
 
   return (
     <>
       <PageHeader
-        title={hero.title || 'Gallery'}
+        title={hero.title || t('gallery')}
         backgroundImage={resolveHeaderImage(
           hero.backgroundImage,
           '/images/projects/kigali-business-plaza/featured.jpg'
@@ -39,12 +41,12 @@ export default function GalleryPage() {
                 onClick={() => setLightboxIndex(index)}
                 aria-label={`View ${item.alt || item.original_name || 'gallery image'}`}
               >
-                <img src={item.url} alt={item.alt || item.original_name || 'Gallery image'} />
+                <img src={item.url} alt={item.alt || item.original_name || t('gallery')} />
               </button>
             ))}
           </div>
           {!items.length && !error && (
-            <p className={styles.empty}>Gallery images will appear here once published from the admin.</p>
+            <p className={styles.empty}>{t('galleryEmpty')}</p>
           )}
         </div>
       </section>

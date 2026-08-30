@@ -29,7 +29,7 @@ export const fetchUpcomingPilgrimage = (slug, params = {}) =>
 export const fetchPages = (params = {}) => api(withQuery('/api/pages', params))
 export const fetchPage = (key, params = {}) =>
   api(withQuery(`/api/pages/${encodeURIComponent(key)}`, params))
-export const fetchGallery = () => api('/api/gallery')
+export const fetchGallery = (params = {}) => api(withQuery('/api/gallery', params))
 export const fetchVideos = (params = {}) => api(withQuery('/api/videos', params))
 export const fetchVideo = (slug, params = {}) => api(withQuery(`/api/videos/${slug}`, params))
 

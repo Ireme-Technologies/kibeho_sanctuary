@@ -5,19 +5,13 @@ import { useInView } from '@hooks/useInView'
 import BlogSidebar from '@components/blog/BlogSidebar'
 import Pagination from '@components/Pagination'
 import { PAGE_SIZE, paginate, sortByLatest } from '@utils/paginate'
-import { blogGridHeading, noResultsText } from '@data/blog/BlogGrid'
+import { formatDateBadge } from '@utils/localeDate'
 import styles from './BlogGrid.module.css'
 import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
 
-const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
-
-function formatDateBadge(dateStr) {
-  const d = new Date(dateStr)
-  return { day: d.getDate(), month: MONTHS[d.getMonth()] }
-}
-
-function BlogCard({ post, index, inView, authors }) {
-  const { day, month } = formatDateBadge(post.publishedAt)
+function BlogCard({ post, index, inView, authors, locale, t }) {
+  const { day, month } = formatDateBadge(post.publishedAt, locale)
   const author = authors.find((a) => a.id === post.authorId)
 
   return (
@@ -45,7 +39,7 @@ function BlogCard({ post, index, inView, authors }) {
         </div>
         <h3 className={styles.cardTitle}>{post.title}</h3>
         <span className={styles.readMore}>
-          Read More <ArrowRight size={14} />
+          {t('readMore')} <ArrowRight size={14} />
         </span>
       </div>
     </Link>
@@ -54,6 +48,7 @@ function BlogCard({ post, index, inView, authors }) {
 
 export default function BlogGrid() {
   const { blogPosts, blogAuthors } = useContent()
+  const { locale, t } = useLocale()
   const [sectionRef, inView] = useInView(0.1)
   const [searchParams, setSearchParams] = useSearchParams()
   const query = searchParams.get('q') || ''
@@ -84,11 +79,11 @@ export default function BlogGrid() {
 
   const heading = category
     ? category === 'Rector'
-      ? "Rector's Messages"
+      ? t('rectorsMessages')
       : category === 'Bishop'
-        ? "Bishop's Messages"
+        ? t('bishopsMessages')
         : category
-    : blogGridHeading
+    : t('newsFromShrine')
 
   const handleSearch = (value) => {
     const next = new URLSearchParams(searchParams)
@@ -108,10 +103,18 @@ export default function BlogGrid() {
         <div ref={sectionRef} className={styles.grid}>
           {paged.items.length > 0 ? (
             paged.items.map((post, i) => (
-              <BlogCard key={post.id} post={post} index={i} inView={inView} authors={blogAuthors} />
+              <BlogCard
+                key={post.id}
+                post={post}
+                index={i}
+                inView={inView}
+                authors={blogAuthors}
+                locale={locale}
+                t={t}
+              />
             ))
           ) : (
-            <p className={styles.noResults}>{noResultsText}</p>
+            <p className={styles.noResults}>{t('noArticlesMatch')}</p>
           )}
           <Pagination
             page={paged.page}

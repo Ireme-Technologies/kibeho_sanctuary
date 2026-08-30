@@ -14,7 +14,9 @@ import {
   uploadMedia,
 } from '@api/cms'
 import { useContent } from '@context/ContentContext'
+import { useLocale } from '@context/LocaleContext'
 import FlashMessage from './components/FlashMessage'
+import LocaleTabs from './components/LocaleTabs'
 import Modal from './components/Modal'
 import { confirmDelete, confirmPermanentDelete } from './components/confirmDelete'
 import styles from './admin.module.css'
@@ -82,6 +84,7 @@ function AssetCard({ item, busy, onReplace, onRemove, removeLabel = 'Remove' }) 
 
 export default function GalleryAdminPage() {
   const { refresh } = useContent()
+  const { defaultLocale, workspaceLocales } = useLocale()
   const [tab, setTab] = useState('branding')
   const [items, setItems] = useState([])
   const [branding, setBranding] = useState([])
@@ -94,6 +97,9 @@ export default function GalleryAdminPage() {
   const [busyKey, setBusyKey] = useState('')
   const [pickerOpen, setPickerOpen] = useState(false)
   const [pickerSelected, setPickerSelected] = useState(() => new Set())
+  const [altEditor, setAltEditor] = useState(null)
+  const [altLocale, setAltLocale] = useState(defaultLocale || 'en')
+  const [altSaving, setAltSaving] = useState(false)
 
   const loadUploads = async () => setItems(await fetchMedia())
 
@@ -373,6 +379,59 @@ export default function GalleryAdminPage() {
     }
   }
 
+  const openAltEditor = (item) => {
+    setAltEditor({
+      id: item.id,
+      name: item.original_name || item.path,
+      alt: item.alt || '',
+      translations: item.translations || {},
+    })
+    setAltLocale(defaultLocale || 'en')
+  }
+
+  const setAltField = (value) => {
+    setAltEditor((current) => {
+      if (!current) return current
+      if (altLocale === (defaultLocale || 'en')) {
+        return { ...current, alt: value }
+      }
+      return {
+        ...current,
+        translations: {
+          ...(current.translations || {}),
+          [altLocale]: {
+            ...(current.translations?.[altLocale] || {}),
+            alt: value,
+          },
+        },
+      }
+    })
+  }
+
+  const currentAltValue =
+    altEditor &&
+    (altLocale === (defaultLocale || 'en')
+      ? altEditor.alt || ''
+      : altEditor.translations?.[altLocale]?.alt || '')
+
+  const saveAltEditor = async () => {
+    if (!altEditor) return
+    setAltSaving(true)
+    try {
+      await updateMedia(altEditor.id, {
+        alt: altEditor.alt || null,
+        translations: altEditor.translations || {},
+      })
+      await loadUploads()
+      setAltEditor(null)
+      setFlash({ type: 'success', message: 'Alt text saved for all languages.' })
+    } catch (err) {
+      setFlash({ type: 'error', message: err.message || 'Failed to save alt text.' })
+    } finally {
+      setAltSaving(false)
+    }
+  }
+
   const handleDelete = async (item) => {
     setBusyKey(`media-${item.id}`)
     setFlash({ type: 'success', message: '' })
@@ -578,6 +637,13 @@ export default function GalleryAdminPage() {
                   <td>{Math.round((item.size || 0) / 1024)}KB</td>
                   <td>{item.show_in_gallery ? 'Yes' : 'No'}</td>
                   <td className={styles.actions}>
+                    <button
+                      type="button"
+                      className={`${styles.btn} ${styles.btnSecondary}`}
+                      onClick={() => openAltEditor(item)}
+                    >
+                      Edit alt
+                    </button>
                     <ReplaceButton
                       disabled={busyKey === `media-${item.id}`}
                       onFile={(file) => handleReplaceUpload(item, file)}
@@ -650,7 +716,18 @@ export default function GalleryAdminPage() {
                   <td>
                     <img className={styles.thumb} src={item.url} alt="" />
                   </td>
-                  <td>{item.original_name || item.path}</td>
+                  <td>
+                    <div>{item.original_name || item.path}</div>
+                    {item.alt ? (
+                      <div className={styles.muted} style={{ fontSize: '0.78rem' }}>
+                        Alt: {item.alt}
+                      </div>
+                    ) : (
+                      <div className={styles.muted} style={{ fontSize: '0.78rem' }}>
+                        No alt text yet
+                      </div>
+                    )}
+                  </td>
                   <td>{item.gallery_sort}</td>
                   <td className={styles.actions}>
                     <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => move(item.id, -1)}>
@@ -658,6 +735,13 @@ export default function GalleryAdminPage() {
                     </button>
                     <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => move(item.id, 1)}>
                       Down
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.btn} ${styles.btnSecondary}`}
+                      onClick={() => openAltEditor(item)}
+                    >
+                      Edit alt
                     </button>
                     <ReplaceButton
                       disabled={busyKey === `media-${item.id}`}
@@ -723,6 +807,48 @@ export default function GalleryAdminPage() {
               : pickerSelected.size
                 ? `Add ${pickerSelected.size} to gallery`
                 : 'Add to gallery'}
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={Boolean(altEditor)}
+        title={altEditor ? `Alt text — ${altEditor.name}` : 'Alt text'}
+        onClose={() => !altSaving && setAltEditor(null)}
+      >
+        <p className={styles.muted}>
+          Describe the image for accessibility. Add a translation for each language so the gallery
+          can show the right alt text when visitors switch language.
+        </p>
+        <LocaleTabs
+          value={altLocale}
+          onChange={setAltLocale}
+          defaultLocale={defaultLocale || 'en'}
+          locales={workspaceLocales}
+          form={altEditor}
+          setForm={setAltEditor}
+          fields={['alt']}
+        />
+        <div className={styles.field} style={{ marginTop: '1rem' }}>
+          <label htmlFor="media-alt">Alt text</label>
+          <input
+            id="media-alt"
+            value={currentAltValue || ''}
+            onChange={(e) => setAltField(e.target.value)}
+            placeholder="Short description of the image"
+          />
+        </div>
+        <div className={styles.assetActions} style={{ marginTop: '1rem' }}>
+          <button type="button" className={styles.btn} disabled={altSaving} onClick={saveAltEditor}>
+            {altSaving ? 'Saving…' : 'Save alt text'}
+          </button>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnSecondary}`}
+            disabled={altSaving}
+            onClick={() => setAltEditor(null)}
+          >
+            Cancel
           </button>
         </div>
       </Modal>

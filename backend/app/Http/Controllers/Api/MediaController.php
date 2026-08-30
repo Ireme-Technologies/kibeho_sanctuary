@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Media;
 use App\Services\ImageOptimizer;
 use App\Services\SiteAssetService;
+use App\Support\Locale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -30,10 +31,14 @@ class MediaController extends Controller
             $query->where('show_in_gallery', true)->orderBy('gallery_sort')->orderByDesc('id');
         }
 
-        return response()->json($query->get());
+        $locale = Locale::fromRequest($request);
+
+        return response()->json(
+            $query->get()->map(fn (Media $media) => $this->transform($media, $locale))->values()
+        );
     }
 
-    public function gallery(SiteAssetService $assets)
+    public function gallery(Request $request, SiteAssetService $assets)
     {
         try {
             $assets->ensurePublicGallery();
@@ -41,11 +46,15 @@ class MediaController extends Controller
             report($e);
         }
 
+        $locale = Locale::fromRequest($request);
+
         $items = Media::query()
             ->where('show_in_gallery', true)
             ->orderBy('gallery_sort')
             ->orderByDesc('id')
-            ->get();
+            ->get()
+            ->map(fn (Media $media) => $this->transform($media, $locale))
+            ->values();
 
         return response()->json($items);
     }
@@ -127,6 +136,7 @@ class MediaController extends Controller
             'file' => ['required', 'file', 'max:15360', 'mimes:jpg,jpeg,png,gif,webp,svg,mp4,webm,pdf'],
             'folder' => ['nullable', 'string', 'max:100'],
             'alt' => ['nullable', 'string', 'max:255'],
+            'translations' => ['nullable', 'array'],
             'show_in_gallery' => ['sometimes', 'boolean'],
         ]);
 
@@ -154,12 +164,13 @@ class MediaController extends Controller
             'height' => $processed['height'] ?: null,
             'folder' => $folder,
             'alt' => $request->input('alt'),
+            'translations' => $request->input('translations'),
             'show_in_gallery' => $request->boolean('show_in_gallery'),
             'gallery_sort' => (int) Media::query()->max('gallery_sort') + 1,
         ]);
 
         return response()->json([
-            ...$media->toArray(),
+            ...$this->transform($media),
             'optimized' => $processed['optimized'],
         ], 201);
     }
@@ -168,13 +179,14 @@ class MediaController extends Controller
     {
         $data = $request->validate([
             'alt' => ['nullable', 'string', 'max:255'],
+            'translations' => ['nullable', 'array'],
             'show_in_gallery' => ['sometimes', 'boolean'],
             'gallery_sort' => ['sometimes', 'integer', 'min:0'],
         ]);
 
         $media->update($data);
 
-        return response()->json($media->fresh());
+        return response()->json($this->transform($media->fresh()));
     }
 
     public function reorder(Request $request)
@@ -196,5 +208,32 @@ class MediaController extends Controller
         $assets->deleteMediaRecord($media);
 
         return response()->json(['message' => 'Deleted.']);
+    }
+
+    private function transform(Media $media, ?string $locale = null): array
+    {
+        $base = [
+            'alt' => $media->alt,
+        ];
+        $resolved = Locale::resolve($base, $media->translations, ['alt'], $locale);
+
+        return [
+            'id' => $media->id,
+            'disk' => $media->disk,
+            'path' => $media->path,
+            'url' => $media->url,
+            'original_name' => $media->original_name,
+            'mime_type' => $media->mime_type,
+            'size' => $media->size,
+            'width' => $media->width,
+            'height' => $media->height,
+            'folder' => $media->folder,
+            'alt' => $resolved['alt'] ?? $media->alt,
+            'translations' => $media->translations ?? [],
+            'show_in_gallery' => (bool) $media->show_in_gallery,
+            'gallery_sort' => $media->gallery_sort,
+            'created_at' => $media->created_at,
+            'updated_at' => $media->updated_at,
+        ];
     }
 }

@@ -4,12 +4,14 @@ import { ArrowRight, ExternalLink, Globe, Mail, Phone } from 'lucide-react'
 import { fetchLodging, fetchProject } from '@api/cms'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
+import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import LodgingIcon from '@components/ui/LodgingIcon'
 import RichText from '@components/ui/RichText'
 import { LODGING_AMENITIES, LODGING_SERVICES, resolveLodgingItems } from '@data/lodgingCatalog'
 import { cardExcerpt } from '@utils/text'
 import { displayFacilityName } from '@utils/displayName'
+import NotFoundPage from './NotFoundPage'
 import styles from './HotelDetailPage.module.css'
 
 function digits(value) {
@@ -36,7 +38,7 @@ function ActionLink({ href, className, children }) {
 }
 
 export default function HotelDetailPage() {
-  const { locale } = useLocale()
+  const { locale, t } = useLocale()
   const { defaultHeaderImage } = useContent()
   const { slug } = useParams()
   const [item, setItem] = useState(null)
@@ -71,15 +73,15 @@ export default function HotelDetailPage() {
   if (loading) {
     return (
       <div className={`container ${styles.loading}`}>
-        <p>Loading…</p>
+        <p>{t('loading')}</p>
       </div>
     )
   }
 
   if (notFound || !item) return <NotFoundPage />
 
-  const amenities = resolveLodgingItems(item.amenities, LODGING_AMENITIES)
-  const services = resolveLodgingItems(item.services, LODGING_SERVICES)
+  const amenities = resolveLodgingItems(item.amenities, LODGING_AMENITIES, t)
+  const services = resolveLodgingItems(item.services, LODGING_SERVICES, t)
   const mainPhoto = photos[activeIndex] || photos[0]
   const thumbs = photos.slice(0, 3)
   const website = String(item.websiteUrl || '').trim()
@@ -92,10 +94,11 @@ export default function HotelDetailPage() {
     <div className={styles.page}>
       <div className={`container ${styles.inner}`}>
         <p className={styles.crumb}>
-          <Link to="/pilgrimage/accommodation">Accommodation</Link>
+          <Link to="/pilgrimage/accommodation">{t('accommodation')}</Link>
           {item.category ? <span> · {item.category}</span> : null}
         </p>
         <h1 className={styles.title}>{displayFacilityName(item.title)}</h1>
+        <ContentLocaleNotice translations={item.translations} />
 
         <div className={`${styles.topGrid} ${amenities.length ? '' : styles.topGridSolo}`}>
           <div className={styles.gallery}>
@@ -133,14 +136,14 @@ export default function HotelDetailPage() {
                 className={styles.viewAll}
                 onClick={() => setLightboxOpen(true)}
               >
-                View all photos <ArrowRight size={14} />
+                {t('viewAllPhotos')} <ArrowRight size={14} />
               </button>
             ) : null}
           </div>
 
           {amenities.length ? (
             <aside className={styles.amenitiesCard}>
-              <h2>Amenities</h2>
+              <h2>{t('amenities')}</h2>
               <ul className={styles.amenityGrid}>
                 {amenities.map((entry) => (
                   <li key={entry.id}>
@@ -161,7 +164,7 @@ export default function HotelDetailPage() {
 
         {services.length ? (
           <section className={styles.services} aria-labelledby="hotel-services-heading">
-            <h2 id="hotel-services-heading">Services offered</h2>
+            <h2 id="hotel-services-heading">{t('servicesOffered')}</h2>
             <div className={styles.serviceGrid}>
               {services.map((entry) => (
                 <article key={entry.id} className={styles.serviceCard}>
@@ -177,19 +180,19 @@ export default function HotelDetailPage() {
 
         {hasContact ? (
           <section className={styles.contactCard} aria-labelledby="hotel-contact-heading">
-            <h2 id="hotel-contact-heading">Reservations &amp; contact</h2>
+            <h2 id="hotel-contact-heading">{t('reservationsContact')}</h2>
             {website || bookUrl ? (
               <div className={styles.ctaButtons}>
                 {website ? (
                   <ActionLink href={website} className={styles.btnGhost}>
                     <Globe size={16} aria-hidden="true" />
-                    Visit the website
+                    {t('visitWebsite')}
                     {isExternal(website) ? <ExternalLink size={14} aria-hidden="true" /> : null}
                   </ActionLink>
                 ) : null}
                 {bookUrl ? (
                   <ActionLink href={bookUrl} className={styles.btnSolid}>
-                    Book directly
+                    {t('bookDirectly')}
                     {isExternal(bookUrl) ? <ExternalLink size={14} aria-hidden="true" /> : null}
                   </ActionLink>
                 ) : null}
@@ -201,7 +204,7 @@ export default function HotelDetailPage() {
                   <div className={styles.contactFact}>
                     <dt>
                       <Phone size={14} aria-hidden="true" />
-                      Phone
+                      {t('phone')}
                     </dt>
                     <dd>
                       <a href={`tel:${digits(phone)}`}>{phone}</a>
@@ -212,7 +215,7 @@ export default function HotelDetailPage() {
                   <div className={styles.contactFact}>
                     <dt>
                       <Mail size={14} aria-hidden="true" />
-                      Email
+                      {t('email')}
                     </dt>
                     <dd>
                       <a href={`mailto:${email}`}>{email}</a>
@@ -226,7 +229,7 @@ export default function HotelDetailPage() {
 
         {related.length ? (
           <section className={styles.related} aria-labelledby="related-stays-heading">
-            <h2 id="related-stays-heading">Related accommodation</h2>
+            <h2 id="related-stays-heading">{t('relatedAccommodation')}</h2>
             <div className={styles.relatedGrid}>
               {related.map((stay) => (
                 <article key={stay.slug} className={styles.relatedCard}>
@@ -236,10 +239,10 @@ export default function HotelDetailPage() {
                   <div className={styles.relatedBody}>
                     <h3>{displayFacilityName(stay.title)}</h3>
                     <Link to={`/hotels/${stay.slug}`} className={styles.relatedLink}>
-                      View details <ArrowRight size={14} />
+                      {t('viewDetails')} <ArrowRight size={14} />
                     </Link>
                     <Link to={`/hotels/${stay.slug}`} className={styles.relatedBtn}>
-                      View details
+                      {t('viewDetails')}
                     </Link>
                   </div>
                 </article>

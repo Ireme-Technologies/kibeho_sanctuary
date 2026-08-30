@@ -3,12 +3,13 @@ import { useContent } from '@context/ContentContext'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { fetchSacredPlace } from '@api/cms'
+import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
 import styles from './CatalogPage.module.css'
 
 export default function SacredPlaceDetailPage() {
-  const { locale } = useLocale()
+  const { locale, t } = useLocale()
   const { resolveHeaderImage } = useContent()
   const { slug } = useParams()
   const [item, setItem] = useState(null)
@@ -22,12 +23,12 @@ export default function SacredPlaceDetailPage() {
       .then(setItem)
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false))
-  }, [slug])
+  }, [slug, locale])
 
   if (loading) {
     return (
       <div className={`container ${styles.body}`}>
-        <p className={styles.empty}>Loading…</p>
+        <p className={styles.empty}>{t('loading')}</p>
       </div>
     )
   }
@@ -36,7 +37,8 @@ export default function SacredPlaceDetailPage() {
 
   const backPath =
     item.type === 'apparition_site' ? '/shrine/apparition-sites' : '/shrine/churches'
-  const backLabel = item.type === 'apparition_site' ? 'All apparition sites' : 'All churches'
+  const backLabel =
+    item.type === 'apparition_site' ? t('allApparitionSites') : t('allChurches')
 
   const heroImage = resolveHeaderImage(item.coverImage)
 
@@ -56,6 +58,7 @@ export default function SacredPlaceDetailPage() {
 
       <div className={`container ${styles.body}`}>
         <div className={styles.detailLayout}>
+          <ContentLocaleNotice translations={item.translations} />
           {item.coverImage ? <img src={item.coverImage} alt="" className={styles.detailCover} /> : null}
 
           {item.description ? (

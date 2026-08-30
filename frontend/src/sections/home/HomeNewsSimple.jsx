@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { useInView } from '@hooks/useInView'
+import { formatLocaleDate } from '@utils/localeDate'
 import styles from './HomeNewsSimple.module.css'
 
 const SANCTUARY_COVERS = [
@@ -22,20 +23,19 @@ function resolveCover(src, index = 0) {
   return src
 }
 
-function formatDate(value) {
+function formatDate(value, locale) {
   if (!value) return 'Update'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return String(value)
-  return date.toLocaleDateString('en-GB', {
+  const formatted = formatLocaleDate(value, locale, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
   })
+  return formatted || String(value)
 }
 
 export default function HomeNewsSimple() {
   const { blogPosts } = useContent()
-  const { t } = useLocale()
+  const { locale, t } = useLocale()
   const posts = (blogPosts || []).slice(0, 3)
   const [ref, inView] = useInView(0.12)
 
@@ -70,7 +70,7 @@ export default function HomeNewsSimple() {
                 />
               </div>
               <div className={styles.body}>
-                <span>{formatDate(post.publishedAt || post.date)}</span>
+                <span>{formatDate(post.publishedAt || post.date, locale)}</span>
                 <h3>{post.title}</h3>
                 {post.category ? <em>{post.category}</em> : null}
               </div>

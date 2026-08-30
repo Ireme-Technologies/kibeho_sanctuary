@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useInView } from '@hooks/useInView'
 import GallerySlider from '@sections/projects/GallerySlider/GallerySlider'
 import RichText from '@components/ui/RichText'
+import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import styles from './ProjectDetailContent.module.css'
 import { useContent } from '@context/ContentContext'
 import { projectDetailLabels } from '@data/projects'
@@ -54,6 +55,7 @@ export default function ProjectDetailContent({ project }) {
         <div ref={overviewRef} className={styles.detailInner}>
 
           <div className={`${styles.overviewBlock} fade-in-up ${overviewInView ? 'is-visible' : ''}`}>
+            <ContentLocaleNotice translations={project.translations} />
             <h2 className={styles.blockHeading}>{projectDetailLabels.overviewHeading}</h2>
             <div className={styles.accentLine} aria-hidden="true" />
             <RichText html={project.description} className={styles.description} />

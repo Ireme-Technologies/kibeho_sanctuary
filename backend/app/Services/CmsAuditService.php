@@ -287,8 +287,33 @@ class CmsAuditService
 
     private function galleryDirectory(): array
     {
-        $count = Media::query()->where('show_in_gallery', true)->count();
+        $default = Locale::default();
+        $languages = Locale::pack()['languages'];
+        $rows = Media::query()->where('show_in_gallery', true)->get();
+        $count = $rows->count();
         $percent = $count >= 6 ? 100 : ($count >= 3 ? 70 : ($count >= 1 ? 40 : 0));
+
+        $translations = [];
+        foreach ($languages as $lang) {
+            $code = $lang['code'] ?? null;
+            if (! $code) {
+                continue;
+            }
+            $ok = 0;
+            foreach ($rows as $row) {
+                if ($code === $default) {
+                    if ($this->filled($row->alt)) {
+                        $ok++;
+                    }
+                    continue;
+                }
+                $pack = is_array($row->translations[$code] ?? null) ? $row->translations[$code] : [];
+                if ($this->filled($pack['alt'] ?? null) || $this->filled($row->alt)) {
+                    $ok++;
+                }
+            }
+            $translations[$code] = $this->pct($ok, max($count, 1));
+        }
 
         return [
             'id' => 'gallery',
@@ -300,7 +325,7 @@ class CmsAuditService
             'status' => $this->status($percent),
             'min' => 3,
             'empty' => $count === 0,
-            'fields' => [['id' => 'visible', 'label' => 'Visible in gallery']],
+            'fields' => [['id' => 'visible', 'label' => 'Visible in gallery'], ['id' => 'alt', 'label' => 'Alt text']],
             'incomplete' => $count < 3 ? [[
                 'id' => 'gallery',
                 'title' => $count ? "{$count} gallery image(s) — add a few more" : 'No gallery images yet',
@@ -308,7 +333,7 @@ class CmsAuditService
                 'percent' => $percent,
                 'missing' => ['At least 3 public gallery images'],
             ]] : [],
-            'translations' => [],
+            'translations' => $translations,
         ];
     }
 

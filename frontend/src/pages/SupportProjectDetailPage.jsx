@@ -3,6 +3,7 @@ import { useContent } from '@context/ContentContext'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { fetchShrineProject } from '@api/cms'
+import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import OfferingForm from '@components/OfferingForm'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import RichText from '@components/ui/RichText'
@@ -73,6 +74,7 @@ export default function SupportProjectDetailPage() {
 
       <div className={`container ${catalog.body}`}>
         <div className={styles.layout}>
+          <ContentLocaleNotice translations={item.translations} />
           {item.phase ? <p className={catalog.meta}>{item.phase}</p> : null}
 
           {item.description ? <RichText html={item.description} className={styles.lead} /> : null}

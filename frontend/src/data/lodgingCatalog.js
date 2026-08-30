@@ -1,6 +1,7 @@
 /**
  * Amenities and on-site services for Rwandan pilgrim lodging.
  * Admin selects from this list per accommodation; the public page shows icons + labels.
+ * Labels are translated via uiStrings keys: lodging.{id}
  */
 export const LODGING_AMENITIES = [
   { id: 'parking', label: 'Parking' },
@@ -46,7 +47,12 @@ export const LODGING_SERVICES = [
   { id: 'conference-service', label: 'Meetings & conferences' },
 ]
 
-export function lodgingLabel(id, catalog = LODGING_AMENITIES) {
+export function lodgingLabel(id, catalog = LODGING_AMENITIES, translate) {
+  const key = `lodging.${id}`
+  if (typeof translate === 'function') {
+    const translated = translate(key)
+    if (translated && translated !== key) return translated
+  }
   const found = catalog.find((item) => item.id === id)
   if (found) return found.label
   return String(id || '')
@@ -54,10 +60,10 @@ export function lodgingLabel(id, catalog = LODGING_AMENITIES) {
     .replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
-export function resolveLodgingItems(ids, catalog) {
+export function resolveLodgingItems(ids, catalog, translate) {
   const list = Array.isArray(ids) ? ids.filter(Boolean) : []
   return list.map((id) => ({
     id,
-    label: lodgingLabel(id, catalog),
+    label: lodgingLabel(id, catalog, translate),
   }))
 }

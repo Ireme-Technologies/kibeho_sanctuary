@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import styles from './ServiceDetailContent.module.css'
 import { useContent } from '@context/ContentContext'
+import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import { serviceWhyChooseUs } from '@data/services'
 
 function CheckIcon() {
@@ -22,6 +23,7 @@ export default function ServiceDetailContent({ service }) {
     <section id="service-details" className={styles.section} aria-label={`${service?.title} details`}>
       <div className={`${styles.container} ${styles.revealContainer}`}>
         <div className={styles.mainContent}>
+          <ContentLocaleNotice translations={service?.translations} />
           <h2 className={`${styles.heading} ${styles.reveal}`}>{service?.title}</h2>
           <div className={`${styles.accentLine} ${styles.revealLine}`} aria-hidden="true" />
           <p className={`${styles.description} ${styles.reveal} ${styles.delay2}`}>{service?.description}</p>

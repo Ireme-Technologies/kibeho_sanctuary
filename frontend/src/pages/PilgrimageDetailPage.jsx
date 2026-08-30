@@ -13,6 +13,7 @@ import {
   statusLabel,
 } from '@utils/occasion'
 import ImageLightbox from '@components/ui/ImageLightbox'
+import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import PaymentOptions, { paymentLabel } from '@components/payments/PaymentOptions'
 import SharePageBar from '@components/payments/SharePageBar'
 import TimingChoice from '@components/payments/TimingChoice'
@@ -176,6 +177,7 @@ export default function PilgrimageDetailPage() {
 
       <div className={`container ${styles.layout}`}>
         <div className={styles.content}>
+          <ContentLocaleNotice translations={pilgrimage.translations} />
           {occasion.status === 'live' || occasion.status === 'recent' || occasion.status === 'upcoming' ? (
             <p className={`${styles.occasionNote} ${styles[occasion.status] || ''}`}>
               {occasion.status === 'live'

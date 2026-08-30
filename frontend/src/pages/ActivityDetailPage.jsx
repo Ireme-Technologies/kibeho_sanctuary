@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
+import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
@@ -28,6 +29,7 @@ export default function ActivityDetailPage() {
       </header>
 
       <div className={`container ${styles.body}`}>
+        <ContentLocaleNotice translations={activity.translations} />
         {activity.description ? (
           <RichText html={activity.description} className={styles.intro} />
         ) : null}

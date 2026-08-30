@@ -141,7 +141,6 @@ export function LocaleProvider({ children }) {
       dictionary,
       t,
       ready,
-      isTranslatedContent: true,
       reloadI18n: async () => {
         const data = await fetchI18n()
         applyData(data)
