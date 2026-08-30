@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
 import { ChevronDown, Menu } from 'lucide-react'
 import { useScrolled } from '@hooks/useScrolled'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { displayCapsLabel } from '@i18n/typography'
+import LocalizedLink, { LocalizedNavLink } from '@components/LocalizedLink'
+import { useSwitchLocale } from '@router/LocaleRoute'
 import MobileDrawer from './MobileDrawer'
 import styles from './Navbar.module.css'
 
@@ -52,13 +53,13 @@ function NavItem({ item }) {
 
   if (!hasChildren) {
     return (
-      <NavLink
+      <LocalizedNavLink
         to={item.path}
         end={item.path === '/'}
         className={({ isActive }) => `${styles.navLink} ${isActive ? styles.activeLink : ''}`}
       >
         {displayCapsLabel(item.label, locale)}
-      </NavLink>
+      </LocalizedNavLink>
     )
   }
 
@@ -71,7 +72,7 @@ function NavItem({ item }) {
     >
       <div className={`${styles.navLink} ${styles.navParent}`}>
         {/* Label → section root (e.g. /our-lady); chevron only toggles submenu */}
-        <NavLink
+        <LocalizedNavLink
           to={item.path}
           end
           className={({ isActive }) =>
@@ -80,7 +81,7 @@ function NavItem({ item }) {
           onClick={() => setOpen(false)}
         >
           {displayCapsLabel(item.label, locale)}
-        </NavLink>
+        </LocalizedNavLink>
         <button
           type="button"
           className={styles.caretBtn}
@@ -100,14 +101,14 @@ function NavItem({ item }) {
         <ul className={styles.dropdown} role="menu">
           {item.children.map((child) => (
             <li key={child.path + child.label} role="none">
-              <NavLink
+              <LocalizedNavLink
                 to={child.path}
                 className={styles.dropdownLink}
                 role="menuitem"
                 onClick={() => setOpen(false)}
               >
                 {child.label}
-              </NavLink>
+              </LocalizedNavLink>
             </li>
           ))}
         </ul>
@@ -118,7 +119,8 @@ function NavItem({ item }) {
 
 export default function Navbar({ hasHero = false }) {
   const { primaryNav, utilityNav, navCTA, company } = useContent()
-  const { locale, setLocale, locales, current, t } = useLocale()
+  const { locale, locales, current, t } = useLocale()
+  const switchLocale = useSwitchLocale()
   const scrolled = useScrolled(60)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
@@ -144,13 +146,13 @@ export default function Navbar({ hasHero = false }) {
           <p className={styles.welcome}>{t('welcomeBar')}</p>
           <div className={styles.topLinks}>
             {(utilityNav || []).map((item) => (
-              <Link key={item.path + item.label} to={item.path} className={styles.topLink}>
+              <LocalizedLink key={item.path + item.label} to={item.path} className={styles.topLink}>
                 {item.label}
-              </Link>
+              </LocalizedLink>
             ))}
-            <Link to={navCTA.path} className={styles.donateBtn}>
+            <LocalizedLink to={navCTA.path} className={styles.donateBtn}>
               {displayCapsLabel(navCTA.label || t('donate'), locale)}
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
       </div>
@@ -159,7 +161,7 @@ export default function Navbar({ hasHero = false }) {
         className={`${styles.navbar} ${isTransparent ? styles.transparent : styles.solid}`}
       >
         <div className={`container ${styles.inner}`}>
-          <NavLink to="/" className={styles.logo} aria-label={brandName}>
+          <LocalizedNavLink to="/" className={styles.logo} aria-label={brandName}>
             <img
               src={company.logo || '/images/logo/logo-transparent.png'}
               alt=""
@@ -169,7 +171,7 @@ export default function Navbar({ hasHero = false }) {
               <span className={styles.brandName}>{brandName}</span>
               <span className={styles.brandTag}>{t('brand.diocese')}</span>
             </span>
-          </NavLink>
+          </LocalizedNavLink>
 
           <nav className={styles.desktopNav} aria-label="Primary">
             {(primaryNav || []).map((item) => (
@@ -199,7 +201,7 @@ export default function Navbar({ hasHero = false }) {
                         type="button"
                         className={styles.langOption}
                         onClick={() => {
-                          setLocale(item.code)
+                          switchLocale(item.code)
                           setLangOpen(false)
                         }}
                       >

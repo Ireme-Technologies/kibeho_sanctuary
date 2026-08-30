@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { fetchPages, updatePageSection } from '@api/cms'
 import { useLocale } from '@context/LocaleContext'
 import { pathForSectionKey } from '@data/pages/registry'
+import { pathForCmsKey } from '@i18n/localizedPath'
 import FlashMessage from './components/FlashMessage'
 import ImageField from './components/ImageField'
 import ListEditor from './components/ListEditor'
@@ -107,6 +108,7 @@ function buildSectionTranslations(translations, defaultLocale) {
     if (locale === defaultLocale || !pack || typeof pack !== 'object') return
     const cleaned = {}
     if (pack.label != null && String(pack.label).trim() !== '') cleaned.label = pack.label
+    if (pack.path != null && String(pack.path).trim() !== '') cleaned.path = String(pack.path).trim()
     const overlay = pack.content
     if (overlay && typeof overlay === 'object') {
       const content = {}
@@ -146,6 +148,7 @@ function pageLocaleFilled(form, label, translations, locale, defaultLocale) {
   const overlay = pack.content || {}
   return (
     isFilledValue(pack.label) ||
+    isFilledValue(pack.path) ||
     isFilledValue(overlay.title) ||
     isFilledValue(overlay.intro) ||
     (Array.isArray(overlay.blocks) && overlay.blocks.length > 0)
@@ -157,6 +160,7 @@ function copyPageLocaleFromDefault(form, label, translations, locale) {
     ...translations,
     [locale]: {
       label,
+      path: pathForSectionKey(form.key || '')?.replace(/^\//, '') || '',
       content: {
         eyebrow: form.eyebrow || '',
         title: form.title || '',
@@ -469,7 +473,7 @@ export default function SectionsAdminPage() {
               <p className={styles.muted}>
                 {isHomeSectionKey(selectedKey)
                   ? 'This is a strip on the homepage (/), not a full website page. Example: Home — At the Shrine is the homepage cards; The Shrine (/shrine) is the public shrine page.'
-                  : `Public URL: ${pathForSectionKey(selectedKey)}`}
+                  : `Public URL (default language): ${pathForSectionKey(selectedKey)} — switch language tabs below to set translated paths.`}
               </p>
             </div>
             <LocaleTabs
@@ -499,6 +503,44 @@ export default function SectionsAdminPage() {
                 }}
               />
             </div>
+            {!isHomeSectionKey(selectedKey) ? (
+              <div className={styles.field}>
+                <label>Public URL path ({localeTab})</label>
+                <input
+                  value={
+                    localeTab === defaultLocale
+                      ? pathForSectionKey(selectedKey).replace(/^\//, '')
+                      : sectionTranslations?.[localeTab]?.path ||
+                        pathForCmsKey(selectedKey, localeTab, {
+                          [selectedKey]: { translations: sectionTranslations },
+                        }, defaultLocale).replace(/^\//, '')
+                  }
+                  onChange={(e) => {
+                    if (localeTab === defaultLocale) return
+                    const value = e.target.value.trim().replace(/^\/+/, '')
+                    setSectionTranslations({
+                      ...(sectionTranslations || {}),
+                      [localeTab]: {
+                        ...(sectionTranslations?.[localeTab] || {}),
+                        path: value,
+                      },
+                    })
+                  }}
+                  readOnly={localeTab === defaultLocale}
+                  placeholder="e.g. pelerinage/pourquoi-kibeho"
+                />
+                <p className={styles.muted}>
+                  Visitors will open <code>/{localeTab}/{localeTab === defaultLocale
+                    ? pathForSectionKey(selectedKey).replace(/^\//, '')
+                    : sectionTranslations?.[localeTab]?.path ||
+                      pathForCmsKey(selectedKey, localeTab, {
+                        [selectedKey]: { translations: sectionTranslations },
+                      }, defaultLocale).replace(/^\//, '')}</code>
+                  . Default language path is fixed by the site structure; other languages can use a
+                  translated path.
+                </p>
+              </div>
+            ) : null}
 
             <h2 className={styles.sectionTitle}>Page header</h2>
             <p className={styles.muted}>

@@ -1,9 +1,13 @@
-import { createBrowserRouter, Navigate, useParams } from 'react-router-dom'
+import { createBrowserRouter, Navigate, useParams, useLocation } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import PageLoader from '@components/ui/PageLoader'
 import Layout from '@components/layout/Layout'
 import ProtectedRoute from '@admin/components/ProtectedRoute'
 import AdminLayout from '@admin/AdminLayout'
+import LocaleRoute, { RedirectToLocalized } from './LocaleRoute'
+import { useLocale } from '@context/LocaleContext'
+import { useContent } from '@context/ContentContext'
+import { parseLocalizedPathname, withLocale, localizeHref } from '@i18n/localizedPath'
 
 const HomePage = lazy(() => import('@pages/HomePage'))
 const CmsPage = lazy(() => import('@pages/CmsPage'))
@@ -75,9 +79,20 @@ function ApparitionSitesAdmin() {
   return <Wrap Component={SacredPlacesAdminPage} fixedType="apparition_site" />
 }
 
+function LocalizedNavigate({ to, replace = true }) {
+  const { locale, defaultLocale } = useLocale()
+  const { pages } = useContent()
+  return (
+    <Navigate
+      to={localizeHref(to, locale || defaultLocale, pages, defaultLocale)}
+      replace={replace}
+    />
+  )
+}
+
 function RedirectNewsSlug() {
   const { slug } = useParams()
-  return <Navigate to={`/news/${slug}`} replace />
+  return <LocalizedNavigate to={`/news/${slug}`} />
 }
 
 const ACTIVITY_REDIRECTS = {
@@ -94,45 +109,87 @@ const ACTIVITY_REDIRECTS = {
 
 function RedirectActivitySlug() {
   const { slug } = useParams()
-  return <Navigate to={ACTIVITY_REDIRECTS[slug] || '/shrine'} replace />
+  return <LocalizedNavigate to={ACTIVITY_REDIRECTS[slug] || '/shrine'} />
 }
 
-/** Permanent CMS pages (ToR IA) — entity-driven routes are listed separately */
-const cmsPaths = [
-  'our-lady',
-  'our-lady/apparitions',
-  'our-lady/visionaries',
-  'our-lady/messages',
-  'our-lady/church-recognition',
-  'our-lady/history',
-  'our-lady/faq',
-  'shrine',
-  'shrine/welcome',
-  'shrine/holy-spring',
-  'shrine/way-of-the-cross',
-  'shrine/eucharistic-adorations',
-  'shrine/map',
-  'pilgrimage',
-  'pilgrimage/why-kibeho',
-  'pilgrimage/plan',
-  'pilgrimage/transportation',
-  'pilgrimage/office',
-  'pilgrimage/practical-information',
-  'spirituality',
-  'spirituality/prayer-intentions',
-  'spirituality/request-a-mass',
-  'spirituality/rosary',
-  'spirituality/seven-sorrows-rosary',
-  'spirituality/novena',
-  'spirituality/official-prayers',
-  'spirituality/meditations',
-  'support',
-  'support/vision',
-  'support/master-plan',
-  'support/donations',
-  'support/annual-reports',
-  'support/transparency',
-  'support/partners',
+function HomeLocaleRedirect() {
+  const { locale, defaultLocale, ready, publicLocales } = useLocale()
+  if (!ready) return null
+  const allowed = (publicLocales || []).map((item) => item.code)
+  const code = allowed.includes(locale) ? locale : defaultLocale
+  return <Navigate to={`/${code}`} replace />
+}
+
+function LocaleAwareLayout() {
+  const location = useLocation()
+  const { path } = parseLocalizedPathname(location.pathname)
+  const hasHero = path === '/'
+  return <LocaleRoute Layout={Layout} hasHero={hasHero} />
+}
+
+/** Entity + structural routes under /:locale/… — CMS pages use the splat. */
+const localizedChildren = [
+  { index: true, element: <Wrap Component={HomePage} /> },
+  { path: 'activities', element: <LocalizedNavigate to="/shrine" /> },
+  { path: 'activities/:slug', element: <RedirectActivitySlug /> },
+  { path: 'pilgrimages', element: <LocalizedNavigate to="/pilgrimage/calendar" /> },
+  { path: 'pilgrimages/:slug', element: <Wrap Component={PilgrimageDetailPage} /> },
+  { path: 'pilgrimage/calendar', element: <Wrap Component={CalendarPage} /> },
+  { path: 'pilgrimage/accommodation', element: <Wrap Component={HotelsPage} /> },
+  { path: 'shrine/mass-schedule', element: <Wrap Component={MassSchedulePage} /> },
+  { path: 'shrine/churches', element: <Wrap Component={SacredPlacesPage} type="church" /> },
+  { path: 'shrine/churches/:slug', element: <Wrap Component={SacredPlaceDetailPage} /> },
+  { path: 'shrine/apparition-sites', element: <Wrap Component={SacredPlacesPage} type="apparition_site" /> },
+  { path: 'shrine/apparition-sites/:slug', element: <Wrap Component={SacredPlaceDetailPage} /> },
+  { path: 'our-lady/pastoral-team', element: <Wrap Component={PastoralTeamPage} /> },
+  { path: 'our-lady/pastoral-team/:slug', element: <Wrap Component={PastoralTeamDetailPage} /> },
+  { path: 'our-lady/communities', element: <Wrap Component={CommunitiesPage} /> },
+  { path: 'our-lady/communities/:slug', element: <Wrap Component={CommunityDetailPage} /> },
+  { path: 'spirituality/testimonies', element: <Wrap Component={TestimonialsPage} /> },
+  { path: 'support/projects', element: <Wrap Component={SupportProjectsPage} /> },
+  { path: 'support/projects/:slug', element: <Wrap Component={SupportProjectDetailPage} /> },
+  { path: 'hotels', element: <LocalizedNavigate to="/pilgrimage/accommodation" /> },
+  { path: 'hotels/:slug', element: <Wrap Component={HotelDetailPage} /> },
+  { path: 'faq', element: <LocalizedNavigate to="/our-lady/faq" /> },
+  { path: 'news', element: <Wrap Component={BlogPage} /> },
+  { path: 'news/videos', element: <Wrap Component={VideosPage} /> },
+  { path: 'news/:slug', element: <Wrap Component={BlogPostPage} /> },
+  { path: 'gallery', element: <Wrap Component={GalleryPage} /> },
+  { path: 'contact', element: <Wrap Component={ContactPage} /> },
+
+  /* Legacy redirects → ToR IA (still under /:locale) */
+  { path: 'blog', element: <LocalizedNavigate to="/news" /> },
+  { path: 'blog/:slug', element: <RedirectNewsSlug /> },
+  { path: 'about', element: <LocalizedNavigate to="/our-lady" /> },
+  { path: 'about/kibeho-sanctuary', element: <LocalizedNavigate to="/shrine/welcome" /> },
+  { path: 'about/historical-insights', element: <LocalizedNavigate to="/our-lady/history" /> },
+  { path: 'about/mass-times', element: <LocalizedNavigate to="/shrine/mass-schedule" /> },
+  { path: 'about/water', element: <LocalizedNavigate to="/shrine/holy-spring" /> },
+  { path: 'about/accommodations', element: <LocalizedNavigate to="/pilgrimage/accommodation" /> },
+  { path: 'about/projects', element: <LocalizedNavigate to="/support/projects" /> },
+  { path: 'about/pastoral-team', element: <LocalizedNavigate to="/our-lady/pastoral-team" /> },
+  { path: 'about/communities', element: <LocalizedNavigate to="/our-lady/communities" /> },
+  { path: 'about/community-attrated', element: <LocalizedNavigate to="/shrine/welcome" /> },
+  { path: 'about/*', element: <LocalizedNavigate to="/our-lady" /> },
+  { path: 'pilgrimage/what-is-a-pilgrimage', element: <LocalizedNavigate to="/pilgrimage/why-kibeho" /> },
+  { path: 'pilgrimage/join', element: <LocalizedNavigate to="/pilgrimage/plan" /> },
+  { path: 'pilgrimage/organise', element: <LocalizedNavigate to="/pilgrimage/plan" /> },
+  { path: 'pilgrimage/pastoral-theme', element: <LocalizedNavigate to="/pilgrimage" /> },
+  { path: 'publications', element: <LocalizedNavigate to="/news" /> },
+  { path: 'publications/*', element: <LocalizedNavigate to="/news" /> },
+  { path: 'visit', element: <LocalizedNavigate to="/pilgrimage/practical-information" /> },
+  { path: 'visit/*', element: <LocalizedNavigate to="/pilgrimage/practical-information" /> },
+  { path: 'support/why-donate', element: <LocalizedNavigate to="/support/donations" /> },
+  { path: 'support/offerings', element: <LocalizedNavigate to="/support/donations" /> },
+  { path: 'support/volunteer', element: <LocalizedNavigate to="/support/partners" /> },
+  { path: 'support/friends', element: <LocalizedNavigate to="/support/partners" /> },
+  { path: 'services', element: <LocalizedNavigate to="/pilgrimage" /> },
+  { path: 'programs', element: <LocalizedNavigate to="/shrine" /> },
+  { path: 'projects', element: <LocalizedNavigate to="/support/projects" /> },
+  { path: 'careers', element: <LocalizedNavigate to="/support/partners" /> },
+
+  /* CMS information pages — English or translated paths */
+  { path: '*', element: <Wrap Component={CmsPage} /> },
 ]
 
 const router = createBrowserRouter([
@@ -192,79 +249,16 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <Layout hasHero={true} />,
-    children: [{ index: true, element: <Wrap Component={HomePage} /> }],
+    element: <HomeLocaleRedirect />,
   },
   {
-    path: '/',
-    element: <Layout hasHero={false} />,
-    children: [
-      ...cmsPaths.map((path) => ({
-        path,
-        element: <Wrap Component={CmsPage} />,
-      })),
-      { path: 'activities', element: <Navigate to="/shrine" replace /> },
-      { path: 'activities/:slug', element: <RedirectActivitySlug /> },
-      { path: 'pilgrimages', element: <Navigate to="/pilgrimage/calendar" replace /> },
-      { path: 'pilgrimages/:slug', element: <Wrap Component={PilgrimageDetailPage} /> },
-      { path: 'pilgrimage/calendar', element: <Wrap Component={CalendarPage} /> },
-      { path: 'pilgrimage/accommodation', element: <Wrap Component={HotelsPage} /> },
-      { path: 'shrine/mass-schedule', element: <Wrap Component={MassSchedulePage} /> },
-      { path: 'shrine/churches', element: <Wrap Component={SacredPlacesPage} type="church" /> },
-      { path: 'shrine/churches/:slug', element: <Wrap Component={SacredPlaceDetailPage} /> },
-      { path: 'shrine/apparition-sites', element: <Wrap Component={SacredPlacesPage} type="apparition_site" /> },
-      { path: 'shrine/apparition-sites/:slug', element: <Wrap Component={SacredPlaceDetailPage} /> },
-      { path: 'our-lady/pastoral-team', element: <Wrap Component={PastoralTeamPage} /> },
-      { path: 'our-lady/pastoral-team/:slug', element: <Wrap Component={PastoralTeamDetailPage} /> },
-      { path: 'our-lady/communities', element: <Wrap Component={CommunitiesPage} /> },
-      { path: 'our-lady/communities/:slug', element: <Wrap Component={CommunityDetailPage} /> },
-      { path: 'spirituality/testimonies', element: <Wrap Component={TestimonialsPage} /> },
-      { path: 'support/projects', element: <Wrap Component={SupportProjectsPage} /> },
-      { path: 'support/projects/:slug', element: <Wrap Component={SupportProjectDetailPage} /> },
-      { path: 'hotels', element: <Navigate to="/pilgrimage/accommodation" replace /> },
-      { path: 'hotels/:slug', element: <Wrap Component={HotelDetailPage} /> },
-      { path: 'faq', element: <Navigate to="/our-lady/faq" replace /> },
-      { path: 'news', element: <Wrap Component={BlogPage} /> },
-      { path: 'news/videos', element: <Wrap Component={VideosPage} /> },
-      { path: 'news/:slug', element: <Wrap Component={BlogPostPage} /> },
-      { path: 'gallery', element: <Wrap Component={GalleryPage} /> },
-      { path: 'contact', element: <Wrap Component={ContactPage} /> },
-
-      /* Legacy redirects → ToR IA */
-      { path: 'blog', element: <Navigate to="/news" replace /> },
-      { path: 'blog/:slug', element: <RedirectNewsSlug /> },
-      { path: 'about', element: <Navigate to="/our-lady" replace /> },
-      { path: 'about/kibeho-sanctuary', element: <Navigate to="/shrine/welcome" replace /> },
-      { path: 'about/historical-insights', element: <Navigate to="/our-lady/history" replace /> },
-      { path: 'about/mass-times', element: <Navigate to="/shrine/mass-schedule" replace /> },
-      { path: 'about/water', element: <Navigate to="/shrine/holy-spring" replace /> },
-      { path: 'about/accommodations', element: <Navigate to="/pilgrimage/accommodation" replace /> },
-      { path: 'about/projects', element: <Navigate to="/support/projects" replace /> },
-      { path: 'about/pastoral-team', element: <Navigate to="/our-lady/pastoral-team" replace /> },
-      { path: 'about/communities', element: <Navigate to="/our-lady/communities" replace /> },
-      { path: 'about/community-attrated', element: <Navigate to="/shrine/welcome" replace /> },
-      { path: 'about/*', element: <Navigate to="/our-lady" replace /> },
-      { path: 'pilgrimage/what-is-a-pilgrimage', element: <Navigate to="/pilgrimage/why-kibeho" replace /> },
-      { path: 'pilgrimage/join', element: <Navigate to="/pilgrimage/plan" replace /> },
-      { path: 'pilgrimage/organise', element: <Navigate to="/pilgrimage/plan" replace /> },
-      { path: 'pilgrimage/pastoral-theme', element: <Navigate to="/pilgrimage" replace /> },
-      { path: 'publications', element: <Navigate to="/news" replace /> },
-      { path: 'publications/*', element: <Navigate to="/news" replace /> },
-      { path: 'visit', element: <Navigate to="/pilgrimage/practical-information" replace /> },
-      { path: 'visit/*', element: <Navigate to="/pilgrimage/practical-information" replace /> },
-      { path: 'support/why-donate', element: <Navigate to="/support/donations" replace /> },
-      { path: 'support/offerings', element: <Navigate to="/support/donations" replace /> },
-      { path: 'support/volunteer', element: <Navigate to="/support/partners" replace /> },
-      { path: 'support/friends', element: <Navigate to="/support/partners" replace /> },
-      { path: 'services', element: <Navigate to="/pilgrimage" replace /> },
-      { path: 'programs', element: <Navigate to="/shrine" replace /> },
-      { path: 'projects', element: <Navigate to="/support/projects" replace /> },
-      { path: 'careers', element: <Navigate to="/support/partners" replace /> },
-    ],
+    path: '/:locale',
+    element: <LocaleAwareLayout />,
+    children: localizedChildren,
   },
   {
     path: '*',
-    element: <Wrap Component={NotFoundPage} />,
+    element: <RedirectToLocalized />,
   },
 ], {
   future: {

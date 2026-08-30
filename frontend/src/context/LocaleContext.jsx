@@ -94,7 +94,7 @@ export function LocaleProvider({ children }) {
     [languages],
   )
 
-  const setLocale = (code) => {
+  const setLocale = (code, options = {}) => {
     const allowed = publicLocales.map((item) => item.code)
     if (!allowed.includes(code)) return
     setLocaleState(code)
@@ -103,6 +103,9 @@ export function LocaleProvider({ children }) {
     } catch {
       /* ignore */
     }
+    // Navigation is handled by the language switcher / LocaleRoute when options.navigate !== false
+    // and a router is available. This flag is reserved for URL-driven sync.
+    void options
   }
 
   useEffect(() => {

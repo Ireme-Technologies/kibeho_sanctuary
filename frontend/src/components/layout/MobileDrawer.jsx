@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
 import { ChevronDown, X } from 'lucide-react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { displayCapsLabel } from '@i18n/typography'
+import { LocalizedNavLink } from '@components/LocalizedLink'
 import styles from './MobileDrawer.module.css'
 
 function DrawerItem({ item, onClose }) {
@@ -12,21 +12,21 @@ function DrawerItem({ item, onClose }) {
 
   if (!hasChildren) {
     return (
-      <NavLink
+      <LocalizedNavLink
         to={item.path}
         end={item.path === '/'}
         onClick={onClose}
         className={({ isActive }) => `${styles.navLink} ${isActive ? styles.activeLink : ''}`}
       >
         {item.label}
-      </NavLink>
+      </LocalizedNavLink>
     )
   }
 
   return (
     <div className={styles.group}>
       <div className={styles.groupRow}>
-        <NavLink
+        <LocalizedNavLink
           to={item.path}
           end
           onClick={onClose}
@@ -35,7 +35,7 @@ function DrawerItem({ item, onClose }) {
           }
         >
           {item.label}
-        </NavLink>
+        </LocalizedNavLink>
         <button
           type="button"
           className={styles.groupToggle}
@@ -49,14 +49,14 @@ function DrawerItem({ item, onClose }) {
       {open && (
         <div className={styles.subnav}>
           {item.children.map((child) => (
-            <NavLink
+            <LocalizedNavLink
               key={child.path + child.label}
               to={child.path}
               onClick={onClose}
               className={styles.subLink}
             >
               {child.label}
-            </NavLink>
+            </LocalizedNavLink>
           ))}
         </div>
       )}
@@ -96,9 +96,9 @@ export default function MobileDrawer({ isOpen, onClose }) {
           {(primaryNav || []).map((item) => (
             <DrawerItem key={item.path + item.label} item={item} onClose={onClose} />
           ))}
-          <NavLink to={navCTA.path} onClick={onClose} className={styles.ctaBtn}>
+          <LocalizedNavLink to={navCTA.path} onClick={onClose} className={styles.ctaBtn}>
             {displayCapsLabel(navCTA.label, locale)}
-          </NavLink>
+          </LocalizedNavLink>
         </nav>
       </aside>
     </div>

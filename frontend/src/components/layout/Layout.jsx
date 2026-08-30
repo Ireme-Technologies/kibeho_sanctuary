@@ -5,6 +5,7 @@ import { useLocale } from '@context/LocaleContext'
 import { getPageFallback } from '@data/pages/content'
 import { mergePageContent } from '@data/pages/mergePageContent'
 import { sectionKeyForPath } from '@data/pages/registry'
+import { cmsKeyForPath, parseLocalizedPathname, stripLocale } from '@i18n/localizedPath'
 import { applyPageSeo, DEFAULT_SEO, stripHtml } from '@utils/seo'
 import Navbar from './Navbar'
 import Footer from './Footer'
@@ -36,25 +37,27 @@ const PUBLIC_SEO = {
  */
 export default function Layout({ hasHero = false }) {
   const { pathname } = useLocation()
-  const { company, section } = useContent()
-  const { t } = useLocale()
+  const { company, section, pages } = useContent()
+  const { t, locale, defaultLocale } = useLocale()
+  const pathOnly = stripLocale(pathname)
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname])
 
   useEffect(() => {
-    if (pathname === '/') {
+    if (pathOnly === '/') {
       applyPageSeo({
         title: DEFAULT_SEO.title,
         description: DEFAULT_SEO.description,
-        path: '/',
+        path: pathname,
       })
       return
     }
-    const key = sectionKeyForPath(pathname)
+    const key =
+      cmsKeyForPath(pathOnly, locale, pages, defaultLocale) || sectionKeyForPath(pathOnly)
     if (!key) {
-      const extra = PUBLIC_SEO[pathname]
+      const extra = PUBLIC_SEO[pathOnly]
       applyPageSeo({
         title: extra?.title || company?.name || t('brand.name'),
         description: extra?.description || DEFAULT_SEO.description,
@@ -69,7 +72,7 @@ export default function Layout({ hasHero = false }) {
       image: data.heroImage,
       path: pathname,
     })
-  }, [pathname, company?.name, section, t])
+  }, [pathname, pathOnly, company?.name, section, t, locale, pages, defaultLocale])
 
   return (
     <div className={styles.page}>

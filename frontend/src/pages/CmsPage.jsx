@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { ExternalLink, Play, X } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, Navigate } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { displayTitleLabel, displayCapsLabel } from '@i18n/typography'
-import { sectionKeyForPath } from '@data/pages/registry'
+import { pathForSectionKey, sectionKeyForPath } from '@data/pages/registry'
+import { cmsKeyForPath, localizeHref, pathForCmsKey, stripLocale, withLocale } from '@i18n/localizedPath'
+import { navKeyForPath } from '@i18n/navKeys'
 import { getPageFallback } from '@data/pages/content'
 import { mergePageContent } from '@data/pages/mergePageContent'
-import { navKeyForPath } from '@i18n/navKeys'
 import { parseYoutubeId, youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from '@utils/youtube'
 import ContentLocaleNotice, { hasLocaleTranslation } from '@components/ContentLocaleNotice'
 import OfferingForm from '@components/OfferingForm'
@@ -230,6 +231,8 @@ function Block({ block }) {
 }
 
 function PageLink({ to, className, children }) {
+  const { locale, defaultLocale } = useLocale()
+  const { pages } = useContent()
   if (!to) return null
   if (to.startsWith('#') || /^https?:/i.test(to)) {
     return (
@@ -239,7 +242,7 @@ function PageLink({ to, className, children }) {
     )
   }
   return (
-    <Link to={to} className={className}>
+    <Link to={localizeHref(to, locale, pages, defaultLocale)} className={className}>
       {children}
     </Link>
   )
@@ -249,14 +252,18 @@ export default function CmsPage() {
   const { pathname } = useLocation()
   const { section, pages, company, offerings, resolveHeaderImage } = useContent()
   const { t, locale, defaultLocale } = useLocale()
-  const key = sectionKeyForPath(pathname)
+  const pathOnly = stripLocale(pathname)
+  const key =
+    cmsKeyForPath(pathOnly, locale, pages, defaultLocale) || sectionKeyForPath(pathOnly)
+  const preferredPath = key ? pathForCmsKey(key, locale, pages, defaultLocale) : null
+  const needsCanonicalRedirect = Boolean(key && preferredPath && preferredPath !== pathOnly)
   const fallback = (key && getPageFallback(key)) || {}
   const record = key ? pages?.[key] : null
   const translated = hasLocaleTranslation(record?.translations, locale, defaultLocale)
   const live = key ? section(key, {}) : {}
   const data = mergePageContent(fallback, live)
   if (key && !translated) {
-    const navKey = navKeyForPath(pathname)
+    const navKey = navKeyForPath(pathOnly) || navKeyForPath(pathForSectionKey(key))
     if (navKey) {
       data.title = t(navKey)
       data.heading = t(navKey)
@@ -284,14 +291,18 @@ export default function CmsPage() {
   const pageTitle = displayTitleLabel(rawTitle, locale)
 
   useEffect(() => {
-    if (!key) return
+    if (!key || needsCanonicalRedirect) return
     applyPageSeo({
       title: rawTitle || company?.name || t('brand.name'),
       description: data.seoDescription || stripHtml(data.intro) || data.subtitle,
       image: data.heroImage,
       path: pathname,
     })
-  }, [key, rawTitle, company?.name, t, data.seoDescription, data.intro, data.subtitle, data.heroImage, pathname])
+  }, [key, needsCanonicalRedirect, rawTitle, company?.name, t, data.seoDescription, data.intro, data.subtitle, data.heroImage, pathname])
+
+  if (needsCanonicalRedirect) {
+    return <Navigate to={withLocale(preferredPath, locale)} replace />
+  }
 
   const heroImage = resolveHeaderImage(data.heroImage)
   const actionPage = {

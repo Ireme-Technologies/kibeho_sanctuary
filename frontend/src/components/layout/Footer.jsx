@@ -1,14 +1,16 @@
-import { NavLink } from 'react-router-dom'
 import { MapPin, Phone, Mail, Heart } from 'lucide-react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
 import { displayCapsLabel, displayTitleLabel } from '@i18n/typography'
+import LocalizedLink, { LocalizedNavLink } from '@components/LocalizedLink'
+import { useSwitchLocale } from '@router/LocaleRoute'
 import styles from './Footer.module.css'
 
 export default function Footer() {
   const { company, footerLinks, footerServiceLinks, navCTA } = useContent()
-  const { locales, setLocale, locale, t } = useLocale()
+  const { locales, locale, t } = useLocale()
+  const switchLocale = useSwitchLocale()
   const brandName = company.name || 'Shrine of Our Lady of Kibeho'
   const socials = getVisibleSocials(company.socials)
 
@@ -20,19 +22,19 @@ export default function Footer() {
           <p className={styles.ctaText}>{t('supportMissionText')}</p>
         </div>
         <div className={styles.ctaActions}>
-          <NavLink to={navCTA?.path || '/support/donations'} className={styles.ctaBtn}>
+          <LocalizedNavLink to={navCTA?.path || '/support/donations'} className={styles.ctaBtn}>
             <Heart size={16} aria-hidden="true" />
             {displayCapsLabel(navCTA?.label || t('donate'), locale)}
-          </NavLink>
-          <NavLink to="/support/partners" className={styles.ctaBtnGhost}>
+          </LocalizedNavLink>
+          <LocalizedNavLink to="/support/partners" className={styles.ctaBtnGhost}>
             {displayCapsLabel(t('becomeVolunteer'), locale)}
-          </NavLink>
+          </LocalizedNavLink>
         </div>
       </div>
 
       <div className={`container ${styles.grid}`}>
         <div className={styles.brandCol}>
-          <NavLink to="/" className={styles.logo}>
+          <LocalizedNavLink to="/" className={styles.logo}>
             <img
               src={company.logo || '/images/logo/logo-transparent.png'}
               alt=""
@@ -42,7 +44,7 @@ export default function Footer() {
               <span className={styles.brandName}>{brandName}</span>
               <span className={styles.brandTag}>{t('brand.diocese')}</span>
             </span>
-          </NavLink>
+          </LocalizedNavLink>
           <div className={styles.socials}>
             {socials.map((social, index) => {
               const Icon = resolveSocialIcon(social)
@@ -67,11 +69,11 @@ export default function Footer() {
           <ul>
             {footerLinks.map((link) => (
               <li key={link.path + link.label}>
-                <NavLink to={link.path}>{link.label}</NavLink>
+                <LocalizedLink to={link.path}>{link.label}</LocalizedLink>
               </li>
             ))}
             <li>
-              <NavLink to="/spirituality/testimonies">{t('pilgrimReviews')}</NavLink>
+              <LocalizedLink to="/spirituality/testimonies">{t('pilgrimReviews')}</LocalizedLink>
             </li>
           </ul>
         </div>
@@ -81,7 +83,7 @@ export default function Footer() {
           <ul>
             {footerServiceLinks.map((link) => (
               <li key={link.path + link.label}>
-                <NavLink to={link.path}>{link.label}</NavLink>
+                <LocalizedLink to={link.path}>{link.label}</LocalizedLink>
               </li>
             ))}
           </ul>
@@ -124,7 +126,7 @@ export default function Footer() {
                 type="button"
                 className={styles.langChip}
                 aria-pressed={locale === l.code}
-                onClick={() => setLocale(l.code)}
+                onClick={() => switchLocale(l.code)}
               >
                 {l.flag} {l.code.toUpperCase()}
               </button>
