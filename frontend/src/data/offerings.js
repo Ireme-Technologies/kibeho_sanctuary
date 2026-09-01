@@ -5,7 +5,8 @@
 
 export const offerings = {
   candlePriceUsd: 1,
-  massPriceUsd: 20,
+  massPriceUsd: 2.5,
+  massPriceEur: 2,
   momoCode: '*182*8*1*060974#',
   momoLabel: 'MoMo Pay',
   onlinePaymentUrl: '',

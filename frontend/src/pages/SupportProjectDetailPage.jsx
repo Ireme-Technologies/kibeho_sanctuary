@@ -50,8 +50,6 @@ export default function SupportProjectDetailPage() {
 
   if (notFound || !item) return <NotFoundPage />
 
-  const hasFunding = item.fundingGoal || item.fundingRaised
-  const hasStory = item.problem || item.solution || item.impactLocal || item.impactGlobal || item.impactChurch
   const gallery = (item.gallery || []).filter(Boolean)
   const heroImage = resolveHeaderImage(item.coverImage)
 
@@ -79,15 +77,7 @@ export default function SupportProjectDetailPage() {
 
           {item.description ? <RichText html={item.description} className={styles.lead} /> : null}
 
-          {hasFunding ? (
-            <p className={styles.funding}>
-              {item.fundingRaised ? <span>Raised {item.fundingRaised}</span> : null}
-              {item.fundingRaised && item.fundingGoal ? ' · ' : null}
-              {item.fundingGoal ? <span>Goal {item.fundingGoal}</span> : null}
-            </p>
-          ) : null}
-
-          {hasStory ? (
+          {item.problem || item.solution || item.impactLocal || item.impactGlobal || item.impactChurch ? (
             <div className={styles.storyList}>
               <StoryBlock title={t('project.need')} html={item.problem} />
               <StoryBlock title={t('project.solution')} html={item.solution} />

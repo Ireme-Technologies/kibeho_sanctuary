@@ -260,6 +260,35 @@ export const deleteCommunity = (id) => api(`/api/communities/${id}`, { method: '
 
 export const fetchLodging = (params = {}) => api(withQuery('/api/facilities', { lodging: 1, ...params }))
 
+export const fetchVisionaries = (params = {}) => api(withQuery('/api/visionaries', params))
+export const fetchVisionary = (slug, params = {}) => api(withQuery(`/api/visionaries/${slug}`, params))
+export const createVisionary = (body) => api('/api/visionaries', { method: 'POST', body })
+export const updateVisionary = (id, body) => api(`/api/visionaries/${id}`, { method: 'PUT', body })
+export const deleteVisionary = (id) => api(`/api/visionaries/${id}`, { method: 'DELETE' })
+
+export const fetchMaryMessages = (params = {}) => api(withQuery('/api/mary-messages', params))
+export const fetchMaryMessage = (id, params = {}) => api(withQuery(`/api/mary-messages/${id}`, params))
+export const createMaryMessage = (body) => api('/api/mary-messages', { method: 'POST', body })
+export const updateMaryMessage = (id, body) => api(`/api/mary-messages/${id}`, { method: 'PUT', body })
+export const deleteMaryMessage = (id) => api(`/api/mary-messages/${id}`, { method: 'DELETE' })
+
+export const fetchOfficialPrayers = (params = {}) => api(withQuery('/api/official-prayers', params))
+export const createOfficialPrayer = (body) => api('/api/official-prayers', { method: 'POST', body })
+export const updateOfficialPrayer = (id, body) => api(`/api/official-prayers/${id}`, { method: 'PUT', body })
+export const deleteOfficialPrayer = (id) => api(`/api/official-prayers/${id}`, { method: 'DELETE' })
+
+export const fetchSpiritualBooks = (params = {}) => api(withQuery('/api/spiritual-books', params))
+export const fetchSpiritualBook = (slug, params = {}) => api(withQuery(`/api/spiritual-books/${slug}`, params))
+export const createSpiritualBook = (body) => api('/api/spiritual-books', { method: 'POST', body })
+export const updateSpiritualBook = (id, body) => api(`/api/spiritual-books/${id}`, { method: 'PUT', body })
+export const deleteSpiritualBook = (id) => api(`/api/spiritual-books/${id}`, { method: 'DELETE' })
+
+export const fetchAudioItems = (params = {}) => api(withQuery('/api/audio-items', params))
+export const fetchAudioItem = (slug, params = {}) => api(withQuery(`/api/audio-items/${slug}`, params))
+export const createAudioItem = (body) => api('/api/audio-items', { method: 'POST', body })
+export const updateAudioItem = (id, body) => api(`/api/audio-items/${id}`, { method: 'PUT', body })
+export const deleteAudioItem = (id) => api(`/api/audio-items/${id}`, { method: 'DELETE' })
+
 export async function updatePageSection(key, body) {
   return api(`/api/pages/${encodeURIComponent(key)}`, { method: 'PUT', body })
 }

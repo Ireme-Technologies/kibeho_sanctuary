@@ -53,13 +53,13 @@ export default function HotelsPage() {
 
         <div className={styles.lodgingGrid}>
           {items.map((item) => (
-            <article key={item.id} className={styles.card}>
-              <Link to={`/hotels/${item.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+            <article key={item.id} className={`${styles.card} ${styles.lodgingCard}`}>
+              <Link to={`/pilgrimage/accommodation/${item.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
                 <div className={styles.cardMedia}>
+                  {item.category ? <span className={styles.categoryBadge}>{item.category}</span> : null}
                   <img src={item.coverImage || item.featuredImage || defaultHeaderImage} alt="" />
                 </div>
                 <div className={styles.cardBody}>
-                  {item.category ? <p className={styles.meta}>{item.category}</p> : null}
                   <h2>{displayFacilityName(item.title)}</h2>
                   {cardExcerpt(item) ? (
                     <p className={styles.excerpt}>{cardExcerpt(item)}</p>

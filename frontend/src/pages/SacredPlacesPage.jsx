@@ -15,10 +15,12 @@ export default function SacredPlacesPage({ type: typeProp }) {
 
   const type = useMemo(() => {
     if (typeProp) return typeProp
-    return pathname.includes('apparition-sites') ? 'apparition_site' : 'church'
+    if (pathname.includes('apparition-sites')) return 'apparition_site'
+    return 'main_place'
   }, [typeProp, pathname])
 
-  const sectionKey = type === 'apparition_site' ? 'shrine.apparition-sites' : 'shrine.churches'
+  const sectionKey =
+    type === 'apparition_site' ? 'shrine.apparition-sites' : 'shrine.places'
   const hero = resolveSectionContent(section, sectionKey)
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
@@ -31,10 +33,10 @@ export default function SacredPlacesPage({ type: typeProp }) {
 
   const heroImage = resolveHeaderImage(
     hero.heroImage,
-    type === 'church' ? '/images/sanctuary/church.jpg' : '/images/sanctuary/hero.jpg'
+    type === 'main_place' ? '/images/sanctuary/church.jpg' : '/images/sanctuary/hero.jpg'
   )
 
-  const basePath = type === 'apparition_site' ? '/shrine/apparition-sites' : '/shrine/churches'
+  const basePath = type === 'apparition_site' ? '/shrine/apparition-sites' : '/shrine/places'
 
   return (
     <div className={styles.page}>
@@ -45,7 +47,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
         }}
       >
         <div className="container">
-          <h1>{hero.title || (type === 'church' ? 'Churches' : 'Apparition Sites')}</h1>
+          <h1>{hero.title || (type === 'main_place' ? 'Main Places' : 'Apparition Sites')}</h1>
           {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}
         </div>
       </header>
@@ -70,6 +72,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
                 <img src={item.coverImage || defaultHeaderImage} alt="" />
               </div>
               <div className={styles.cardBody}>
+                {item.category ? <p className={styles.meta}>{item.category}</p> : null}
                 {item.location ? <p className={styles.meta}>{item.location}</p> : null}
                 <h2>{item.name || item.title}</h2>
                 {cardExcerpt(item) ? <p className={styles.excerpt}>{cardExcerpt(item)}</p> : null}

@@ -22,10 +22,12 @@ class PilgrimEnquiry extends Model
         'status',
         'user_id',
         'is_read',
+        'mass_dates',
     ];
 
     protected $casts = [
         'is_read' => 'boolean',
+        'mass_dates' => 'array',
     ];
 
     public function user(): BelongsTo

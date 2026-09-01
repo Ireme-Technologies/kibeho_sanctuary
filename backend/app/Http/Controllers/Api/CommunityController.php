@@ -107,7 +107,7 @@ class CommunityController extends Controller
             'description' => $resolved['description'],
             'coverImage' => $item->cover_image,
             'gallery' => is_array($item->gallery) ? $item->gallery : [],
-            'path' => '/our-lady/communities/'.$item->slug,
+            'path' => '/shrine/communities/'.$item->slug,
             'sortOrder' => $item->sort_order,
             'isPublished' => $item->is_published,
             'translations' => $item->translations ?? [],

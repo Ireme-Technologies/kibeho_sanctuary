@@ -30,8 +30,10 @@ class PilgrimEnquiryController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'subject' => ['nullable', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
-            'enquiry_type' => ['nullable', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass', 'project', 'partnership'])],
+            'enquiry_type' => ['nullable', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass', 'project', 'partnership', 'testimony'])],
             'upcoming_pilgrimage_id' => ['nullable', 'integer', 'exists:upcoming_pilgrimages,id'],
+            'mass_dates' => ['nullable', 'array'],
+            'mass_dates.*' => ['string', 'max:100'],
             'channel' => ['required', Rule::in(['email', 'whatsapp'])],
         ]);
 
@@ -58,6 +60,7 @@ class PilgrimEnquiryController extends Controller
             'message' => $data['message'],
             'enquiry_type' => $data['enquiry_type'] ?? 'general',
             'upcoming_pilgrimage_id' => $data['upcoming_pilgrimage_id'] ?? null,
+            'mass_dates' => $data['mass_dates'] ?? null,
             'channel' => $data['channel'],
             'status' => 'new',
             'user_id' => $userId,
@@ -143,7 +146,7 @@ class PilgrimEnquiryController extends Controller
         $data = $request->validate([
             'status' => ['sometimes', Rule::in(['new', 'in_progress', 'pending_client', 'closed'])],
             'is_read' => ['sometimes', 'boolean'],
-            'enquiry_type' => ['sometimes', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass', 'project', 'partnership'])],
+            'enquiry_type' => ['sometimes', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass', 'project', 'partnership', 'testimony'])],
         ]);
 
         $pilgrimEnquiry->update($data);
@@ -329,7 +332,7 @@ class PilgrimEnquiryController extends Controller
             'phone' => ['required', 'string', 'max:50'],
             'subject' => ['nullable', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
-            'enquiry_type' => ['nullable', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass', 'project', 'partnership'])],
+            'enquiry_type' => ['nullable', Rule::in(['visit', 'group', 'prayer', 'donation', 'accommodation', 'pilgrimage', 'general', 'candle', 'mass', 'project', 'partnership', 'testimony'])],
             'channel' => ['required', Rule::in(['email', 'whatsapp'])],
         ]);
 

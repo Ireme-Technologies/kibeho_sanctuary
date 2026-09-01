@@ -25,7 +25,7 @@ class ShrineProjectController extends Controller
         }
 
         return response()->json(
-            $query->get()->map(fn (ShrineProject $item) => $this->transform($item, $locale))
+            $query->get()->map(fn (ShrineProject $item) => $this->transform($item, $locale, (bool) Auth::guard('web')->user()))
         );
     }
 
@@ -38,7 +38,7 @@ class ShrineProjectController extends Controller
             $query->where('is_published', true);
         }
 
-        return response()->json($this->transform($query->firstOrFail(), $locale));
+        return response()->json($this->transform($query->firstOrFail(), $locale, (bool) Auth::guard('web')->user()));
     }
 
     public function store(Request $request)
@@ -96,7 +96,7 @@ class ShrineProjectController extends Controller
         ]);
     }
 
-    private function transform(ShrineProject $item, ?string $locale = null): array
+    private function transform(ShrineProject $item, ?string $locale = null, bool $includeFunding = false): array
     {
         $base = [
                 'title' => $item->title,
@@ -130,8 +130,10 @@ class ShrineProjectController extends Controller
             'impactChurch' => $resolved['impact_church'],
             'coverImage' => $item->cover_image,
             'gallery' => $item->gallery ?? [],
-            'fundingGoal' => $item->funding_goal,
-            'fundingRaised' => $item->funding_raised,
+            ...($includeFunding ? [
+                'fundingGoal' => $item->funding_goal,
+                'fundingRaised' => $item->funding_raised,
+            ] : []),
             'featured' => $item->featured,
             'sortOrder' => $item->sort_order,
             'isPublished' => $item->is_published,

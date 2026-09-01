@@ -187,7 +187,7 @@ class FacilityController extends Controller
             'email' => $facility->email,
             'sortOrder' => $facility->sort_order,
             'isPublished' => $facility->is_published,
-            'path' => '/hotels/'.$facility->slug,
+            'path' => '/pilgrimage/accommodation/'.$facility->slug,
             'translations' => $facility->translations ?? [],
         ];
     }

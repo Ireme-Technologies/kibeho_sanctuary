@@ -2,21 +2,23 @@
 
 namespace App\Services;
 
-use App\Models\Activity;
+use App\Models\AudioItem;
 use App\Models\Community;
 use App\Models\Facility;
+use App\Models\MaryMessage;
 use App\Models\MassSchedule;
 use App\Models\Media;
 use App\Models\NewsPost;
+use App\Models\OfficialPrayer;
 use App\Models\PageSection;
 use App\Models\PastoralTeamMember;
-use App\Models\PilgrimageService;
 use App\Models\SacredPlace;
 use App\Models\Setting;
 use App\Models\ShrineProject;
-use App\Models\Testimonial;
+use App\Models\SpiritualBook;
 use App\Models\UpcomingPilgrimage;
 use App\Models\Video;
+use App\Models\Visionary;
 use App\Support\Locale;
 use Illuminate\Support\Collection;
 
@@ -235,16 +237,15 @@ class CmsAuditService
                 ['id' => 'date', 'label' => 'Date', 'fn' => fn ($row) => $this->filled($row->starts_on)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['title', 'description', 'short_description'], $default, $languages),
-            $this->collection('services', 'Pilgrimage services', '/admin/services', PilgrimageService::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
-                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->image) || $this->filled($row->detail_image)],
+            $this->collection('visionaries', 'Visionaries', '/admin/visionaries', Visionary::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->name, [
+                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->photo)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
-            ], ['title', 'description'], $default, $languages),
-            $this->collection('experiences', 'Shrine experiences', '/admin/activities', Activity::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
-                ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->image)],
-                ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
+            ], ['name', 'description'], $default, $languages),
+            $this->collection('mary-messages', 'Messages of Mary', '/admin/mary-messages', MaryMessage::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
+                ['id' => 'body', 'label' => 'Message body', 'fn' => fn ($row) => $this->filled($row->body) || $this->filled($row->summary)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
-            ], ['title', 'description', 'short_description'], $default, $languages),
+            ], ['title', 'summary', 'body'], $default, $languages),
             $this->collection('projects', 'Development projects', '/admin/shrine-projects', ShrineProject::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
                 ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
@@ -258,7 +259,7 @@ class CmsAuditService
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['name', 'description', 'short_description'], $default, $languages),
-            $this->collection('churches', 'Churches', '/admin/churches', SacredPlace::query()->where('type', 'church')->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->name, [
+            $this->collection('main-places', 'Main places', '/admin/main-places', SacredPlace::query()->where('type', 'main_place')->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->name, [
                 ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
@@ -273,10 +274,19 @@ class CmsAuditService
                 ['id' => 'bio', 'label' => 'Bio', 'fn' => fn ($row) => $this->filled($row->bio)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['name', 'role', 'bio'], $default, $languages),
-            $this->collection('testimonials', 'Testimonials', '/admin/testimonials', Testimonial::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->author_name ?: $row->title, [
-                ['id' => 'body', 'label' => 'Testimony', 'fn' => fn ($row) => $this->filled($row->body)],
+            $this->collection('official-prayers', 'Official prayers', '/admin/official-prayers', OfficialPrayer::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
+                ['id' => 'description', 'label' => 'Prayer text', 'fn' => fn ($row) => $this->filled($row->description)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
-            ], ['title', 'body', 'author_role'], $default, $languages),
+            ], ['title', 'description'], $default, $languages),
+            $this->collection('spiritual-books', 'Spiritual books', '/admin/spiritual-books', SpiritualBook::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
+                ['id' => 'cover', 'label' => 'Cover image', 'fn' => fn ($row) => $this->filled($row->cover_image)],
+                ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description)],
+                ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
+            ], ['title', 'description'], $default, $languages),
+            $this->collection('audio', 'Audio & broadcast', '/admin/audio-items', AudioItem::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
+                ['id' => 'url', 'label' => 'Audio URL', 'fn' => fn ($row) => $this->filled($row->audio_url)],
+                ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
+            ], ['title', 'description'], $default, $languages),
             $this->collection('videos', 'Videos (YouTube)', '/admin/videos', Video::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
                 ['id' => 'url', 'label' => 'YouTube URL', 'fn' => fn ($row) => $this->filled($row->youtube_url) || $this->filled($row->youtube_id)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],

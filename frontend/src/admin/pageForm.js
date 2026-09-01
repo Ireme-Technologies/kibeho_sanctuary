@@ -39,12 +39,10 @@ export function isHomeSectionKey(key) {
 
 export function isStoryPageKey(key) {
   return Boolean(
-    key?.startsWith('our-lady.') ||
+    key?.startsWith('shrine.') ||
       key?.startsWith('spirituality.') ||
-      key?.startsWith('shrine.') ||
       key?.startsWith('pilgrimage.') ||
-      key === 'support.vision' ||
-      key === 'support.master-plan',
+      key === 'support.vision',
   )
 }
 

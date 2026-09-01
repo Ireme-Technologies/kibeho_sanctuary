@@ -66,7 +66,7 @@ export default function CommunityDetailPage() {
             </div>
           ) : null}
           <div className={styles.actions}>
-            <Link to="/our-lady/communities" className={styles.btnGhost}>
+            <Link to="/shrine/communities" className={styles.btnGhost}>
               {t('allCommunities')}
             </Link>
           </div>

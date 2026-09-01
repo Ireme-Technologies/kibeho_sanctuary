@@ -98,6 +98,7 @@ export default function SettingsAdminPage() {
   const [offerings, setOfferings] = useState({
     candlePriceUsd: fallbackOfferings.candlePriceUsd,
     massPriceUsd: fallbackOfferings.massPriceUsd,
+    massPriceEur: fallbackOfferings.massPriceEur ?? 2,
     momoCode: fallbackOfferings.momoCode,
     momoLabel: fallbackOfferings.momoLabel,
     onlinePaymentUrl: fallbackOfferings.onlinePaymentUrl || '',
@@ -215,6 +216,7 @@ export default function SettingsAdminPage() {
         setOfferings({
           candlePriceUsd: loadedOfferings.candlePriceUsd ?? fallbackOfferings.candlePriceUsd,
           massPriceUsd: loadedOfferings.massPriceUsd ?? fallbackOfferings.massPriceUsd,
+          massPriceEur: loadedOfferings.massPriceEur ?? fallbackOfferings.massPriceEur ?? 2,
           momoCode: loadedOfferings.momoCode || fallbackOfferings.momoCode,
           momoLabel: loadedOfferings.momoLabel || fallbackOfferings.momoLabel,
           onlinePaymentUrl: loadedOfferings.onlinePaymentUrl || '',
@@ -294,6 +296,7 @@ export default function SettingsAdminPage() {
         offerings: {
           candlePriceUsd: Number(offerings.candlePriceUsd) || 0,
           massPriceUsd: Number(offerings.massPriceUsd) || 0,
+          massPriceEur: Number(offerings.massPriceEur) || 0,
           momoCode: offerings.momoCode,
           momoLabel: offerings.momoLabel,
           onlinePaymentUrl: String(offerings.onlinePaymentUrl || '').trim(),
@@ -781,9 +784,19 @@ export default function SettingsAdminPage() {
                   <input
                     type="number"
                     min="0"
-                    step="1"
+                    step="0.5"
                     value={offerings.massPriceUsd}
                     onChange={(e) => setOfferings({ ...offerings, massPriceUsd: e.target.value })}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Mass offering (EUR)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    value={offerings.massPriceEur}
+                    onChange={(e) => setOfferings({ ...offerings, massPriceEur: e.target.value })}
                   />
                 </div>
               </div>

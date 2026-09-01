@@ -49,14 +49,28 @@ export default function GiveInvite({ introHtml }) {
 
 export function ActionInvite({ kind, priceLabel, introHtml }) {
   const { t } = useLocale()
-  if (!['candle', 'mass', 'partnership'].includes(kind)) return null
+  if (!['candle', 'mass', 'prayer', 'testimony', 'partnership'].includes(kind)) return null
   const cta =
-    kind === 'candle' ? t('offer.lightCandle') : kind === 'mass' ? t('offer.haveMass') : t('offer.beginPartnership')
+    kind === 'candle'
+      ? t('offer.lightCandle')
+      : kind === 'mass'
+        ? t('offer.haveMass')
+        : kind === 'prayer'
+          ? 'Submit a prayer intention'
+          : kind === 'testimony'
+            ? 'Share your testimony'
+            : t('offer.beginPartnership')
+  const leadKey = `invite.${kind}.lead`
+  const leadText = t(leadKey) !== leadKey ? t(leadKey) : t('invite.candle.lead')
+  const pillars = [1, 2, 3].map((n) => {
+    const key = `invite.${kind}.p${n}`
+    return t(key) !== key ? t(key) : t(`invite.candle.p${n}`)
+  })
   return (
     <InviteCard
       leadHtml={introHtml}
-      leadText={t(`invite.${kind}.lead`)}
-      pillars={[t(`invite.${kind}.p1`), t(`invite.${kind}.p2`), t(`invite.${kind}.p3`)]}
+      leadText={leadText}
+      pillars={pillars}
       priceLabel={priceLabel}
       ctaLabel={cta}
     />
@@ -68,18 +82,36 @@ const INVOLVE = {
     title: 'invite.involveTitle',
     lead: 'invite.involveLead',
     links: [
-      { to: '/spirituality/request-a-mass', title: 'invite.massTitle', text: 'invite.massText' },
+      { to: '/spirituality/mass-request', title: 'invite.massTitle', text: 'invite.massText' },
+      { to: '/spirituality/prayer-intentions', title: 'invite.prayerTitle', text: 'invite.prayerText' },
       { to: '/support/donations', title: 'invite.giveTitle', text: 'invite.giveText' },
-      { to: '/support/partners', title: 'invite.partnerTitle', text: 'invite.partnerText' },
     ],
   },
   mass: {
     title: 'invite.involveTitle',
     lead: 'invite.involveLead',
     links: [
-      { to: '/spirituality/prayer-intentions', title: 'invite.candleTitle', text: 'invite.candleText' },
+      { to: '/spirituality/light-a-candle', title: 'invite.candleTitle', text: 'invite.candleText' },
+      { to: '/spirituality/prayer-intentions', title: 'invite.prayerTitle', text: 'invite.prayerText' },
       { to: '/support/donations', title: 'invite.giveTitle', text: 'invite.giveText' },
-      { to: '/support/partners', title: 'invite.partnerTitle', text: 'invite.partnerText' },
+    ],
+  },
+  prayer: {
+    title: 'invite.involveTitle',
+    lead: 'invite.involveLead',
+    links: [
+      { to: '/spirituality/light-a-candle', title: 'invite.candleTitle', text: 'invite.candleText' },
+      { to: '/spirituality/mass-request', title: 'invite.massTitle', text: 'invite.massText' },
+      { to: '/spirituality/share-testimony', title: 'invite.testimonyTitle', text: 'invite.testimonyText' },
+    ],
+  },
+  testimony: {
+    title: 'invite.involveTitle',
+    lead: 'invite.involveLead',
+    links: [
+      { to: '/spirituality/prayer-intentions', title: 'invite.prayerTitle', text: 'invite.prayerText' },
+      { to: '/shrine/messages', title: 'invite.messagesTitle', text: 'invite.messagesText' },
+      { to: '/support/donations', title: 'invite.giveTitle', text: 'invite.giveText' },
     ],
   },
   partnership: {
@@ -87,7 +119,7 @@ const INVOLVE = {
     lead: 'invite.involveLead',
     links: [
       { to: '/support/donations', title: 'invite.giveTitle', text: 'invite.giveText' },
-      { to: '/spirituality/prayer-intentions', title: 'invite.candleTitle', text: 'invite.candleText' },
+      { to: '/spirituality/prayer-intentions', title: 'invite.prayerTitle', text: 'invite.prayerText' },
       { to: '/support/projects', title: 'invite.projectTitle', text: 'invite.projectText' },
     ],
   },
@@ -96,16 +128,16 @@ const INVOLVE = {
     lead: 'invite.involveLead',
     links: [
       { to: '/support/projects', title: 'invite.projectTitle', text: 'invite.projectText' },
-      { to: '/spirituality/prayer-intentions', title: 'invite.candleTitle', text: 'invite.candleText' },
-      { to: '/support/partners', title: 'invite.partnerTitle', text: 'invite.partnerText' },
+      { to: '/spirituality/light-a-candle', title: 'invite.candleTitle', text: 'invite.candleText' },
+      { to: '/spirituality/mass-request', title: 'invite.massTitle', text: 'invite.massText' },
     ],
   },
   story: {
     title: 'story.joinTitle',
     lead: 'story.joinLead',
     links: [
-      { to: '/spirituality/prayer-intentions', title: 'invite.candleTitle', text: 'invite.candleText' },
-      { to: '/spirituality/request-a-mass', title: 'invite.massTitle', text: 'invite.massText' },
+      { to: '/spirituality/light-a-candle', title: 'invite.candleTitle', text: 'invite.candleText' },
+      { to: '/spirituality/mass-request', title: 'invite.massTitle', text: 'invite.massText' },
       { to: '/pilgrimage/plan', title: 'story.planTitle', text: 'story.planText' },
     ],
   },

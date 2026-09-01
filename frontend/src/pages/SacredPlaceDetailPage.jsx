@@ -36,9 +36,11 @@ export default function SacredPlaceDetailPage() {
   if (notFound || !item) return <NotFoundPage />
 
   const backPath =
-    item.type === 'apparition_site' ? '/shrine/apparition-sites' : '/shrine/churches'
+    item.type === 'apparition_site' ? '/shrine/apparition-sites' : '/shrine/places'
   const backLabel =
-    item.type === 'apparition_site' ? t('allApparitionSites') : t('allChurches')
+    item.type === 'apparition_site'
+      ? (t('allApparitionSites') !== 'allApparitionSites' ? t('allApparitionSites') : 'Apparition sites')
+      : 'Main places'
 
   const heroImage = resolveHeaderImage(item.coverImage)
 

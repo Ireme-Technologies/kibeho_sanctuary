@@ -233,15 +233,15 @@ export default function HotelDetailPage() {
             <div className={styles.relatedGrid}>
               {related.map((stay) => (
                 <article key={stay.slug} className={styles.relatedCard}>
-                    <Link to={`/hotels/${stay.slug}`} className={styles.relatedMedia}>
+                    <Link to={`/pilgrimage/accommodation/${stay.slug}`} className={styles.relatedMedia}>
                       <img src={stay.coverImage || stay.featuredImage || defaultHeaderImage} alt="" />
                     </Link>
                   <div className={styles.relatedBody}>
                     <h3>{displayFacilityName(stay.title)}</h3>
-                    <Link to={`/hotels/${stay.slug}`} className={styles.relatedLink}>
+                    <Link to={`/pilgrimage/accommodation/${stay.slug}`} className={styles.relatedLink}>
                       {t('viewDetails')} <ArrowRight size={14} />
                     </Link>
-                    <Link to={`/hotels/${stay.slug}`} className={styles.relatedBtn}>
+                    <Link to={`/pilgrimage/accommodation/${stay.slug}`} className={styles.relatedBtn}>
                       {t('viewDetails')}
                     </Link>
                   </div>

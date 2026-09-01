@@ -1,91 +1,126 @@
 /**
- * Maps public routes → CMS page_sections keys (ToR IA).
+ * Maps public routes → CMS page_sections keys (5-pillar IA).
  * Content is editable in Admin → Page sections.
  */
 
 export const pageRegistry = {
-  /* Our Lady of Kibeho */
-  '/our-lady': 'our-lady.index',
-  '/our-lady/apparitions': 'our-lady.apparitions',
-  '/our-lady/visionaries': 'our-lady.visionaries',
-  '/our-lady/messages': 'our-lady.messages',
-  '/our-lady/church-recognition': 'our-lady.church-recognition',
-  '/our-lady/history': 'our-lady.history',
-  '/our-lady/pastoral-team': 'our-lady.pastoral-team',
-  '/our-lady/communities': 'our-lady.communities',
-  '/our-lady/faq': 'our-lady.faq',
-
   /* The Shrine */
   '/shrine': 'shrine.index',
   '/shrine/welcome': 'shrine.welcome',
-  '/shrine/churches': 'shrine.churches',
+  '/shrine/history': 'shrine.history',
   '/shrine/apparition-sites': 'shrine.apparition-sites',
-  '/shrine/holy-spring': 'shrine.holy-spring',
-  '/shrine/way-of-the-cross': 'shrine.way-of-the-cross',
-  '/shrine/eucharistic-adorations': 'shrine.eucharistic-adorations',
-  '/shrine/mass-schedule': 'shrine.mass-schedule',
-  '/shrine/map': 'shrine.map',
+  '/shrine/visionaries': 'shrine.visionaries',
+  '/shrine/messages': 'shrine.messages',
+  '/shrine/places': 'shrine.places',
+  '/shrine/schedule': 'shrine.schedule',
+  '/shrine/communities': 'shrine.communities',
+  '/shrine/pastoral-team': 'shrine.pastoral-team',
+  '/shrine/faq': 'shrine.faq',
 
   /* Pilgrimage */
   '/pilgrimage': 'pilgrimage.index',
   '/pilgrimage/why-kibeho': 'pilgrimage.why-kibeho',
   '/pilgrimage/plan': 'pilgrimage.plan',
+  '/pilgrimage/practical-guidelines': 'pilgrimage.practical-guidelines',
+  '/pilgrimage/annual-celebrations': 'pilgrimage.annual-celebrations',
   '/pilgrimage/accommodation': 'pilgrimage.accommodation',
-  '/pilgrimage/transportation': 'pilgrimage.transportation',
-  '/pilgrimage/office': 'pilgrimage.office',
-  '/pilgrimage/calendar': 'pilgrimage.calendar',
-  '/pilgrimage/practical-information': 'pilgrimage.practical-information',
+  '/pilgrimage/how-to-get-here': 'pilgrimage.how-to-get-here',
 
   /* Spirituality */
   '/spirituality': 'spirituality.index',
   '/spirituality/prayer-intentions': 'spirituality.prayer-intentions',
-  '/spirituality/request-a-mass': 'spirituality.request-a-mass',
-  '/spirituality/rosary': 'spirituality.rosary',
-  '/spirituality/seven-sorrows-rosary': 'spirituality.seven-sorrows-rosary',
+  '/spirituality/mass-request': 'spirituality.mass-request',
+  '/spirituality/light-a-candle': 'spirituality.light-a-candle',
   '/spirituality/novena': 'spirituality.novena',
+  '/spirituality/share-testimony': 'spirituality.share-testimony',
+  '/spirituality/processions': 'spirituality.processions',
   '/spirituality/official-prayers': 'spirituality.official-prayers',
   '/spirituality/meditations': 'spirituality.meditations',
-  '/spirituality/testimonies': 'spirituality.testimonies',
+  '/spirituality/adoration-worship': 'spirituality.adoration-worship',
+  '/spirituality/confessions': 'spirituality.confessions',
+  '/spirituality/blessings': 'spirituality.blessings',
+  '/spirituality/books': 'spirituality.books',
 
-  /* News hubs */
+  /* News */
+  '/news/audio': 'news.audio',
+  '/news/documentaries': 'news.documentaries',
+  '/news/broadcast': 'news.broadcast',
+  '/news/our-channels': 'news.our-channels',
   '/news/videos': 'news.videos',
 
   /* Support the Shrine */
   '/support': 'support.index',
   '/support/vision': 'support.vision',
-  '/support/master-plan': 'support.master-plan',
   '/support/projects': 'support.projects',
   '/support/donations': 'support.donations',
-  '/support/annual-reports': 'support.annual-reports',
-  '/support/transparency': 'support.transparency',
-  '/support/partners': 'support.partners',
 
   /* Shared */
   '/hotels': 'hotels.index',
   '/faq': 'faq.index',
 
-  /* Legacy paths (still resolve if bookmarked / CMS keys remain) */
-  '/about': 'our-lady.index',
-  '/about/kibeho-sanctuary': 'shrine.welcome',
-  '/about/historical-insights': 'our-lady.history',
-  '/about/mass-times': 'shrine.mass-schedule',
-  '/about/water': 'shrine.holy-spring',
-  '/about/accommodations': 'pilgrimage.accommodation',
-  '/about/projects': 'support.projects',
+  /* Legacy — Our Lady pillar → Shrine */
+  '/our-lady': 'shrine.index',
+  '/our-lady/apparitions': 'shrine.apparition-sites',
+  '/our-lady/visionaries': 'shrine.visionaries',
+  '/our-lady/messages': 'shrine.messages',
+  '/our-lady/church-recognition': 'shrine.history',
+  '/our-lady/history': 'shrine.history',
+  '/our-lady/pastoral-team': 'shrine.pastoral-team',
+  '/our-lady/communities': 'shrine.communities',
+  '/our-lady/faq': 'shrine.faq',
+
+  /* Legacy — Shrine paths */
+  '/shrine/churches': 'shrine.places',
+  '/shrine/mass-schedule': 'shrine.schedule',
+  '/shrine/map': 'shrine.places',
+  '/shrine/holy-spring': 'shrine.places',
+  '/shrine/way-of-the-cross': 'shrine.places',
+  '/shrine/eucharistic-adorations': 'spirituality.adoration-worship',
+
+  /* Legacy — Pilgrimage paths */
+  '/pilgrimage/transportation': 'pilgrimage.how-to-get-here',
+  '/pilgrimage/practical-information': 'pilgrimage.practical-guidelines',
   '/pilgrimage/what-is-a-pilgrimage': 'pilgrimage.why-kibeho',
   '/pilgrimage/join': 'pilgrimage.plan',
   '/pilgrimage/organise': 'pilgrimage.plan',
-  '/visit': 'pilgrimage.practical-information',
-  '/visit/getting-here': 'pilgrimage.transportation',
-  '/visit/guidelines': 'pilgrimage.practical-information',
+  '/pilgrimage/office': 'pilgrimage.plan',
+  '/pilgrimage/calendar': 'pilgrimage.annual-celebrations',
+
+  /* Legacy — Spirituality paths */
+  '/spirituality/request-a-mass': 'spirituality.mass-request',
+  '/spirituality/rosary': 'spirituality.index',
+  '/spirituality/seven-sorrows-rosary': 'spirituality.index',
+  '/spirituality/testimonies': 'spirituality.share-testimony',
+
+  /* Legacy — Support paths */
+  '/support/master-plan': 'support.vision',
+  '/support/annual-reports': 'support.index',
+  '/support/transparency': 'support.index',
+  '/support/partners': 'support.index',
   '/support/why-donate': 'support.donations',
   '/support/offerings': 'support.donations',
-  '/support/volunteer': 'support.partners',
-  '/support/friends': 'support.partners',
-  '/activities/rosary': 'spirituality.rosary',
-  '/activities/rosary-7-sorrows': 'spirituality.seven-sorrows-rosary',
-  '/activities/road-to-the-cross': 'shrine.way-of-the-cross',
-  '/activities/water': 'shrine.holy-spring',
+  '/support/volunteer': 'support.index',
+  '/support/friends': 'support.index',
+
+  /* Legacy — About / visit */
+  '/about': 'shrine.index',
+  '/about/kibeho-sanctuary': 'shrine.welcome',
+  '/about/historical-insights': 'shrine.history',
+  '/about/mass-times': 'shrine.schedule',
+  '/about/water': 'shrine.places',
+  '/about/accommodations': 'pilgrimage.accommodation',
+  '/about/projects': 'support.projects',
+  '/about/pastoral-team': 'shrine.pastoral-team',
+  '/about/communities': 'shrine.communities',
+  '/visit': 'pilgrimage.practical-guidelines',
+  '/visit/getting-here': 'pilgrimage.how-to-get-here',
+  '/visit/guidelines': 'pilgrimage.practical-guidelines',
+
+  /* Legacy — Activities */
+  '/activities/rosary': 'spirituality.index',
+  '/activities/rosary-7-sorrows': 'spirituality.index',
+  '/activities/road-to-the-cross': 'shrine.places',
+  '/activities/water': 'shrine.places',
 }
 
 export function sectionKeyForPath(pathname) {

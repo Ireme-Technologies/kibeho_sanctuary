@@ -4,6 +4,7 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { submitEnquiry } from '@api/cms'
 import { giftAmounts } from '@utils/payments'
+import PrivateEnquiryForm from './PrivateEnquiryForm'
 import PaymentOptions, { paymentLabel } from './payments/PaymentOptions'
 import SharePageBar from './payments/SharePageBar'
 import TimingChoice from './payments/TimingChoice'
@@ -12,6 +13,8 @@ import styles from './payments/payments.module.css'
 const KINDS = {
   candle: { titleKey: 'offer.lightCandle', enquiryType: 'candle', subject: 'Light a candle' },
   mass: { titleKey: 'offer.haveMass', enquiryType: 'mass', subject: 'Have a Mass said' },
+  prayer: { titleKey: 'offer.prayerIntention', enquiryType: 'prayer', subject: 'Prayer intention' },
+  testimony: { titleKey: 'offer.shareTestimony', enquiryType: 'testimony', subject: 'Share your testimony' },
   donation: { titleKey: 'offer.giveMission', enquiryType: 'donation', subject: 'Donation to the Shrine' },
   project: { titleKey: 'offer.supportProject', enquiryType: 'project', subject: 'Project gift' },
   partnership: { titleKey: 'offer.partnership', enquiryType: 'partnership', subject: 'Partnership enquiry' },
@@ -22,6 +25,7 @@ function emptyValues(kind) {
     quantity: kind === 'candle' ? '1' : '',
     amount: '',
     intention: '',
+    massDates: '',
     name: '',
     email: '',
     phone: '',
@@ -31,17 +35,41 @@ function emptyValues(kind) {
   }
 }
 
+function parseMassDates(value) {
+  return String(value || '')
+    .split(/[\n,;]+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+}
+
 export default function OfferingForm({ kind = 'candle', projectTitle = '', showShare = true }) {
   const { offerings } = useContent()
   const { t } = useLocale()
   const meta = KINDS[kind] || KINDS.donation
-  const formTitle = projectTitle || t(meta.titleKey)
+  const formTitle = projectTitle || (meta.subject && !meta.titleKey ? meta.subject : t(meta.titleKey) || meta.subject)
+
+  if (kind === 'prayer' || kind === 'testimony') {
+    return (
+      <PrivateEnquiryForm
+        kind={kind}
+        title={formTitle}
+        messageLabel={kind === 'testimony' ? 'Your testimony' : 'Your prayer intention'}
+        messagePlaceholder={
+          kind === 'testimony'
+            ? 'Share how Our Lady of Kibeho has touched your life…'
+            : 'Names and intentions to remember in prayer…'
+        }
+      />
+    )
+  }
+
   const amounts = giftAmounts(offerings)
   const isCandle = kind === 'candle'
   const isMass = kind === 'mass'
   const isGift = kind === 'donation' || kind === 'project'
   const isPartnership = kind === 'partnership'
-  const unitPrice = isMass ? Number(offerings.massPriceUsd) || 0 : Number(offerings.candlePriceUsd) || 0
+  const unitPriceUsd = isMass ? Number(offerings.massPriceUsd) || 0 : Number(offerings.candlePriceUsd) || 0
+  const unitPriceEur = isMass ? Number(offerings.massPriceEur) || 0 : 0
   const [values, setValues] = useState(() => emptyValues(kind))
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
@@ -49,8 +77,12 @@ export default function OfferingForm({ kind = 'candle', projectTitle = '', showS
 
   const qty = isCandle ? Math.max(1, Number(values.quantity) || 1) : 1
   const giftAmount = Number(values.amount) || 0
-  const total = isGift ? giftAmount : isMass ? unitPrice : qty * unitPrice
+  const total = isGift ? giftAmount : isMass ? unitPriceUsd : qty * unitPriceUsd
   const amountLabel = total > 0 ? `${t('offer.usd')} ${total}` : ''
+  const massPriceLabel =
+    isMass && unitPriceUsd
+      ? `${t('offer.usd')} ${unitPriceUsd}${unitPriceEur ? ` · EUR ${unitPriceEur}` : ''}`
+      : null
   const payNow = !isPartnership && values.timing === 'now'
   const payLater = isPartnership || values.timing === 'later'
   const channel = payNow ? (values.email.trim() ? 'email' : 'whatsapp') : values.channel
@@ -94,11 +126,13 @@ export default function OfferingForm({ kind = 'candle', projectTitle = '', showS
 
     const lines = []
     if (isCandle) {
-      lines.push(`Candles: ${qty} × USD ${unitPrice} = USD ${total}`)
+      lines.push(`Candles: ${qty} × USD ${unitPriceUsd} = USD ${total}`)
       if (values.intention.trim()) lines.push(`Dedication: ${values.intention.trim()}`)
     } else if (isMass) {
-      lines.push(`Mass offering: USD ${unitPrice}`)
+      lines.push(`Mass offering: USD ${unitPriceUsd}${unitPriceEur ? ` / EUR ${unitPriceEur}` : ''}`)
       lines.push(`Intention: ${values.intention.trim()}`)
+      const dates = parseMassDates(values.massDates)
+      if (dates.length) lines.push(`Preferred dates: ${dates.join(', ')}`)
     } else if (isGift) {
       if (projectTitle) lines.push(`Project: ${projectTitle}`)
       if (giftAmount) lines.push(`Amount: USD ${giftAmount}`)
@@ -109,6 +143,8 @@ export default function OfferingForm({ kind = 'candle', projectTitle = '', showS
     lines.push(`When: ${payNow ? 'Pay now' : 'Pledge — office to follow up'}`)
     lines.push(`Payment: ${paymentLabel(offerings, values.audience, values.timing)}`)
     lines.push(`Page: ${window.location.href}`)
+
+    const massDates = isMass ? parseMassDates(values.massDates) : undefined
 
     setStatus('submitting')
     setMessage('')
@@ -121,6 +157,7 @@ export default function OfferingForm({ kind = 'candle', projectTitle = '', showS
         message: lines.join('\n'),
         enquiry_type: meta.enquiryType,
         channel,
+        ...(massDates?.length ? { mass_dates: massDates } : {}),
       })
       if (!payNow && channel === 'whatsapp' && result.whatsapp_url) {
         window.open(result.whatsapp_url, '_blank', 'noopener,noreferrer')
@@ -152,6 +189,7 @@ export default function OfferingForm({ kind = 'candle', projectTitle = '', showS
         <h2>{formTitle}</h2>
         <div className={styles.headMeta}>
           {amountLabel ? <span className={styles.totalChip}>{amountLabel}</span> : null}
+          {massPriceLabel ? <span className={styles.totalChip}>{massPriceLabel}</span> : null}
           {showShare ? <SharePageBar title={formTitle} /> : null}
         </div>
       </div>
@@ -186,17 +224,30 @@ export default function OfferingForm({ kind = 'candle', projectTitle = '', showS
         ) : null}
 
         {isMass ? (
-          <div className={styles.field}>
-            <label htmlFor="offering-intention">{t('offer.intention')}</label>
-            <textarea
-              id="offering-intention"
-              value={values.intention}
-              onChange={handleChange('intention')}
-              rows={4}
-              placeholder={t('offer.intentionPlaceholder')}
-            />
-            {errors.intention ? <p className={styles.error}>{errors.intention}</p> : null}
-          </div>
+          <>
+            <div className={styles.field}>
+              <label htmlFor="offering-intention">{t('offer.intention')}</label>
+              <textarea
+                id="offering-intention"
+                value={values.intention}
+                onChange={handleChange('intention')}
+                rows={4}
+                placeholder={t('offer.intentionPlaceholder')}
+              />
+              {errors.intention ? <p className={styles.error}>{errors.intention}</p> : null}
+            </div>
+            <div className={styles.field}>
+              <label htmlFor="offering-mass-dates">Preferred Mass dates</label>
+              <textarea
+                id="offering-mass-dates"
+                value={values.massDates}
+                onChange={handleChange('massDates')}
+                rows={2}
+                placeholder="e.g. 15 March 2026, 20 April 2026"
+              />
+              <p className={styles.muted}>One date per line, or separated by commas.</p>
+            </div>
+          </>
         ) : null}
 
         {isGift || isPartnership ? (
@@ -319,7 +370,7 @@ export default function OfferingForm({ kind = 'candle', projectTitle = '', showS
             </div>
             <PaymentOptions
               offerings={offerings}
-              amountLabel={amountLabel}
+              amountLabel={amountLabel || massPriceLabel}
               audience={values.audience}
               onAudienceChange={(audience) => setField('audience', audience)}
             />

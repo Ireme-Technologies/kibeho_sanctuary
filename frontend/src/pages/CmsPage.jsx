@@ -306,10 +306,11 @@ export default function CmsPage() {
 
   const heroImage = resolveHeaderImage(data.heroImage)
   const actionPage = {
-    'spirituality.prayer-intentions': { kind: 'candle', heroCta: t('offer.lightCandle'), involve: 'candle' },
-    'spirituality.request-a-mass': { kind: 'mass', heroCta: t('offer.haveMass'), involve: 'mass' },
+    'spirituality.prayer-intentions': { kind: 'prayer', heroCta: 'Submit a prayer intention', involve: 'prayer' },
+    'spirituality.mass-request': { kind: 'mass', heroCta: t('offer.haveMass'), involve: 'mass' },
+    'spirituality.light-a-candle': { kind: 'candle', heroCta: t('offer.lightCandle'), involve: 'candle' },
+    'spirituality.share-testimony': { kind: 'testimony', heroCta: 'Share your testimony', involve: 'testimony' },
     'support.donations': { kind: 'donation', heroCta: t('offer.giveNow'), involve: 'donation' },
-    'support.partners': { kind: 'partnership', heroCta: t('offer.beginPartnership'), involve: 'partnership' },
   }[key]
   const isAction = Boolean(actionPage)
   const isDonations = actionPage?.kind === 'donation'
@@ -324,29 +325,23 @@ export default function CmsPage() {
     actionPage?.kind === 'candle'
       ? `${t('offer.usd')} ${Number(offerings?.candlePriceUsd) || 1} ${t('offer.each')}`
       : actionPage?.kind === 'mass'
-        ? `${t('offer.usd')} ${Number(offerings?.massPriceUsd) || 20}`
+        ? `${t('offer.usd')} ${Number(offerings?.massPriceUsd) || 2.5}${offerings?.massPriceEur ? ` · EUR ${Number(offerings.massPriceEur)}` : ''}`
         : null
   const inviteIntro = actionPage && !isStaleInviteCopy(data.intro, actionPage.kind) ? data.intro : ''
   const isHub = [
-    'our-lady.index',
     'shrine.index',
     'pilgrimage.index',
     'spirituality.index',
     'support.index',
     'support.vision',
-    'support.master-plan',
   ].includes(key)
   const isStory =
     !isAction &&
     Boolean(
-        key?.startsWith('our-lady.') ||
         key?.startsWith('spirituality.') ||
         key?.startsWith('shrine.') ||
         key?.startsWith('pilgrimage.') ||
-        key === 'support.vision' ||
-        key === 'support.master-plan' ||
-        key === 'support.transparency' ||
-        key === 'support.annual-reports',
+        key === 'support.vision',
     )
 
   if (!key) return <NotFoundPage />
@@ -403,8 +398,9 @@ export default function CmsPage() {
 
         {actionPage?.kind === 'candle' ? <OfferingForm kind="candle" /> : null}
         {actionPage?.kind === 'mass' ? <OfferingForm kind="mass" /> : null}
+        {actionPage?.kind === 'prayer' ? <OfferingForm kind="prayer" /> : null}
+        {actionPage?.kind === 'testimony' ? <OfferingForm kind="testimony" /> : null}
         {actionPage?.kind === 'donation' ? <OfferingForm kind="donation" /> : null}
-        {actionPage?.kind === 'partnership' ? <OfferingForm kind="partnership" /> : null}
         {actionPage ? <InvolveMore variant={actionPage.involve} /> : null}
         {isHub ? (
           <InvolveMore

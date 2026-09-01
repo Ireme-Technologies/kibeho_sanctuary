@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityController;
+use App\Http\Controllers\Api\AudioItemController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BackupController;
 use App\Http\Controllers\Api\CmsAuditController;
@@ -10,8 +11,10 @@ use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\FacilityController;
 use App\Http\Controllers\Api\MassScheduleController;
+use App\Http\Controllers\Api\MaryMessageController;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\NewsPostController;
+use App\Http\Controllers\Api\OfficialPrayerController;
 use App\Http\Controllers\Api\PageSectionController;
 use App\Http\Controllers\Api\PastoralTeamController;
 use App\Http\Controllers\Api\PasswordController;
@@ -20,8 +23,10 @@ use App\Http\Controllers\Api\PilgrimageServiceController;
 use App\Http\Controllers\Api\SacredPlaceController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ShrineProjectController;
+use App\Http\Controllers\Api\SpiritualBookController;
 use App\Http\Controllers\Api\TestimonialController;
 use App\Http\Controllers\Api\VideoController;
+use App\Http\Controllers\Api\VisionaryController;
 use App\Http\Controllers\Api\I18nController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -68,6 +73,15 @@ Route::get('/pastoral-team', [PastoralTeamController::class, 'index']);
 Route::get('/pastoral-team/{slug}', [PastoralTeamController::class, 'show']);
 Route::get('/communities', [CommunityController::class, 'index']);
 Route::get('/communities/{slug}', [CommunityController::class, 'show']);
+Route::get('/visionaries', [VisionaryController::class, 'index']);
+Route::get('/visionaries/{slug}', [VisionaryController::class, 'show']);
+Route::get('/mary-messages', [MaryMessageController::class, 'index']);
+Route::get('/mary-messages/{maryMessage}', [MaryMessageController::class, 'show']);
+Route::get('/official-prayers', [OfficialPrayerController::class, 'index']);
+Route::get('/spiritual-books', [SpiritualBookController::class, 'index']);
+Route::get('/spiritual-books/{slug}', [SpiritualBookController::class, 'show']);
+Route::get('/audio-items', [AudioItemController::class, 'index']);
+Route::get('/audio-items/{slug}', [AudioItemController::class, 'show']);
 
 Route::get('/pages', [PageSectionController::class, 'index']);
 Route::get('/pages/{key}', [PageSectionController::class, 'show']);
@@ -139,6 +153,26 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
     Route::post('/communities', [CommunityController::class, 'store']);
     Route::put('/communities/{community}', [CommunityController::class, 'update']);
     Route::delete('/communities/{community}', [CommunityController::class, 'destroy']);
+
+    Route::post('/visionaries', [VisionaryController::class, 'store']);
+    Route::put('/visionaries/{visionary}', [VisionaryController::class, 'update']);
+    Route::delete('/visionaries/{visionary}', [VisionaryController::class, 'destroy']);
+
+    Route::post('/mary-messages', [MaryMessageController::class, 'store']);
+    Route::put('/mary-messages/{maryMessage}', [MaryMessageController::class, 'update']);
+    Route::delete('/mary-messages/{maryMessage}', [MaryMessageController::class, 'destroy']);
+
+    Route::post('/official-prayers', [OfficialPrayerController::class, 'store']);
+    Route::put('/official-prayers/{officialPrayer}', [OfficialPrayerController::class, 'update']);
+    Route::delete('/official-prayers/{officialPrayer}', [OfficialPrayerController::class, 'destroy']);
+
+    Route::post('/spiritual-books', [SpiritualBookController::class, 'store']);
+    Route::put('/spiritual-books/{spiritualBook}', [SpiritualBookController::class, 'update']);
+    Route::delete('/spiritual-books/{spiritualBook}', [SpiritualBookController::class, 'destroy']);
+
+    Route::post('/audio-items', [AudioItemController::class, 'store']);
+    Route::put('/audio-items/{audioItem}', [AudioItemController::class, 'update']);
+    Route::delete('/audio-items/{audioItem}', [AudioItemController::class, 'destroy']);
 
     Route::post('/pages', [PageSectionController::class, 'store']);
     Route::put('/pages/{key}', [PageSectionController::class, 'update']);

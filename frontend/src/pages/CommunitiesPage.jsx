@@ -11,7 +11,7 @@ import styles from './CatalogPage.module.css'
 export default function CommunitiesPage() {
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale, t } = useLocale()
-  const hero = resolveSectionContent(section, 'our-lady.communities')
+  const hero = resolveSectionContent(section, 'shrine.communities', ['our-lady.communities'])
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
 
@@ -46,7 +46,7 @@ export default function CommunitiesPage() {
 
         <div className={styles.grid}>
           {items.map((item) => (
-            <Link key={item.id} to={item.path || `/our-lady/communities/${item.slug}`} className={styles.card}>
+            <Link key={item.id} to={item.path || `/shrine/communities/${item.slug}`} className={styles.card}>
               <div className={styles.cardMedia}>
                 <img src={item.coverImage || defaultHeaderImage} alt="" />
               </div>

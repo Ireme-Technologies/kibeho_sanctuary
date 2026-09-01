@@ -11,7 +11,7 @@ import styles from './CatalogPage.module.css'
 export default function PastoralTeamPage() {
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale } = useLocale()
-  const hero = resolveSectionContent(section, 'our-lady.pastoral-team')
+  const hero = resolveSectionContent(section, 'shrine.pastoral-team', ['our-lady.pastoral-team'])
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
 
@@ -46,7 +46,7 @@ export default function PastoralTeamPage() {
 
         <div className={styles.grid}>
           {items.map((item) => (
-            <Link key={item.id} to={item.path || `/our-lady/pastoral-team/${item.slug}`} className={styles.card}>
+            <Link key={item.id} to={item.path || `/shrine/pastoral-team/${item.slug}`} className={styles.card}>
               <div className={styles.cardMedia}>
                 <img src={item.photo || item.coverImage || defaultHeaderImage} alt="" />
               </div>

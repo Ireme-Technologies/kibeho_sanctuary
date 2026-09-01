@@ -17,26 +17,29 @@ import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColum
 import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['name', 'description', 'location']
+const LOCALE_FIELDS = ['name', 'description', 'location', 'why_visit']
 
 const TYPE_OPTIONS = [
-  { value: 'church', label: 'Church' },
   { value: 'apparition_site', label: 'Apparition site' },
+  { value: 'main_place', label: 'Main place' },
 ]
 
 const typeLabel = (type) => TYPE_OPTIONS.find((opt) => opt.value === type)?.label || type
 
 function pageTitle(fixedType) {
-  if (fixedType === 'church') return 'Churches'
+  if (fixedType === 'main_place') return 'Main places'
   if (fixedType === 'apparition_site') return 'Apparition sites'
   return 'Sacred places'
 }
 
 function emptyForm(fixedType) {
   return {
-    type: fixedType || 'church',
+    type: fixedType || 'main_place',
+    category: '',
     name: '',
     description: '',
+    why_visit: '',
+    key_points_text: '',
     cover_image: '',
     gallery: [],
     location: '',
@@ -44,6 +47,17 @@ function emptyForm(fixedType) {
     is_published: true,
     translations: {},
   }
+}
+
+function keyPointsToText(points) {
+  return Array.isArray(points) ? points.join('\n') : ''
+}
+
+function textToKeyPoints(text) {
+  return String(text || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
 }
 
 export default function SacredPlacesAdminPage({ fixedType } = {}) {
@@ -81,9 +95,12 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
   const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
-      type: fixedType || item.type || 'church',
+      type: fixedType || item.type || 'main_place',
+      category: item.category || '',
       name: item.name || '',
       description: item.description || '',
+      why_visit: item.whyVisit || '',
+      key_points_text: keyPointsToText(item.keyPoints),
       cover_image: item.coverImage || '',
       gallery: Array.isArray(item.gallery) ? item.gallery : [],
       location: item.location || '',
@@ -97,10 +114,11 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
   }
 
   const payload = () => {
-    const { translations: _t, ...rest } = form
+    const { translations: _t, key_points_text, ...rest } = form
     return {
       ...rest,
       type: fixedType || form.type,
+      key_points: textToKeyPoints(key_points_text),
       gallery: Array.isArray(form.gallery) ? form.gallery : [],
       sort_order: Number(form.sort_order) || 0,
       translations: splitTranslationsPayload(form, LOCALE_FIELDS, defaultLocale),
@@ -139,14 +157,14 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
     }
   }
 
-  const addLabel = fixedType === 'church'
-    ? 'Add church'
+  const addLabel = fixedType === 'main_place'
+    ? 'Add main place'
     : fixedType === 'apparition_site'
       ? 'Add apparition site'
       : 'Add sacred place'
 
-  const editLabel = fixedType === 'church'
-    ? 'Edit church'
+  const editLabel = fixedType === 'main_place'
+    ? 'Edit main place'
     : fixedType === 'apparition_site'
       ? 'Edit apparition site'
       : 'Edit sacred place'
@@ -174,6 +192,7 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
               <th>Name</th>
               <LocaleColumnHeaders defaultLocale={defaultLocale} />
               {!fixedType && <th>Type</th>}
+              <th>Category</th>
             </tr>
           </thead>
           <tbody>
@@ -201,11 +220,12 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
                   onEditLocale={(code) => openEdit(item, code)}
                 />
                 {!fixedType && <td>{typeLabel(item.type)}</td>}
+                <td>{item.category || '—'}</td>
               </tr>
             ))}
             {!items.length && (
               <tr>
-                <td colSpan={fixedType ? 6 : 7} className={styles.muted}>
+                <td colSpan={fixedType ? 7 : 8} className={styles.muted}>
                   No {title.toLowerCase()} yet.
                 </td>
               </tr>
@@ -232,6 +252,14 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
               </select>
             </div>
           )}
+          <div className={styles.field}>
+            <label>Category</label>
+            <input
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+              placeholder="e.g. Chapel, Spring, Stations"
+            />
+          </div>
           <LocaleTabs
             value={localeTab}
             onChange={setLocaleTab}
@@ -254,7 +282,21 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
               value={getLocaleField(form, 'description', localeTab, defaultLocale)}
               onChange={(html) => setForm(setLocaleField(form, 'description', localeTab, html, defaultLocale))}
             />
-            <p className={styles.muted}>Listings show the first 160 characters of this description.</p>
+          </div>
+          <div className={styles.field}>
+            <label>Why visit</label>
+            <RichTextEditor
+              value={getLocaleField(form, 'why_visit', localeTab, defaultLocale)}
+              onChange={(html) => setForm(setLocaleField(form, 'why_visit', localeTab, html, defaultLocale))}
+            />
+          </div>
+          <div className={styles.field}>
+            <label>Key points (one per line)</label>
+            <textarea
+              rows={4}
+              value={form.key_points_text}
+              onChange={(e) => setForm({ ...form, key_points_text: e.target.value })}
+            />
           </div>
           <ImageField
             label="Cover image"

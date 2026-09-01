@@ -79,8 +79,36 @@
 
 .lodgingGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.lodgingCard {
+  border-radius: var(--radius-lg, 12px);
+}
+
+.lodgingCard .cardMedia {
+  aspect-ratio: 4 / 3;
+  position: relative;
+}
+
+.categoryBadge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(18, 40, 71, 0.88);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lodgingCard .cardBody h2 {
+  font-size: 1.45rem;
 }
 
 .card {

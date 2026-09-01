@@ -61,7 +61,7 @@ export default function PastoralTeamDetailPage() {
             <RichText html={item.bio || item.description} className={styles.intro} />
           ) : null}
           <div className={styles.actions}>
-            <Link to="/our-lady/pastoral-team" className={styles.btnGhost}>
+            <Link to="/shrine/pastoral-team" className={styles.btnGhost}>
               {t('allPastoralTeam')}
             </Link>
           </div>

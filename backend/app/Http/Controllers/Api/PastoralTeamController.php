@@ -106,7 +106,7 @@ class PastoralTeamController extends Controller
             'description' => $resolved['bio'],
             'photo' => $item->photo,
             'coverImage' => $item->photo,
-            'path' => '/our-lady/pastoral-team/'.$item->slug,
+            'path' => '/shrine/pastoral-team/'.$item->slug,
             'sortOrder' => $item->sort_order,
             'isPublished' => $item->is_published,
             'translations' => $item->translations ?? [],
