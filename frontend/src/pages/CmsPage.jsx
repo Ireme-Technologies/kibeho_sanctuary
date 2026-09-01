@@ -17,6 +17,7 @@ import GiveInvite, { ActionInvite, InvolveMore, isStaleInviteCopy, isStalePaymen
 import ShrineMapGuide from '@components/shrine/ShrineMapGuide'
 import RichText from '@components/ui/RichText'
 import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
+import { applyPageSeo, stripHtml } from '@utils/seo'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
 
