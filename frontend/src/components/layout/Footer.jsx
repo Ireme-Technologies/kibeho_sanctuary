@@ -72,9 +72,6 @@ export default function Footer() {
                 <LocalizedLink to={link.path}>{link.label}</LocalizedLink>
               </li>
             ))}
-            <li>
-              <LocalizedLink to="/spirituality/testimonies">{t('pilgrimReviews')}</LocalizedLink>
-            </li>
           </ul>
         </div>
 

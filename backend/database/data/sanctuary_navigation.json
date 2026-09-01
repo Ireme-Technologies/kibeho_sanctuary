@@ -5,12 +5,13 @@
       "path": "/shrine",
       "children": [
         { "label": "Welcome", "path": "/shrine/welcome" },
+        { "label": "Shrine Map", "path": "/shrine/map" },
         { "label": "History", "path": "/shrine/history" },
         { "label": "Apparition Sites", "path": "/shrine/apparition-sites" },
         { "label": "Visionaries", "path": "/shrine/visionaries" },
         { "label": "The Messages", "path": "/shrine/messages" },
-        { "label": "Main Places", "path": "/shrine/places" },
-        { "label": "Schedule", "path": "/shrine/schedule" },
+        { "label": "Main Places of the Shrine", "path": "/shrine/places" },
+        { "label": "Schedule of the Shrine", "path": "/shrine/schedule" },
         { "label": "Communities", "path": "/shrine/communities" },
         { "label": "Pastoral Team", "path": "/shrine/pastoral-team" },
         { "label": "FAQ", "path": "/shrine/faq" }
@@ -54,8 +55,13 @@
         { "label": "Annual Celebrations", "path": "/news?category=Annual+Celebrations" },
         { "label": "Articles", "path": "/news?category=Articles" },
         { "label": "Announcements", "path": "/news?category=Announcements" },
-        { "label": "Gallery", "path": "/gallery" },
-        { "label": "Broadcast", "path": "/news/broadcast" },
+        { "label": "Gallery", "path": "/gallery" }
+      ]
+    },
+    {
+      "label": "Broadcast",
+      "path": "/broadcast",
+      "children": [
         { "label": "Audio", "path": "/news/audio" },
         { "label": "Video", "path": "/news/videos" },
         { "label": "Documentaries", "path": "/news/documentaries" },
@@ -77,7 +83,9 @@
     { "label": "Pilgrimage", "path": "/pilgrimage" },
     { "label": "Spirituality", "path": "/spirituality" },
     { "label": "News", "path": "/news" },
+    { "label": "Broadcast", "path": "/broadcast" },
     { "label": "Support the Shrine", "path": "/support" },
+    { "label": "Donate", "path": "/support/donations" },
     { "label": "Contact", "path": "/contact" }
   ],
   "footerServiceLinks": [

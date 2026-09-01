@@ -331,20 +331,20 @@ export const pageFallbacks = {
       blocks: [
         {
           type: "heading",
-          text: "When you arrive",
+          text: "Before you come",
         },
         {
           type: "steps",
           items: [
-            { title: "Make yourself known", text: "<p>Groups should contact the Pilgrimage Office before travelling, then present themselves at reception.</p>", path: "/pilgrimage/office", linkLabel: "Pilgrimage Office" },
-            { title: "Join the prayer of the day", text: "<p>Mass times, confession, and adoration are published on the schedule. Feast days may differ.</p>", path: "/shrine/mass-schedule", linkLabel: "Mass Schedule" },
-            { title: "Walk the holy places", text: "<p>Begin with the churches and apparition sites, then the Holy Spring and the Way of the Cross, at a prayerful pace.</p>", path: "/shrine/map", linkLabel: "Shrine Map" },
+            { title: "Register your group", text: "<p>Groups should contact the Pilgrimage Office before travelling. Use the registration form on the Practical Guidelines page.</p>", path: "/pilgrimage/practical-guidelines", linkLabel: "Practical Guidelines" },
+            { title: "Plan your days", text: "<p>Mass times, confession, and adoration are published on the schedule. Feast days may differ.</p>", path: "/shrine/schedule", linkLabel: "Schedule of the Shrine" },
+            { title: "Find your way", text: "<p>Use the shrine map to orient yourself among the churches, apparition sites, and prayer paths.</p>", path: "/shrine/map", linkLabel: "Shrine Map" },
           ],
         },
       ],
       cta: {
-        primary: { label: "Practical Information", path: "/pilgrimage/practical-information" },
-        secondary: { label: "Pilgrimage Office", path: "/pilgrimage/office" },
+        primary: { label: "Practical Guidelines", path: "/pilgrimage/practical-guidelines" },
+        secondary: { label: "Shrine Map", path: "/shrine/map" },
       },
     }),
 
@@ -365,15 +365,59 @@ export const pageFallbacks = {
   'shrine.apparition-sites': page({
       title: "Apparition Sites",
       subtitle: "Where Our Lady appeared",
-      intro: "Visit the places associated with the apparitions of Our Lady of Kibeho — spaces of silence, prayer, and remembrance of the Mother of the Word.",
+      intro: "<p>Visit the places associated with the apparitions of Our Lady of Kibeho — beginning at the Sanctuary and continuing to each remembered site on the hillside. Each place has its own history, its own invitation to prayer, and its own path to reach it.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "Sites of the Sanctuary",
+        },
+        {
+          type: "paragraph",
+          text: "<p>The Sanctuary is made up of the Church of Our Lady of Sorrows, the Chapel of the Apparitions, the esplanade where Mass is celebrated, and the Holy Spring — together with the prayer paths that link them.</p>",
+        },
+        {
+          type: "cards",
+          items: [
+            {
+              title: "Church of Our Lady of Sorrows",
+              text: "<p><em>Ingoro ya Bikiramaliya Umunyamibabaro.</em> The principal church of the Sanctuary — where the liturgical life of Kibeho is celebrated.</p>",
+              path: "/shrine/places/our-lady-of-sorrows",
+            },
+            {
+              title: "Chapel of the Apparitions",
+              text: "<p><em>Chapel y'amabonekerwa.</em> The former dormitory where the first apparitions took place, now a chapel of remembrance and prayer.</p>",
+              path: "/shrine/places/chapel-of-the-apparitions",
+            },
+            {
+              title: "Esplanade of the Apparitions",
+              text: "<p><em>Splanade aho basomerera Missa.</em> The open esplanade where outdoor Mass and public apparitions were held — still a gathering place for pilgrims.</p>",
+              path: "/shrine/apparition-sites/esplanade-of-the-apparitions",
+            },
+            {
+              title: "The Holy Spring",
+              text: "<p><em>Isoko ya Bikiramariya.</em> Pilgrims come to the source of Mary in faith — a sign of grace and a call to trust.</p>",
+              path: "/shrine/apparition-sites/source-of-mary",
+            },
+            {
+              title: "The place of the apparitions",
+              text: "<p><em>Ahabereye amabonekerwa.</em> The hillside remembered for the apparitions of the Mother of the Word — a space of silence and thanksgiving.</p>",
+              path: "/shrine/apparition-sites/place-of-the-apparitions",
+            },
+          ],
+        },
+        {
+          type: "note",
+          text: "<p>Each site page includes what happens there, why you should visit, and directions. Ask at pilgrim reception if you need a guide.</p>",
+        },
+      ],
       cta: {
         primary: {
-          label: "The Apparitions",
-          path: "/our-lady/apparitions",
-        },
-        secondary: {
           label: "Shrine Map",
           path: "/shrine/map",
+        },
+        secondary: {
+          label: "Welcome",
+          path: "/shrine/welcome",
         },
       },
     }),
@@ -782,6 +826,99 @@ export const pageFallbacks = {
       },
     }),
 
+  'pilgrimage.practical-guidelines': page({
+      title: "Practical Guidelines",
+      subtitle: "Prepare well before you travel",
+      intro: "<p>Whether you come alone, with family, or as a parish group, these guidelines help your pilgrimage remain prayerful, safe, and well organised. Groups should register in advance using the form below.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "Good conduct at the Shrine",
+        },
+        {
+          type: "list",
+          items: [
+            "No music or personal speakers around the Shrine",
+            "No musical instruments in the shrine compound",
+            "Keep phones on silent mode",
+            "Avoid personal conversations in places of prayer",
+            "Wear appropriate and modest clothing",
+            "Follow our community support channel for updates",
+            "Shop only from approved Shrine shops",
+            "Carry valid national ID or passport",
+            "Arrange health insurance before travelling",
+            "Confirm accommodation reservations in advance",
+          ],
+        },
+        {
+          type: "heading",
+          text: "Group registration",
+        },
+        {
+          type: "paragraph",
+          text: "<p>Parish groups, diocesan pilgrimages, and international visitors should register before arrival. Priests requesting to celebrate or concelebrate Mass must attach a valid <em>celebret</em> from their Bishop or religious superior. Seminarians must provide a document from the competent ecclesiastical authority.</p>",
+        },
+      ],
+      cta: {
+        primary: { label: "Plan Your Pilgrimage", path: "/pilgrimage/plan" },
+        secondary: { label: "Accommodation", path: "/pilgrimage/accommodation" },
+      },
+    }),
+
+  'spirituality.processions': page({
+      title: "Processions",
+      subtitle: "Walking in prayer with Our Lady",
+      intro: "<p>Processions are a living part of devotion at Kibeho — walking in prayer with Our Lady through the shrine compound and during annual celebrations.</p>",
+      blocks: [
+        {
+          type: "heading",
+          text: "When processions take place",
+        },
+        {
+          type: "list",
+          items: [
+            "Every Thursday at 5:30 PM",
+            "In the shrine compound (outdoors, not inside the church)",
+            "During annual celebrations and major feast days",
+          ],
+        },
+        {
+          type: "paragraph",
+          text: "<p>Processions gather pilgrims in a spirit of prayer and reconciliation. On ordinary Thursdays, the walk takes place in the shrine compound at 5:30 PM. During annual celebrations, larger processions may follow the liturgy of the day — follow directions from shrine stewards.</p>",
+        },
+      ],
+      cta: {
+        primary: { label: "Schedule of the Shrine", path: "/shrine/schedule" },
+        secondary: { label: "Annual Celebrations", path: "/pilgrimage/annual-celebrations" },
+      },
+    }),
+
+  'spirituality.share-testimony': page({
+      title: "Share Your Testimony",
+      subtitle: "For the Shrine archives — not for public display",
+      intro: "<p>Share how Kibeho has touched your life. Your testimony is received for the Shrine's pastoral records and is <strong>not published</strong> on this website.</p>",
+      blocks: [
+        {
+          type: "note",
+          text: "<p>This form is for the Shrine team only. Testimonies are kept privately for pastoral use and archival purposes.</p>",
+        },
+      ],
+      cta: {
+        primary: { label: "Prayer Intentions", path: "/spirituality/prayer-intentions" },
+        secondary: { label: "Contact", path: "/contact" },
+      },
+    }),
+
+  'shrine.map': page({
+      title: "Shrine Map",
+      subtitle: "Find your way across the holy ground",
+      intro: "<p>Use this guide to walk the Shrine without hurry. The numbered path is a suggestion, not a rule. On feast days, follow the ushers and the liturgy of the day.</p>",
+      cta: {
+        primary: { label: "Welcome", path: "/shrine/welcome" },
+        secondary: { label: "Apparition Sites", path: "/shrine/apparition-sites" },
+      },
+    }),
+
   'spirituality.index': page({
       title: "Spirituality",
       subtitle: "Pray with the Shrine — near or far",
@@ -816,10 +953,6 @@ export const pageFallbacks = {
         {
           label: "Meditations",
           path: "/spirituality/meditations",
-        },
-        {
-          label: "Testimonies",
-          path: "/spirituality/testimonies",
         },
       ],
       cta: {

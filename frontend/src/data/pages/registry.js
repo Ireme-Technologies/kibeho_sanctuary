@@ -12,6 +12,7 @@ export const pageRegistry = {
   '/shrine/visionaries': 'shrine.visionaries',
   '/shrine/messages': 'shrine.messages',
   '/shrine/places': 'shrine.places',
+  '/shrine/map': 'shrine.map',
   '/shrine/schedule': 'shrine.schedule',
   '/shrine/communities': 'shrine.communities',
   '/shrine/pastoral-team': 'shrine.pastoral-team',
@@ -41,10 +42,11 @@ export const pageRegistry = {
   '/spirituality/blessings': 'spirituality.blessings',
   '/spirituality/books': 'spirituality.books',
 
-  /* News */
+  /* News & Broadcast */
   '/news/audio': 'news.audio',
   '/news/documentaries': 'news.documentaries',
   '/news/broadcast': 'news.broadcast',
+  '/broadcast': 'news.broadcast',
   '/news/our-channels': 'news.our-channels',
   '/news/videos': 'news.videos',
 
@@ -72,7 +74,7 @@ export const pageRegistry = {
   /* Legacy — Shrine paths */
   '/shrine/churches': 'shrine.places',
   '/shrine/mass-schedule': 'shrine.schedule',
-  '/shrine/map': 'shrine.places',
+  '/shrine/map': 'shrine.map',
   '/shrine/holy-spring': 'shrine.places',
   '/shrine/way-of-the-cross': 'shrine.places',
   '/shrine/eucharistic-adorations': 'spirituality.adoration-worship',

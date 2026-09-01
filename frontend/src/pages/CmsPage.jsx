@@ -12,10 +12,11 @@ import { mergePageContent } from '@data/pages/mergePageContent'
 import { parseYoutubeId, youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from '@utils/youtube'
 import ContentLocaleNotice, { hasLocaleTranslation } from '@components/ContentLocaleNotice'
 import OfferingForm from '@components/OfferingForm'
+import GroupRegistrationForm from '@components/GroupRegistrationForm'
 import GiveInvite, { ActionInvite, InvolveMore, isStaleInviteCopy, isStalePaymentCopy } from '@components/payments/GiveInvite'
 import ShrineMapGuide from '@components/shrine/ShrineMapGuide'
 import RichText from '@components/ui/RichText'
-import { applyPageSeo, stripHtml } from '@utils/seo'
+import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
 
@@ -380,6 +381,27 @@ export default function CmsPage() {
         ) : null}
         {!isAction && data.intro ? <RichText html={data.intro} className={styles.intro} /> : null}
 
+        {key === 'news.our-channels' ? (
+          <div className={styles.socialRow} aria-label="Official channels">
+            {getVisibleSocials(company?.socials).map((social, index) => {
+              const Icon = resolveSocialIcon(social)
+              return (
+                <a
+                  key={`${social.label || social.href}-${index}`}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialLink}
+                  aria-label={social.label || 'Social link'}
+                >
+                  <Icon size={20} />
+                  <span>{social.label}</span>
+                </a>
+              )
+            })}
+          </div>
+        ) : null}
+
         {links.length > 0 ? (
           <nav className={styles.linkGrid} aria-label="Section pages">
             {links.map((link) => (
@@ -395,6 +417,7 @@ export default function CmsPage() {
           : null}
 
         {key === 'shrine.map' ? <ShrineMapGuide /> : null}
+        {key === 'pilgrimage.practical-guidelines' ? <GroupRegistrationForm /> : null}
 
         {actionPage?.kind === 'candle' ? <OfferingForm kind="candle" /> : null}
         {actionPage?.kind === 'mass' ? <OfferingForm kind="mass" /> : null}

@@ -1,11 +1,11 @@
 export const welcomeMessage =
-  'Peace to all who visit the Shrine of Our Lady of Kibeho.'
+  'The Only Marian Place in Africa Approved by the Church'
 
 export const homeWelcome = {
   eyebrow: 'Our Lady of Kibeho',
   heading: 'Nyina wa Jambo — Mother of the Word',
   text: 'She came as a mother calling her children to conversion, to the Rosary, and to reconciliation. That call is still lived on these hills — in the liturgy, in the silence of the apparition sites, and in every pilgrim who comes to pray.',
-  cta: { label: 'Read the Apparitions', path: '/our-lady/apparitions' },
+  cta: { label: 'Read the Apparitions', path: '/shrine/apparition-sites' },
   image: '',
 }
 
@@ -15,7 +15,7 @@ export const quickLinks = [
     icon: 'info',
     title: 'The Message',
     description: 'Apparitions & recognition',
-    path: '/our-lady',
+    path: '/shrine',
   },
   {
     id: 'plan',
@@ -41,30 +41,22 @@ export const quickLinks = [
 ]
 
 export const homeActivities = {
-  heading: 'At the Shrine',
+  heading: 'Main Places of the Shrine',
   subline:
-    'Walk the churches, apparition sites, Holy Spring, and Way of the Cross — and join the daily prayer of Kibeho.',
+    'Walk the Chapel of the Seven Sorrows, apparition sites, the Holy Spring, and the ways of prayer across the hillside.',
   primaryCta: { label: 'Explore the Shrine', path: '/shrine' },
-  secondaryCta: { label: 'Mass Schedule', path: '/shrine/mass-schedule' },
+  secondaryCta: { label: 'Shrine Map', path: '/shrine/map' },
 }
 
-/** Home highlights mapped to ToR “The Shrine” (not mixed Spirituality items) */
+/** Home highlights — main places pilgrims are invited to discover */
 export const shrineHighlights = [
   {
-    id: 'holy-spring',
-    title: 'Holy Spring',
+    id: 'chapel-seven-sorrows',
+    title: 'The Chapel of the Seven Sorrows',
     shortDescription:
-      'Come to the spring in faith — a sign of God’s grace and a call to interior trust.',
+      'The principal church of the Sanctuary — dedicated to Our Lady of Sorrows.',
     image: '',
-    path: '/shrine/holy-spring',
-  },
-  {
-    id: 'way-of-the-cross',
-    title: 'Way of the Cross',
-    shortDescription:
-      'Pray the Stations with Christ, walking with Our Lady of Sorrows.',
-    image: '',
-    path: '/shrine/way-of-the-cross',
+    path: '/shrine/places/our-lady-of-sorrows',
   },
   {
     id: 'apparition-sites',
@@ -73,6 +65,38 @@ export const shrineHighlights = [
       'Visit the places remembered for the apparitions of the Mother of the Word.',
     image: '',
     path: '/shrine/apparition-sites',
+  },
+  {
+    id: 'way-of-the-cross',
+    title: 'Way to the Cross',
+    shortDescription:
+      'Pray the Stations with Christ, walking with Our Lady of Sorrows.',
+    image: '',
+    path: '/shrine/places',
+  },
+  {
+    id: 'way-of-rosary',
+    title: 'Way of Rosary',
+    shortDescription:
+      'A prayerful path through the mysteries of the Rosary on the shrine grounds.',
+    image: '',
+    path: '/shrine/places',
+  },
+  {
+    id: 'way-of-seven-sorrows',
+    title: 'Way of Seven Sorrows',
+    shortDescription:
+      'Walk the devotion Our Lady taught at Kibeho — the Rosary of the Seven Sorrows.',
+    image: '',
+    path: '/shrine/places',
+  },
+  {
+    id: 'holy-spring',
+    title: 'Holy Spring',
+    shortDescription:
+      'Come to the spring in faith — a sign of God’s grace and a call to interior trust.',
+    image: '',
+    path: '/shrine/apparition-sites/source-of-mary',
   },
 ]
 
@@ -110,7 +134,6 @@ export const todaySchedule = [
   { id: 4, title: 'Adoration', time: 'Selected days' },
 ]
 
-/** Aligns with ToR Pilgrimage → “Why Kibeho?” */
 export const whyVisit = [
   {
     id: 'message',

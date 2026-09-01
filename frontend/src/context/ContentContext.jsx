@@ -21,6 +21,7 @@ import {
   footerServiceLinks as fallbackFooterServiceLinks,
   navCTA as fallbackNavCTA,
   utilityNav as fallbackUtilityNav,
+  ensureBroadcastNav,
   ensureOurLadyNavChildren,
   ensureOurLadyNavPath,
   ensureNewsNavChildren,
@@ -53,8 +54,8 @@ function isStalePrimaryNav(apiPrimary) {
   if (!Array.isArray(apiPrimary) || !apiPrimary.length) return true
   const labels = apiPrimary.map((item) => String(item?.label || '').toLowerCase())
   const hasTorPillars =
-    labels.some((l) => l.includes('our lady')) &&
-    labels.some((l) => l.includes('shrine')) &&
+    (labels.some((l) => l.includes('our lady')) || labels.some((l) => l.includes('shrine'))) &&
+    labels.some((l) => l.includes('pilgrimage')) &&
     labels.some((l) => l.includes('spirituality'))
   if (!hasTorPillars) {
     return (
@@ -66,6 +67,30 @@ function isStalePrimaryNav(apiPrimary) {
       labels.includes('support us')
     )
   }
+
+  const newsItem = apiPrimary.find((item) => {
+    const path = String(item?.path || '').replace(/\/+$/, '') || '/'
+    const label = String(item?.label || '').toLowerCase()
+    return path === '/news' || label === 'news'
+  })
+  const newsChildren = Array.isArray(newsItem?.children) ? newsItem.children : []
+  const broadcastNestedInNews = newsChildren.some((child) => {
+    const path = String(child?.path || '').replace(/\/+$/, '') || '/'
+    const label = String(child?.label || '').toLowerCase()
+    return path === '/news/broadcast' || label === 'broadcast' || path === '/news/audio'
+  })
+  const hasBroadcastPillar = labels.some((l) => l === 'broadcast')
+  if (broadcastNestedInNews || !hasBroadcastPillar) return true
+
+  const shrineItem = apiPrimary.find((item) => {
+    const path = String(item?.path || '').replace(/\/+$/, '') || '/'
+    const label = String(item?.label || '').toLowerCase()
+    return path === '/shrine' || label.includes('shrine')
+  })
+  const shrineChildren = Array.isArray(shrineItem?.children) ? shrineItem.children : []
+  const hasShrineMap = shrineChildren.some((child) => String(child?.path || '').includes('/shrine/map'))
+  if (!hasShrineMap) return true
+
   return false
 }
 
@@ -217,7 +242,9 @@ export function ContentProvider({ children }) {
       refresh: () => load(locale),
       company,
       primaryNav: translateNav(
-        ensureNewsNavChildren(ensureOurLadyNavPath(ensureOurLadyNavChildren(primaryNavRaw))),
+        ensureBroadcastNav(
+          ensureNewsNavChildren(ensureOurLadyNavPath(ensureOurLadyNavChildren(primaryNavRaw))),
+        ),
         t,
         locale,
         defaultLocale,

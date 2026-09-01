@@ -12,6 +12,9 @@ export const LOCALES = [
   { code: 'fr', label: 'Français', nativeLabel: 'Français', flag: '🇫🇷', htmlLang: 'fr' },
   { code: 'en', label: 'English', nativeLabel: 'English', flag: '🇬🇧', htmlLang: 'en' },
   { code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', flag: '🇩🇪', htmlLang: 'de' },
+  { code: 'pl', label: 'Polish', nativeLabel: 'Polski', flag: '🇵🇱', htmlLang: 'pl' },
+  { code: 'es', label: 'Spanish', nativeLabel: 'Español', flag: '🇪🇸', htmlLang: 'es' },
+  { code: 'it', label: 'Italian', nativeLabel: 'Italiano', flag: '🇮🇹', htmlLang: 'it' },
 ]
 
 export const DEFAULT_LOCALE = 'en'

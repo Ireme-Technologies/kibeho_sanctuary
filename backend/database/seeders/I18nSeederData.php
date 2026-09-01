@@ -242,13 +242,16 @@ class I18nSeederData
 
         return [
             'defaultLocale' => 'en',
-            'enabledLocales' => ['rw', 'fr', 'en', 'de'],
-            'publicLocales' => ['rw', 'fr', 'en', 'de'],
+            'enabledLocales' => ['rw', 'fr', 'en', 'de', 'pl', 'es', 'it'],
+            'publicLocales' => ['rw', 'fr', 'en', 'de', 'pl', 'es', 'it'],
             'languages' => [
                 ['code' => 'rw', 'label' => 'Kinyarwanda', 'nativeLabel' => 'Ikinyarwanda', 'flag' => '🇷🇼', 'htmlLang' => 'rw', 'public' => true],
                 ['code' => 'fr', 'label' => 'Français', 'nativeLabel' => 'Français', 'flag' => '🇫🇷', 'htmlLang' => 'fr', 'public' => true],
                 ['code' => 'en', 'label' => 'English', 'nativeLabel' => 'English', 'flag' => '🇬🇧', 'htmlLang' => 'en', 'public' => true],
                 ['code' => 'de', 'label' => 'Deutsch', 'nativeLabel' => 'Deutsch', 'flag' => '🇩🇪', 'htmlLang' => 'de', 'public' => true],
+                ['code' => 'pl', 'label' => 'Polish', 'nativeLabel' => 'Polski', 'flag' => '🇵🇱', 'htmlLang' => 'pl', 'public' => true],
+                ['code' => 'es', 'label' => 'Spanish', 'nativeLabel' => 'Español', 'flag' => '🇪🇸', 'htmlLang' => 'es', 'public' => true],
+                ['code' => 'it', 'label' => 'Italian', 'nativeLabel' => 'Italiano', 'flag' => '🇮🇹', 'htmlLang' => 'it', 'public' => true],
             ],
             'strings' => $strings,
         ];

@@ -47,7 +47,7 @@ class RestructureContentSeeder extends Seeder
             'our-lady.index', 'our-lady.apparitions', 'our-lady.visionaries', 'our-lady.messages',
             'our-lady.church-recognition', 'our-lady.history', 'our-lady.pastoral-team', 'our-lady.communities', 'our-lady.faq',
             'shrine.churches', 'shrine.holy-spring', 'shrine.way-of-the-cross', 'shrine.eucharistic-adorations',
-            'shrine.mass-schedule', 'shrine.map',
+            'shrine.mass-schedule',
             'pilgrimage.transportation', 'pilgrimage.office', 'pilgrimage.practical-information', 'pilgrimage.calendar',
             'spirituality.rosary', 'spirituality.seven-sorrows-rosary', 'spirituality.testimonies', 'spirituality.request-a-mass',
             'support.master-plan', 'support.annual-reports', 'support.transparency', 'support.partners',
@@ -136,9 +136,32 @@ class RestructureContentSeeder extends Seeder
             ],
             'pilgrimage.practical-guidelines' => [
                 'label' => 'Pilgrimage — Practical Guidelines',
-                'content' => $this->mergeOld('pilgrimage.practical-information', [
+                'content' => array_merge($this->mergeOld('pilgrimage.practical-information', [
                     'title' => 'Practical Guidelines',
                     'subtitle' => 'Prepare well before you travel',
+                ]), [
+                    'intro' => '<p>Whether you come alone, with family, or as a parish group, these guidelines help your pilgrimage remain prayerful, safe, and well organised. Groups should register in advance using the form on this page.</p>',
+                    'blocks' => [
+                        [
+                            'type' => 'heading',
+                            'text' => 'Good conduct at the Shrine',
+                        ],
+                        [
+                            'type' => 'list',
+                            'items' => [
+                                'No music or personal speakers around the Shrine',
+                                'No musical instruments in the shrine compound',
+                                'Keep phones on silent mode',
+                                'Avoid personal conversations in places of prayer',
+                                'Wear appropriate and modest clothing',
+                                'Follow our community support channel for updates',
+                                'Shop only from approved Shrine shops',
+                                'Carry valid national ID or passport',
+                                'Arrange health insurance before travelling',
+                                'Confirm accommodation reservations in advance',
+                            ],
+                        ],
+                    ],
                 ]),
             ],
             'pilgrimage.how-to-get-here' => [
@@ -371,12 +394,12 @@ class RestructureContentSeeder extends Seeder
         ]);
 
         PageSection::updateOrCreate(['key' => 'home.activities'], [
-            'label' => 'Home — At the Shrine',
+            'label' => 'Home — Main Places of the Shrine',
             'content' => array_merge($this->oldContent('home.activities'), [
-                'heading' => 'At the Shrine',
-                'subline' => 'Walk the apparition sites, main places of prayer, and join the daily life of Kibeho.',
+                'heading' => 'Main Places of the Shrine',
+                'subline' => 'Walk the Chapel of the Seven Sorrows, apparition sites, the Holy Spring, and the ways of prayer across the hillside.',
                 'primaryCta' => ['label' => 'Explore the Shrine', 'path' => '/shrine'],
-                'secondaryCta' => ['label' => 'Schedule', 'path' => '/shrine/schedule'],
+                'secondaryCta' => ['label' => 'Shrine Map', 'path' => '/shrine/map'],
             ]),
         ]);
 

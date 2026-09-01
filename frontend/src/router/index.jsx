@@ -177,6 +177,7 @@ const localizedChildren = [
   { path: 'news/audio', element: <AudioPage /> },
   { path: 'news/documentaries', element: <DocumentariesPage /> },
   { path: 'news/broadcast', element: <BroadcastPage /> },
+  { path: 'broadcast', element: <BroadcastPage /> },
   { path: 'support/projects', element: <Wrap Component={SupportProjectsPage} /> },
   { path: 'support/projects/:slug', element: <Wrap Component={SupportProjectDetailPage} /> },
   { path: 'hotels', element: <LocalizedNavigate to="/pilgrimage/accommodation" /> },
