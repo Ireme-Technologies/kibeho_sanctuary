@@ -324,27 +324,48 @@ export const pageFallbacks = {
     }),
 
   'shrine.welcome': page({
-      title: "Welcome",
-      subtitle: "You are welcome at Kibeho",
+      title: "Welcome to Kibeho",
+      subtitle: "A sanctuary open to the world",
       heroImage: "/images/sanctuary/welcome.jpg",
-      intro: "<p>The Shrine of Our Lady of Kibeho welcomes pilgrims from Rwanda and around the world. Come to pray, to celebrate the sacraments, and to encounter the Mother of the Word.</p><p>On ordinary days the grounds are quiet. On Marian feasts they fill with parishes, dioceses, and visitors from many nations. Either way, you are expected in peace.</p>",
-      blocks: [
+      welcomeEyebrow: "Our Lady of Kibeho",
+      welcomeTitle: "Nyina wa Jambo — Mother of the Word",
+      intro: "<p>The Sanctuary of Our Lady of Kibeho welcomes pilgrims from Rwanda and around the world. Come to pray, to celebrate the sacraments, and to encounter the Mother of the Word.</p><p>On ordinary days the grounds are quiet. On Marian feasts they fill with parishes, dioceses, and visitors from many nations. Either way, you are expected in peace.</p><p>Kibeho is a holy place with the Church of Our Lady of Sorrows, the Chapel of the Apparitions, the Chapel of Adoration, the Way of the Cross, the source of Mary, and other places of prayer.</p>",
+      mission: {
+        eyebrow: "Our Mission",
+        title: "Why we welcome pilgrims",
+        text: "To serve as a sacred place of encounter with God — welcoming pilgrims with hospitality, guiding them through prayer and the sacraments, and fostering reconciliation and peace in the spirit of Our Lady of Kibeho.",
+      },
+      vision: {
+        eyebrow: "Our Vision",
+        title: "Where we are headed",
+        text: "To be a beacon of faith and reconciliation for Rwanda, Africa, and the world — a sanctuary where every pilgrim finds rest, renewal, and a deeper commitment to living the Gospel message of love and forgiveness.",
+      },
+      values: [
         {
-          type: "heading",
-          text: "Before you come",
+          title: "Living Faith",
+          text: "We root everything we do in prayer, the sacraments, and trust in God's grace — inviting every pilgrim to deepen their relationship with Christ and Our Lady of Kibeho.",
         },
         {
-          type: "steps",
-          items: [
-            { title: "Register your group", text: "<p>Groups should contact the Pilgrimage Office before travelling. Use the registration form on the Practical Guidelines page.</p>", path: "/pilgrimage/practical-guidelines", linkLabel: "Practical Guidelines" },
-            { title: "Plan your days", text: "<p>Mass times, confession, and adoration are published on the schedule. Feast days may differ.</p>", path: "/shrine/schedule", linkLabel: "Schedule of the Shrine" },
-            { title: "Find your way", text: "<p>Use the shrine map to orient yourself among the churches, apparition sites, and prayer paths.</p>", path: "/shrine/map", linkLabel: "Shrine Map" },
-          ],
+          title: "Radical Hospitality",
+          text: "Every guest is a pilgrim, not a visitor. We offer warm welcome, practical care, and a spirit of service that reflects the love Mary asked us to show one another.",
+        },
+        {
+          title: "Reconciliation & Peace",
+          text: "In a land that has known profound pain, we carry forward Our Lady's call to forgive, heal, and build unity — beginning in our own hearts and extending to every community we touch.",
+        },
+        {
+          title: "Stewardship",
+          text: "We care for this sacred place and its people with responsibility and gratitude — preserving Kibeho as a home of prayer for generations to come.",
         },
       ],
-      cta: {
-        primary: { label: "Practical Guidelines", path: "/pilgrimage/practical-guidelines" },
-        secondary: { label: "Shrine Map", path: "/shrine/map" },
+      leadership: {
+        title: "Leadership team",
+        intro: "Meet the priests and pastoral workers who welcome pilgrims, celebrate the liturgy, and accompany the life of the Shrine of Our Lady of Kibeho.",
+      },
+      map: {
+        image: "/images/sanctuary/home-reference.png",
+        alt: "Plan of the Shrine of Our Lady of Kibeho",
+        caption: "Find churches, apparition sites, and prayer paths across the hillside.",
       },
     }),
 
@@ -984,7 +1005,7 @@ export const pageFallbacks = {
         },
         secondary: {
           label: "Donations",
-          path: "/support/donations",
+          path: "/support/get-involved?service=offerings",
         },
       },
     }),
@@ -1179,7 +1200,7 @@ export const pageFallbacks = {
             {
               title: "Give to the mission",
               text: "Support the Shrine generally, or choose a specific development project.",
-              path: "/support/donations",
+              path: "/support/get-involved?service=offerings",
             },
             {
               title: "Partnership",
@@ -1204,7 +1225,7 @@ export const pageFallbacks = {
         },
         {
           label: "Donations",
-          path: "/support/donations",
+          path: "/support/get-involved",
         },
         {
           label: "Annual Reports",
@@ -1226,7 +1247,7 @@ export const pageFallbacks = {
         },
         secondary: {
           label: "Donate",
-          path: "/support/donations",
+          path: "/support/get-involved",
         },
       },
     }),
@@ -1282,7 +1303,7 @@ export const pageFallbacks = {
       ],
       cta: {
         primary: { label: "Current projects", path: "/support/projects" },
-        secondary: { label: "Donate", path: "/support/donations" },
+        secondary: { label: "Donate", path: "/support/get-involved?service=expansion" },
       },
     }),
 
@@ -1374,7 +1395,7 @@ export const pageFallbacks = {
       ],
       cta: {
         primary: { label: "Annual Reports", path: "/support/annual-reports" },
-        secondary: { label: "Donate", path: "/support/donations" },
+        secondary: { label: "Donate", path: "/support/get-involved?service=offerings" },
       },
     }),
 
@@ -1385,7 +1406,7 @@ export const pageFallbacks = {
       cta: {
         primary: {
           label: "Give to the mission",
-          path: "/support/donations",
+          path: "/support/get-involved?service=offerings",
         },
         secondary: {
           label: "Vision",

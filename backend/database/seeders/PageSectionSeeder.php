@@ -86,6 +86,21 @@ class PageSectionSeeder extends Seeder
                     'cta' => ['primary' => ['label' => 'Read more', 'path' => '/pilgrimage/why-kibeho']],
                 ],
             ],
+            'home.accommodationHelp' => [
+                'label' => 'Home — Accommodation help',
+                'content' => [
+                    'eyebrow' => 'Pilgrimage',
+                    'heading' => 'Accommodation',
+                    'intro' => '<p>Before you travel to Kibeho, please let the Pilgrimage Office know whether you already have a place to stay and how you plan to get here — or ask our team to help you book.</p>',
+                    'items' => [
+                        ['id' => 'trusted', 'title' => 'Partner lodging you can trust', 'text' => 'We work with hotels and guest houses near the Shrine that welcome pilgrims with care and respect.'],
+                        ['id' => 'guidance', 'title' => 'Guidance before you arrive', 'text' => 'Tell us your dates and group size — we will advise on lodging, transport, and what to expect on the hillside.'],
+                        ['id' => 'booking', 'title' => 'Book through our team', 'text' => 'Prefer to travel without worry? Our Pilgrimage Office can help secure accommodation on your behalf.'],
+                    ],
+                    'cta' => ['primary' => ['label' => 'View our partnering accommodations', 'path' => '/pilgrimage/accommodation']],
+                    'buttons' => [['label' => 'View our partnering accommodations', 'path' => '/pilgrimage/accommodation']],
+                ],
+            ],
             'home.quickLinks' => [
                 'label' => 'Home — Quick links',
                 'content' => [
@@ -112,11 +127,12 @@ class PageSectionSeeder extends Seeder
                 ],
             ],
             'home.supportProjects' => [
-                'label' => 'Home — Support projects',
+                'label' => 'Home — Ways to give',
                 'content' => [
                     'eyebrow' => 'Support the Shrine',
                     'heading' => 'Kibeho is still being built',
                     'subtext' => 'Unlike older pilgrimage sites, the Shrine still needs pathways, welcome, and care. These works need friends.',
+                    'backgroundImage' => '/images/sanctuary/hills.jpg',
                 ],
             ],
         ];

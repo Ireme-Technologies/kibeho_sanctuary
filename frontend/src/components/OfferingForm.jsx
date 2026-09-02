@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Mail, MessageCircle } from 'lucide-react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
@@ -6,8 +6,10 @@ import { submitEnquiry } from '@api/cms'
 import { giftAmounts } from '@utils/payments'
 import PrivateEnquiryForm from './PrivateEnquiryForm'
 import PaymentOptions, { paymentLabel } from './payments/PaymentOptions'
+import ServicePicker from './payments/ServicePicker'
 import SharePageBar from './payments/SharePageBar'
 import TimingChoice from './payments/TimingChoice'
+import { isValidServiceKey, resolveGiveWays, serviceMeta } from '@utils/giveServices'
 import styles from './payments/payments.module.css'
 
 const KINDS = {
@@ -42,10 +44,33 @@ function parseMassDates(value) {
     .filter(Boolean)
 }
 
-export default function OfferingForm({ kind = 'candle', projectTitle = '', showShare = true }) {
+export default function OfferingForm({
+  kind: kindProp = 'candle',
+  serviceKey: serviceKeyProp = '',
+  showServicePicker = false,
+  onServiceChange,
+  projectTitle = '',
+  showShare = true,
+}) {
   const { offerings } = useContent()
   const { t } = useLocale()
-  const meta = KINDS[kind] || KINDS.donation
+  const giveWays = resolveGiveWays(offerings)
+  const initialServiceKey =
+    (serviceKeyProp && isValidServiceKey(serviceKeyProp) && serviceKeyProp) ||
+    (isValidServiceKey(kindProp) && kindProp) ||
+    'offerings'
+  const [pickedService, setPickedService] = useState(initialServiceKey)
+  useEffect(() => {
+    setPickedService(initialServiceKey)
+  }, [initialServiceKey])
+  const resolvedServiceKey = showServicePicker && !onServiceChange ? pickedService : initialServiceKey
+  const selectedWay = giveWays.find((row) => (row.serviceKey || row.id) === resolvedServiceKey)
+  const metaFromService = serviceMeta(resolvedServiceKey)
+  const kind = metaFromService.kind
+  const meta = {
+    ...(KINDS[kind] || KINDS.donation),
+    subject: selectedWay?.title || metaFromService.subject || KINDS[kind]?.subject,
+  }
   const formTitle = projectTitle || (meta.subject && !meta.titleKey ? meta.subject : t(meta.titleKey) || meta.subject)
 
   if (kind === 'prayer' || kind === 'testimony') {
@@ -193,6 +218,17 @@ export default function OfferingForm({ kind = 'candle', projectTitle = '', showS
           {showShare ? <SharePageBar title={formTitle} /> : null}
         </div>
       </div>
+
+      {showServicePicker ? (
+        <ServicePicker
+          offerings={offerings}
+          value={resolvedServiceKey}
+          onChange={(key) => {
+            if (onServiceChange) onServiceChange(key)
+            else setPickedService(key)
+          }}
+        />
+      ) : null}
 
       <form onSubmit={handleSubmit} noValidate>
         {isCandle ? (

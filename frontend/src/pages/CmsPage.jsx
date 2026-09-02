@@ -8,12 +8,14 @@ import { pathForSectionKey, sectionKeyForPath } from '@data/pages/registry'
 import { cmsKeyForPath, localizeHref, pathForCmsKey, stripLocale, withLocale } from '@i18n/localizedPath'
 import { navKeyForPath } from '@i18n/navKeys'
 import { getPageFallback } from '@data/pages/content'
+import { normalizeGiveNavPath } from '@data/navigation'
 import { mergePageContent } from '@data/pages/mergePageContent'
 import { parseYoutubeId, youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from '@utils/youtube'
 import ContentLocaleNotice, { hasLocaleTranslation } from '@components/ContentLocaleNotice'
 import OfferingForm from '@components/OfferingForm'
 import GroupRegistrationForm from '@components/GroupRegistrationForm'
 import GiveInvite, { ActionInvite, InvolveMore, isStaleInviteCopy, isStalePaymentCopy } from '@components/payments/GiveInvite'
+import { getInvolvedHref, serviceKeyForActionKind } from '@utils/giveServices'
 import ShrineMapGuide from '@components/shrine/ShrineMapGuide'
 import RichText from '@components/ui/RichText'
 import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
@@ -155,7 +157,7 @@ function Block({ block }) {
             </>
           )
           return item.path ? (
-            <Link key={item.title} to={item.path} className={styles.card}>
+            <Link key={item.title} to={normalizeGiveNavPath(item.path)} className={styles.card}>
               {inner}
             </Link>
           ) : (
@@ -178,7 +180,7 @@ function Block({ block }) {
               <h3>{item.title}</h3>
               <RichText html={item.text} />
               {item.path ? (
-                <Link to={item.path} className={styles.inlineLink}>
+                <Link to={normalizeGiveNavPath(item.path)} className={styles.inlineLink}>
                   {item.linkLabel || t('learnMore')} →
                 </Link>
               ) : null}
@@ -283,7 +285,7 @@ export default function CmsPage() {
     ? data.buttons
     : [data.cta?.primary, data.cta?.secondary].filter((item) => item && (item.label || item.path))
   ).map((item) => {
-    const path = item.path || item.link || ''
+    const path = normalizeGiveNavPath(item.path || item.link || '')
     const linkKey = navKeyForPath(path)
     const label =
       !translated && linkKey ? t(linkKey) : item.label
@@ -316,6 +318,7 @@ export default function CmsPage() {
   }[key]
   const isAction = Boolean(actionPage)
   const isDonations = actionPage?.kind === 'donation'
+  const isPaymentAction = ['candle', 'mass', 'donation'].includes(actionPage?.kind)
   if (isDonations && isStalePaymentCopy(data.subtitle)) {
     data.subtitle = t('invite.donationSubtitle')
   }
@@ -363,9 +366,18 @@ export default function CmsPage() {
           <h1>{pageTitle}</h1>
           {data.subtitle ? <p className={styles.subtitle}>{data.subtitle}</p> : null}
           {actionPage ? (
-            <a href="#pledge" className={styles.heroCta}>
-              {actionPage.heroCta}
-            </a>
+            isPaymentAction ? (
+              <PageLink
+                to={getInvolvedHref(serviceKeyForActionKind(actionPage.kind))}
+                className={styles.heroCta}
+              >
+                {actionPage.heroCta}
+              </PageLink>
+            ) : (
+              <a href="#pledge" className={styles.heroCta}>
+                {actionPage.heroCta}
+              </a>
+            )
           ) : isHub ? (
             <PageLink to={data.heroCtaPath || data.cta?.primary?.path || '#join'} className={styles.heroCta}>
               {data.heroCtaLabel || data.cta?.primary?.label || t('story.bePart')}
@@ -406,7 +418,7 @@ export default function CmsPage() {
         {links.length > 0 ? (
           <nav className={styles.linkGrid} aria-label="Section pages">
             {links.map((link) => (
-              <Link key={link.path} to={link.path} className={styles.linkCard}>
+              <Link key={link.path} to={normalizeGiveNavPath(link.path)} className={styles.linkCard}>
                 {displayTitleLabel(link.label, locale)}
               </Link>
             ))}
@@ -420,11 +432,8 @@ export default function CmsPage() {
         {key === 'shrine.map' ? <ShrineMapGuide /> : null}
         {key === 'pilgrimage.practical-guidelines' ? <GroupRegistrationForm /> : null}
 
-        {actionPage?.kind === 'candle' ? <OfferingForm kind="candle" /> : null}
-        {actionPage?.kind === 'mass' ? <OfferingForm kind="mass" /> : null}
         {actionPage?.kind === 'prayer' ? <OfferingForm kind="prayer" /> : null}
         {actionPage?.kind === 'testimony' ? <OfferingForm kind="testimony" /> : null}
-        {actionPage?.kind === 'donation' ? <OfferingForm kind="donation" /> : null}
         {actionPage ? <InvolveMore variant={actionPage.involve} /> : null}
         {isHub ? (
           <InvolveMore

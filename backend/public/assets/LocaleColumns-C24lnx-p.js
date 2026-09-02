@@ -1,0 +1,11 @@
+import{c,j as d,a1 as i,bg as p,a as f}from"./index--T4AIzH3.js";import{l as g,i as m}from"./LocaleTabs-CvwIJyve.js";/**
+ * @license lucide-react v0.400.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const x=c("Pencil",[["path",{d:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z",key:"1a8usu"}],["path",{d:"m15 5 4 4",key:"1mk7zo"}]]);/**
+ * @license lucide-react v0.400.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const y=c("Plus",[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"M12 5v14",key:"s699le"}]]);function C(a="en",{limit:e,locales:t=p}={}){const n=t!=null&&t.length?t:p,r=n.find(u=>u.code===a),l=n.filter(u=>u.code!==a),s=r?[r,...l]:n;return typeof e=="number"?s.slice(0,e):s}function $(a,e,t,n="en"){var l;const r={...a||{},translations:(a==null?void 0:a.translations)||{}};return t===n?!0:e!=null&&e.length?g(r,e,t,n):m((l=r.translations)==null?void 0:l[t])}function h(a,e,t){const{workspaceLocales:n}=f();return C(a,{limit:e,locales:t!=null&&t.length?t:n})}function k({defaultLocale:a="en",limit:e,locales:t}){return h(a,e,t).map(n=>{const r=n.public===!1&&n.code!==a;return d.jsxs("th",{className:`${i.langColHead} ${r?i.langColHeadDraft:""}`,title:r?`${n.nativeLabel||n.label} (draft — not on the public site)`:n.nativeLabel||n.label,children:[d.jsx("span",{"aria-hidden":"true",children:n.flag}),d.jsxs("span",{className:i.srOnly,children:[n.nativeLabel||n.label,r?" (draft)":""]})]},n.code)})}function v({item:a,fields:e,defaultLocale:t="en",onEditLocale:n,limit:r,locales:l}){return h(t,r,l).map(s=>{const u=$(a,e,s.code,t),b=s.public===!1&&s.code!==t,o=u?`Edit ${s.nativeLabel||s.label}`:`Add ${s.nativeLabel||s.label} translation`;return d.jsx("td",{className:i.langCol,children:d.jsx("button",{type:"button",className:`${i.langStatusBtn} ${u?i.langStatusReady:i.langStatusMissing} ${b?i.langStatusBtnDraft:""}`,title:b?`${o} (draft — not on the public site)`:o,"aria-label":b?`${o} (draft)`:o,onClick:()=>n==null?void 0:n(s.code),children:u?d.jsx(x,{size:14}):d.jsx(y,{size:16})})},s.code)})}export{k as L,v as a,C as o};

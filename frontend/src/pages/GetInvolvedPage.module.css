@@ -1,0 +1,59 @@
+.page {
+  padding-bottom: var(--space-2xl);
+}
+
+.hero {
+  padding: clamp(3rem, 8vw, 5rem) 0 2.5rem;
+  background-size: cover;
+  background-position: center;
+  color: var(--color-white);
+}
+
+.eyebrow {
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-sky-light);
+  margin-bottom: 0.65rem;
+}
+
+.hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 2.85rem);
+  line-height: 1.15;
+  max-width: 18ch;
+  margin-bottom: 0.75rem;
+}
+
+.subtitle {
+  font-size: 1.12rem;
+  line-height: 1.65;
+  max-width: 52ch;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.body {
+  padding-top: 2rem;
+}
+
+.intro {
+  max-width: 52rem;
+  margin-bottom: 1.75rem;
+  font-size: 1.08rem;
+  line-height: 1.75;
+  color: var(--color-gray-text);
+}
+
+.back {
+  margin-top: 1.5rem;
+}
+
+.back a {
+  font-weight: 700;
+  color: var(--color-sky);
+}
+
+.back a:hover {
+  color: var(--color-navy);
+}

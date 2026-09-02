@@ -53,7 +53,7 @@ export default function MenusAdminPage() {
   const [utilityNav, setUtilityNav] = useState([])
   const [footerLinks, setFooterLinks] = useState([])
   const [footerServiceLinks, setFooterServiceLinks] = useState([])
-  const [navCTA, setNavCTA] = useState({ label: 'Donate', path: '/support/donations' })
+  const [navCTA, setNavCTA] = useState({ label: 'Donate', path: '/support/get-involved' })
   const [error, setError] = useState('')
   const [flash, setFlash] = useState({ type: 'success', message: '' })
   const [saving, setSaving] = useState(false)
@@ -202,7 +202,7 @@ export default function MenusAdminPage() {
                       label: navCTA.label || pageLabel(path, defaultLocale) || navCTA.label,
                     })
                   }
-                  placeholder="/support/donations"
+                  placeholder="/support/get-involved"
                 />
               </div>
             </div>

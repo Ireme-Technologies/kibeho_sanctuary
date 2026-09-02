@@ -161,6 +161,21 @@ export function pickSiteOccasion(events = [], today = new Date()) {
   return scored[0] || null
 }
 
+/**
+ * For the site header: live / near-term occasion first, otherwise the next future event.
+ */
+export function pickHeaderOccasion(events = [], today = new Date()) {
+  const primary = pickSiteOccasion(events, today)
+  if (primary) return primary
+
+  const later = (events || [])
+    .map((item) => ({ item, ...classifyEvent(item, today) }))
+    .filter((row) => row.status === 'later' && row.window)
+    .sort((a, b) => (a.daysUntil ?? Infinity) - (b.daysUntil ?? Infinity))
+
+  return later[0] || null
+}
+
 export function formatOccurrenceRange(window) {
   if (!window?.start) return ''
   const start = window.start
@@ -219,7 +234,7 @@ export function occasionCopy(occasion) {
 export function statusLabel(status) {
   if (status === 'live') return 'Today'
   if (status === 'recent') return 'This week'
-  if (status === 'upcoming') return 'Coming up'
+  if (status === 'upcoming' || status === 'later') return 'Coming up'
   return null
 }
 

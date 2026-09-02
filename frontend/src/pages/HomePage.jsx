@@ -11,8 +11,8 @@ export default function HomePage() {
   return (
     <>
       <HomeHero />
-      <HomeQuickLinks />
       <HomeWelcome />
+      <HomeQuickLinks />
       <HomeActivities />
       <HomePilgrimStrip />
       <HomeSupportProjects />

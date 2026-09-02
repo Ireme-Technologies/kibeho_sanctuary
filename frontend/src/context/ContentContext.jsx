@@ -25,6 +25,8 @@ import {
   ensureOurLadyNavChildren,
   ensureOurLadyNavPath,
   ensureNewsNavChildren,
+  normalizeNavGivePaths,
+  normalizeGiveNavPath,
 } from '@data/navigation'
 import { resolveNavLabel } from '@i18n/navKeys'
 import {
@@ -242,18 +244,21 @@ export function ContentProvider({ children }) {
       refresh: () => load(locale),
       company,
       primaryNav: translateNav(
-        ensureBroadcastNav(
-          ensureNewsNavChildren(ensureOurLadyNavPath(ensureOurLadyNavChildren(primaryNavRaw))),
+        normalizeNavGivePaths(
+          ensureBroadcastNav(
+            ensureNewsNavChildren(ensureOurLadyNavPath(ensureOurLadyNavChildren(primaryNavRaw))),
+          ),
         ),
         t,
         locale,
         defaultLocale,
       ),
-      utilityNav: translateNav(utilityNavRaw, t, locale, defaultLocale),
-      footerLinks: translateNav(footerLinksRaw, t, locale, defaultLocale),
-      footerServiceLinks: translateNav(footerServiceLinksRaw, t, locale, defaultLocale),
+      utilityNav: translateNav(normalizeNavGivePaths(utilityNavRaw), t, locale, defaultLocale),
+      footerLinks: translateNav(normalizeNavGivePaths(footerLinksRaw), t, locale, defaultLocale),
+      footerServiceLinks: translateNav(normalizeNavGivePaths(footerServiceLinksRaw), t, locale, defaultLocale),
       navCTA: {
         ...navCTARaw,
+        path: normalizeGiveNavPath(navCTARaw.path) || '/support/get-involved',
         label: t('donate') || navCTARaw.label,
       },
       contactHero: contact.hero || contactHero,

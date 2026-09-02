@@ -64,6 +64,7 @@ export const NAV_PATH_KEYS = {
   '/support/vision': 'nav.vision',
   '/support/master-plan': 'nav.masterPlan',
   '/support/projects': 'nav.projects',
+  '/support/get-involved': 'nav.donations',
   '/support/donations': 'nav.donations',
   '/support/annual-reports': 'nav.annualReports',
   '/support/transparency': 'nav.transparency',

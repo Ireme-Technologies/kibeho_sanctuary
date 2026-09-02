@@ -24,6 +24,111 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.occasionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  max-width: 100%;
+  color: inherit;
+  text-decoration: none;
+  transition: opacity var(--transition-base);
+}
+
+.occasionLink:hover {
+  opacity: 0.95;
+}
+
+.occasionLink:hover .occasionTitle {
+  color: var(--color-sky-light);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.occasionBadge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-navy);
+  background: var(--color-sky-light);
+  border-radius: var(--radius-sm);
+  line-height: 1.2;
+}
+
+.occasionBadgeLive {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.occasionBadgeLive::before {
+  content: '';
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: occasionPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes occasionPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: scale(0.88);
+  }
+}
+
+.occasionText {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.occasionTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--transition-base);
+}
+
+.occasionWhen {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0.82;
+  white-space: nowrap;
+}
+
+.occasionWhen::before {
+  content: '·';
+  margin-right: 0.45rem;
+  opacity: 0.55;
+}
+
+.occasionArrow {
+  flex-shrink: 0;
+  opacity: 0.65;
+  transition: transform var(--transition-base), opacity var(--transition-base);
+}
+
+.occasionLink:hover .occasionArrow {
+  opacity: 1;
+  transform: translateX(2px);
 }
 
 .topLinks {
@@ -377,9 +482,28 @@
   }
 }
 
+@media (max-width: 900px) {
+  .occasionWhen {
+    display: none;
+  }
+}
+
 @media (max-width: 720px) {
   .welcome {
     font-size: 0.8rem;
+  }
+
+  .occasionTitle {
+    font-size: 0.8rem;
+  }
+
+  .occasionBadge {
+    font-size: 0.62rem;
+    padding: 0.14rem 0.45rem;
+  }
+
+  .occasionArrow {
+    display: none;
   }
 
   .logo {

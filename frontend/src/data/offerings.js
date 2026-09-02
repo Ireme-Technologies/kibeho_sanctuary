@@ -3,6 +3,10 @@
  * Live values come from Admin settings (`offerings`) when seeded.
  */
 
+import { DEFAULT_GIVE_WAYS } from '@utils/giveServices'
+
+export { DEFAULT_GIVE_WAYS }
+
 export const offerings = {
   candlePriceUsd: 1,
   massPriceUsd: 2.5,
@@ -13,6 +17,7 @@ export const offerings = {
   onlinePaymentLabel: 'Pay online (card or MoMo)',
   bankLabel: 'Bank transfer (Kibeho bank account)',
   giftAmounts: [10, 25, 50, 100],
+  giveWays: DEFAULT_GIVE_WAYS,
   accounts: [
     { bank: 'Bank of Kigali (BK)', name: 'Diocese Gikongoro/Sanct KIBEHO', number: '00266 00690793-01', currency: 'RWF' },
     { bank: 'Bank of Kigali (BK)', name: 'Diocese Gikongoro/Sanct KIBEHO', number: '00266 00690796-02', currency: 'EUR' },

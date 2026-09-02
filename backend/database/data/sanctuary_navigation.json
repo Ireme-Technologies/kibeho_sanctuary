@@ -74,7 +74,7 @@
       "children": [
         { "label": "Vision", "path": "/support/vision" },
         { "label": "Projects", "path": "/support/projects" },
-        { "label": "Donate", "path": "/support/donations" }
+        { "label": "Donate", "path": "/support/get-involved" }
       ]
     }
   ],
@@ -85,7 +85,7 @@
     { "label": "News", "path": "/news" },
     { "label": "Broadcast", "path": "/broadcast" },
     { "label": "Support the Shrine", "path": "/support" },
-    { "label": "Donate", "path": "/support/donations" },
+    { "label": "Donate", "path": "/support/get-involved" },
     { "label": "Contact", "path": "/contact" }
   ],
   "footerServiceLinks": [
@@ -94,10 +94,10 @@
     { "label": "Accommodation", "path": "/pilgrimage/accommodation" },
     { "label": "Light a Candle", "path": "/spirituality/light-a-candle" },
     { "label": "International Pilgrimage", "path": "/pilgrimage/why-kibeho" },
-    { "label": "Donate", "path": "/support/donations" }
+    { "label": "Donate", "path": "/support/get-involved" }
   ],
   "navCTA": {
     "label": "Donate",
-    "path": "/support/donations"
+    "path": "/support/get-involved"
   }
 }

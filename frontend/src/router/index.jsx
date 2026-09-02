@@ -45,6 +45,8 @@ const HotelsPage = lazy(() => import('@pages/HotelsPage'))
 const HotelDetailPage = lazy(() => import('@pages/HotelDetailPage'))
 const SacredPlacesPage = lazy(() => import('@pages/SacredPlacesPage'))
 const SacredPlaceDetailPage = lazy(() => import('@pages/SacredPlaceDetailPage'))
+const GetInvolvedPage = lazy(() => import('@pages/GetInvolvedPage'))
+const WelcomePage = lazy(() => import('@pages/WelcomePage'))
 const SupportProjectsPage = lazy(() => import('@pages/SupportProjectsPage'))
 const SupportProjectDetailPage = lazy(() => import('@pages/SupportProjectDetailPage'))
 const PastoralTeamPage = lazy(() => import('@pages/PastoralTeamPage'))
@@ -178,6 +180,8 @@ const localizedChildren = [
   { path: 'news/documentaries', element: <DocumentariesPage /> },
   { path: 'news/broadcast', element: <BroadcastPage /> },
   { path: 'broadcast', element: <BroadcastPage /> },
+  { path: 'support/get-involved', element: <Wrap Component={GetInvolvedPage} /> },
+  { path: 'shrine/welcome', element: <Wrap Component={WelcomePage} /> },
   { path: 'support/projects', element: <Wrap Component={SupportProjectsPage} /> },
   { path: 'support/projects/:slug', element: <Wrap Component={SupportProjectDetailPage} /> },
   { path: 'hotels', element: <LocalizedNavigate to="/pilgrimage/accommodation" /> },
@@ -230,14 +234,11 @@ const localizedChildren = [
   { path: 'publications/*', element: <LocalizedNavigate to="/news" /> },
   { path: 'visit', element: <LocalizedNavigate to="/pilgrimage/practical-guidelines" /> },
   { path: 'visit/*', element: <LocalizedNavigate to="/pilgrimage/practical-guidelines" /> },
-  { path: 'support/why-donate', element: <LocalizedNavigate to="/support/donations" /> },
-  { path: 'support/offerings', element: <LocalizedNavigate to="/support/donations" /> },
+  { path: 'support/why-donate', element: <LocalizedNavigate to="/support/get-involved" /> },
+  { path: 'support/offerings', element: <LocalizedNavigate to="/support/get-involved" /> },
+  { path: 'support/donations', element: <LocalizedNavigate to="/support/get-involved" /> },
   { path: 'support/volunteer', element: <LocalizedNavigate to="/support" /> },
   { path: 'support/friends', element: <LocalizedNavigate to="/support" /> },
-  { path: 'support/partners', element: <LocalizedNavigate to="/support" /> },
-  { path: 'support/master-plan', element: <LocalizedNavigate to="/support/vision" /> },
-  { path: 'support/annual-reports', element: <LocalizedNavigate to="/support" /> },
-  { path: 'support/transparency', element: <LocalizedNavigate to="/support" /> },
   { path: 'services', element: <LocalizedNavigate to="/pilgrimage" /> },
   { path: 'programs', element: <LocalizedNavigate to="/shrine" /> },
   { path: 'projects', element: <LocalizedNavigate to="/support/projects" /> },

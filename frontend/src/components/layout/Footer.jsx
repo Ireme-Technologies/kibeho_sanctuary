@@ -4,6 +4,7 @@ import { useLocale } from '@context/LocaleContext'
 import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
 import { displayCapsLabel, displayTitleLabel } from '@i18n/typography'
 import LocalizedLink, { LocalizedNavLink } from '@components/LocalizedLink'
+import { GIVE_PAGE_PATH } from '@utils/giveServices'
 import { useSwitchLocale } from '@router/LocaleRoute'
 import styles from './Footer.module.css'
 
@@ -22,7 +23,7 @@ export default function Footer() {
           <p className={styles.ctaText}>{t('supportMissionText')}</p>
         </div>
         <div className={styles.ctaActions}>
-          <LocalizedNavLink to={navCTA?.path || '/support/donations'} className={styles.ctaBtn}>
+          <LocalizedNavLink to={navCTA?.path || GIVE_PAGE_PATH} className={styles.ctaBtn}>
             <Heart size={16} aria-hidden="true" />
             {displayCapsLabel(navCTA?.label || t('donate'), locale)}
           </LocalizedNavLink>

@@ -363,22 +363,52 @@
   },
   "shrine.welcome": {
     "eyebrow": "",
-    "title": "Welcome",
-    "subtitle": "You are welcome at Kibeho",
+    "title": "Welcome to Kibeho",
+    "subtitle": "A sanctuary open to the world",
     "heroImage": "",
+    "welcomeEyebrow": "Our Lady of Kibeho",
+    "welcomeTitle": "Nyina wa Jambo — Mother of the Word",
     "intro": "<p>The Sanctuary of Our Lady of Kibeho welcomes pilgrims from Rwanda and around the world. Come to pray, to celebrate the sacraments, and to encounter the Mother of the Word.</p><p>Kibeho is a holy place with the Church of Our Lady of Sorrows, the Chapel of the Apparitions, the Chapel of Adoration, the Way of the Cross, the Way of the Rosary, the source of Mary, and other places of prayer.</p>",
+    "mission": {
+      "eyebrow": "Our Mission",
+      "title": "Why we welcome pilgrims",
+      "text": "To serve as a sacred place of encounter with God — welcoming pilgrims with hospitality, guiding them through prayer and the sacraments, and fostering reconciliation and peace in the spirit of Our Lady of Kibeho."
+    },
+    "vision": {
+      "eyebrow": "Our Vision",
+      "title": "Where we are headed",
+      "text": "To be a beacon of faith and reconciliation for Rwanda, Africa, and the world — a sanctuary where every pilgrim finds rest, renewal, and a deeper commitment to living the Gospel message of love and forgiveness."
+    },
+    "values": [
+      {
+        "title": "Living Faith",
+        "text": "We root everything we do in prayer, the sacraments, and trust in God's grace — inviting every pilgrim to deepen their relationship with Christ and Our Lady of Kibeho."
+      },
+      {
+        "title": "Radical Hospitality",
+        "text": "Every guest is a pilgrim, not a visitor. We offer warm welcome, practical care, and a spirit of service that reflects the love Mary asked us to show one another."
+      },
+      {
+        "title": "Reconciliation & Peace",
+        "text": "In a land that has known profound pain, we carry forward Our Lady's call to forgive, heal, and build unity — beginning in our own hearts and extending to every community we touch."
+      },
+      {
+        "title": "Stewardship",
+        "text": "We care for this sacred place and its people with responsibility and gratitude — preserving Kibeho as a home of prayer for generations to come."
+      }
+    ],
+    "leadership": {
+      "title": "Leadership team",
+      "intro": "Meet the priests and pastoral workers who welcome pilgrims, celebrate the liturgy, and accompany the life of the Shrine of Our Lady of Kibeho."
+    },
+    "map": {
+      "image": "/images/sanctuary/home-reference.png",
+      "alt": "Plan of the Shrine of Our Lady of Kibeho",
+      "caption": "Find churches, apparition sites, and prayer paths across the hillside."
+    },
     "blocks": [],
     "links": [],
-    "cta": {
-      "primary": {
-        "label": "Practical Information",
-        "path": "/pilgrimage/practical-information"
-      },
-      "secondary": {
-        "label": "Pilgrimage Office",
-        "path": "/pilgrimage/office"
-      }
-    }
+    "cta": null
   },
   "shrine.churches": {
     "eyebrow": "",
@@ -900,7 +930,7 @@
       },
       "secondary": {
         "label": "Donations",
-        "path": "/support/donations"
+        "path": "/support/get-involved?service=offerings"
       }
     }
   },
@@ -1108,7 +1138,7 @@
           {
             "title": "Give to the mission",
             "text": "Support the Shrine generally, or choose a specific development project.",
-            "path": "/support/donations"
+            "path": "/support/get-involved?service=offerings"
           },
           {
             "title": "Partnership",
@@ -1133,7 +1163,7 @@
       },
       {
         "label": "Donations",
-        "path": "/support/donations"
+        "path": "/support/get-involved"
       },
       {
         "label": "Annual Reports",
@@ -1155,7 +1185,7 @@
       },
       "secondary": {
         "label": "Donate",
-        "path": "/support/donations"
+        "path": "/support/get-involved"
       }
     }
   },
@@ -1204,7 +1234,7 @@
       },
       "secondary": {
         "label": "Donate",
-        "path": "/support/donations"
+        "path": "/support/get-involved?service=expansion"
       }
     }
   },
@@ -1280,7 +1310,7 @@
       },
       "secondary": {
         "label": "Donate",
-        "path": "/support/donations"
+        "path": "/support/get-involved?service=offerings"
       }
     }
   },
@@ -1295,7 +1325,7 @@
     "cta": {
       "primary": {
         "label": "Give to the mission",
-        "path": "/support/donations"
+        "path": "/support/get-involved?service=offerings"
       },
       "secondary": {
         "label": "Vision",

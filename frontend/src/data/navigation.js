@@ -78,7 +78,7 @@ export const primaryNav = [
     children: [
       { label: 'Vision', path: '/support/vision' },
       { label: 'Projects', path: '/support/projects' },
-      { label: 'Donate', path: '/support/donations' },
+      { label: 'Donate', path: '/support/get-involved' },
     ],
   },
 ]
@@ -96,7 +96,7 @@ export const footerLinks = [
   { label: 'News', path: '/news' },
   { label: 'Broadcast', path: '/broadcast' },
   { label: 'Support the Shrine', path: '/support' },
-  { label: 'Donate', path: '/support/donations' },
+  { label: 'Donate', path: '/support/get-involved' },
   { label: 'Contact', path: '/contact' },
 ]
 
@@ -106,7 +106,7 @@ export const footerServiceLinks = [
   { label: 'Accommodation', path: '/pilgrimage/accommodation' },
   { label: 'Light a Candle', path: '/spirituality/light-a-candle' },
   { label: 'International Pilgrimage', path: '/pilgrimage/why-kibeho' },
-  { label: 'Donate', path: '/support/donations' },
+  { label: 'Donate', path: '/support/get-involved' },
 ]
 
 export const languages = [
@@ -221,4 +221,25 @@ export function ensureOurLadyNavChildren(items) {
   })
 }
 
-export const navCTA = { label: 'Donate', path: '/support/donations' }
+export const navCTA = { label: 'Donate', path: '/support/get-involved' }
+
+const LEGACY_GIVE_PATHS = new Set(['/support/donations', '/support/why-donate', '/support/offerings'])
+
+/** Rewrite legacy donation URLs to the unified give page (keeps query strings). */
+export function normalizeGiveNavPath(path) {
+  const value = String(path || '').trim()
+  if (!value) return value
+  const [pathname, query] = value.split('?')
+  const bare = pathname.replace(/\/+$/, '') || '/'
+  if (!LEGACY_GIVE_PATHS.has(bare)) return value
+  return query ? `/support/get-involved?${query}` : '/support/get-involved'
+}
+
+export function normalizeNavGivePaths(items) {
+  if (!Array.isArray(items)) return items
+  return items.map((item) => ({
+    ...item,
+    path: normalizeGiveNavPath(item.path),
+    children: item.children ? normalizeNavGivePaths(item.children) : item.children,
+  }))
+}

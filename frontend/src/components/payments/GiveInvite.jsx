@@ -2,11 +2,12 @@ import { Link } from 'react-router-dom'
 import { Church, Flame, Handshake, Heart } from 'lucide-react'
 import { useLocale } from '@context/LocaleContext'
 import RichText from '@components/ui/RichText'
+import { getInvolvedHref, serviceKeyForActionKind } from '@utils/giveServices'
 import styles from './GiveInvite.module.css'
 
 const PILLAR_ICONS = [Flame, Heart, Church, Handshake]
 
-function InviteCard({ leadHtml, leadText, pillars, priceLabel, ctaLabel }) {
+function InviteCard({ leadHtml, leadText, pillars, priceLabel, ctaLabel, ctaHref = '#pledge' }) {
   return (
     <section className={styles.wrap}>
       {leadHtml ? (
@@ -27,9 +28,15 @@ function InviteCard({ leadHtml, leadText, pillars, priceLabel, ctaLabel }) {
       </ul>
       <div className={styles.inviteActions}>
         {priceLabel ? <span className={styles.price}>{priceLabel}</span> : null}
-        <a href="#pledge" className={styles.begin}>
-          {ctaLabel}
-        </a>
+        {ctaHref.startsWith('#') ? (
+          <a href={ctaHref} className={styles.begin}>
+            {ctaLabel}
+          </a>
+        ) : (
+          <Link to={ctaHref} className={styles.begin}>
+            {ctaLabel}
+          </Link>
+        )}
       </div>
     </section>
   )
@@ -43,6 +50,7 @@ export default function GiveInvite({ introHtml }) {
       leadText={t('invite.donation.lead')}
       pillars={[t('invite.donation.p1'), t('invite.donation.p2'), t('invite.donation.p3')]}
       ctaLabel={t('offer.giveNow')}
+      ctaHref={getInvolvedHref('offerings')}
     />
   )
 }
@@ -66,6 +74,11 @@ export function ActionInvite({ kind, priceLabel, introHtml }) {
     const key = `invite.${kind}.p${n}`
     return t(key) !== key ? t(key) : t(`invite.candle.p${n}`)
   })
+  const ctaHref =
+    kind === 'prayer' || kind === 'testimony'
+      ? '#pledge'
+      : getInvolvedHref(serviceKeyForActionKind(kind))
+
   return (
     <InviteCard
       leadHtml={introHtml}
@@ -73,6 +86,7 @@ export function ActionInvite({ kind, priceLabel, introHtml }) {
       pillars={pillars}
       priceLabel={priceLabel}
       ctaLabel={cta}
+      ctaHref={ctaHref}
     />
   )
 }
@@ -84,7 +98,7 @@ const INVOLVE = {
     links: [
       { to: '/spirituality/mass-request', title: 'invite.massTitle', text: 'invite.massText' },
       { to: '/spirituality/prayer-intentions', title: 'invite.prayerTitle', text: 'invite.prayerText' },
-      { to: '/support/donations', title: 'invite.giveTitle', text: 'invite.giveText' },
+      { to: getInvolvedHref('offerings'), title: 'invite.giveTitle', text: 'invite.giveText' },
     ],
   },
   mass: {
@@ -93,7 +107,7 @@ const INVOLVE = {
     links: [
       { to: '/spirituality/light-a-candle', title: 'invite.candleTitle', text: 'invite.candleText' },
       { to: '/spirituality/prayer-intentions', title: 'invite.prayerTitle', text: 'invite.prayerText' },
-      { to: '/support/donations', title: 'invite.giveTitle', text: 'invite.giveText' },
+      { to: getInvolvedHref('offerings'), title: 'invite.giveTitle', text: 'invite.giveText' },
     ],
   },
   prayer: {
@@ -111,14 +125,14 @@ const INVOLVE = {
     links: [
       { to: '/spirituality/prayer-intentions', title: 'invite.prayerTitle', text: 'invite.prayerText' },
       { to: '/shrine/messages', title: 'invite.messagesTitle', text: 'invite.messagesText' },
-      { to: '/support/donations', title: 'invite.giveTitle', text: 'invite.giveText' },
+      { to: getInvolvedHref('offerings'), title: 'invite.giveTitle', text: 'invite.giveText' },
     ],
   },
   partnership: {
     title: 'invite.involveTitle',
     lead: 'invite.involveLead',
     links: [
-      { to: '/support/donations', title: 'invite.giveTitle', text: 'invite.giveText' },
+      { to: getInvolvedHref('offerings'), title: 'invite.giveTitle', text: 'invite.giveText' },
       { to: '/spirituality/prayer-intentions', title: 'invite.prayerTitle', text: 'invite.prayerText' },
       { to: '/support/projects', title: 'invite.projectTitle', text: 'invite.projectText' },
     ],

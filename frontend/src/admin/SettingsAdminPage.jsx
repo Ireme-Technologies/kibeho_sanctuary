@@ -14,6 +14,7 @@ import ImageField from './components/ImageField'
 import ListEditor from './components/ListEditor'
 import RichTextEditor from './components/RichTextEditor'
 import { offerings as fallbackOfferings } from '@data/offerings'
+import { DEFAULT_GIVE_WAYS } from '@utils/giveServices'
 import styles from './admin.module.css'
 
 const TABS = [
@@ -106,6 +107,7 @@ export default function SettingsAdminPage() {
     bankLabel: fallbackOfferings.bankLabel,
     giftAmounts: (fallbackOfferings.giftAmounts || []).join(', '),
     accounts: fallbackOfferings.accounts,
+    giveWays: fallbackOfferings.giveWays || DEFAULT_GIVE_WAYS,
   })
   const [map, setMap] = useState({
     label: '',
@@ -230,6 +232,10 @@ export default function SettingsAdminPage() {
             Array.isArray(loadedOfferings.accounts) && loadedOfferings.accounts.length
               ? loadedOfferings.accounts
               : fallbackOfferings.accounts,
+          giveWays:
+            Array.isArray(loadedOfferings.giveWays) && loadedOfferings.giveWays.length
+              ? loadedOfferings.giveWays
+              : fallbackOfferings.giveWays || DEFAULT_GIVE_WAYS,
         })
         setMap({
           label: contactData.map?.label || '',
@@ -307,6 +313,7 @@ export default function SettingsAdminPage() {
             .map(Number)
             .filter((n) => n > 0),
           accounts: (offerings.accounts || []).filter((row) => row.bank || row.number),
+          giveWays: (offerings.giveWays || []).filter((row) => row.title && row.serviceKey),
         },
         contact: {
           hero: {
@@ -854,6 +861,32 @@ export default function SettingsAdminPage() {
                   onChange={(e) => setOfferings({ ...offerings, bankLabel: e.target.value })}
                 />
               </div>
+              <ListEditor
+                label="Ways to give cards"
+                items={offerings.giveWays || []}
+                onChange={(giveWays) => setOfferings({ ...offerings, giveWays })}
+                addLabel="Add way to give"
+                emptyItem={{
+                  id: '',
+                  serviceKey: 'offerings',
+                  title: '',
+                  text: '',
+                  icon: 'heart',
+                  showOnHome: false,
+                }}
+                fields={[
+                  { key: 'serviceKey', label: 'Service key', placeholder: 'offerings, expansion, community, candle, mass' },
+                  { key: 'title', label: 'Title' },
+                  { key: 'text', label: 'Description', type: 'textarea' },
+                  { key: 'icon', label: 'Icon', placeholder: 'church, building, heart, flame' },
+                  { key: 'showOnHome', label: 'Show on homepage (yes/no)', placeholder: 'yes' },
+                ]}
+              />
+              <p className={styles.muted}>
+                These cards appear on the homepage support strip and the Get Involved payment page. Mark up to
+                three with “yes” on Show on homepage. Service keys map to the payment form (candle and mass use
+                fixed prices; others use gift amounts).
+              </p>
               <ListEditor
                 label="Bank accounts"
                 items={offerings.accounts}

@@ -157,6 +157,34 @@ export const whyVisit = [
   },
 ]
 
+export const accommodationHelp = {
+  eyebrow: 'Pilgrimage',
+  heading: 'Accommodation',
+  intro:
+    '<p>Before you travel to Kibeho, please let the Pilgrimage Office know whether you already have a place to stay and how you plan to get here — or ask our team to help you book.</p>',
+  items: [
+    {
+      id: 'trusted',
+      title: 'Partner lodging you can trust',
+      text: 'We work with hotels and guest houses near the Shrine that welcome pilgrims with care and respect.',
+    },
+    {
+      id: 'guidance',
+      title: 'Guidance before you arrive',
+      text: 'Tell us your dates and group size — we will advise on lodging, transport, and what to expect on the hillside.',
+    },
+    {
+      id: 'booking',
+      title: 'Book through our team',
+      text: 'Prefer to travel without worry? Our Pilgrimage Office can help secure accommodation on your behalf.',
+    },
+  ],
+  cta: {
+    label: 'View our partnering accommodations',
+    path: '/pilgrimage/accommodation',
+  },
+}
+
 export const partners = {
   eyebrow: 'Partners',
   heading: 'Walking together in faith',

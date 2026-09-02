@@ -40,7 +40,7 @@ class SettingsSeeder extends Seeder
                 'primaryNav' => $navigation['primaryNav'] ?? [],
                 'footerLinks' => $navigation['footerLinks'] ?? [],
                 'footerServiceLinks' => $navigation['footerServiceLinks'] ?? [],
-                'navCTA' => $navigation['navCTA'] ?? ['label' => 'Donate', 'path' => '/support/donations'],
+                'navCTA' => $navigation['navCTA'] ?? ['label' => 'Donate', 'path' => '/support/get-involved'],
             ],
             'contact' => [
                 'hero' => [
@@ -90,6 +90,13 @@ class SettingsSeeder extends Seeder
                 'onlinePaymentLabel' => 'Pay online (card or MoMo)',
                 'bankLabel' => 'Bank transfer (Kibeho bank account)',
                 'giftAmounts' => [10, 25, 50, 100],
+                'giveWays' => [
+                    ['id' => 'offerings', 'serviceKey' => 'offerings', 'title' => 'Church offerings', 'text' => 'Support the daily liturgy, sacraments, and pastoral life of the Shrine.', 'icon' => 'church', 'showOnHome' => true],
+                    ['id' => 'expansion', 'serviceKey' => 'expansion', 'title' => "Support the Shrine's expansion", 'text' => 'Walk with pathways, welcome, and the works that help Kibeho receive pilgrims with dignity.', 'icon' => 'building', 'showOnHome' => true],
+                    ['id' => 'community', 'serviceKey' => 'community', 'title' => 'Community development', 'text' => 'Partner in projects that serve pilgrims and the communities around the hillside.', 'icon' => 'heart', 'showOnHome' => true],
+                    ['id' => 'candle', 'serviceKey' => 'candle', 'title' => 'Light a candle', 'text' => 'Leave a prayer intention burning before Our Lady of Kibeho.', 'icon' => 'flame', 'showOnHome' => false],
+                    ['id' => 'mass', 'serviceKey' => 'mass', 'title' => 'Mass intention', 'text' => 'Offer Mass for a loved one, the sick, or the departed.', 'icon' => 'church', 'showOnHome' => false],
+                ],
                 'accounts' => [
                     ['bank' => 'Bank of Kigali (BK)', 'name' => 'Diocese Gikongoro/Sanct KIBEHO', 'number' => '00266 00690793-01', 'currency' => 'RWF'],
                     ['bank' => 'Bank of Kigali (BK)', 'name' => 'Diocese Gikongoro/Sanct KIBEHO', 'number' => '00266 00690796-02', 'currency' => 'EUR'],

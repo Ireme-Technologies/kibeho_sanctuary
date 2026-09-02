@@ -8,7 +8,9 @@ import {
   quickLinks,
   shrineHighlights,
   whyVisit,
+  accommodationHelp,
 } from '@data/home/sanctuaryHome'
+import { welcomePageDefaults } from '@data/welcomePage'
 
 export const STORY_INVOLVE_DEFAULTS = {
   involveTitle: 'This call is still being lived at Kibeho',
@@ -38,6 +40,7 @@ export function isHomeSectionKey(key) {
 }
 
 export function isStoryPageKey(key) {
+  if (key === 'shrine.welcome') return false
   return Boolean(
     key?.startsWith('shrine.') ||
       key?.startsWith('spirituality.') ||
@@ -47,10 +50,12 @@ export function isStoryPageKey(key) {
 }
 
 export function pageKind(key) {
+  if (key === 'shrine.welcome') return 'shrine.welcome'
   if (key === 'home.activities') return 'home.activities'
   if (key === 'home.welcome') return 'home.welcome'
   if (key === 'home.quickLinks') return 'home.quickLinks'
   if (key === 'home.whyVisit') return 'home.whyVisit'
+  if (key === 'home.accommodationHelp') return 'home.accommodationHelp'
   if (key === 'home.upcomingPilgrimages') return 'home.items'
   if (key === 'home.todaySchedule') return 'home.schedule'
   if (key === 'home.partners') return 'home.partners'
@@ -123,12 +128,39 @@ export function defaultsForSection(key) {
       buttons: [{ label: 'Read more', path: '/pilgrimage/why-kibeho' }],
     }
   }
+  if (key === 'home.accommodationHelp') {
+    return {
+      eyebrow: accommodationHelp.eyebrow,
+      heading: accommodationHelp.heading,
+      title: accommodationHelp.heading,
+      intro: accommodationHelp.intro,
+      items: accommodationHelp.items,
+      cta: { primary: accommodationHelp.cta },
+      buttons: [accommodationHelp.cta],
+    }
+  }
   if (key === 'home.partners') {
     return {
       eyebrow: partners.eyebrow,
       heading: partners.heading,
       title: partners.heading,
       items: partners.items,
+    }
+  }
+  if (key === 'shrine.welcome') {
+    const defaults = welcomePageDefaults
+    const page = getPageFallback(key) || {}
+    return {
+      ...page,
+      mission: page.mission || defaults.mission,
+      vision: page.vision || defaults.vision,
+      values: page.values?.length ? page.values : defaults.values,
+      leadership: page.leadership || defaults.leadership,
+      map: page.map || defaults.map,
+      exploreLinks: page.exploreLinks?.length ? page.exploreLinks : defaults.exploreLinks,
+      welcomeEyebrow: page.welcomeEyebrow || '',
+      welcomeTitle: page.welcomeTitle || page.title || '',
+      welcomeImage: page.welcomeImage || page.heroImage || '',
     }
   }
   const page = getPageFallback(key)
@@ -169,12 +201,30 @@ export function emptyPageForm() {
     involveLead: '',
     involveLinks: [],
     cardLinkLabel: '',
+    welcomeEyebrow: '',
+    welcomeTitle: '',
+    welcomeImage: '',
+    missionEyebrow: '',
+    missionTitle: '',
+    missionText: '',
+    visionEyebrow: '',
+    visionTitle: '',
+    visionText: '',
+    leadershipTitle: '',
+    leadershipIntro: '',
+    mapImage: '',
+    mapAlt: '',
+    mapCaption: '',
   }
 }
 
 export function contentToForm(content = {}, key = '') {
   const merged = key ? mergedSectionContent(key, content) : content
   const buttons = buttonsFromContent(merged)
+  const mission = merged.mission || {}
+  const vision = merged.vision || {}
+  const leadership = merged.leadership || {}
+  const map = merged.map || {}
   return {
     eyebrow: merged.eyebrow || '',
     title: merged.title || merged.heading || (merged.headlineLines || [])[0] || '',
@@ -186,12 +236,28 @@ export function contentToForm(content = {}, key = '') {
     buttons,
     highlights: Array.isArray(merged.highlights) ? merged.highlights : [],
     items: Array.isArray(merged.items) ? merged.items : [],
+    values: Array.isArray(merged.values) ? merged.values : [],
+    exploreLinks: Array.isArray(merged.exploreLinks) ? merged.exploreLinks : [],
     heroCtaLabel: merged.heroCtaLabel || '',
     heroCtaPath: merged.heroCtaPath || '',
     involveTitle: merged.involveTitle || '',
     involveLead: merged.involveLead || '',
     involveLinks: Array.isArray(merged.involveLinks) ? merged.involveLinks : [],
     cardLinkLabel: merged.cardLinkLabel || '',
+    welcomeEyebrow: merged.welcomeEyebrow || '',
+    welcomeTitle: merged.welcomeTitle || '',
+    welcomeImage: merged.welcomeImage || '',
+    missionEyebrow: mission.eyebrow || '',
+    missionTitle: mission.title || '',
+    missionText: mission.text || '',
+    visionEyebrow: vision.eyebrow || '',
+    visionTitle: vision.title || '',
+    visionText: vision.text || '',
+    leadershipTitle: leadership.title || '',
+    leadershipIntro: leadership.intro || '',
+    mapImage: map.image || merged.mapImage || '',
+    mapAlt: map.alt || '',
+    mapCaption: map.caption || '',
   }
 }
 
@@ -234,6 +300,41 @@ export function formToContent(form, previous = {}, key = '') {
     involveLead: form.involveLead,
     involveLinks: (form.involveLinks || []).filter((item) => item.label || item.path || item.text),
     cardLinkLabel: form.cardLinkLabel,
+    welcomeEyebrow: form.welcomeEyebrow,
+    welcomeTitle: form.welcomeTitle,
+    welcomeImage: form.welcomeImage,
+    mission: {
+      eyebrow: form.missionEyebrow,
+      title: form.missionTitle,
+      text: form.missionText,
+    },
+    vision: {
+      eyebrow: form.visionEyebrow,
+      title: form.visionTitle,
+      text: form.visionText,
+    },
+    values: (form.values || []).filter((item) => item.title || item.text),
+    leadership: {
+      title: form.leadershipTitle,
+      intro: form.leadershipIntro,
+    },
+    map: {
+      image: form.mapImage,
+      alt: form.mapAlt,
+      caption: form.mapCaption,
+    },
+    exploreLinks: (form.exploreLinks || []).filter((item) => item.label || item.path),
+    ...(key === 'shrine.welcome'
+      ? {
+          blocks: [],
+          links: [],
+          buttons: [],
+          cta: null,
+          involveTitle: '',
+          involveLead: '',
+          involveLinks: [],
+        }
+      : {}),
     ...(key === 'home.quickLinks'
       ? {
           links: (form.links || []).filter((link) => link.label || link.path),

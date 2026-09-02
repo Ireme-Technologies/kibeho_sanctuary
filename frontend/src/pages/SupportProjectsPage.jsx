@@ -5,6 +5,7 @@ import { useLocale } from '@context/LocaleContext'
 import { fetchShrineProjects } from '@api/cms'
 import RichText from '@components/ui/RichText'
 import { cardExcerpt } from '@utils/text'
+import { getInvolvedHref } from '@utils/giveServices'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import catalog from './CatalogPage.module.css'
 import styles from './SupportProject.module.css'
@@ -84,7 +85,7 @@ export default function SupportProjectsPage() {
                 part
               ) : (
                 <span key="gift">
-                  <Link to="/support/donations">{t('project.generalGift')}</Link>
+                  <Link to={getInvolvedHref('offerings')}>{t('project.generalGift')}</Link>
                   {part}
                 </span>
               )

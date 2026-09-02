@@ -54,7 +54,11 @@ export const pageRegistry = {
   '/support': 'support.index',
   '/support/vision': 'support.vision',
   '/support/projects': 'support.projects',
-  '/support/donations': 'support.donations',
+  '/support/get-involved': 'support.donations',
+  '/support/master-plan': 'support.master-plan',
+  '/support/annual-reports': 'support.annual-reports',
+  '/support/transparency': 'support.transparency',
+  '/support/partners': 'support.partners',
 
   /* Shared */
   '/hotels': 'hotels.index',
@@ -95,10 +99,7 @@ export const pageRegistry = {
   '/spirituality/testimonies': 'spirituality.share-testimony',
 
   /* Legacy — Support paths */
-  '/support/master-plan': 'support.vision',
-  '/support/annual-reports': 'support.index',
-  '/support/transparency': 'support.index',
-  '/support/partners': 'support.index',
+  '/support/donations': 'support.donations',
   '/support/why-donate': 'support.donations',
   '/support/offerings': 'support.donations',
   '/support/volunteer': 'support.index',

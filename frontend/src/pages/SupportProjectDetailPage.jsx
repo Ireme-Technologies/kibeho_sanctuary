@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { fetchShrineProject } from '@api/cms'
 import ContentLocaleNotice from '@components/ContentLocaleNotice'
-import OfferingForm from '@components/OfferingForm'
+import { getInvolvedHref } from '@utils/giveServices'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
@@ -64,9 +64,9 @@ export default function SupportProjectDetailPage() {
         <div className="container">
           {item.status ? <p className={catalog.subtitle}>{item.status}</p> : null}
           <h1>{item.title}</h1>
-          <a href="#pledge" className={catalog.heroCta}>
+          <Link to={getInvolvedHref('expansion')} className={catalog.heroCta}>
             {t('offer.bePart')}
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -132,13 +132,11 @@ export default function SupportProjectDetailPage() {
             )}
           </section>
 
-          <OfferingForm kind="project" projectTitle={item.title} />
-
           <div className={catalog.actions}>
             <Link to="/support/projects" className={catalog.btnGhost}>
               {t('project.allProjects')}
             </Link>
-            <Link to="/support/donations" className={catalog.btn}>
+            <Link to={getInvolvedHref('expansion')} className={catalog.btn}>
               {t('offer.giveMission')}
             </Link>
           </div>

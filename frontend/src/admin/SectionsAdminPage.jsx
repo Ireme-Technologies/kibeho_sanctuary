@@ -32,7 +32,7 @@ const TABS = [
   { id: 'page', label: 'All pages' },
 ]
 
-const ARRAY_FIELDS = ['blocks', 'links', 'buttons', 'highlights', 'items', 'involveLinks']
+const ARRAY_FIELDS = ['blocks', 'links', 'buttons', 'highlights', 'items', 'involveLinks', 'values', 'exploreLinks']
 
 const emptyContent = emptyPageForm
 
@@ -112,11 +112,30 @@ function buildSectionTranslations(translations, defaultLocale) {
     const overlay = pack.content
     if (overlay && typeof overlay === 'object') {
       const content = {}
-      ;['eyebrow', 'title', 'subtitle', 'intro', 'heroCtaLabel', 'involveTitle', 'involveLead', 'cardLinkLabel'].forEach(
-        (field) => {
-          if (overlay[field] != null && String(overlay[field]).trim() !== '') content[field] = overlay[field]
-        },
-      )
+      ;[
+        'eyebrow',
+        'title',
+        'subtitle',
+        'intro',
+        'heroCtaLabel',
+        'involveTitle',
+        'involveLead',
+        'cardLinkLabel',
+        'welcomeEyebrow',
+        'welcomeTitle',
+        'missionEyebrow',
+        'missionTitle',
+        'missionText',
+        'visionEyebrow',
+        'visionTitle',
+        'visionText',
+        'leadershipTitle',
+        'leadershipIntro',
+        'mapAlt',
+        'mapCaption',
+      ].forEach((field) => {
+        if (overlay[field] != null && String(overlay[field]).trim() !== '') content[field] = overlay[field]
+      })
       ARRAY_FIELDS.forEach((field) => {
         if (Array.isArray(overlay[field]) && overlay[field].length) content[field] = overlay[field]
       })
@@ -632,9 +651,20 @@ export default function SectionsAdminPage() {
               </>
             ) : null}
 
-            {kind === 'home.whyVisit' || kind === 'home.items' || kind === 'home.partners' ? (
+            {kind === 'home.whyVisit' ||
+            kind === 'home.accommodationHelp' ||
+            kind === 'home.items' ||
+            kind === 'home.partners' ? (
               <>
-                <h2 className={styles.sectionTitle}>Items</h2>
+                <h2 className={styles.sectionTitle}>
+                  {kind === 'home.accommodationHelp' ? 'How we help pilgrims' : 'Items'}
+                </h2>
+                {kind === 'home.accommodationHelp' ? (
+                  <p className={styles.muted}>
+                    Short points shown in the homepage accommodation panel — how the Pilgrimage Office helps
+                    with lodging and travel.
+                  </p>
+                ) : null}
                 <ListEditor
                   label={kind === 'home.partners' ? 'Partner names' : 'Items'}
                   items={getPageContentField(form, sectionTranslations, 'items', localeTab, defaultLocale)}
@@ -682,7 +712,172 @@ export default function SectionsAdminPage() {
               </>
             ) : null}
 
-            {kind === 'cms' || kind === 'home.quickLinks' ? (
+            {kind === 'shrine.welcome' ? (
+              <>
+                <h2 className={styles.sectionTitle}>Welcome message</h2>
+                <p className={styles.muted}>
+                  Shown in the two-column welcome block below the hero. The homepage welcome strip also uses
+                  the title, subtitle, intro, and hero image from this page.
+                </p>
+                <div className={styles.fieldRow}>
+                  <div className={styles.field}>
+                    <label>Section eyebrow</label>
+                    <input
+                      value={getPageContentField(form, sectionTranslations, 'welcomeEyebrow', localeTab, defaultLocale)}
+                      onChange={(e) => patchField('welcomeEyebrow', e.target.value)}
+                      placeholder="Welcome"
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <label>Section heading</label>
+                    <input
+                      value={getPageContentField(form, sectionTranslations, 'welcomeTitle', localeTab, defaultLocale)}
+                      onChange={(e) => patchField('welcomeTitle', e.target.value)}
+                      placeholder="Same as page title if empty"
+                    />
+                  </div>
+                </div>
+                {isDefaultLang ? (
+                  <ImageField
+                    label="Welcome section photo (optional — uses hero image if empty)"
+                    value={form.welcomeImage}
+                    onChange={(url) => setForm({ ...form, welcomeImage: url })}
+                    folder="pages"
+                  />
+                ) : null}
+
+                <h2 className={styles.sectionTitle}>Mission & vision</h2>
+                <div className={styles.fieldRow}>
+                  <div className={styles.field}>
+                    <label>Mission eyebrow</label>
+                    <input
+                      value={getPageContentField(form, sectionTranslations, 'missionEyebrow', localeTab, defaultLocale)}
+                      onChange={(e) => patchField('missionEyebrow', e.target.value)}
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <label>Mission title</label>
+                    <input
+                      value={getPageContentField(form, sectionTranslations, 'missionTitle', localeTab, defaultLocale)}
+                      onChange={(e) => patchField('missionTitle', e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className={styles.field}>
+                  <label>Mission text</label>
+                  <textarea
+                    rows={4}
+                    value={getPageContentField(form, sectionTranslations, 'missionText', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('missionText', e.target.value)}
+                  />
+                </div>
+                <div className={styles.fieldRow}>
+                  <div className={styles.field}>
+                    <label>Vision eyebrow</label>
+                    <input
+                      value={getPageContentField(form, sectionTranslations, 'visionEyebrow', localeTab, defaultLocale)}
+                      onChange={(e) => patchField('visionEyebrow', e.target.value)}
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <label>Vision title</label>
+                    <input
+                      value={getPageContentField(form, sectionTranslations, 'visionTitle', localeTab, defaultLocale)}
+                      onChange={(e) => patchField('visionTitle', e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className={styles.field}>
+                  <label>Vision text</label>
+                  <textarea
+                    rows={4}
+                    value={getPageContentField(form, sectionTranslations, 'visionText', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('visionText', e.target.value)}
+                  />
+                </div>
+
+                <h2 className={styles.sectionTitle}>Core values</h2>
+                <ListEditor
+                  label="Values"
+                  items={getPageContentField(form, sectionTranslations, 'values', localeTab, defaultLocale)}
+                  onChange={(values) => patchField('values', values)}
+                  addLabel="Add value"
+                  emptyItem={{ title: '', text: '' }}
+                  fields={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'text', label: 'Description', type: 'textarea' },
+                  ]}
+                />
+
+                <h2 className={styles.sectionTitle}>Leadership team</h2>
+                <p className={styles.muted}>
+                  Heading and introduction only — team members are managed under Pastoral Team in the admin.
+                  The page shows up to four published members automatically.
+                </p>
+                <div className={styles.field}>
+                  <label>Section title</label>
+                  <input
+                    value={getPageContentField(form, sectionTranslations, 'leadershipTitle', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('leadershipTitle', e.target.value)}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Section introduction</label>
+                  <textarea
+                    rows={3}
+                    value={getPageContentField(form, sectionTranslations, 'leadershipIntro', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('leadershipIntro', e.target.value)}
+                  />
+                </div>
+
+                <h2 className={styles.sectionTitle}>Explore the Shrine links</h2>
+                <p className={styles.muted}>
+                  Shortcut buttons to other pages under The Shrine menu. Leave empty to use the site menu
+                  defaults.
+                </p>
+                <ListEditor
+                  label="Navigation links"
+                  items={getPageContentField(form, sectionTranslations, 'exploreLinks', localeTab, defaultLocale)}
+                  onChange={(exploreLinks) => patchField('exploreLinks', exploreLinks)}
+                  addLabel="Add link"
+                  emptyItem={{ label: '', path: '' }}
+                  fields={[
+                    { key: 'label', label: 'Label' },
+                    { key: 'path', label: 'URL', placeholder: '/shrine/history' },
+                  ]}
+                />
+
+                <h2 className={styles.sectionTitle}>Shrine map band</h2>
+                <p className={styles.muted}>
+                  Full-width image above the footer. Guidelines and Get involved buttons are fixed on the page.
+                </p>
+                {isDefaultLang ? (
+                  <ImageField
+                    label="Map image"
+                    value={form.mapImage}
+                    onChange={(url) => setForm({ ...form, mapImage: url })}
+                    folder="pages"
+                  />
+                ) : null}
+                <div className={styles.field}>
+                  <label>Map image alt text</label>
+                  <input
+                    value={getPageContentField(form, sectionTranslations, 'mapAlt', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('mapAlt', e.target.value)}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Map caption</label>
+                  <textarea
+                    rows={2}
+                    value={getPageContentField(form, sectionTranslations, 'mapCaption', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('mapCaption', e.target.value)}
+                  />
+                </div>
+              </>
+            ) : null}
+
+            {kind === 'home.quickLinks' || (kind === 'cms' && selectedKey !== 'shrine.welcome') ? (
               <>
                 <h2 className={styles.sectionTitle}>{kind === 'home.quickLinks' ? 'Quick link cards' : 'Quick links'}</h2>
                 <p className={styles.muted}>
@@ -710,7 +905,7 @@ export default function SectionsAdminPage() {
               </>
             ) : null}
 
-            {kind === 'cms' ? (
+            {kind === 'cms' && selectedKey !== 'shrine.welcome' ? (
               <>
                 <h2 className={styles.sectionTitle}>Body content</h2>
                 <p className={styles.muted}>
@@ -724,7 +919,7 @@ export default function SectionsAdminPage() {
               </>
             ) : null}
 
-            {kind === 'cms' && isStory ? (
+            {kind === 'cms' && isStory && selectedKey !== 'shrine.welcome' ? (
               <>
                 <h2 className={styles.sectionTitle}>Hero button</h2>
                 <p className={styles.muted}>
@@ -785,6 +980,8 @@ export default function SectionsAdminPage() {
               </>
             ) : null}
 
+            {kind !== 'shrine.welcome' ? (
+              <>
             <h2 className={styles.sectionTitle}>Buttons</h2>
             <p className={styles.muted}>
               Buttons at the bottom of this page. Pick a page so the URL is filled automatically — the same URL
@@ -802,6 +999,13 @@ export default function SectionsAdminPage() {
                 { key: 'path', label: 'URL', placeholder: '/shrine/mass-schedule' },
               ]}
             />
+              </>
+            ) : (
+              <p className={styles.muted}>
+                Action buttons on this page (Guidelines before you come, Get involved) are built into the layout
+                and cannot be edited here.
+              </p>
+            )}
 
             {error && <p className={styles.error}>{error}</p>}
             <button className={styles.btn} type="submit" disabled={saving || !selectedKey}>

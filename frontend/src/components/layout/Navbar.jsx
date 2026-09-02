@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { ChevronDown, Menu } from 'lucide-react'
+import { ChevronDown, ChevronRight, Menu } from 'lucide-react'
 import { useScrolled } from '@hooks/useScrolled'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { displayCapsLabel } from '@i18n/typography'
 import LocalizedLink, { LocalizedNavLink } from '@components/LocalizedLink'
 import { useSwitchLocale } from '@router/LocaleRoute'
+import { formatEventWhen } from '@utils/eventTime'
+import { pickHeaderOccasion, statusLabel } from '@utils/occasion'
 import MobileDrawer from './MobileDrawer'
 import styles from './Navbar.module.css'
 
@@ -118,13 +120,21 @@ function NavItem({ item }) {
 }
 
 export default function Navbar({ hasHero = false }) {
-  const { primaryNav, utilityNav, navCTA, company } = useContent()
+  const { primaryNav, utilityNav, navCTA, company, upcomingPilgrimages } = useContent()
   const { locale, locales, current, t } = useLocale()
   const switchLocale = useSwitchLocale()
   const scrolled = useScrolled(60)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const langRef = useRef(null)
+
+  const headerOccasion = pickHeaderOccasion(upcomingPilgrimages)
+  const occasionBadge = headerOccasion ? statusLabel(headerOccasion.status) : null
+  const occasionTitle = headerOccasion?.item?.title || ''
+  const occasionWhen = headerOccasion ? formatEventWhen(headerOccasion.item) : ''
+  const occasionPath =
+    headerOccasion?.item?.path ||
+    (headerOccasion?.item?.slug ? `/pilgrimages/${headerOccasion.item.slug}` : null)
 
   const isTransparent = hasHero && !scrolled
 
@@ -143,7 +153,28 @@ export default function Navbar({ hasHero = false }) {
     <>
       <div className={styles.topBar}>
         <div className={`container ${styles.topInner}`}>
-          <p className={styles.welcome}>{t('welcomeBar')}</p>
+          {headerOccasion && occasionPath ? (
+            <LocalizedLink
+              to={occasionPath}
+              className={styles.occasionLink}
+              aria-label={`${occasionBadge ? `${occasionBadge}: ` : ''}${occasionTitle}${occasionWhen ? `, ${occasionWhen}` : ''}`}
+            >
+              {occasionBadge ? (
+                <span
+                  className={`${styles.occasionBadge} ${headerOccasion.status === 'live' ? styles.occasionBadgeLive : ''}`}
+                >
+                  {occasionBadge}
+                </span>
+              ) : null}
+              <span className={styles.occasionText}>
+                <span className={styles.occasionTitle}>{occasionTitle}</span>
+                {occasionWhen ? <span className={styles.occasionWhen}>{occasionWhen}</span> : null}
+              </span>
+              <ChevronRight size={15} className={styles.occasionArrow} aria-hidden="true" />
+            </LocalizedLink>
+          ) : (
+            <p className={styles.welcome}>{t('welcomeBar')}</p>
+          )}
           <div className={styles.topLinks}>
             {(utilityNav || []).map((item) => (
               <LocalizedLink key={item.path + item.label} to={item.path} className={styles.topLink}>
