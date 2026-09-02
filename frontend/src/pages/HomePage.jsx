@@ -5,7 +5,6 @@ import HomeActivities from '@sections/home/HomeActivities'
 import HomePilgrimStrip from '@sections/home/HomePilgrimStrip'
 import HomeSupportProjects from '@sections/home/HomeSupportProjects'
 import HomeNewsSimple from '@sections/home/HomeNewsSimple'
-import HomePartners from '@sections/home/HomePartners'
 
 export default function HomePage() {
   return (
@@ -17,7 +16,6 @@ export default function HomePage() {
       <HomePilgrimStrip />
       <HomeSupportProjects />
       <HomeNewsSimple />
-      <HomePartners />
     </>
   )
 }

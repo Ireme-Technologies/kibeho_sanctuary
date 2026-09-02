@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowRight, ChevronRight, Church, Heart, Leaf, Sparkles } from 'lucide-react'
+import { useInView } from '@hooks/useInView'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchPastoralTeam } from '@api/cms'
@@ -32,7 +33,7 @@ function pick(data, path, fallback = '') {
 
 export default function WelcomePage() {
   const { section, pages, resolveHeaderImage, defaultHeaderImage } = useContent()
-  const { locale, t } = useLocale()
+  const { locale } = useLocale()
   const record = pages?.['shrine.welcome']
   const fallback = getPageFallback('shrine.welcome') || {}
   const data = mergePageContent(fallback, section('shrine.welcome', {}))
@@ -77,6 +78,11 @@ export default function WelcomePage() {
   }, [data.exploreLinks, defaults.exploreLinks])
 
   const featuredTeam = team.slice(0, LEADERSHIP_LIMIT)
+  const [welcomeRef, welcomeInView] = useInView(0.12)
+
+  /* Same heading pattern as HomeWelcome below the homepage hero */
+  const welcomeEyebrow = data.subtitle || ''
+  const welcomeHeading = data.title || 'Welcome to Kibeho'
 
   useEffect(() => {
     applyPageSeo({
@@ -102,19 +108,28 @@ export default function WelcomePage() {
         </div>
       </header>
 
-      <section className={styles.section} aria-labelledby="welcome-intro-heading">
+      <section className={styles.welcomeSection} aria-labelledby="welcome-intro-heading">
         <div className="container">
           <ContentLocaleNotice translations={record?.translations} />
-          <div className={styles.welcomeGrid}>
-            <div>
-              <div className={styles.sectionHead}>
-                <p className={styles.eyebrow}>{data.welcomeEyebrow || t('nav.welcome')}</p>
-                <h2 id="welcome-intro-heading">{data.welcomeTitle || data.title || 'Welcome'}</h2>
-              </div>
-              {data.intro ? <RichText html={data.intro} className={styles.welcomeCopy} /> : null}
+          <div
+            ref={welcomeRef}
+            className={`${styles.welcomeGrid} ${welcomeInView ? styles.welcomeVisible : ''}`}
+          >
+            <div className={styles.welcomeCopy}>
+              {welcomeEyebrow ? <p className={styles.eyebrow}>{welcomeEyebrow}</p> : null}
+              <h2 id="welcome-intro-heading" className={styles.welcomeHeading}>
+                {welcomeHeading}
+              </h2>
+              <span className={styles.rule} aria-hidden="true" />
+              {data.intro ? <RichText html={data.intro} className={styles.introText} /> : null}
             </div>
-            <div className={styles.welcomeMedia}>
-              <img src={welcomeImage} alt="" loading="lazy" />
+            <div className={styles.mediaWrap}>
+              <div className={styles.mediaFrame}>
+                <div className={styles.mediaAccent} aria-hidden="true" />
+                <div className={styles.media}>
+                  <img src={welcomeImage} alt="" loading="lazy" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -215,7 +230,7 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="explore-heading">
+      <section className={`${styles.section} ${styles.exploreSection}`} aria-labelledby="explore-heading">
         <div className="container">
           <div className={styles.sectionHead}>
             <p className={styles.eyebrow}>The Shrine</p>
@@ -249,12 +264,14 @@ export default function WelcomePage() {
           <img src={mapImage} alt={mapAlt} className={styles.mapImage} loading="lazy" />
           <div className={styles.mapOverlay}>
             <div className="container">
-              <h2>Shrine map</h2>
-              {mapCaption ? <p>{mapCaption}</p> : null}
-              <span className={styles.mapCta}>
-                Open the interactive map
-                <ArrowRight size={16} aria-hidden="true" />
-              </span>
+              <div className={styles.mapPanel}>
+                <h2>Shrine map</h2>
+                {mapCaption ? <p>{mapCaption}</p> : null}
+                <span className={styles.mapCta}>
+                  Open the interactive map
+                  <ArrowRight size={16} aria-hidden="true" />
+                </span>
+              </div>
             </div>
           </div>
         </LocalizedLink>
