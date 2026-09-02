@@ -9,7 +9,7 @@
   width: 100vw;
   margin-left: -50vw;
   box-sizing: border-box;
-  min-height: clamp(440px, 58vh, 720px);
+  min-height: var(--page-hero-min-height);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -22,6 +22,10 @@
   background-position: center;
   background-repeat: no-repeat;
   color: var(--color-white);
+}
+
+.heroCompact {
+  min-height: var(--page-hero-min-height-compact);
 }
 
 .eyebrow {

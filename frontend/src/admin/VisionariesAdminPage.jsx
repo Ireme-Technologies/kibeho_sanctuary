@@ -16,10 +16,12 @@ import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColum
 import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['name', 'description', 'period_label']
+const LOCALE_FIELDS = ['name', 'summary', 'description', 'period_label']
 
 const empty = {
+  slug: '',
   name: '',
+  summary: '',
   description: '',
   period_label: '',
   period_start: '',
@@ -59,7 +61,9 @@ export default function VisionariesAdminPage() {
   const openEdit = (item, localeCode) => {
     setEditingId(item.id)
     setForm({
+      slug: item.slug || '',
       name: item.name || '',
+      summary: item.summary || '',
       description: item.description || '',
       period_label: item.periodLabel || '',
       period_start: item.periodStart || '',
@@ -79,6 +83,7 @@ export default function VisionariesAdminPage() {
     const { translations: _t, ...rest } = form
     return {
       ...rest,
+      slug: form.slug?.trim() || undefined,
       sort_order: Number(form.sort_order) || 0,
       translations: splitTranslationsPayload(form, LOCALE_FIELDS, defaultLocale),
     }
@@ -153,7 +158,7 @@ export default function VisionariesAdminPage() {
                     title={item.name}
                     onEdit={() => openEdit(item)}
                     onDelete={() => handleDelete(item.id)}
-                    viewHref={item.path}
+                    viewHref={item.path || `/shrine/visionaries/${item.slug}`}
                   />
                 </td>
                 <LocaleColumnCells
@@ -186,6 +191,19 @@ export default function VisionariesAdminPage() {
             setForm={setForm}
             fields={LOCALE_FIELDS}
           />
+          {localeTab === defaultLocale ? (
+            <div className={styles.field}>
+              <label>URL slug</label>
+              <input
+                value={form.slug}
+                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                placeholder="alphonsine-mumureke"
+              />
+              <p className={styles.muted}>
+                Used in the page address, e.g. /shrine/visionaries/alphonsine-mumureke
+              </p>
+            </div>
+          ) : null}
           <div className={styles.field}>
             <label>Name</label>
             <input
@@ -204,7 +222,18 @@ export default function VisionariesAdminPage() {
             />
           </div>
           <div className={styles.field}>
-            <label>Description</label>
+            <label>Short description (listing page)</label>
+            <textarea
+              rows={3}
+              value={getLocaleField(form, 'summary', localeTab, defaultLocale)}
+              onChange={(e) =>
+                setForm(setLocaleField(form, 'summary', localeTab, e.target.value, defaultLocale))
+              }
+              placeholder="One or two sentences shown on the main Visionaries page."
+            />
+          </div>
+          <div className={styles.field}>
+            <label>Historical insights (detail page)</label>
             <RichTextEditor
               value={getLocaleField(form, 'description', localeTab, defaultLocale)}
               onChange={(html) =>

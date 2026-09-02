@@ -80,8 +80,8 @@ export default function Layout({ hasHero = false }) {
       <Navbar hasHero={hasHero} />
       <main className={`${styles.main} ${!hasHero ? styles.withOffset : ''}`}>
         <Outlet />
-        <PillarExploreSection />
       </main>
+      <PillarExploreSection />
       <Footer />
     </div>
   )

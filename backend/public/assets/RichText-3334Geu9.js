@@ -1,0 +1,1 @@
+import{j as i}from"./index-BC_SfuOW.js";const s="_richText_fv4q1_1",o={richText:s};function x({html:e,className:n="",as:r="div"}){const t=String(e||"").trim();return!t||t==="<p></p>"?null:i.jsx(r,{className:[o.richText,n].filter(Boolean).join(" "),dangerouslySetInnerHTML:{__html:t}})}export{x as R};

@@ -1,4 +1,4 @@
-import { primaryNav } from '@data/navigation'
+import { primaryNav as staticPrimaryNav } from '@data/navigation'
 
 /** CMS keys for per-pillar default footer explore band (`explore.shrine`, etc.). */
 export const PILLAR_EXPLORE_KEYS = {
@@ -8,6 +8,22 @@ export const PILLAR_EXPLORE_KEYS = {
   news: 'explore.news',
   broadcast: 'explore.broadcast',
   support: 'explore.support',
+}
+
+export const PILLAR_ROUTES = [
+  { pillarId: 'shrine', hubPath: '/shrine', prefix: '/shrine' },
+  { pillarId: 'pilgrimage', hubPath: '/pilgrimage', prefix: '/pilgrimage' },
+  { pillarId: 'spirituality', hubPath: '/spirituality', prefix: '/spirituality' },
+  { pillarId: 'news', hubPath: '/news', prefix: '/news' },
+  { pillarId: 'broadcast', hubPath: '/broadcast', prefix: '/broadcast' },
+  { pillarId: 'support', hubPath: '/support', prefix: '/support' },
+]
+
+/** Gallery sits under News in the menu but uses its own path. */
+const EXTRA_PILLAR_PATHS = {
+  '/gallery': 'news',
+  '/pilgrimages': 'pilgrimage',
+  '/hotels': 'pilgrimage',
 }
 
 export const PILLAR_EXPLORE_FALLBACKS = {
@@ -81,15 +97,39 @@ function hubPathFor(item) {
 }
 
 function pillarIdForHub(hubPath) {
-  const map = {
-    '/shrine': 'shrine',
-    '/pilgrimage': 'pilgrimage',
-    '/spirituality': 'spirituality',
-    '/news': 'news',
-    '/broadcast': 'broadcast',
-    '/support': 'support',
-  }
-  return map[hubPath] || null
+  const route = PILLAR_ROUTES.find((entry) => entry.hubPath === hubPath)
+  return route?.pillarId || null
+}
+
+function navItemForPillar(primaryNav, pillarId) {
+  const route = PILLAR_ROUTES.find((entry) => entry.pillarId === pillarId)
+  if (!route) return null
+  const items = Array.isArray(primaryNav) && primaryNav.length ? primaryNav : staticPrimaryNav
+  return items.find((item) => hubPathFor(item) === route.hubPath) || null
+}
+
+function buildLinksFromItem(item) {
+  const children = (Array.isArray(item?.children) ? item.children : []).filter((child) => child?.path)
+  const links = []
+  const seen = new Set()
+  children.forEach((child) => {
+    const path = String(child.path || '').trim()
+    const base = pathBase(path)
+    if (!base || EXCLUDED_LINK_PATHS.has(base) || seen.has(base)) return
+    seen.add(base)
+    links.push({ label: child.label || base, path })
+  })
+  return links
+}
+
+function resolvePillarId(current) {
+  if (EXTRA_PILLAR_PATHS[current]) return EXTRA_PILLAR_PATHS[current]
+  if (current.startsWith('/pilgrimages/')) return 'pilgrimage'
+
+  const route = PILLAR_ROUTES.find(
+    (entry) => current === entry.hubPath || current.startsWith(`${entry.prefix}/`),
+  )
+  return route?.pillarId || null
 }
 
 /**
@@ -99,31 +139,22 @@ export function getPillarExploreNav(pathname, primaryNav = []) {
   const current = normalizePath(pathname)
   if (!current || current === '/') return null
 
-  const items = Array.isArray(primaryNav) ? primaryNav : []
+  const items = Array.isArray(primaryNav) && primaryNav.length ? primaryNav : staticPrimaryNav
 
   for (const item of items) {
     const children = (Array.isArray(item.children) ? item.children : []).filter((child) => child?.path)
     if (!children.length) continue
 
     const hubPath = hubPathFor(item)
-    const onHub = current === hubPath
-    const onSection = onHub || children.some((child) => pathMatches(current, child.path))
+    const onSection =
+      current === hubPath || children.some((child) => pathMatches(current, child.path))
     if (!onSection) continue
 
-    const links = []
-    const seen = new Set()
-    children.forEach((child) => {
-      const path = String(child.path || '').trim()
-      const base = pathBase(path)
-      if (!base || EXCLUDED_LINK_PATHS.has(base) || seen.has(base)) return
-      seen.add(base)
-      links.push({ label: child.label || base, path })
-    })
-
-    if (!links.length) return null
+    const links = buildLinksFromItem(item)
+    if (!links.length) continue
 
     const pillarId = pillarIdForHub(hubPath)
-    if (!pillarId) return null
+    if (!pillarId) continue
 
     return {
       pillarId,
@@ -135,7 +166,22 @@ export function getPillarExploreNav(pathname, primaryNav = []) {
     }
   }
 
-  return null
+  const pillarId = resolvePillarId(current)
+  if (!pillarId) return null
+
+  const item = navItemForPillar(items, pillarId)
+  const route = PILLAR_ROUTES.find((entry) => entry.pillarId === pillarId)
+  const links = buildLinksFromItem(item)
+  if (!links.length) return null
+
+  return {
+    pillarId,
+    pillarLabel: item?.label || pillarId,
+    hubPath: route?.hubPath || `/${pillarId}`,
+    exploreKey: PILLAR_EXPLORE_KEYS[pillarId],
+    current,
+    links,
+  }
 }
 
 export function pillarExploreLinkIsActive(currentPath, linkPath) {
@@ -147,21 +193,8 @@ export function pillarExploreLinkIsActive(currentPath, linkPath) {
 
 /** Default submenu links for a pillar (from static nav). */
 export function defaultPillarExploreLinks(pillarId) {
-  const hubPaths = {
-    shrine: '/shrine',
-    pilgrimage: '/pilgrimage',
-    spirituality: '/spirituality',
-    news: '/news',
-    broadcast: '/broadcast',
-    support: '/support',
-  }
-  const hubPath = hubPaths[pillarId]
-  if (!hubPath) return []
-  const item = primaryNav.find((entry) => pathBase(entry.path) === hubPath)
-  const children = Array.isArray(item?.children) ? item.children : []
-  return children
-    .filter((child) => child.path && !EXCLUDED_LINK_PATHS.has(pathBase(child.path)))
-    .map((child) => ({ label: child.label, path: child.path }))
+  const item = navItemForPillar(staticPrimaryNav, pillarId)
+  return buildLinksFromItem(item)
 }
 
 export function isPillarExploreKey(key) {

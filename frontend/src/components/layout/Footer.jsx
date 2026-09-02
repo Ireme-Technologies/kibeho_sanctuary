@@ -9,7 +9,7 @@ import { useSwitchLocale } from '@router/LocaleRoute'
 import styles from './Footer.module.css'
 
 export default function Footer() {
-  const { company, footerLinks, footerServiceLinks, navCTA } = useContent()
+  const { company, footerLinks, footerServiceLinks, footerCta } = useContent()
   const { locales, locale, t } = useLocale()
   const switchLocale = useSwitchLocale()
   const brandName = company.name || 'Shrine of Our Lady of Kibeho'
@@ -19,16 +19,16 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={`container ${styles.ctaBand}`}>
         <div className={styles.ctaCopy}>
-          <h2 className={styles.ctaTitle}>{displayTitleLabel(t('supportMission'), locale)}</h2>
-          <p className={styles.ctaText}>{t('supportMissionText')}</p>
+          <h2 className={styles.ctaTitle}>{displayTitleLabel(footerCta.title, locale)}</h2>
+          <p className={styles.ctaText}>{footerCta.text}</p>
         </div>
         <div className={styles.ctaActions}>
-          <LocalizedNavLink to={navCTA?.path || GIVE_PAGE_PATH} className={styles.ctaBtn}>
+          <LocalizedNavLink to={footerCta.primary.path || GIVE_PAGE_PATH} className={styles.ctaBtn}>
             <Heart size={16} aria-hidden="true" />
-            {displayCapsLabel(navCTA?.label || t('donate'), locale)}
+            {displayCapsLabel(footerCta.primary.label, locale)}
           </LocalizedNavLink>
-          <LocalizedNavLink to="/support/partners" className={styles.ctaBtnGhost}>
-            {displayCapsLabel(t('becomeVolunteer'), locale)}
+          <LocalizedNavLink to={footerCta.secondary.path} className={styles.ctaBtnGhost}>
+            {displayCapsLabel(footerCta.secondary.label, locale)}
           </LocalizedNavLink>
         </div>
       </div>

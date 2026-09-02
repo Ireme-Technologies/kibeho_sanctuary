@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             PastoralTeamAndCommunitySeeder::class,
             EnsureOurLadyNavSeeder::class,
             RestructureContentSeeder::class,
+            VisionarySeeder::class,
         ]);
     }
 }

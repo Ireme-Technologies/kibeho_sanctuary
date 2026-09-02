@@ -198,6 +198,7 @@ export function emptyPageForm() {
     title: '',
     subtitle: '',
     heroImage: '',
+    heroCompact: false,
     footerImage: '',
     footerImageAlt: '',
     intro: '',
@@ -241,6 +242,7 @@ export function contentToForm(content = {}, key = '') {
     title: merged.title || merged.heading || (merged.headlineLines || [])[0] || '',
     subtitle: merged.subtitle || merged.subline || '',
     heroImage: merged.heroImage || merged.backgroundImage || merged.image || '',
+    heroCompact: Boolean(merged.heroCompact),
     footerImage: merged.footerImage || merged.map?.image || merged.mapImage || '',
     footerImageAlt: merged.footerImageAlt || merged.map?.alt || merged.mapAlt || '',
     intro: merged.intro || merged.text || '',
@@ -275,16 +277,6 @@ export function contentToForm(content = {}, key = '') {
 }
 
 export function formToContent(form, previous = {}, key = '') {
-  const buttons = (form.buttons || []).filter((item) => item.label || item.path)
-  const primary = buttons[0] || null
-  const secondary = buttons[1] || null
-  const cta = primary
-    ? {
-        primary: { label: primary.label, path: primary.path },
-        ...(secondary ? { secondary: { label: secondary.label, path: secondary.path } } : {}),
-      }
-    : null
-
   return {
     ...previous,
     eyebrow: form.eyebrow,
@@ -295,6 +287,7 @@ export function formToContent(form, previous = {}, key = '') {
     text: form.intro,
     intro: form.intro,
     heroImage: form.heroImage,
+    heroCompact: Boolean(form.heroCompact),
     backgroundImage: form.heroImage,
     image: form.heroImage,
     footerImage: form.footerImage,
@@ -305,15 +298,6 @@ export function formToContent(form, previous = {}, key = '') {
     links: (form.links || []).filter((link) => link.label || link.path || link.text),
     highlights: form.highlights || [],
     items: form.items || [],
-    buttons,
-    cta,
-    primaryCta: primary,
-    secondaryCta: secondary,
-    heroCtaLabel: form.heroCtaLabel,
-    heroCtaPath: form.heroCtaPath,
-    involveTitle: form.involveTitle,
-    involveLead: form.involveLead,
-    involveLinks: (form.involveLinks || []).filter((item) => item.label || item.path || item.text),
     cardLinkLabel: form.cardLinkLabel,
     welcomeEyebrow: form.welcomeEyebrow,
     welcomeTitle: form.welcomeTitle,
@@ -338,7 +322,6 @@ export function formToContent(form, previous = {}, key = '') {
       alt: form.mapAlt,
       caption: form.mapCaption,
     },
-    exploreLinks: (form.exploreLinks || []).filter((item) => item.label || item.path),
     ...(isPillarExploreKey(key)
       ? {
           heading: form.title,

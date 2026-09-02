@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, ZoomIn } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
@@ -43,11 +43,7 @@ export default function PillarExploreSection() {
 
   if (!nav || SKIP_PATHS.has(pathOnly)) return null
 
-  const customLinks = Array.isArray(pageContent.exploreLinks) ? pageContent.exploreLinks : []
-  const links =
-    customLinks.filter((item) => item?.label && item?.path).length > 0
-      ? customLinks.filter((item) => item?.label && item?.path)
-      : nav.links
+  const links = nav.links
 
   const footerImage = resolveHeaderImage(
     pageContent.footerImage ||
@@ -72,39 +68,51 @@ export default function PillarExploreSection() {
   return (
     <section className={styles.section} id="pillar-explore" aria-labelledby="pillar-explore-heading">
       <div className="container">
-        <div className={styles.head}>
-          {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
-          <h2 id="pillar-explore-heading">{heading}</h2>
-          {intro ? <p className={styles.intro}>{intro}</p> : null}
-        </div>
+        <div className={styles.panel}>
+          <div className={styles.layout}>
+            <div className={styles.imageCol}>
+              <button
+                type="button"
+                className={styles.imageBtn}
+                onClick={() => setLightboxOpen(true)}
+                aria-label={footerAlt ? `View full size: ${footerAlt}` : 'View full size image'}
+              >
+                <img src={footerImage} alt={footerAlt} className={styles.image} loading="lazy" />
+                <span className={styles.imageOverlay} aria-hidden="true">
+                  <span className={styles.zoomBadge}>
+                    <ZoomIn size={18} />
+                    View image
+                  </span>
+                </span>
+              </button>
+            </div>
 
-        <div className={styles.layout}>
-          <button
-            type="button"
-            className={styles.imageBtn}
-            onClick={() => setLightboxOpen(true)}
-            aria-label={footerAlt ? `View ${footerAlt}` : 'View section image'}
-          >
-            <img src={footerImage} alt={footerAlt} className={styles.image} loading="lazy" />
-            <span className={styles.imageHint}>Click to enlarge</span>
-          </button>
+            <div className={styles.navCol}>
+              {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
+              <h2 id="pillar-explore-heading" className={styles.heading}>
+                {heading}
+              </h2>
+              {intro ? <p className={styles.intro}>{intro}</p> : null}
+              <span className={styles.rule} aria-hidden="true" />
 
-          <nav className={styles.nav} aria-label={`${nav.pillarLabel} pages`}>
-            {links.map((link) => {
-              const active = pillarExploreLinkIsActive(pathOnly, link.path)
-              return (
-                <LocalizedLink
-                  key={link.path}
-                  to={link.path}
-                  className={`${styles.link} ${active ? styles.linkActive : ''}`}
-                  aria-current={active ? 'page' : undefined}
-                >
-                  {link.label}
-                  <ChevronRight size={18} aria-hidden="true" />
-                </LocalizedLink>
-              )
-            })}
-          </nav>
+              <nav className={styles.nav} aria-label={`${nav.pillarLabel} pages`}>
+                {links.map((link) => {
+                  const active = pillarExploreLinkIsActive(pathOnly, link.path)
+                  return (
+                    <LocalizedLink
+                      key={link.path}
+                      to={link.path}
+                      className={`${styles.link} ${active ? styles.linkActive : ''}`}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      <span className={styles.linkLabel}>{link.label}</span>
+                      <ChevronRight size={17} aria-hidden="true" className={styles.linkIcon} />
+                    </LocalizedLink>
+                  )
+                })}
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
 

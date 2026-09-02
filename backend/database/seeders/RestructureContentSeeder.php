@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\MaryMessage;
 use App\Models\PageSection;
 use App\Models\Setting;
-use App\Models\Visionary;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -17,7 +16,6 @@ class RestructureContentSeeder extends Seeder
         $this->updateOfferings();
         $this->removeDeprecatedPages();
         $this->seedPages();
-        $this->seedVisionaries();
         $this->seedMaryMessages();
         $this->updateHomeSections();
     }
@@ -310,36 +308,6 @@ class RestructureContentSeeder extends Seeder
     private function mergeOld(string $key, array $defaults): array
     {
         return array_merge($this->oldContent($key), $defaults);
-    }
-
-    private function seedVisionaries(): void
-    {
-        if (Visionary::query()->exists()) {
-            return;
-        }
-
-        $cards = $this->oldContent('our-lady.visionaries')['blocks'][0]['items'] ?? [];
-        $fallback = [
-            ['name' => 'Alphonsine Mumureke', 'period' => '28 November 1981 – 28 November 1989', 'text' => 'The first visionary. Apparitions began in the school dining hall.'],
-            ['name' => 'Nathalie Mukamazimpaka', 'period' => '12 January 1982 – 3 December 1983', 'text' => 'Called to prayer, penance, and redemptive suffering.'],
-            ['name' => 'Marie Claire Mukangango', 'period' => '2 March 1982 – 15 September 1982', 'text' => 'Linked with the Rosary of the Seven Sorrows.'],
-        ];
-
-        $items = count($cards) ? $cards : $fallback;
-        foreach ($items as $index => $card) {
-            $name = $card['title'] ?? $card['name'] ?? 'Visionary';
-            Visionary::updateOrCreate(
-                ['slug' => Str::slug($name)],
-                [
-                    'name' => $name,
-                    'period_label' => $card['meta'] ?? $card['period'] ?? null,
-                    'description' => $card['text'] ?? $card['description'] ?? '',
-                    'sort_order' => $index + 1,
-                    'is_approved' => true,
-                    'is_published' => true,
-                ]
-            );
-        }
     }
 
     private function seedMaryMessages(): void

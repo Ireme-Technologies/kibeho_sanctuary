@@ -1,22 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { fetchSettings, updateSettings } from '@api/cms'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import {
   footerLinks as fallbackFooterLinks,
   footerServiceLinks as fallbackFooterServiceLinks,
-  navCTA as fallbackNavCTA,
   primaryNav as fallbackPrimaryNav,
   utilityNav as fallbackUtilityNav,
   ensureOurLadyNavChildren,
 } from '@data/navigation'
 import FlashMessage from './components/FlashMessage'
 import LocaleTabs from './components/LocaleTabs'
-import MenuPathFields from './components/MenuPathFields'
 import MenuTreeEditor from './components/MenuTreeEditor'
 import { ensureNavIds, persistNavItems } from './menuUtils'
-import { pageLabel } from './menuPages'
 import styles from './admin.module.css'
 
 const LOCATIONS = [
@@ -30,7 +27,7 @@ const LOCATIONS = [
     id: 'header',
     label: 'Top header',
     title: 'Top header menu',
-    hint: 'Links in the dark bar above the logo, plus the Donate button on the right. This list has no dropdowns.',
+    hint: 'Links in the dark bar above the logo. The Donate button on the right is managed under Site buttons.',
   },
   {
     id: 'footer',
@@ -53,7 +50,6 @@ export default function MenusAdminPage() {
   const [utilityNav, setUtilityNav] = useState([])
   const [footerLinks, setFooterLinks] = useState([])
   const [footerServiceLinks, setFooterServiceLinks] = useState([])
-  const [navCTA, setNavCTA] = useState({ label: 'Donate', path: '/support/get-involved' })
   const [error, setError] = useState('')
   const [flash, setFlash] = useState({ type: 'success', message: '' })
   const [saving, setSaving] = useState(false)
@@ -80,7 +76,6 @@ export default function MenusAdminPage() {
             navigation.footerServiceLinks?.length ? navigation.footerServiceLinks : fallbackFooterServiceLinks,
           ),
         )
-        setNavCTA(navigation.navCTA || fallbackNavCTA)
       })
       .catch((err) => setFlash({ type: 'error', message: err.message || 'Failed to load menus' }))
   }, [])
@@ -96,13 +91,15 @@ export default function MenusAdminPage() {
     setError('')
     setFlash({ type: 'success', message: '' })
     try {
+      const current = await fetchSettings()
+      const navigation = current?.navigation || {}
       await updateSettings({
         navigation: {
+          ...navigation,
           primaryNav: persistNavItems(primaryNav),
           utilityNav: persistNavItems(utilityNav),
           footerLinks: persistNavItems(footerLinks),
           footerServiceLinks: persistNavItems(footerServiceLinks),
-          navCTA,
         },
       })
       await refresh?.()
@@ -177,34 +174,12 @@ export default function MenusAdminPage() {
           <>
             <div className={styles.card} style={{ marginBottom: '1rem' }}>
               <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
-                Header button (Faire un don)
+                Header Donate button
               </h2>
               <p className={styles.muted}>
-                The white button on the far right of the dark top bar. Choose the page it should open — the URL
-                is the same in every language.
+                The white button on the far right of the dark top bar is managed in{' '}
+                <Link to="/admin/buttons">Site buttons</Link> so labels stay consistent across languages.
               </p>
-              <div className={styles.fieldRow}>
-                <div className={styles.field}>
-                  <label>Button label</label>
-                  <input
-                    value={navCTA.label}
-                    onChange={(e) => setNavCTA({ ...navCTA, label: e.target.value })}
-                    placeholder={pageLabel(navCTA.path, menuLocale) || 'Donate'}
-                  />
-                </div>
-                <MenuPathFields
-                  path={navCTA.path}
-                  label="Opens this page"
-                  onChange={(path) =>
-                    setNavCTA({
-                      ...navCTA,
-                      path,
-                      label: navCTA.label || pageLabel(path, defaultLocale) || navCTA.label,
-                    })
-                  }
-                  placeholder="/support/get-involved"
-                />
-              </div>
             </div>
             <MenuTreeEditor
               items={utilityNav}

@@ -13,6 +13,7 @@ class Visionary extends Model
         'period_label',
         'period_start',
         'period_end',
+        'summary',
         'description',
         'is_approved',
         'sort_order',

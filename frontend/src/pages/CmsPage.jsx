@@ -253,7 +253,7 @@ function PageLink({ to, className, children }) {
 
 export default function CmsPage() {
   const { pathname } = useLocation()
-  const { section, pages, company, offerings, resolveHeaderImage } = useContent()
+  const { section, pages, company, offerings, resolveHeaderImage, involveStory } = useContent()
   const { t, locale, defaultLocale } = useLocale()
   const pathOnly = stripLocale(pathname)
   const key =
@@ -278,18 +278,6 @@ export default function CmsPage() {
       })
     }
   }
-  const blocks = data.blocks?.length ? data.blocks : fallback.blocks || []
-  const links = data.links?.length ? data.links : fallback.links || []
-  const buttons = (Array.isArray(data.buttons) && data.buttons.length
-    ? data.buttons
-    : [data.cta?.primary, data.cta?.secondary].filter((item) => item && (item.label || item.path))
-  ).map((item) => {
-    const path = normalizeGiveNavPath(item.path || item.link || '')
-    const linkKey = navKeyForPath(path)
-    const label =
-      !translated && linkKey ? t(linkKey) : item.label
-    return { label, path }
-  })
   const rawTitle = data.title || fallback.title
   const pageTitle = displayTitleLabel(rawTitle, locale)
 
@@ -357,7 +345,7 @@ export default function CmsPage() {
   return (
     <div className={`${styles.page} ${isStory ? styles.pageStory : ''}`}>
       <header
-        className={styles.hero}
+        className={`${styles.hero} ${data.heroCompact ? styles.heroCompact : ''}`}
         style={{
           backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${heroImage})`,
         }}
@@ -381,10 +369,10 @@ export default function CmsPage() {
                 {actionPage.heroCta}
               </a>
             )
-          ) : isHub ? (
-            <PageLink to={data.heroCtaPath || data.cta?.primary?.path || '#join'} className={styles.heroCta}>
-              {data.heroCtaLabel || data.cta?.primary?.label || t('story.bePart')}
-            </PageLink>
+          ) : isStory || isHub ? (
+            <a href="#join" className={styles.heroCta}>
+              {t('story.bePart')}
+            </a>
           ) : null}
         </div>
       </header>
@@ -437,27 +425,17 @@ export default function CmsPage() {
         {actionPage?.kind === 'prayer' ? <OfferingForm kind="prayer" /> : null}
         {actionPage?.kind === 'testimony' ? <OfferingForm kind="testimony" /> : null}
         {actionPage ? <InvolveMore variant={actionPage.involve} /> : null}
-        {isHub ? (
+        {isStory && !isAction ? (
           <InvolveMore
             variant="story"
-            title={data.involveTitle}
-            lead={data.involveLead}
-            links={data.involveLinks}
+            title={involveStory.title}
+            lead={involveStory.lead}
+            links={involveStory.cards.map((item) => ({
+              label: item.title,
+              text: item.text,
+              path: item.path,
+            }))}
           />
-        ) : null}
-
-        {!isAction && buttons.length ? (
-          <div className={styles.ctaRow}>
-            {buttons.map((item, index) => (
-              <PageLink
-                key={`${item.path}-${item.label}`}
-                to={item.path}
-                className={index === 0 ? styles.btn : styles.btnGhost}
-              >
-                {item.label}
-              </PageLink>
-            ))}
-          </div>
         ) : null}
       </div>
     </div>

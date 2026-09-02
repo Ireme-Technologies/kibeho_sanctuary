@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { fetchPages, updatePageSection } from '@api/cms'
 import { useLocale } from '@context/LocaleContext'
 import { pathForSectionKey } from '@data/pages/registry'
@@ -32,7 +33,7 @@ const TABS = [
   { id: 'page', label: 'All pages' },
 ]
 
-const ARRAY_FIELDS = ['blocks', 'links', 'buttons', 'highlights', 'items', 'involveLinks', 'values', 'exploreLinks']
+const ARRAY_FIELDS = ['blocks', 'links', 'highlights', 'items', 'values']
 
 const emptyContent = emptyPageForm
 
@@ -117,9 +118,6 @@ function buildSectionTranslations(translations, defaultLocale) {
         'title',
         'subtitle',
         'intro',
-        'heroCtaLabel',
-        'involveTitle',
-        'involveLead',
         'cardLinkLabel',
         'welcomeEyebrow',
         'welcomeTitle',
@@ -187,13 +185,8 @@ function copyPageLocaleFromDefault(form, label, translations, locale) {
         intro: form.intro || '',
         blocks: cloneJson(form.blocks || []),
         links: cloneJson(form.links || []),
-        buttons: cloneJson(form.buttons || []),
         highlights: cloneJson(form.highlights || []),
         items: cloneJson(form.items || []),
-        involveLinks: cloneJson(form.involveLinks || []),
-        heroCtaLabel: form.heroCtaLabel || '',
-        involveTitle: form.involveTitle || '',
-        involveLead: form.involveLead || '',
         cardLinkLabel: form.cardLinkLabel || '',
       },
     },
@@ -352,9 +345,8 @@ export default function SectionsAdminPage() {
         <div>
           <h1>Pages</h1>
           <p className={styles.muted} style={{ margin: '0.25rem 0 0' }}>
-            All website pages and homepage sections are listed below. Open a page to edit the same text,
-            cards, and buttons visitors see. Empty fields are filled from the current public defaults so
-            you can correct them without retyping.
+            All website pages and homepage sections are listed below. Open a page to edit header and footer
+            images, titles, and body content. Site menus and buttons are managed separately.
           </p>
         </div>
       </div>
@@ -609,6 +601,18 @@ export default function SectionsAdminPage() {
                 onChange={(url) => setForm({ ...form, heroImage: url })}
                 folder="pages"
               />
+            ) : null}
+            {localeTab === defaultLocale && kind !== 'pillar.explore' && kind !== 'home' ? (
+              <label className={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  checked={Boolean(form.heroCompact)}
+                  onChange={(e) => setForm({ ...form, heroCompact: e.target.checked })}
+                />
+                <span>
+                  Compact header (shorter hero instead of full-screen below the menu)
+                </span>
+              </label>
             ) : null}
             {localeTab === defaultLocale && kind !== 'pillar.explore' && !form.heroImage && defaultImage ? (
               <p className={styles.muted}>Currently falling back to the default header image.</p>
@@ -889,22 +893,11 @@ export default function SectionsAdminPage() {
                   />
                 </div>
 
-                <h2 className={styles.sectionTitle}>Explore the Shrine links</h2>
+                <h2 className={styles.sectionTitle}>Explore band navigation</h2>
                 <p className={styles.muted}>
-                  Shortcut buttons to other pages under The Shrine menu. Leave empty to use the site menu
-                  defaults.
+                  Links in the footer explore band come from the main menu under The Shrine. Edit them in{' '}
+                  <Link to="/admin/menus">Site menus</Link>.
                 </p>
-                <ListEditor
-                  label="Navigation links"
-                  items={getPageContentField(form, sectionTranslations, 'exploreLinks', localeTab, defaultLocale)}
-                  onChange={(exploreLinks) => patchField('exploreLinks', exploreLinks)}
-                  addLabel="Add link"
-                  emptyItem={{ label: '', path: '' }}
-                  fields={[
-                    { key: 'label', label: 'Label' },
-                    { key: 'path', label: 'URL', placeholder: '/shrine/history' },
-                  ]}
-                />
 
                 <h2 className={styles.sectionTitle}>Shrine map band</h2>
                 <p className={styles.muted}>
@@ -980,92 +973,17 @@ export default function SectionsAdminPage() {
             ) : null}
 
             {kind === 'cms' && isStory && selectedKey !== 'shrine.welcome' ? (
-              <>
-                <h2 className={styles.sectionTitle}>Hero button</h2>
+              <div className={styles.card}>
+                <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
+                  Hero button &amp; invite cards
+                </h2>
                 <p className={styles.muted}>
-                  The button on the header image (default: Be part of this). Leave blank to keep the automatic
-                  translation.
+                  The hero “Be part of this” button and the three invite cards at the bottom of story pages
+                  are managed in <Link to="/admin/buttons">Site buttons</Link> so they stay consistent across
+                  the site.
                 </p>
-                <div className={styles.field}>
-                  <label>Hero button label</label>
-                  <input
-                    value={getPageContentField(form, sectionTranslations, 'heroCtaLabel', localeTab, defaultLocale)}
-                    onChange={(e) => patchField('heroCtaLabel', e.target.value)}
-                    placeholder="Be part of this"
-                  />
-                </div>
-                {isDefaultLang ? (
-                  <MenuPathFields
-                    path={form.heroCtaPath || '#join'}
-                    label="Hero button opens"
-                    placeholder="#join"
-                    onChange={(path) => setForm({ ...form, heroCtaPath: path })}
-                  />
-                ) : (
-                  <p className={styles.muted}>URL: {form.heroCtaPath || '#join'} · same in every language</p>
-                )}
-
-                <h2 className={styles.sectionTitle}>Invite cards</h2>
-                <p className={styles.muted}>
-                  The three cards near the bottom (Light a candle, Have a Mass said, Come on pilgrimage). Add or
-                  remove cards here — they belong to this page, not a separate buttons screen.
-                </p>
-                <div className={styles.field}>
-                  <label>Section title</label>
-                  <input
-                    value={getPageContentField(form, sectionTranslations, 'involveTitle', localeTab, defaultLocale)}
-                    onChange={(e) => patchField('involveTitle', e.target.value)}
-                  />
-                </div>
-                <div className={styles.field}>
-                  <label>Section text</label>
-                  <textarea
-                    rows={3}
-                    value={getPageContentField(form, sectionTranslations, 'involveLead', localeTab, defaultLocale)}
-                    onChange={(e) => patchField('involveLead', e.target.value)}
-                  />
-                </div>
-                <ListEditor
-                  label="Invite cards"
-                  items={getPageContentField(form, sectionTranslations, 'involveLinks', localeTab, defaultLocale)}
-                  onChange={(involveLinks) => patchField('involveLinks', involveLinks)}
-                  addLabel="Add card"
-                  emptyItem={{ label: '', text: '', path: '' }}
-                  fields={[
-                    { key: 'label', label: 'Title' },
-                    { key: 'path', label: 'URL', placeholder: '/pilgrimage/plan' },
-                    { key: 'text', label: 'Description', type: 'textarea' },
-                  ]}
-                />
-              </>
+              </div>
             ) : null}
-
-            {kind !== 'shrine.welcome' ? (
-              <>
-            <h2 className={styles.sectionTitle}>Buttons</h2>
-            <p className={styles.muted}>
-              Buttons at the bottom of this page. Pick a page so the URL is filled automatically — the same URL
-              is used in every language. Add more buttons if this page needs them. Header Donate stays in Site
-              menus.
-            </p>
-            <ListEditor
-              label="Page buttons"
-              items={getPageContentField(form, sectionTranslations, 'buttons', localeTab, defaultLocale)}
-              onChange={(buttons) => patchField('buttons', buttons)}
-              addLabel="Add button"
-              emptyItem={{ label: '', path: '' }}
-              fields={[
-                { key: 'label', label: 'Label' },
-                { key: 'path', label: 'URL', placeholder: '/shrine/mass-schedule' },
-              ]}
-            />
-              </>
-            ) : (
-              <p className={styles.muted}>
-                Button fields are not used on the welcome page. Section navigation appears automatically at
-                the bottom of every Shrine page.
-              </p>
-            )}
 
             </>
             ) : null}

@@ -14,6 +14,11 @@ class SettingsSeeder extends Seeder
             ? (json_decode(file_get_contents($navPath), true) ?: [])
             : [];
 
+        $buttonsPath = database_path('data/site_buttons.json');
+        $siteButtons = is_file($buttonsPath)
+            ? (json_decode(file_get_contents($buttonsPath), true) ?: [])
+            : [];
+
         $settings = [
             'company' => [
                 'name' => 'Shrine of Our Lady of Kibeho',
@@ -42,6 +47,7 @@ class SettingsSeeder extends Seeder
                 'footerServiceLinks' => $navigation['footerServiceLinks'] ?? [],
                 'navCTA' => $navigation['navCTA'] ?? ['label' => 'Donate', 'path' => '/support/get-involved'],
             ],
+            'siteButtons' => $siteButtons,
             'contact' => [
                 'hero' => [
                     'eyebrow' => 'Where to find us',

@@ -37,6 +37,7 @@ const PilgrimageDetailPage = lazy(() => import('@pages/PilgrimageDetailPage'))
 const VideosPage = lazy(() => import('@pages/VideosPage'))
 const ShrineSchedulePage = lazy(() => import('@pages/ShrineSchedulePage'))
 const VisionariesPage = lazy(() => import('@pages/VisionariesPage'))
+const VisionaryDetailPage = lazy(() => import('@pages/VisionaryDetailPage'))
 const MaryMessagesPage = lazy(() => import('@pages/MaryMessagesPage'))
 const OfficialPrayersPage = lazy(() => import('@pages/OfficialPrayersPage'))
 const BooksPage = lazy(() => import('@pages/BooksPage'))
@@ -56,6 +57,7 @@ const CommunityDetailPage = lazy(() => import('@pages/CommunityDetailPage'))
 const CalendarPage = lazy(() => import('@pages/CalendarPage'))
 const SettingsAdminPage = lazy(() => import('@admin/SettingsAdminPage'))
 const MenusAdminPage = lazy(() => import('@admin/MenusAdminPage'))
+const ButtonsAdminPage = lazy(() => import('@admin/ButtonsAdminPage'))
 const SectionsAdminPage = lazy(() => import('@admin/SectionsAdminPage'))
 const TranslationsAdminPage = lazy(() => import('@admin/TranslationsAdminPage'))
 const EnquiriesAdminPage = lazy(() => import('@admin/EnquiriesAdminPage'))
@@ -169,6 +171,7 @@ const localizedChildren = [
   { path: 'shrine/apparition-sites', element: <Wrap Component={SacredPlacesPage} type="apparition_site" /> },
   { path: 'shrine/apparition-sites/:slug', element: <Wrap Component={SacredPlaceDetailPage} /> },
   { path: 'shrine/visionaries', element: <Wrap Component={VisionariesPage} /> },
+  { path: 'shrine/visionaries/:slug', element: <Wrap Component={VisionaryDetailPage} /> },
   { path: 'shrine/messages', element: <Wrap Component={MaryMessagesPage} /> },
   { path: 'shrine/pastoral-team', element: <Wrap Component={PastoralTeamPage} /> },
   { path: 'shrine/pastoral-team/:slug', element: <Wrap Component={PastoralTeamDetailPage} /> },
@@ -277,6 +280,7 @@ const router = createBrowserRouter([
       { index: true, element: <Wrap Component={DashboardPage} /> },
       { path: 'audit', element: <Wrap Component={AuditAdminPage} /> },
       { path: 'menus', element: <Wrap Component={MenusAdminPage} /> },
+      { path: 'buttons', element: <Wrap Component={ButtonsAdminPage} /> },
       { path: 'sections', element: <Wrap Component={SectionsAdminPage} /> },
       { path: 'home-hero', element: <Wrap Component={HomeHeroAdminPage} /> },
       { path: 'translations', element: <Wrap Component={TranslationsAdminPage} /> },

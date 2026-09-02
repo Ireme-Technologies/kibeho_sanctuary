@@ -21,7 +21,7 @@ export function excerpt(html = '', max = 160) {
 
 export function cardExcerpt(item, max = 160) {
   if (!item) return ''
-  return excerpt(item.description || item.shortDescription || item.text || '', max)
+  return excerpt(item.summary || item.description || item.shortDescription || item.text || '', max)
 }
 
 /** Turns a full name into up-to-2-character initials, e.g. "Isaac Byiringiro" -> "IB" */

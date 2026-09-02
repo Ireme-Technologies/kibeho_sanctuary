@@ -32,6 +32,7 @@ export default function AdminLayout() {
     { to: '/admin', label: 'Dashboard', end: true },
     { to: '/admin/audit', label: 'CMS audit' },
     { to: '/admin/menus', label: 'Site menus' },
+    { to: '/admin/buttons', label: 'Site buttons' },
     { to: '/admin/sections', label: 'Site pages' },
     { to: '/admin/home-hero', label: 'Home hero' },
     { to: '/admin/translations', label: 'Translations' },

@@ -8,7 +8,7 @@
   left: 50%;
   width: 100vw;
   margin-left: -50vw;
-  min-height: clamp(340px, 46vh, 520px);
+  min-height: var(--page-hero-min-height);
   display: flex;
   align-items: flex-end;
   padding: clamp(3rem, 8vw, 5rem) 0 clamp(2.25rem, 5vw, 3.25rem);
@@ -23,6 +23,10 @@
   line-height: 1.1;
   max-width: 14ch;
   margin: 0 0 0.65rem;
+}
+
+.heroCompact {
+  min-height: var(--page-hero-min-height-compact);
 }
 
 .subtitle {

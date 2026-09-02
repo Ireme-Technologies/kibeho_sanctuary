@@ -687,6 +687,20 @@
   gap: 1rem;
 }
 
+.checkboxRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1rem;
+  font-size: 0.9rem;
+  color: var(--color-muted, #5c6b7a);
+  cursor: pointer;
+}
+
+.checkboxRow input {
+  margin-top: 0.2rem;
+}
+
 .error {
   color: #b42318;
   font-size: 0.85rem;

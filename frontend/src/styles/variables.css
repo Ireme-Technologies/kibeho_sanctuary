@@ -57,6 +57,8 @@
   --header-height: 88px;
   --topbar-height: 42px;
   --chrome-height: calc(var(--topbar-height) + var(--header-height));
+  --page-hero-min-height: calc(100vh - var(--chrome-height));
+  --page-hero-min-height-compact: clamp(320px, 42vh, 520px);
   --radius-sm: 4px;
   --radius-md: 8px;
 

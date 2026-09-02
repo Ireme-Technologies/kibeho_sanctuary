@@ -37,7 +37,13 @@ import {
   contactFormLabels,
 } from '@data/contact'
 import { offerings as fallbackOfferings } from '@data/offerings'
-import { applyThemeToDocument, DEFAULT_THEME, normalizeTheme } from '@utils/theme'
+import { defaultSiteButtons } from '@data/siteButtons'
+import {
+  footerCtaContent,
+  involveStoryContent,
+  mergeSiteButtons,
+  navDonateButton,
+} from '@utils/siteButtons'
 import {
   applyFavicon,
   isStaleBrandAsset,
@@ -45,6 +51,7 @@ import {
   resolveLogo,
   resolvePreloaderLogo,
 } from '@utils/brand'
+import { applyThemeToDocument } from '@utils/theme'
 
 const ContentContext = createContext(null)
 
@@ -233,6 +240,8 @@ export function ContentProvider({ children }) {
       : navigation.footerServiceLinks || fallbackFooterServiceLinks
 
     const navCTARaw = navigation.navCTA || fallbackNavCTA
+    const siteButtons = mergeSiteButtons(settings.siteButtons || {})
+    const navDonate = navDonateButton(siteButtons, locale, defaultLocale, t)
     const utilityNavRaw =
       Array.isArray(navigation.utilityNav) && navigation.utilityNav.length && !apiNavIsStale
         ? navigation.utilityNav
@@ -261,9 +270,12 @@ export function ContentProvider({ children }) {
       footerServiceLinks: translateNav(normalizeNavGivePaths(footerServiceLinksRaw), t, locale, defaultLocale),
       navCTA: {
         ...navCTARaw,
-        path: normalizeGiveNavPath(navCTARaw.path) || '/support/get-involved',
-        label: t('donate') || navCTARaw.label,
+        path: normalizeGiveNavPath(navDonate.path || navCTARaw.path) || '/support/get-involved',
+        label: navDonate.label,
       },
+      siteButtons,
+      footerCta: footerCtaContent(siteButtons, locale, defaultLocale, t),
+      involveStory: involveStoryContent(siteButtons, locale, defaultLocale, t),
       contactHero: contact.hero || contactHero,
       contactInfo: contact.info || contactInfo,
       contactMap: contact.map || contactMap,

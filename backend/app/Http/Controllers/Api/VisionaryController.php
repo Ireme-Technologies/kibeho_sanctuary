@@ -78,6 +78,7 @@ class VisionaryController extends Controller
             'period_label' => ['nullable', 'string', 'max:255'],
             'period_start' => ['nullable', 'string', 'max:100'],
             'period_end' => ['nullable', 'string', 'max:100'],
+            'summary' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'is_approved' => ['boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
@@ -91,11 +92,12 @@ class VisionaryController extends Controller
         $resolved = Locale::resolve(
             [
                 'name' => $item->name,
+                'summary' => $item->summary,
                 'description' => $item->description,
                 'period_label' => $item->period_label,
             ],
             $item->translations,
-            ['name', 'description', 'period_label'],
+            ['name', 'summary', 'description', 'period_label'],
             $locale
         );
 
@@ -109,11 +111,12 @@ class VisionaryController extends Controller
             'periodLabel' => $resolved['period_label'],
             'periodStart' => $item->period_start,
             'periodEnd' => $item->period_end,
+            'summary' => $resolved['summary'],
             'description' => $resolved['description'],
             'isApproved' => $item->is_approved,
             'sortOrder' => $item->sort_order,
             'isPublished' => $item->is_published,
-            'path' => '/shrine/visionaries#'.$item->slug,
+            'path' => '/shrine/visionaries/'.$item->slug,
             'translations' => $item->translations ?? [],
         ];
     }
