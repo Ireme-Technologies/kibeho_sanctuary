@@ -53,6 +53,7 @@ export function isStoryPageKey(key) {
 export function pageKind(key) {
   if (isPillarExploreKey(key)) return 'pillar.explore'
   if (key === 'shrine.welcome') return 'shrine.welcome'
+  if (key === 'shrine.schedule') return 'shrine.schedule'
   if (key === 'home.activities') return 'home.activities'
   if (key === 'home.welcome') return 'home.welcome'
   if (key === 'home.quickLinks') return 'home.quickLinks'
@@ -63,6 +64,25 @@ export function pageKind(key) {
   if (key === 'home.partners') return 'home.partners'
   if (isHomeSectionKey(key)) return 'home'
   return 'cms'
+}
+
+function normalizeGuidelines(raw) {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .map((item) => {
+      if (typeof item === 'string') {
+        return { title: item, text: '', tone: 'caution', icon: 'alert', image: '' }
+      }
+      if (!item || typeof item !== 'object') return null
+      return {
+        title: item.title || item.label || '',
+        text: item.text || item.description || '',
+        tone: item.tone || 'caution',
+        icon: item.icon || 'alert',
+        image: item.image || '',
+      }
+    })
+    .filter((item) => item && (item.title || item.text))
 }
 
 function buttonsFromContent(content = {}) {
@@ -227,6 +247,10 @@ export function emptyPageForm() {
     mapImage: '',
     mapAlt: '',
     mapCaption: '',
+    weeklyIntro: '',
+    annualIntro: '',
+    guidelinesTitle: '',
+    guidelines: [],
   }
 }
 
@@ -273,6 +297,10 @@ export function contentToForm(content = {}, key = '') {
     mapImage: map.image || merged.mapImage || '',
     mapAlt: map.alt || '',
     mapCaption: map.caption || '',
+    weeklyIntro: merged.weeklyIntro || '',
+    annualIntro: merged.annualIntro || '',
+    guidelinesTitle: merged.guidelinesTitle || '',
+    guidelines: normalizeGuidelines(merged.guidelines),
   }
 }
 
@@ -322,6 +350,14 @@ export function formToContent(form, previous = {}, key = '') {
       alt: form.mapAlt,
       caption: form.mapCaption,
     },
+    ...(key === 'shrine.schedule'
+      ? {
+          weeklyIntro: form.weeklyIntro || '',
+          annualIntro: form.annualIntro || '',
+          guidelinesTitle: form.guidelinesTitle || '',
+          guidelines: normalizeGuidelines(form.guidelines),
+        }
+      : {}),
     ...(isPillarExploreKey(key)
       ? {
           heading: form.title,

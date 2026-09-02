@@ -8,6 +8,8 @@ import { GIVE_PAGE_PATH } from '@utils/giveServices'
 import { useSwitchLocale } from '@router/LocaleRoute'
 import styles from './Footer.module.css'
 
+const LOCATION_CHAIN = ['Africa', 'Rwanda', 'Kibeho']
+
 export default function Footer() {
   const { company, footerLinks, footerServiceLinks, footerCta } = useContent()
   const { locales, locale, t } = useLocale()
@@ -18,17 +20,38 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.ctaBand}`}>
-        <div className={styles.ctaCopy}>
-          <h2 className={styles.ctaTitle}>{displayTitleLabel(footerCta.title, locale)}</h2>
-          <p className={styles.ctaText}>{footerCta.text}</p>
+        <div className={styles.ctaPlace}>
+          <div className={styles.locationRow}>
+            <span className={styles.locationIcon} aria-hidden="true">
+              <MapPin size={18} strokeWidth={2} />
+            </span>
+            <p className={styles.locationChain} aria-label="Africa, Rwanda, Kibeho">
+              {LOCATION_CHAIN.map((part, index) => (
+                <span key={part} className={styles.locationPart}>
+                  {index > 0 ? <span className={styles.locationSep} aria-hidden="true" /> : null}
+                  <span className={index === LOCATION_CHAIN.length - 1 ? styles.locationHere : undefined}>
+                    {part}
+                  </span>
+                </span>
+              ))}
+            </p>
+          </div>
+          <h2 className={styles.ctaTitle}>
+            {displayTitleLabel(
+              footerCta.title || 'The only Marian place in Africa recognised by the Church',
+              locale,
+            )}
+          </h2>
+          {footerCta.text ? <p className={styles.ctaText}>{footerCta.text}</p> : null}
         </div>
+
         <div className={styles.ctaActions}>
-          <LocalizedNavLink to={footerCta.primary.path || GIVE_PAGE_PATH} className={styles.ctaBtn}>
-            <Heart size={16} aria-hidden="true" />
-            {displayCapsLabel(footerCta.primary.label, locale)}
+          <LocalizedNavLink to={footerCta.primary.path || '/pilgrimage/plan'} className={styles.ctaBtn}>
+            {displayCapsLabel(footerCta.primary.label || 'Plan your pilgrimage', locale)}
           </LocalizedNavLink>
-          <LocalizedNavLink to={footerCta.secondary.path} className={styles.ctaBtnGhost}>
-            {displayCapsLabel(footerCta.secondary.label, locale)}
+          <LocalizedNavLink to={footerCta.secondary.path || GIVE_PAGE_PATH} className={styles.ctaBtnGhost}>
+            <Heart size={16} aria-hidden="true" />
+            {displayCapsLabel(footerCta.secondary.label || 'Donate', locale)}
           </LocalizedNavLink>
         </div>
       </div>

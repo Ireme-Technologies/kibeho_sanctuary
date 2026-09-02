@@ -122,6 +122,23 @@ function buildLinksFromItem(item) {
   return links
 }
 
+/** Merge CMS submenu with static defaults so every pillar link stays visible. */
+function mergeLinksWithDefaults(links, pillarId) {
+  const defaults = defaultPillarExploreLinks(pillarId)
+  if (!defaults.length) return links
+  if (!links.length) return defaults
+
+  const seen = new Set(links.map((link) => pathBase(link.path)))
+  const merged = [...links]
+  defaults.forEach((link) => {
+    const base = pathBase(link.path)
+    if (!base || seen.has(base)) return
+    seen.add(base)
+    merged.push(link)
+  })
+  return merged
+}
+
 function resolvePillarId(current) {
   if (EXTRA_PILLAR_PATHS[current]) return EXTRA_PILLAR_PATHS[current]
   if (current.startsWith('/pilgrimages/')) return 'pilgrimage'
@@ -150,11 +167,11 @@ export function getPillarExploreNav(pathname, primaryNav = []) {
       current === hubPath || children.some((child) => pathMatches(current, child.path))
     if (!onSection) continue
 
-    const links = buildLinksFromItem(item)
-    if (!links.length) continue
-
     const pillarId = pillarIdForHub(hubPath)
     if (!pillarId) continue
+
+    const links = mergeLinksWithDefaults(buildLinksFromItem(item), pillarId)
+    if (!links.length) continue
 
     return {
       pillarId,
@@ -171,7 +188,7 @@ export function getPillarExploreNav(pathname, primaryNav = []) {
 
   const item = navItemForPillar(items, pillarId)
   const route = PILLAR_ROUTES.find((entry) => entry.pillarId === pillarId)
-  const links = buildLinksFromItem(item)
+  const links = mergeLinksWithDefaults(buildLinksFromItem(item), pillarId)
   if (!links.length) return null
 
   return {

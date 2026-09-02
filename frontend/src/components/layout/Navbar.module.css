@@ -15,22 +15,25 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
+  min-width: 0;
 }
 
 .welcome {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 0.9rem;
   font-weight: 500;
   opacity: 0.95;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 0;
 }
 
 .occasionLink {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
+  flex: 1 1 auto;
   min-width: 0;
   max-width: 100%;
   color: inherit;
@@ -95,6 +98,7 @@
   align-items: baseline;
   gap: 0.45rem;
   min-width: 0;
+  overflow: hidden;
 }
 
 .occasionTitle {
@@ -135,7 +139,8 @@
   display: none;
   align-items: center;
   gap: 1.1rem;
-  flex-shrink: 0;
+  flex: 0 0 auto;
+  max-width: 48%;
 }
 
 @media (min-width: 900px) {

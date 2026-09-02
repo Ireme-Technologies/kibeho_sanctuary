@@ -45,11 +45,18 @@ export default function PillarExploreSection() {
 
   const links = nav.links
 
-  const footerImage = resolveHeaderImage(
+  // Prefer an explicit explore/footer image; otherwise use this page's header/hero.
+  const pageHeaderImage =
+    pageContent.heroImage || pageContent.backgroundImage || pageContent.image || ''
+  const exploreImageSource =
     pageContent.footerImage ||
-      pageContent.map?.image ||
-      pageContent.mapImage ||
-      pillarMeta.footerImage,
+    pageContent.map?.image ||
+    pageContent.mapImage ||
+    pageHeaderImage ||
+    pillarMeta.footerImage
+
+  const footerImage = resolveHeaderImage(
+    exploreImageSource,
     pillarMeta.footerImage || '/images/sanctuary/hero.jpg',
   )
 
@@ -57,6 +64,9 @@ export default function PillarExploreSection() {
     pageContent.footerImageAlt ||
     pageContent.map?.alt ||
     pageContent.mapAlt ||
+    (pageHeaderImage
+      ? pageContent.title || pageContent.heading || pillarMeta.heading || nav.pillarLabel
+      : null) ||
     pillarMeta.footerImageAlt ||
     pillarMeta.heading ||
     nav.pillarLabel

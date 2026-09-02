@@ -33,7 +33,7 @@ const TABS = [
   { id: 'page', label: 'All pages' },
 ]
 
-const ARRAY_FIELDS = ['blocks', 'links', 'highlights', 'items', 'values']
+const ARRAY_FIELDS = ['blocks', 'links', 'highlights', 'items', 'values', 'guidelines', 'involveLinks']
 
 const emptyContent = emptyPageForm
 
@@ -131,6 +131,9 @@ function buildSectionTranslations(translations, defaultLocale) {
         'leadershipIntro',
         'mapAlt',
         'mapCaption',
+        'weeklyIntro',
+        'annualIntro',
+        'guidelinesTitle',
       ].forEach((field) => {
         if (overlay[field] != null && String(overlay[field]).trim() !== '') content[field] = overlay[field]
       })
@@ -770,6 +773,79 @@ export default function SectionsAdminPage() {
                   fields={[
                     { key: 'title', label: 'Title' },
                     { key: 'time', label: 'Time' },
+                  ]}
+                />
+              </>
+            ) : null}
+
+            {kind === 'shrine.schedule' ? (
+              <>
+                <h2 className={styles.sectionTitle}>Schedule page sections</h2>
+                <p className={styles.muted}>
+                  Weekly Mass times are managed under <strong>Mass schedules</strong>. Annual celebrations pull
+                  from <strong>Pilgrimage events</strong>. Edit section copy and visitor guidelines here.
+                </p>
+                <div className={styles.field}>
+                  <label>Weekly programmes intro</label>
+                  <RichTextEditor
+                    value={getPageContentField(form, sectionTranslations, 'weeklyIntro', localeTab, defaultLocale)}
+                    onChange={(html) => patchField('weeklyIntro', html)}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Annual celebrations intro</label>
+                  <RichTextEditor
+                    value={getPageContentField(form, sectionTranslations, 'annualIntro', localeTab, defaultLocale)}
+                    onChange={(html) => patchField('annualIntro', html)}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Guidelines heading</label>
+                  <input
+                    value={getPageContentField(form, sectionTranslations, 'guidelinesTitle', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('guidelinesTitle', e.target.value)}
+                    placeholder="Guidelines of the Shrine"
+                  />
+                </div>
+                <h2 className={styles.sectionTitle}>Guidelines of the Shrine</h2>
+                <p className={styles.muted}>
+                  Caution / alert items shown below the schedule. Use an icon tone and optional image so visitors
+                  notice each rule.
+                </p>
+                <ListEditor
+                  label="Guidelines"
+                  items={getPageContentField(form, sectionTranslations, 'guidelines', localeTab, defaultLocale)}
+                  onChange={(guidelines) => patchField('guidelines', guidelines)}
+                  addLabel="Add guideline"
+                  emptyItem={{ title: '', text: '', tone: 'caution', icon: 'alert', image: '' }}
+                  fields={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'text', label: 'Details', type: 'textarea' },
+                    {
+                      key: 'tone',
+                      label: 'Tone',
+                      type: 'select',
+                      options: [
+                        { value: 'caution', label: 'Caution' },
+                        { value: 'alert', label: 'Alert' },
+                        { value: 'info', label: 'Info' },
+                      ],
+                    },
+                    {
+                      key: 'icon',
+                      label: 'Icon',
+                      type: 'select',
+                      options: [
+                        { value: 'alert', label: 'Alert triangle' },
+                        { value: 'info', label: 'Information' },
+                        { value: 'clock', label: 'Time / arrive early' },
+                        { value: 'shirt', label: 'Dress code' },
+                        { value: 'volume', label: 'Silence / quiet' },
+                        { value: 'users', label: 'Crowds / stewards' },
+                        { value: 'map', label: 'Places / paths' },
+                      ],
+                    },
+                    { key: 'image', label: 'Optional image', type: 'image', folder: 'pages' },
                   ]}
                 />
               </>

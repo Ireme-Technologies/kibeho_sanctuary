@@ -1,9 +1,10 @@
 import { confirmDelete } from './confirmDelete'
+import ImageField from './ImageField'
 import styles from '../admin.module.css'
 
 /**
  * Simple repeater for arrays of objects with the same string fields.
- * fields: [{ key, label, placeholder?, type?, options? }]
+ * fields: [{ key, label, placeholder?, type?, options?, folder?, rows? }]
  * Supports Up/Down reordering for menu and list management.
  */
 export default function ListEditor({
@@ -54,31 +55,42 @@ export default function ListEditor({
             <div className={styles.listEditorFields}>
               {fields.map((field) => (
                 <div key={field.key} className={styles.field}>
-                  <label>{field.label}</label>
-                  {field.type === 'select' ? (
-                    <select
+                  {field.type === 'image' ? (
+                    <ImageField
+                      label={field.label}
                       value={row[field.key] || ''}
-                      onChange={(e) => updateRow(index, field.key, e.target.value)}
-                    >
-                      {(field.options || []).map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                  ) : field.type === 'textarea' ? (
-                    <textarea
-                      rows={field.rows || 3}
-                      value={row[field.key] || ''}
-                      placeholder={field.placeholder || ''}
-                      onChange={(e) => updateRow(index, field.key, e.target.value)}
+                      onChange={(url) => updateRow(index, field.key, url)}
+                      folder={field.folder || 'uploads'}
                     />
                   ) : (
-                    <input
-                      value={row[field.key] || ''}
-                      placeholder={field.placeholder || ''}
-                      onChange={(e) => updateRow(index, field.key, e.target.value)}
-                    />
+                    <>
+                      <label>{field.label}</label>
+                      {field.type === 'select' ? (
+                        <select
+                          value={row[field.key] || ''}
+                          onChange={(e) => updateRow(index, field.key, e.target.value)}
+                        >
+                          {(field.options || []).map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
+                        </select>
+                      ) : field.type === 'textarea' ? (
+                        <textarea
+                          rows={field.rows || 3}
+                          value={row[field.key] || ''}
+                          placeholder={field.placeholder || ''}
+                          onChange={(e) => updateRow(index, field.key, e.target.value)}
+                        />
+                      ) : (
+                        <input
+                          value={row[field.key] || ''}
+                          placeholder={field.placeholder || ''}
+                          onChange={(e) => updateRow(index, field.key, e.target.value)}
+                        />
+                      )}
+                    </>
                   )}
                 </div>
               ))}

@@ -1,0 +1,1 @@
+import{r as t}from"./index-B_f7VgUh.js";function a(e=.3){const c=typeof e=="number"?e:(e==null?void 0:e.threshold)??.3,r=t.useRef(null),[s,f]=t.useState(!1);return t.useEffect(()=>{const u=r.current;if(!u)return;const n=new IntersectionObserver(([i])=>{i.isIntersecting&&(f(!0),n.disconnect())},{threshold:c});return n.observe(u),()=>n.disconnect()},[c]),[r,s]}export{a as u};

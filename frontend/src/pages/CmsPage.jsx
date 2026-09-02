@@ -280,6 +280,8 @@ export default function CmsPage() {
   }
   const rawTitle = data.title || fallback.title
   const pageTitle = displayTitleLabel(rawTitle, locale)
+  const blocks = data.blocks?.length ? data.blocks : fallback.blocks || []
+  const links = data.links?.length ? data.links : fallback.links || []
 
   useEffect(() => {
     if (!key || needsCanonicalRedirect) return

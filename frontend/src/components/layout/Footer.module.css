@@ -10,38 +10,111 @@
 .ctaBand {
   position: relative;
   z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) auto;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  margin-bottom: var(--space-xl);
+  padding: clamp(1.5rem, 3vw, 2.15rem) clamp(1.35rem, 3vw, 2.25rem);
+  border: 1px solid rgba(126, 196, 240, 0.28);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(ellipse 70% 120% at 0% 50%, rgba(74, 163, 224, 0.16), transparent 55%),
+    rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.ctaPlace {
+  min-width: 0;
+}
+
+.locationRow {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.7rem;
+  min-width: 0;
+}
+
+.locationIcon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  color: var(--color-navy-deep);
+  background: var(--color-sky-light);
+  box-shadow: 0 0 0 4px rgba(74, 163, 224, 0.18);
+}
+
+.locationChain {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xl);
-  padding: 1.75rem 2rem;
-  border: 1px solid rgba(126, 196, 240, 0.28);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.06);
+  gap: 0.15rem 0;
+  margin: 0;
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.locationPart {
+  display: inline-flex;
+  align-items: center;
+}
+
+.locationSep {
+  display: inline-block;
+  width: 0.35rem;
+  height: 0.35rem;
+  margin: 0 0.55rem;
+  border-radius: 50%;
+  background: rgba(126, 196, 240, 0.75);
+}
+
+.locationHere {
+  color: var(--color-sky-light);
+  letter-spacing: 0.16em;
 }
 
 .ctaTitle {
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.45rem;
   font-family: var(--font-heading);
-  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
   font-weight: 700;
   line-height: 1.25;
-  max-width: 22ch;
+  max-width: 28ch;
 }
 
 .ctaText {
   margin: 0;
   color: rgba(255, 255, 255, 0.82);
   font-size: var(--fs-body);
-  max-width: 42ch;
+  max-width: 46ch;
+  line-height: 1.55;
 }
 
 .ctaActions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+
+@media (max-width: 860px) {
+  .ctaBand {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaActions {
+    justify-content: flex-start;
+  }
 }
 
 .ctaBtn,

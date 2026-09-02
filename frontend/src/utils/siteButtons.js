@@ -40,16 +40,47 @@ export function navDonateButton(siteButtons, locale, defaultLocale, t) {
 export function footerCtaContent(siteButtons, locale, defaultLocale, t) {
   const button = siteButtons?.footerCta || defaultSiteButtons.footerCta
   const pack = localePack(button, locale, defaultLocale)
+  const fallback = localePack(defaultSiteButtons.footerCta, locale, defaultLocale)
+  const primaryLabel = pack.primaryLabel || fallback.primaryLabel || 'Plan your pilgrimage'
+  const secondaryLabel = pack.secondaryLabel || fallback.secondaryLabel || 'Donate'
+  const stalePair =
+    /^(donate|faire un don|tanga|spenden)$/i.test(String(primaryLabel).trim()) &&
+    /partner|partenair|umufatanyabikorwa|support our shrine|soutenir notre sanctuaire/i.test(
+      String(secondaryLabel),
+    )
+
+  if (stalePair) {
+    return {
+      title: fallback.title || 'The only Marian place in Africa recognised by the Church',
+      text: fallback.text || '',
+      primary: {
+        path: defaultSiteButtons.footerCta.primaryPath,
+        label: fallback.primaryLabel || 'Plan your pilgrimage',
+      },
+      secondary: {
+        path: defaultSiteButtons.footerCta.secondaryPath,
+        label: fallback.secondaryLabel || 'Donate',
+      },
+    }
+  }
+
+  const staleMissionTitle = /support our mission|soutenir notre mission|fasha umurimo|unterstützen sie unsere mission/i.test(
+    String(pack.title || ''),
+  )
+
   return {
-    title: pack.title || t('supportMission') || 'Support our mission',
-    text: pack.text || t('supportMissionText') || '',
+    title:
+      (staleMissionTitle ? fallback.title : pack.title) ||
+      fallback.title ||
+      'The only Marian place in Africa recognised by the Church',
+    text: pack.text || fallback.text || t('supportMissionText') || '',
     primary: {
-      path: button.primaryPath || '/support/get-involved',
-      label: pack.primaryLabel || t('donate') || 'Donate',
+      path: button.primaryPath || defaultSiteButtons.footerCta.primaryPath,
+      label: primaryLabel,
     },
     secondary: {
-      path: button.secondaryPath || '/support/partners',
-      label: pack.secondaryLabel || t('becomeVolunteer') || 'Become a partner',
+      path: button.secondaryPath || defaultSiteButtons.footerCta.secondaryPath,
+      label: secondaryLabel,
     },
   }
 }

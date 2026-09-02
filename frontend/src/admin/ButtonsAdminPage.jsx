@@ -155,7 +155,7 @@ export default function ButtonsAdminPage() {
             />
           </div>
           <MenuPathFields
-            path={buttons.footerCta?.primaryPath || '/support/get-involved'}
+            path={buttons.footerCta?.primaryPath || '/pilgrimage/plan'}
             label="Primary opens"
             onChange={(path) =>
               setButtons((prev) => ({ ...prev, footerCta: { ...prev.footerCta, primaryPath: path } }))
@@ -178,7 +178,7 @@ export default function ButtonsAdminPage() {
             />
           </div>
           <MenuPathFields
-            path={buttons.footerCta?.secondaryPath || '/support/partners'}
+            path={buttons.footerCta?.secondaryPath || '/support/get-involved'}
             label="Secondary opens"
             onChange={(path) =>
               setButtons((prev) => ({ ...prev, footerCta: { ...prev.footerCta, secondaryPath: path } }))

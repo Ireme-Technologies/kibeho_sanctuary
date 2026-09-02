@@ -114,13 +114,35 @@ class RestructureContentSeeder extends Seeder
                 'content' => [
                     'title' => 'Schedule of the Shrine',
                     'subtitle' => 'Weekly prayer, annual celebrations, and visitor guidelines',
-                    'weeklyIntro' => '<p>Join the daily prayer of the Shrine — Mass, confession, and Marian devotion throughout the week.</p>',
-                    'annualIntro' => '<p>Major feast days and annual celebrations draw pilgrims from Rwanda and around the world.</p>',
+                    'intro' => '<p>Join the daily and festal celebration of Holy Mass at the Shrine of Our Lady of Kibeho. Schedules may vary on feast days and major pilgrimages — confirm with the Pilgrimage Office when planning a group visit.</p>',
+                    'weeklyIntro' => '<p>Join the daily prayer of the Shrine — Mass, confession, and Marian devotion throughout the week. Sundays and Thursday processions are especially important for pilgrims.</p>',
+                    'annualIntro' => '<p>Major feast days and annual celebrations draw pilgrims from Rwanda and around the world. Check dates before you travel.</p>',
+                    'guidelinesTitle' => 'Guidelines of the Shrine',
                     'guidelines' => [
-                        'Dress modestly for church and outdoor prayer',
-                        'Arrive early on feast days for principal Mass',
-                        'Respect silence at apparition sites',
-                        'Follow directions from shrine stewards',
+                        [
+                            'title' => 'Dress modestly',
+                            'text' => 'Dress modestly for church and outdoor prayer throughout the Shrine grounds.',
+                            'tone' => 'caution',
+                            'icon' => 'shirt',
+                        ],
+                        [
+                            'title' => 'Arrive early on feast days',
+                            'text' => 'Principal Masses draw large pilgrim crowds — arrive early and follow steward directions.',
+                            'tone' => 'alert',
+                            'icon' => 'clock',
+                        ],
+                        [
+                            'title' => 'Respect silence',
+                            'text' => 'Keep silence at apparition sites and during prayer in the compound.',
+                            'tone' => 'caution',
+                            'icon' => 'volume',
+                        ],
+                        [
+                            'title' => 'Follow shrine stewards',
+                            'text' => 'Stewards guide processions, seating, and crowd flow for safety and prayer.',
+                            'tone' => 'info',
+                            'icon' => 'users',
+                        ],
                     ],
                     'cta' => [
                         'primary' => ['label' => 'Plan Your Pilgrimage', 'path' => '/pilgrimage/plan'],

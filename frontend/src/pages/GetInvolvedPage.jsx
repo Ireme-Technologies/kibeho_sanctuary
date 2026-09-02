@@ -33,6 +33,10 @@ export default function GetInvolvedPage() {
 
   const setService = (key) => {
     setParams(key && key !== 'offerings' ? { service: key } : {}, { replace: true })
+    const form = document.getElementById('pledge')
+    if (form) {
+      form.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
   }
 
   return (
@@ -53,11 +57,16 @@ export default function GetInvolvedPage() {
       <div className={`container ${styles.body}`}>
         {page.intro ? <RichText html={page.intro} className={styles.intro} /> : null}
 
-        <GiveWayCards items={giveWays} variant="page" />
+        <GiveWayCards
+          items={giveWays}
+          variant="page"
+          activeKey={serviceKey}
+          onSelect={setService}
+        />
 
         <OfferingForm
           serviceKey={serviceKey}
-          showServicePicker
+          showServicePicker={false}
           onServiceChange={setService}
           showShare={false}
         />

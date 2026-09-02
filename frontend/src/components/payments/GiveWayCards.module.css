@@ -35,6 +35,10 @@
   background: var(--color-white);
   color: var(--color-navy);
   box-shadow: var(--shadow-sm);
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
 }
 
 .card:hover {
@@ -46,6 +50,23 @@
 .page .card:hover {
   border-color: var(--color-sky-light);
   background: var(--color-white);
+}
+
+.page .cardActive {
+  border-color: var(--color-sky);
+  background: linear-gradient(165deg, rgba(74, 163, 224, 0.12), rgba(74, 163, 224, 0.04));
+  box-shadow:
+    inset 3px 0 0 var(--color-sky),
+    0 8px 20px rgba(18, 40, 71, 0.08);
+}
+
+.page .cardActive .iconWrap {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.page .cardActive .cta {
+  color: var(--color-navy);
 }
 
 .iconWrap {
