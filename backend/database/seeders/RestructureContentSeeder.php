@@ -399,7 +399,7 @@ class RestructureContentSeeder extends Seeder
                 'heading' => 'Main Places of the Shrine',
                 'subline' => 'Walk the Chapel of the Seven Sorrows, apparition sites, the Holy Spring, and the ways of prayer across the hillside.',
                 'primaryCta' => ['label' => 'Explore the Shrine', 'path' => '/shrine'],
-                'secondaryCta' => ['label' => 'Shrine Map', 'path' => '/shrine/map'],
+                'secondaryCta' => ['label' => 'Welcome', 'path' => '/shrine/welcome'],
             ]),
         ]);
 

@@ -16,7 +16,6 @@ import OfferingForm from '@components/OfferingForm'
 import GroupRegistrationForm from '@components/GroupRegistrationForm'
 import GiveInvite, { ActionInvite, InvolveMore, isStaleInviteCopy, isStalePaymentCopy } from '@components/payments/GiveInvite'
 import { getInvolvedHref, serviceKeyForActionKind } from '@utils/giveServices'
-import ShrineMapGuide from '@components/shrine/ShrineMapGuide'
 import RichText from '@components/ui/RichText'
 import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
 import { applyPageSeo, stripHtml } from '@utils/seo'
@@ -308,6 +307,10 @@ export default function CmsPage() {
     return <Navigate to={withLocale(preferredPath, locale)} replace />
   }
 
+  if (key === 'shrine.map') {
+    return <Navigate to={withLocale('/shrine/welcome#shrine-map', locale)} replace />
+  }
+
   const heroImage = resolveHeaderImage(data.heroImage)
   const actionPage = {
     'spirituality.prayer-intentions': { kind: 'prayer', heroCta: 'Submit a prayer intention', involve: 'prayer' },
@@ -429,7 +432,6 @@ export default function CmsPage() {
           ? blocks.map((block, index) => <Block key={`${block.type}-${index}`} block={block} />)
           : null}
 
-        {key === 'shrine.map' ? <ShrineMapGuide /> : null}
         {key === 'pilgrimage.practical-guidelines' ? <GroupRegistrationForm /> : null}
 
         {actionPage?.kind === 'prayer' ? <OfferingForm kind="prayer" /> : null}

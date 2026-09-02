@@ -6,7 +6,7 @@ export function defaultShrineExploreLinks() {
   const shrine = primaryNav.find((item) => item.path === '/shrine')
   const children = Array.isArray(shrine?.children) ? shrine.children : []
   return children
-    .filter((item) => item.path && item.path !== '/shrine/welcome')
+    .filter((item) => item.path && item.path !== '/shrine/welcome' && item.path !== '/shrine/map')
     .map((item) => ({ label: item.label, path: item.path }))
 }
 

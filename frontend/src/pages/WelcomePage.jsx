@@ -17,7 +17,6 @@ import styles from './WelcomePage.module.css'
 
 const VALUE_ICONS = [Sparkles, Heart, Church, Leaf]
 const GUIDELINES_PATH = '/pilgrimage/practical-guidelines'
-const MAP_PAGE_PATH = '/shrine/map'
 const TEAM_PAGE_PATH = '/shrine/pastoral-team'
 const LEADERSHIP_LIMIT = 4
 
@@ -70,11 +69,16 @@ export default function WelcomePage() {
   )
   const leadershipTitle = pick(data, 'leadership.title', defaults.leadership.title)
   const leadershipIntro = pick(data, 'leadership.intro', defaults.leadership.intro)
-  const mapCaption = pick(data, 'map.caption', defaults.map.caption)
   const mapAlt = pick(data, 'map.alt', defaults.map.alt)
   const exploreLinks = useMemo(() => {
     const links = Array.isArray(data.exploreLinks) && data.exploreLinks.length ? data.exploreLinks : defaults.exploreLinks
-    return links.filter((item) => item?.label && item?.path && item.path !== '/shrine/welcome')
+    return links.filter(
+      (item) =>
+        item?.label &&
+        item?.path &&
+        item.path !== '/shrine/welcome' &&
+        item.path !== '/shrine/map',
+    )
   }, [data.exploreLinks, defaults.exploreLinks])
 
   const featuredTeam = team.slice(0, LEADERSHIP_LIMIT)
@@ -259,22 +263,8 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      <div className={styles.mapBand}>
-        <LocalizedLink to={MAP_PAGE_PATH} className={styles.mapLink}>
-          <img src={mapImage} alt={mapAlt} className={styles.mapImage} loading="lazy" />
-          <div className={styles.mapOverlay}>
-            <div className="container">
-              <div className={styles.mapPanel}>
-                <h2>Shrine map</h2>
-                {mapCaption ? <p>{mapCaption}</p> : null}
-                <span className={styles.mapCta}>
-                  Open the interactive map
-                  <ArrowRight size={16} aria-hidden="true" />
-                </span>
-              </div>
-            </div>
-          </div>
-        </LocalizedLink>
+      <div className={styles.mapBand} id="shrine-map">
+        <img src={mapImage} alt={mapAlt} className={styles.mapImage} loading="lazy" />
       </div>
     </div>
   )

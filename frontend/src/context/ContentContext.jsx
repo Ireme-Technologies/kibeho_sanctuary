@@ -27,6 +27,7 @@ import {
   ensureNewsNavChildren,
   normalizeNavGivePaths,
   normalizeGiveNavPath,
+  stripShrineMapFromNav,
 } from '@data/navigation'
 import { resolveNavLabel } from '@i18n/navKeys'
 import {
@@ -91,7 +92,7 @@ function isStalePrimaryNav(apiPrimary) {
   })
   const shrineChildren = Array.isArray(shrineItem?.children) ? shrineItem.children : []
   const hasShrineMap = shrineChildren.some((child) => String(child?.path || '').includes('/shrine/map'))
-  if (!hasShrineMap) return true
+  if (hasShrineMap) return true
 
   return false
 }
@@ -244,9 +245,11 @@ export function ContentProvider({ children }) {
       refresh: () => load(locale),
       company,
       primaryNav: translateNav(
-        normalizeNavGivePaths(
-          ensureBroadcastNav(
-            ensureNewsNavChildren(ensureOurLadyNavPath(ensureOurLadyNavChildren(primaryNavRaw))),
+        stripShrineMapFromNav(
+          normalizeNavGivePaths(
+            ensureBroadcastNav(
+              ensureNewsNavChildren(ensureOurLadyNavPath(ensureOurLadyNavChildren(primaryNavRaw))),
+            ),
           ),
         ),
         t,

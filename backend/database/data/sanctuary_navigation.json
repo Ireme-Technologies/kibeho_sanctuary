@@ -5,7 +5,6 @@
       "path": "/shrine",
       "children": [
         { "label": "Welcome", "path": "/shrine/welcome" },
-        { "label": "Shrine Map", "path": "/shrine/map" },
         { "label": "History", "path": "/shrine/history" },
         { "label": "Apparition Sites", "path": "/shrine/apparition-sites" },
         { "label": "Visionaries", "path": "/shrine/visionaries" },

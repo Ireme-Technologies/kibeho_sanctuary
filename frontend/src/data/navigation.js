@@ -9,7 +9,6 @@ export const primaryNav = [
     path: '/shrine',
     children: [
       { label: 'Welcome', path: '/shrine/welcome' },
-      { label: 'Shrine Map', path: '/shrine/map' },
       { label: 'History', path: '/shrine/history' },
       { label: 'Apparition Sites', path: '/shrine/apparition-sites' },
       { label: 'Visionaries', path: '/shrine/visionaries' },
@@ -194,7 +193,6 @@ export function ensureBroadcastNav(items) {
 export function ensureOurLadyNavChildren(items) {
   if (!Array.isArray(items)) return items
   const extras = [
-    { label: 'Shrine Map', path: '/shrine/map' },
     { label: 'Pastoral Team', path: '/shrine/pastoral-team' },
     { label: 'Communities', path: '/shrine/communities' },
   ]
@@ -242,4 +240,16 @@ export function normalizeNavGivePaths(items) {
     path: normalizeGiveNavPath(item.path),
     children: item.children ? normalizeNavGivePaths(item.children) : item.children,
   }))
+}
+
+const SHRINE_MAP_PATH = '/shrine/map'
+
+/** Shrine map is shown on the welcome page only — keep it out of pillar submenus. */
+export function stripShrineMapFromNav(items) {
+  if (!Array.isArray(items)) return items
+  return items.map((item) => {
+    if (!Array.isArray(item.children)) return item
+    const children = item.children.filter((child) => navPath(child) !== SHRINE_MAP_PATH)
+    return children.length === item.children.length ? item : { ...item, children }
+  })
 }
