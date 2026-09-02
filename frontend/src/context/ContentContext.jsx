@@ -51,7 +51,7 @@ import {
   resolveLogo,
   resolvePreloaderLogo,
 } from '@utils/brand'
-import { applyThemeToDocument } from '@utils/theme'
+import { applyThemeToDocument, normalizeTheme, DEFAULT_THEME } from '@utils/theme'
 
 const ContentContext = createContext(null)
 
