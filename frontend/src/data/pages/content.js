@@ -8,6 +8,8 @@ const page = (partial) => ({
   title: '',
   subtitle: '',
   heroImage: '',
+  footerImage: '',
+  footerImageAlt: '',
   intro: '',
   blocks: [],
   links: [],

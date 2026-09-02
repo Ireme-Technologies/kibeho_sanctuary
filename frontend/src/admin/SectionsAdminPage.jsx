@@ -602,7 +602,7 @@ export default function SectionsAdminPage() {
                 }}
               />
             </div>
-            {localeTab === defaultLocale ? (
+            {localeTab === defaultLocale && kind !== 'pillar.explore' ? (
               <ImageField
                 label="Header / hero image"
                 value={form.heroImage}
@@ -610,10 +610,69 @@ export default function SectionsAdminPage() {
                 folder="pages"
               />
             ) : null}
-            {localeTab === defaultLocale && !form.heroImage && defaultImage ? (
+            {localeTab === defaultLocale && kind !== 'pillar.explore' && !form.heroImage && defaultImage ? (
               <p className={styles.muted}>Currently falling back to the default header image.</p>
             ) : null}
 
+            {kind !== 'pillar.explore' && kind !== 'home' && localeTab === defaultLocale ? (
+              <>
+                <h2 className={styles.sectionTitle}>Footer explore band</h2>
+                <p className={styles.muted}>
+                  Image shown in the section navigation band at the bottom of this page. Leave empty to
+                  use the default image for this main menu (editable under Explore band — … in the page
+                  list).
+                </p>
+                <ImageField
+                  label="Footer image"
+                  value={form.footerImage}
+                  onChange={(url) => setForm({ ...form, footerImage: url })}
+                  folder="pages"
+                />
+                <div className={styles.field}>
+                  <label>Footer image alt text</label>
+                  <input
+                    value={form.footerImageAlt}
+                    onChange={(e) => setForm({ ...form, footerImageAlt: e.target.value })}
+                  />
+                </div>
+              </>
+            ) : null}
+
+            {kind === 'pillar.explore' && localeTab === defaultLocale ? (
+              <>
+                <h2 className={styles.sectionTitle}>Default footer image</h2>
+                <p className={styles.muted}>
+                  Used on all pages in this menu unless a page sets its own footer image above.
+                </p>
+                <ImageField
+                  label="Footer image"
+                  value={form.footerImage}
+                  onChange={(url) => setForm({ ...form, footerImage: url })}
+                  folder="pages"
+                />
+                <div className={styles.field}>
+                  <label>Footer image alt text</label>
+                  <input
+                    value={form.footerImageAlt}
+                    onChange={(e) => setForm({ ...form, footerImageAlt: e.target.value })}
+                  />
+                </div>
+              </>
+            ) : null}
+
+            {kind === 'pillar.explore' ? (
+              <div className={styles.field}>
+                <label>Section introduction</label>
+                <textarea
+                  rows={3}
+                  value={getPageContentField(form, sectionTranslations, 'intro', localeTab, defaultLocale)}
+                  onChange={(e) => patchField('intro', e.target.value)}
+                />
+              </div>
+            ) : null}
+
+            {kind !== 'pillar.explore' ? (
+            <>
             <h2 className={styles.sectionTitle}>Introduction</h2>
             <div className={styles.field}>
               <label>Intro description</label>
@@ -849,7 +908,8 @@ export default function SectionsAdminPage() {
 
                 <h2 className={styles.sectionTitle}>Shrine map band</h2>
                 <p className={styles.muted}>
-                  Full-width image above the footer. Guidelines and Get involved buttons are fixed on the page.
+                  Legacy map fields. The map now appears in the footer explore band — set the Footer image on
+                  this page or under Explore band — The Shrine for the shared default.
                 </p>
                 {isDefaultLang ? (
                   <ImageField
@@ -1002,10 +1062,13 @@ export default function SectionsAdminPage() {
               </>
             ) : (
               <p className={styles.muted}>
-                Action buttons on this page (Guidelines before you come, Get involved) are built into the layout
-                and cannot be edited here.
+                Button fields are not used on the welcome page. Section navigation appears automatically at
+                the bottom of every Shrine page.
               </p>
             )}
+
+            </>
+            ) : null}
 
             {error && <p className={styles.error}>{error}</p>}
             <button className={styles.btn} type="submit" disabled={saving || !selectedKey}>

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { ArrowRight, ChevronRight, Church, Heart, Leaf, Sparkles } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Church, Heart, Leaf, Sparkles } from 'lucide-react'
 import { useInView } from '@hooks/useInView'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
@@ -7,7 +7,6 @@ import { fetchPastoralTeam } from '@api/cms'
 import { getPageFallback } from '@data/pages/content'
 import { mergePageContent } from '@data/pages/mergePageContent'
 import { welcomePageDefaults } from '@data/welcomePage'
-import { getInvolvedHref } from '@utils/giveServices'
 import { applyPageSeo, stripHtml } from '@utils/seo'
 import { cardExcerpt } from '@utils/text'
 import ContentLocaleNotice from '@components/ContentLocaleNotice'
@@ -16,7 +15,6 @@ import RichText from '@components/ui/RichText'
 import styles from './WelcomePage.module.css'
 
 const VALUE_ICONS = [Sparkles, Heart, Church, Leaf]
-const GUIDELINES_PATH = '/pilgrimage/practical-guidelines'
 const TEAM_PAGE_PATH = '/shrine/pastoral-team'
 const LEADERSHIP_LIMIT = 4
 
@@ -49,10 +47,6 @@ export default function WelcomePage() {
 
   const heroImage = resolveHeaderImage(data.heroImage, '/images/sanctuary/welcome.jpg')
   const welcomeImage = resolveHeaderImage(data.welcomeImage || data.heroImage, '/images/sanctuary/welcome.jpg')
-  const mapImage = resolveHeaderImage(
-    pick(data, 'map.image') || data.mapImage,
-    defaults.map.image,
-  )
 
   const mission = {
     eyebrow: pick(data, 'mission.eyebrow', defaults.mission.eyebrow),
@@ -69,17 +63,6 @@ export default function WelcomePage() {
   )
   const leadershipTitle = pick(data, 'leadership.title', defaults.leadership.title)
   const leadershipIntro = pick(data, 'leadership.intro', defaults.leadership.intro)
-  const mapAlt = pick(data, 'map.alt', defaults.map.alt)
-  const exploreLinks = useMemo(() => {
-    const links = Array.isArray(data.exploreLinks) && data.exploreLinks.length ? data.exploreLinks : defaults.exploreLinks
-    return links.filter(
-      (item) =>
-        item?.label &&
-        item?.path &&
-        item.path !== '/shrine/welcome' &&
-        item.path !== '/shrine/map',
-    )
-  }, [data.exploreLinks, defaults.exploreLinks])
 
   const featuredTeam = team.slice(0, LEADERSHIP_LIMIT)
   const [welcomeRef, welcomeInView] = useInView(0.12)
@@ -233,39 +216,6 @@ export default function WelcomePage() {
           </p>
         </div>
       </section>
-
-      <section className={`${styles.section} ${styles.exploreSection}`} aria-labelledby="explore-heading">
-        <div className="container">
-          <div className={styles.sectionHead}>
-            <p className={styles.eyebrow}>The Shrine</p>
-            <h2 id="explore-heading">Explore the Shrine</h2>
-            <p>Walk through history, apparition sites, the schedule, communities, and the places pilgrims come to pray.</p>
-          </div>
-          <nav className={styles.exploreGrid} aria-label="Shrine pages">
-            {exploreLinks.map((link) => (
-              <LocalizedLink key={link.path} to={link.path} className={styles.exploreLink}>
-                {link.label}
-                <ChevronRight size={18} aria-hidden="true" />
-              </LocalizedLink>
-            ))}
-          </nav>
-
-          <div className={styles.actions}>
-            <LocalizedLink to={GUIDELINES_PATH} className={styles.btnPrimary}>
-              Guidelines before you come
-              <ArrowRight size={16} aria-hidden="true" />
-            </LocalizedLink>
-            <LocalizedLink to={getInvolvedHref()} className={styles.btnGhost}>
-              Get involved
-              <Heart size={16} aria-hidden="true" />
-            </LocalizedLink>
-          </div>
-        </div>
-      </section>
-
-      <div className={styles.mapBand} id="shrine-map">
-        <img src={mapImage} alt={mapAlt} className={styles.mapImage} loading="lazy" />
-      </div>
     </div>
   )
 }

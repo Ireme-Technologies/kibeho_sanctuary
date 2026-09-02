@@ -308,7 +308,7 @@ export default function CmsPage() {
   }
 
   if (key === 'shrine.map') {
-    return <Navigate to={withLocale('/shrine/welcome#shrine-map', locale)} replace />
+    return <Navigate to={withLocale('/shrine/welcome#pillar-explore', locale)} replace />
   }
 
   const heroImage = resolveHeaderImage(data.heroImage)

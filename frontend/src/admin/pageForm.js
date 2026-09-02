@@ -11,6 +11,7 @@ import {
   accommodationHelp,
 } from '@data/home/sanctuaryHome'
 import { welcomePageDefaults } from '@data/welcomePage'
+import { isPillarExploreKey, PILLAR_EXPLORE_FALLBACKS } from '@data/pillarExplore'
 
 export const STORY_INVOLVE_DEFAULTS = {
   involveTitle: 'This call is still being lived at Kibeho',
@@ -50,6 +51,7 @@ export function isStoryPageKey(key) {
 }
 
 export function pageKind(key) {
+  if (isPillarExploreKey(key)) return 'pillar.explore'
   if (key === 'shrine.welcome') return 'shrine.welcome'
   if (key === 'home.activities') return 'home.activities'
   if (key === 'home.welcome') return 'home.welcome'
@@ -147,6 +149,13 @@ export function defaultsForSection(key) {
       items: partners.items,
     }
   }
+  if (isPillarExploreKey(key)) {
+    const fallback = PILLAR_EXPLORE_FALLBACKS[key] || {}
+    return {
+      ...fallback,
+      title: fallback.heading || '',
+    }
+  }
   if (key === 'shrine.welcome') {
     const defaults = welcomePageDefaults
     const page = getPageFallback(key) || {}
@@ -189,6 +198,8 @@ export function emptyPageForm() {
     title: '',
     subtitle: '',
     heroImage: '',
+    footerImage: '',
+    footerImageAlt: '',
     intro: '',
     blocks: [],
     links: [],
@@ -230,6 +241,8 @@ export function contentToForm(content = {}, key = '') {
     title: merged.title || merged.heading || (merged.headlineLines || [])[0] || '',
     subtitle: merged.subtitle || merged.subline || '',
     heroImage: merged.heroImage || merged.backgroundImage || merged.image || '',
+    footerImage: merged.footerImage || merged.map?.image || merged.mapImage || '',
+    footerImageAlt: merged.footerImageAlt || merged.map?.alt || merged.mapAlt || '',
     intro: merged.intro || merged.text || '',
     blocks: Array.isArray(merged.blocks) ? merged.blocks : [],
     links: Array.isArray(merged.links) ? merged.links : [],
@@ -284,6 +297,8 @@ export function formToContent(form, previous = {}, key = '') {
     heroImage: form.heroImage,
     backgroundImage: form.heroImage,
     image: form.heroImage,
+    footerImage: form.footerImage,
+    footerImageAlt: form.footerImageAlt,
     headlineLines: form.title ? [form.title] : [],
     breadcrumbLabel: form.title,
     blocks: form.blocks,
@@ -324,6 +339,16 @@ export function formToContent(form, previous = {}, key = '') {
       caption: form.mapCaption,
     },
     exploreLinks: (form.exploreLinks || []).filter((item) => item.label || item.path),
+    ...(isPillarExploreKey(key)
+      ? {
+          heading: form.title,
+          intro: form.intro,
+          blocks: [],
+          links: [],
+          buttons: [],
+          cta: null,
+        }
+      : {}),
     ...(key === 'shrine.welcome'
       ? {
           blocks: [],

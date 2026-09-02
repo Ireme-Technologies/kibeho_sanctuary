@@ -137,6 +137,71 @@ class PageSectionSeeder extends Seeder
             ],
         ];
 
+        $pillarExplore = [
+            'explore.shrine' => [
+                'label' => 'Explore band — The Shrine',
+                'content' => [
+                    'eyebrow' => 'The Shrine',
+                    'heading' => 'Explore the Shrine',
+                    'intro' => 'Walk through history, apparition sites, the schedule, communities, and the places pilgrims come to pray.',
+                    'footerImage' => '/images/sanctuary/home-reference.png',
+                    'footerImageAlt' => 'Plan of the Shrine of Our Lady of Kibeho',
+                ],
+            ],
+            'explore.pilgrimage' => [
+                'label' => 'Explore band — Pilgrimage',
+                'content' => [
+                    'eyebrow' => 'Pilgrimage',
+                    'heading' => 'Plan your pilgrimage',
+                    'intro' => 'Why Kibeho, practical guidance, celebrations, accommodation, and how to get here.',
+                    'footerImage' => '/images/sanctuary/hills.jpg',
+                    'footerImageAlt' => 'Hills around the Shrine of Our Lady of Kibeho',
+                ],
+            ],
+            'explore.spirituality' => [
+                'label' => 'Explore band — Spirituality',
+                'content' => [
+                    'eyebrow' => 'Spirituality',
+                    'heading' => 'Prayer and devotion',
+                    'intro' => 'Mass requests, candles, novenas, official prayers, and the spiritual life of the Shrine.',
+                    'footerImage' => '/images/sanctuary/mary.jpg',
+                    'footerImageAlt' => 'Our Lady of Kibeho',
+                ],
+            ],
+            'explore.news' => [
+                'label' => 'Explore band — News',
+                'content' => [
+                    'eyebrow' => 'News',
+                    'heading' => 'News & stories',
+                    'intro' => 'Chronicles, celebrations, articles, announcements, and the photo gallery.',
+                    'footerImage' => '/images/sanctuary/hero.jpg',
+                    'footerImageAlt' => 'Shrine of Our Lady of Kibeho',
+                ],
+            ],
+            'explore.broadcast' => [
+                'label' => 'Explore band — Broadcast',
+                'content' => [
+                    'eyebrow' => 'Broadcast',
+                    'heading' => 'Watch & listen',
+                    'intro' => 'Audio, video, documentaries, and our official channels.',
+                    'footerImage' => '/images/sanctuary/crest.jpg',
+                    'footerImageAlt' => 'Shrine of Our Lady of Kibeho',
+                ],
+            ],
+            'explore.support' => [
+                'label' => 'Explore band — Support the Shrine',
+                'content' => [
+                    'eyebrow' => 'Support the Shrine',
+                    'heading' => 'Support the mission',
+                    'intro' => 'Vision, projects, transparency, and ways to give to the Shrine.',
+                    'footerImage' => '/images/sanctuary/hills.jpg',
+                    'footerImageAlt' => 'Landscape near Kibeho',
+                ],
+            ],
+        ];
+
+        $sections = array_merge($sections, $pillarExplore);
+
         $pagesPath = database_path('data/sanctuary_pages.json');
         if (is_file($pagesPath)) {
             $pages = json_decode(file_get_contents($pagesPath), true) ?: [];

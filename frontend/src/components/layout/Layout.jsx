@@ -9,6 +9,7 @@ import { cmsKeyForPath, parseLocalizedPathname, stripLocale } from '@i18n/locali
 import { applyPageSeo, DEFAULT_SEO, stripHtml } from '@utils/seo'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import PillarExploreSection from './PillarExploreSection'
 import styles from './Layout.module.css'
 
 const PUBLIC_SEO = {
@@ -79,6 +80,7 @@ export default function Layout({ hasHero = false }) {
       <Navbar hasHero={hasHero} />
       <main className={`${styles.main} ${!hasHero ? styles.withOffset : ''}`}>
         <Outlet />
+        <PillarExploreSection />
       </main>
       <Footer />
     </div>

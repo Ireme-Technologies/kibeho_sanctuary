@@ -182,7 +182,7 @@ const localizedChildren = [
   { path: 'broadcast', element: <BroadcastPage /> },
   { path: 'support/get-involved', element: <Wrap Component={GetInvolvedPage} /> },
   { path: 'shrine/welcome', element: <Wrap Component={WelcomePage} /> },
-  { path: 'shrine/map', element: <LocalizedNavigate to="/shrine/welcome#shrine-map" /> },
+  { path: 'shrine/map', element: <LocalizedNavigate to="/shrine/welcome#pillar-explore" /> },
   { path: 'support/projects', element: <Wrap Component={SupportProjectsPage} /> },
   { path: 'support/projects/:slug', element: <Wrap Component={SupportProjectDetailPage} /> },
   { path: 'hotels', element: <LocalizedNavigate to="/pilgrimage/accommodation" /> },
