@@ -8,6 +8,7 @@ import {
   footerServiceLinks as fallbackFooterServiceLinks,
   primaryNav as fallbackPrimaryNav,
   utilityNav as fallbackUtilityNav,
+  isStaleUtilityNav,
   ensureOurLadyNavChildren,
 } from '@data/navigation'
 import FlashMessage from './components/FlashMessage'
@@ -69,7 +70,13 @@ export default function MenusAdminPage() {
             ),
           ),
         )
-        setUtilityNav(ensureNavIds(navigation.utilityNav?.length ? navigation.utilityNav : fallbackUtilityNav))
+        setUtilityNav(
+          ensureNavIds(
+            navigation.utilityNav?.length && !isStaleUtilityNav(navigation.utilityNav)
+              ? navigation.utilityNav
+              : fallbackUtilityNav,
+          ),
+        )
         setFooterLinks(ensureNavIds(navigation.footerLinks?.length ? navigation.footerLinks : fallbackFooterLinks))
         setFooterServiceLinks(
           ensureNavIds(
@@ -177,8 +184,9 @@ export default function MenusAdminPage() {
                 Header Donate button
               </h2>
               <p className={styles.muted}>
-                The white button on the far right of the dark top bar is managed in{' '}
-                <Link to="/admin/buttons">Site buttons</Link> so labels stay consistent across languages.
+                Links on the dark top bar (View Calendar, Plan Your Pilgrimage). The white Donate button is
+                managed in <Link to="/admin/buttons">Site buttons</Link>. The left side shows the shrine
+                address (or a live event when one is running).
               </p>
             </div>
             <MenuTreeEditor
@@ -187,7 +195,7 @@ export default function MenusAdminPage() {
               locale={menuLocale}
               defaultLocale={defaultLocale}
               addTitle="Add a top header link"
-              pathPlaceholder="/shrine/mass-schedule"
+              pathPlaceholder="/pilgrimage/calendar"
             />
           </>
         ) : null}

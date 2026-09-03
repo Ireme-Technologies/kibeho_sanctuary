@@ -83,10 +83,21 @@ export const primaryNav = [
 ]
 
 export const utilityNav = [
-  { label: 'Mass Schedule', path: '/shrine/schedule' },
+  { label: 'View Calendar', path: '/pilgrimage/calendar' },
   { label: 'Plan Your Pilgrimage', path: '/pilgrimage/plan' },
-  { label: 'Support the Shrine', path: '/support' },
 ]
+
+export function isStaleUtilityNav(items) {
+  if (!Array.isArray(items) || !items.length) return true
+  const blob = items
+    .map((item) => `${item?.label || ''} ${item?.path || ''}`)
+    .join(' ')
+    .toLowerCase()
+  const looksLegacy =
+    /mass schedule|support the shrine|\/shrine\/schedule|\/support(?!\/get-involved)/.test(blob)
+  const hasCalendar = /view calendar|\/pilgrimage\/calendar/.test(blob)
+  return looksLegacy && !hasCalendar
+}
 
 export const footerLinks = [
   { label: 'The Shrine', path: '/shrine' },

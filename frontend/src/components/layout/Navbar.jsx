@@ -173,7 +173,9 @@ export default function Navbar({ hasHero = false }) {
               <ChevronRight size={15} className={styles.occasionArrow} aria-hidden="true" />
             </LocalizedLink>
           ) : (
-            <p className={styles.welcome}>{t('welcomeBar')}</p>
+            <p className={styles.welcome}>
+              {company?.address?.trim() || t('welcomeBar') || 'Kibeho - Rwanda, Africa'}
+            </p>
           )}
           <div className={styles.topLinks}>
             {(utilityNav || []).map((item) => (

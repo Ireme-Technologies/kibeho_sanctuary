@@ -25,6 +25,7 @@ import {
   ensureOurLadyNavChildren,
   ensureOurLadyNavPath,
   ensureNewsNavChildren,
+  isStaleUtilityNav,
   normalizeNavGivePaths,
   normalizeGiveNavPath,
   stripShrineMapFromNav,
@@ -243,7 +244,10 @@ export function ContentProvider({ children }) {
     const siteButtons = mergeSiteButtons(settings.siteButtons || {})
     const navDonate = navDonateButton(siteButtons, locale, defaultLocale, t)
     const utilityNavRaw =
-      Array.isArray(navigation.utilityNav) && navigation.utilityNav.length && !apiNavIsStale
+      Array.isArray(navigation.utilityNav) &&
+      navigation.utilityNav.length &&
+      !apiNavIsStale &&
+      !isStaleUtilityNav(navigation.utilityNav)
         ? navigation.utilityNav
         : fallbackUtilityNav
 
