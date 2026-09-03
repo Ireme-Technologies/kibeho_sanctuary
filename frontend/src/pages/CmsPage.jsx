@@ -341,6 +341,7 @@ export default function CmsPage() {
         key?.startsWith('pilgrimage.') ||
         key === 'support.vision',
     )
+  const showStoryJoin = isStory && key !== 'shrine.history'
 
   if (!key) return <NotFoundPage />
 
@@ -371,7 +372,7 @@ export default function CmsPage() {
                 {actionPage.heroCta}
               </a>
             )
-          ) : isStory || isHub ? (
+          ) : showStoryJoin || isHub ? (
             <a href="#join" className={styles.heroCta}>
               {t('story.bePart')}
             </a>
@@ -427,7 +428,7 @@ export default function CmsPage() {
         {actionPage?.kind === 'prayer' ? <OfferingForm kind="prayer" /> : null}
         {actionPage?.kind === 'testimony' ? <OfferingForm kind="testimony" /> : null}
         {actionPage ? <InvolveMore variant={actionPage.involve} /> : null}
-        {isStory && !isAction ? (
+        {showStoryJoin ? (
           <InvolveMore
             variant="story"
             title={involveStory.title}

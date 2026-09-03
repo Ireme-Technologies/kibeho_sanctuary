@@ -207,7 +207,6 @@ export default function ShrineSchedulePage() {
               <p className={styles.sectionEyebrow}>Weekly programmes</p>
               <h2 id="weekly-heading">Mass, prayer & processions</h2>
             </div>
-            <p className={styles.sectionHint}>Sunday Mass and Thursday processions are highlighted.</p>
           </div>
           {hero.weeklyIntro ? <RichText html={hero.weeklyIntro} className={styles.sectionIntro} /> : null}
 
@@ -402,9 +401,6 @@ export default function ShrineSchedulePage() {
           <div className={styles.guideActions}>
             <Link to="/pilgrimage/plan" className={styles.btnPrimary}>
               Plan your pilgrimage
-            </Link>
-            <Link to="/pilgrimage/practical-guidelines" className={styles.btnGhost}>
-              Practical guidelines
             </Link>
           </div>
         </section>

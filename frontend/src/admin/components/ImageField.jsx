@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { fetchMedia, uploadMedia } from '@api/cms'
+import { compressImageFile, MAX_IMAGE_BYTES } from '@utils/compressImage'
 import { confirmDelete } from './confirmDelete'
 import styles from '../admin.module.css'
-
-const MAX_BYTES = 700 * 1024
 
 function formatKb(bytes) {
   return `${Math.round(bytes / 1024)}KB`
@@ -30,15 +29,21 @@ export default function ImageField({ label, value, onChange, folder = 'uploads',
     setError('')
     setNotice('')
 
-    if (file.type.startsWith('image/') && file.size > MAX_BYTES) {
-      setNotice(`Image is ${formatKb(file.size)}. It will be resized/compressed to stay under 700KB.`)
-    }
-
     setUploading(true)
     try {
-      const result = await uploadMedia(file, folder)
+      let uploadFile = file
+      let clientOptimized = false
+      if (file.type.startsWith('image/') && file.size > MAX_IMAGE_BYTES) {
+        setNotice(`Image is ${formatKb(file.size)}. Compressing to stay under 700KB…`)
+        const compressed = await compressImageFile(file)
+        uploadFile = compressed.file
+        clientOptimized = compressed.optimized
+      }
+
+      const result = await uploadMedia(uploadFile, folder)
       onChange?.(result.url)
-      if (result.optimized) setNotice('Image was compressed to stay under 700KB.')
+      if (result.optimized || clientOptimized) setNotice('Image was compressed to stay under 700KB.')
+      else setNotice('')
     } catch (err) {
       setError(err.errors?.file?.[0] || err.message || 'Upload failed')
     } finally {

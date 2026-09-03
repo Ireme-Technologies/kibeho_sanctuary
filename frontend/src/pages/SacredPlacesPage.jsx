@@ -38,6 +38,8 @@ export default function SacredPlacesPage({ type: typeProp }) {
 
   const basePath = type === 'apparition_site' ? '/shrine/apparition-sites' : '/shrine/places'
 
+  const pageTitle = hero.title || (type === 'main_place' ? 'Main Places' : 'Apparition Sites')
+
   return (
     <div className={styles.page}>
       <header
@@ -45,14 +47,12 @@ export default function SacredPlacesPage({ type: typeProp }) {
         style={{
           backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
         }}
-      >
-        <div className="container">
-          <h1>{hero.title || (type === 'main_place' ? 'Main Places' : 'Apparition Sites')}</h1>
-          {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}
-        </div>
-      </header>
+        aria-hidden="true"
+      />
 
       <div className={`container ${styles.body}`}>
+        <h1 className={styles.pageTitle}>{pageTitle}</h1>
+        {hero.subtitle ? <p className={styles.pageLead}>{hero.subtitle}</p> : null}
         {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
 
         {error ? <p className={styles.empty}>{error}</p> : null}
@@ -61,7 +61,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
           <p className={styles.empty}>Places will appear here once published.</p>
         ) : null}
 
-        <div className={styles.grid}>
+        <div className={styles.gridThree}>
           {items.map((item) => (
             <Link
               key={item.id}
@@ -72,8 +72,6 @@ export default function SacredPlacesPage({ type: typeProp }) {
                 <img src={item.coverImage || defaultHeaderImage} alt="" />
               </div>
               <div className={styles.cardBody}>
-                {item.category ? <p className={styles.meta}>{item.category}</p> : null}
-                {item.location ? <p className={styles.meta}>{item.location}</p> : null}
                 <h2>{item.name || item.title}</h2>
                 {cardExcerpt(item) ? <p className={styles.excerpt}>{cardExcerpt(item)}</p> : null}
                 <span className={styles.cta}>{t('learnMore')} →</span>

@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react'
 import { fetchMedia, uploadMedia } from '@api/cms'
+import { compressImageFile, MAX_IMAGE_BYTES } from '@utils/compressImage'
 import { confirmDelete } from './confirmDelete'
 import styles from '../admin.module.css'
-
-const MAX_BYTES = 700 * 1024
-
-function formatKb(bytes) {
-  return `${Math.round(bytes / 1024)}KB`
-}
 
 /**
  * Multi-image field: upload several files at once and/or pick from the media library.
@@ -42,7 +37,7 @@ export default function MultiImageField({
     if (!files.length) return
     setError('')
     setNotice('')
-    const large = files.filter((f) => f.size > MAX_BYTES).length
+    const large = files.filter((f) => f.size > MAX_IMAGE_BYTES).length
     if (large) {
       setNotice(
         large === 1
@@ -56,7 +51,12 @@ export default function MultiImageField({
     try {
       for (const file of files) {
         try {
-          const result = await uploadMedia(file, folder)
+          let uploadFile = file
+          if (file.type?.startsWith('image/') && file.size > MAX_IMAGE_BYTES) {
+            const compressed = await compressImageFile(file)
+            uploadFile = compressed.file
+          }
+          const result = await uploadMedia(uploadFile, folder)
           if (result?.url) added.push(result.url)
         } catch (err) {
           failures.push(err.errors?.file?.[0] || err.message || file.name)

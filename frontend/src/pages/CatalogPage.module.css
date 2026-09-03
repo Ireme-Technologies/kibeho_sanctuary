@@ -57,6 +57,22 @@
   padding-top: var(--space-xl);
 }
 
+.pageTitle {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-heading);
+  font-size: var(--fs-h1);
+  color: var(--color-navy-deep, #122847);
+  max-width: 22ch;
+  line-height: 1.2;
+}
+
+.pageLead {
+  margin: 0 0 var(--space-md);
+  font-size: var(--fs-body-lg);
+  color: var(--color-gray-text);
+  max-width: 48ch;
+}
+
 .intro {
   font-size: clamp(1.1rem, 2vw, 1.3rem);
   color: var(--color-gray-text);

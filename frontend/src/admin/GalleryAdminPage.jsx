@@ -19,11 +19,11 @@ import FlashMessage from './components/FlashMessage'
 import LocaleTabs from './components/LocaleTabs'
 import Modal from './components/Modal'
 import { confirmDelete, confirmPermanentDelete } from './components/confirmDelete'
+import { compressImageFile, MAX_IMAGE_BYTES } from '@utils/compressImage'
 import styles from './admin.module.css'
 
 const isImage = (item) => (item.mime_type || '').startsWith('image/')
 
-const MAX_BYTES = 700 * 1024
 const TABS = [
   { id: 'branding', label: 'Logo & brand' },
   { id: 'site', label: 'Site images' },
@@ -157,7 +157,7 @@ export default function GalleryAdminPage() {
     setNotice('')
     setFlash({ type: 'success', message: '' })
 
-    const largeCount = files.filter((file) => file.size > MAX_BYTES).length
+    const largeCount = files.filter((file) => file.size > MAX_IMAGE_BYTES).length
     if (largeCount) {
       setNotice(
         largeCount === 1
@@ -173,7 +173,12 @@ export default function GalleryAdminPage() {
     try {
       for (const file of files) {
         try {
-          await uploadMedia(file, tab === 'gallery' ? 'gallery' : 'uploads', {
+          let uploadFile = file
+          if (file.type?.startsWith('image/') && file.size > MAX_IMAGE_BYTES) {
+            const compressed = await compressImageFile(file)
+            uploadFile = compressed.file
+          }
+          await uploadMedia(uploadFile, tab === 'gallery' ? 'gallery' : 'uploads', {
             show_in_gallery: tab === 'gallery' ? 1 : 0,
           })
           uploaded += 1
@@ -205,10 +210,16 @@ export default function GalleryAdminPage() {
   }
 
   const handleReplaceSite = async (item, file) => {
+    if (!file) return
     setBusyKey(item.role + item.path)
     setFlash({ type: 'success', message: '' })
     try {
-      const result = await replaceSiteAsset(file, item.path, item.role || 'site')
+      let uploadFile = file
+      if (file.type?.startsWith('image/') && file.size > MAX_IMAGE_BYTES) {
+        const compressed = await compressImageFile(file)
+        uploadFile = compressed.file
+      }
+      const result = await replaceSiteAsset(uploadFile, item.path, item.role || 'site')
       setBranding(result.inventory?.branding || [])
       setSite(result.inventory?.site || [])
       await refresh()
@@ -306,10 +317,16 @@ export default function GalleryAdminPage() {
   }
 
   const handleReplaceUpload = async (item, file) => {
+    if (!file) return
     setBusyKey(`media-${item.id}`)
     setFlash({ type: 'success', message: '' })
     try {
-      await replaceMediaFile(item.id, file)
+      let uploadFile = file
+      if (file.type?.startsWith('image/') && file.size > MAX_IMAGE_BYTES) {
+        const compressed = await compressImageFile(file)
+        uploadFile = compressed.file
+      }
+      await replaceMediaFile(item.id, uploadFile)
       await loadUploads()
       await refresh()
       setFlash({ type: 'success', message: 'File replaced. Pages using this URL now show the new image.' })

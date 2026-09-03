@@ -55,12 +55,21 @@ class ImageOptimizer
 
     private function compressToMax(UploadedFile $file): array
     {
-        if (! $this->gdAvailable()) {
-            throw ValidationException::withMessages([
-                'file' => ['This image is over 700KB and cannot be compressed because the PHP GD extension is not enabled on the server. Enable GD, or upload a file under 700KB.'],
-            ]);
+        if ($this->gdAvailable()) {
+            return $this->compressWithGd($file);
         }
 
+        if ($this->imagickAvailable()) {
+            return $this->compressWithImagick($file);
+        }
+
+        throw ValidationException::withMessages([
+            'file' => ['This image is over 700KB and cannot be compressed on the server. Upload a smaller file, or enable PHP GD / Imagick.'],
+        ]);
+    }
+
+    private function compressWithGd(UploadedFile $file): array
+    {
         $path = $file->getRealPath();
         $info = @\getimagesize($path);
         if (! $info) {
@@ -121,9 +130,71 @@ class ImageOptimizer
         ]);
     }
 
+    private function compressWithImagick(UploadedFile $file): array
+    {
+        $image = new \Imagick($file->getRealPath());
+        $image->setImageBackgroundColor('white');
+        if ($image->getImageAlphaChannel()) {
+            $image = $image->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
+        }
+        $image->setImageFormat('jpeg');
+
+        $scale = 1.0;
+        $quality = 85;
+        $attempts = 0;
+        $width = $image->getImageWidth();
+        $height = $image->getImageHeight();
+
+        while ($attempts < 12) {
+            $clone = clone $image;
+            $newW = max(1, (int) round($width * $scale));
+            $newH = max(1, (int) round($height * $scale));
+            $clone->resizeImage($newW, $newH, \Imagick::FILTER_LANCZOS, 1, true);
+            $clone->setImageCompressionQuality($quality);
+            $contents = $clone->getImageBlob();
+            $clone->clear();
+            $clone->destroy();
+
+            if (strlen($contents) <= self::MAX_BYTES) {
+                $image->clear();
+                $image->destroy();
+
+                return [
+                    'contents' => $contents,
+                    'extension' => 'jpg',
+                    'mime' => 'image/jpeg',
+                    'width' => $newW,
+                    'height' => $newH,
+                    'size' => strlen($contents),
+                    'optimized' => true,
+                ];
+            }
+
+            if ($quality > 55) {
+                $quality -= 10;
+            } else {
+                $scale *= 0.85;
+                $quality = 80;
+            }
+            $attempts++;
+        }
+
+        $image->clear();
+        $image->destroy();
+
+        throw ValidationException::withMessages([
+            'file' => ['Unable to compress this image under 700KB. Try a smaller source file.'],
+        ]);
+    }
+
     private function gdAvailable(): bool
     {
         return \extension_loaded('gd') && \function_exists('imagecreatefromjpeg');
+    }
+
+    private function imagickAvailable(): bool
+    {
+        return \extension_loaded('imagick') && class_exists(\Imagick::class);
     }
 
     private function createImageResource(string $path, string $mime)

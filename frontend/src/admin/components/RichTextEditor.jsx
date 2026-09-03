@@ -42,6 +42,7 @@ import {
   Youtube as YoutubeIcon,
 } from 'lucide-react'
 import { fetchMedia, uploadMedia } from '@api/cms'
+import { compressImageFile, MAX_IMAGE_BYTES } from '@utils/compressImage'
 import styles from '../admin.module.css'
 
 const TEXT_COLORS = [
@@ -191,7 +192,12 @@ export default function RichTextEditor({
     setUploading(true)
     setMediaError('')
     try {
-      const result = await uploadMedia(file, 'editor')
+      let uploadFile = file
+      if (file.type?.startsWith('image/') && file.size > MAX_IMAGE_BYTES) {
+        const compressed = await compressImageFile(file)
+        uploadFile = compressed.file
+      }
+      const result = await uploadMedia(uploadFile, 'editor')
       insertFromLibrary(result.url)
     } catch (err) {
       setMediaError(err.errors?.file?.[0] || err.message || 'Upload failed')

@@ -5,6 +5,7 @@ import ImageField from './components/ImageField'
 import MediaField from './components/MediaField'
 import FlashMessage from './components/FlashMessage'
 import { confirmDelete } from './components/confirmDelete'
+import { confirmAction } from './components/notify'
 import RichTextEditor from './components/RichTextEditor'
 import LocaleTabs, { isFilledValue } from './components/LocaleTabs'
 import { parseYoutubeId } from '@utils/youtube'
@@ -238,6 +239,37 @@ export default function HomeHeroAdminPage() {
     })
   }
 
+  const changeHeroMode = async (nextMode) => {
+    if (nextMode === form.mode) return
+    const current = MODES.find((mode) => mode.value === form.mode)
+    const next = MODES.find((mode) => mode.value === nextMode)
+    const ok = await confirmAction({
+      title: 'Change hero media type?',
+      text: `Switch from “${current?.label || form.mode}” to “${next?.label || nextMode}”? Media settings for the current type will stay saved until you save with the new type.`,
+      confirmLabel: 'Change type',
+      cancelLabel: 'Keep current',
+      icon: 'warning',
+    })
+    if (!ok) return
+    setForm((prev) => ({ ...prev, mode: nextMode }))
+  }
+
+  const changeVideoSource = async (nextSource) => {
+    if (nextSource === form.videoSource) return
+    const ok = await confirmAction({
+      title: 'Change video source?',
+      text:
+        nextSource === 'youtube'
+          ? 'Switch to a YouTube URL? The uploaded video file setting will stay in place until you save.'
+          : 'Switch to an uploaded video file? The YouTube URL setting will stay in place until you save.',
+      confirmLabel: 'Change source',
+      cancelLabel: 'Keep current',
+      icon: 'warning',
+    })
+    if (!ok) return
+    setForm((prev) => ({ ...prev, videoSource: nextSource }))
+  }
+
   const handleSave = async (e) => {
     e.preventDefault()
     setSaving(true)
@@ -326,7 +358,7 @@ export default function HomeHeroAdminPage() {
                   role="radio"
                   aria-checked={form.mode === mode.value}
                   className={`${styles.modeTab} ${form.mode === mode.value ? styles.modeTabActive : ''}`}
-                  onClick={() => setForm({ ...form, mode: mode.value })}
+                  onClick={() => changeHeroMode(mode.value)}
                 >
                   <strong>{mode.label}</strong>
                   <span>{mode.hint}</span>
@@ -495,14 +527,14 @@ export default function HomeHeroAdminPage() {
                 <button
                   type="button"
                   className={`${styles.btn} ${form.videoSource === 'file' ? '' : styles.btnSecondary}`}
-                  onClick={() => setForm({ ...form, videoSource: 'file' })}
+                  onClick={() => changeVideoSource('file')}
                 >
                   Upload file
                 </button>
                 <button
                   type="button"
                   className={`${styles.btn} ${form.videoSource === 'youtube' ? '' : styles.btnSecondary}`}
-                  onClick={() => setForm({ ...form, videoSource: 'youtube' })}
+                  onClick={() => changeVideoSource('youtube')}
                 >
                   YouTube URL
                 </button>
