@@ -66,6 +66,148 @@ export function pageKind(key) {
   return 'cms'
 }
 
+/**
+ * Pages that list records managed elsewhere in admin.
+ * Used to show “Manage …” buttons that open the CRUD screen in a new tab.
+ */
+export function relatedAdminCruds(key) {
+  const map = {
+    'shrine.apparition-sites': [
+      {
+        to: '/admin/apparition-sites',
+        label: 'Manage apparition sites',
+        hint: 'Add, edit, or remove apparition site records shown on this page.',
+      },
+    ],
+    'shrine.places': [
+      {
+        to: '/admin/main-places',
+        label: 'Manage main places',
+        hint: 'Add, edit, or remove main place records shown on this page.',
+      },
+    ],
+    'shrine.visionaries': [
+      {
+        to: '/admin/visionaries',
+        label: 'Manage visionaries',
+        hint: 'Add, edit, or remove visionary profiles shown on this page.',
+      },
+    ],
+    'shrine.messages': [
+      {
+        to: '/admin/mary-messages',
+        label: 'Manage messages of Mary',
+        hint: 'Add, edit, or remove messages shown on this page.',
+      },
+    ],
+    'shrine.pastoral-team': [
+      {
+        to: '/admin/pastoral-team',
+        label: 'Manage pastoral team',
+        hint: 'Add, edit, or remove pastoral team members shown on this page.',
+      },
+    ],
+    'shrine.communities': [
+      {
+        to: '/admin/communities',
+        label: 'Manage communities',
+        hint: 'Add, edit, or remove communities shown on this page.',
+      },
+    ],
+    'shrine.schedule': [
+      {
+        to: '/admin/mass-schedules',
+        label: 'Manage mass schedules',
+        hint: 'Weekly Mass and prayer times listed on this page.',
+      },
+      {
+        to: '/admin/upcoming-pilgrimages',
+        label: 'Manage pilgrimage events',
+        hint: 'Annual celebrations and calendar events shown on this page.',
+      },
+    ],
+    'shrine.welcome': [
+      {
+        to: '/admin/pastoral-team',
+        label: 'Manage pastoral team',
+        hint: 'Leadership cards on the welcome page come from Pastoral team.',
+      },
+    ],
+    'pilgrimage.accommodation': [
+      {
+        to: '/admin/projects',
+        label: 'Manage accommodations',
+        hint: 'Hotels and lodging listings shown on this page.',
+      },
+    ],
+    'pilgrimage.annual-celebrations': [
+      {
+        to: '/admin/upcoming-pilgrimages',
+        label: 'Manage pilgrimage events',
+        hint: 'Celebrations and events listed on this page.',
+      },
+    ],
+    'hotels.index': [
+      {
+        to: '/admin/projects',
+        label: 'Manage accommodations',
+        hint: 'Hotels and lodging listings shown on this page.',
+      },
+    ],
+    'support.projects': [
+      {
+        to: '/admin/shrine-projects',
+        label: 'Manage development projects',
+        hint: 'Sanctuary development projects listed on this page.',
+      },
+    ],
+    'spirituality.official-prayers': [
+      {
+        to: '/admin/official-prayers',
+        label: 'Manage official prayers',
+        hint: 'Prayers listed on this page.',
+      },
+    ],
+    'spirituality.books': [
+      {
+        to: '/admin/spiritual-books',
+        label: 'Manage spiritual books',
+        hint: 'Books listed on this page.',
+      },
+    ],
+    'news.audio': [
+      {
+        to: '/admin/audio-items',
+        label: 'Manage audio & broadcast',
+        hint: 'Audio items listed on this page.',
+      },
+    ],
+    'news.broadcast': [
+      {
+        to: '/admin/audio-items',
+        label: 'Manage audio & broadcast',
+        hint: 'Broadcast items listed on this page.',
+      },
+    ],
+    'news.videos': [
+      {
+        to: '/admin/videos',
+        label: 'Manage videos',
+        hint: 'YouTube videos listed on this page.',
+      },
+    ],
+    'news.documentaries': [
+      {
+        to: '/admin/videos',
+        label: 'Manage videos',
+        hint: 'Documentary videos can be managed with Videos (YouTube).',
+      },
+    ],
+  }
+
+  return map[key] || []
+}
+
 function normalizeGuidelines(raw) {
   if (!Array.isArray(raw)) return []
   return raw

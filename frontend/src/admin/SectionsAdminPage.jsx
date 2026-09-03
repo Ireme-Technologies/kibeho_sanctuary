@@ -7,7 +7,6 @@ import { pathForCmsKey } from '@i18n/localizedPath'
 import FlashMessage from './components/FlashMessage'
 import ImageField from './components/ImageField'
 import ListEditor from './components/ListEditor'
-import BlocksEditor from './components/BlocksEditor'
 import RichTextEditor from './components/RichTextEditor'
 import LocaleTabs, { isFilledValue } from './components/LocaleTabs'
 import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
@@ -19,9 +18,9 @@ import {
   formToContent,
   groupedPageKeys,
   isHomeSectionKey,
-  isStoryPageKey,
   pageKind,
   pageOptionLabel,
+  relatedAdminCruds,
 } from './pageForm'
 import styles from './admin.module.css'
 
@@ -284,7 +283,7 @@ export default function SectionsAdminPage() {
   })
   const groupedKeys = groupedPageKeys(sectionKeys)
   const kind = pageKind(selectedKey)
-  const isStory = isStoryPageKey(selectedKey)
+  const relatedCruds = relatedAdminCruds(selectedKey)
   const isDefaultLang = localeTab === defaultLocale
 
   const patchField = (field, value) => {
@@ -558,33 +557,20 @@ export default function SectionsAdminPage() {
 
             <h2 className={styles.sectionTitle}>Page header</h2>
             <p className={styles.muted}>
-              Heading and hero image shown at the top of this page. Leave the image empty to use the
+              Title, subtitle, and hero image at the top of this page. Leave the image empty to use the
               default header image.
             </p>
-            <div className={styles.fieldRow}>
-              <div className={styles.field}>
-                <label>Eyebrow</label>
-                <input
-                  value={getPageContentField(form, sectionTranslations, 'eyebrow', localeTab, defaultLocale)}
-                  onChange={(e) => {
-                    const next = setPageContentField(form, sectionTranslations, 'eyebrow', localeTab, e.target.value, defaultLocale)
-                    setForm(next.form)
-                    setSectionTranslations(next.translations)
-                  }}
-                />
-              </div>
-              <div className={styles.field}>
-                <label>Title</label>
-                <input
-                  value={getPageContentField(form, sectionTranslations, 'title', localeTab, defaultLocale)}
-                  onChange={(e) => {
-                    const next = setPageContentField(form, sectionTranslations, 'title', localeTab, e.target.value, defaultLocale)
-                    setForm(next.form)
-                    setSectionTranslations(next.translations)
-                  }}
-                  required={localeTab === defaultLocale}
-                />
-              </div>
+            <div className={styles.field}>
+              <label>Title</label>
+              <input
+                value={getPageContentField(form, sectionTranslations, 'title', localeTab, defaultLocale)}
+                onChange={(e) => {
+                  const next = setPageContentField(form, sectionTranslations, 'title', localeTab, e.target.value, defaultLocale)
+                  setForm(next.form)
+                  setSectionTranslations(next.translations)
+                }}
+                required={localeTab === defaultLocale}
+              />
             </div>
             <div className={styles.field}>
               <label>Subtitle</label>
@@ -621,7 +607,80 @@ export default function SectionsAdminPage() {
               <p className={styles.muted}>Currently falling back to the default header image.</p>
             ) : null}
 
-            {kind !== 'pillar.explore' && kind !== 'home' && localeTab === defaultLocale ? (
+            {kind === 'pillar.explore' ? (
+              <>
+                {localeTab === defaultLocale ? (
+                  <>
+                    <h2 className={styles.sectionTitle}>Default footer image</h2>
+                    <p className={styles.muted}>
+                      Used on all pages in this menu unless a page sets its own footer image.
+                    </p>
+                    <ImageField
+                      label="Footer image"
+                      value={form.footerImage}
+                      onChange={(url) => setForm({ ...form, footerImage: url })}
+                      folder="pages"
+                    />
+                    <div className={styles.field}>
+                      <label>Footer image alt text</label>
+                      <input
+                        value={form.footerImageAlt}
+                        onChange={(e) => setForm({ ...form, footerImageAlt: e.target.value })}
+                      />
+                    </div>
+                  </>
+                ) : null}
+                <div className={styles.field}>
+                  <label>Section introduction</label>
+                  <textarea
+                    rows={3}
+                    value={getPageContentField(form, sectionTranslations, 'intro', localeTab, defaultLocale)}
+                    onChange={(e) => patchField('intro', e.target.value)}
+                  />
+                </div>
+              </>
+            ) : null}
+
+            {kind !== 'pillar.explore' ? (
+            <>
+            <h2 className={styles.sectionTitle}>Description</h2>
+            <div className={styles.field}>
+              <label>Page description</label>
+              <RichTextEditor
+                value={getPageContentField(form, sectionTranslations, 'intro', localeTab, defaultLocale)}
+                onChange={(html) => patchField('intro', html)}
+              />
+            </div>
+
+            {relatedCruds.length ? (
+              <div className={styles.relatedCrudCard}>
+                <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
+                  Items on this page
+                </h2>
+                <p className={styles.muted}>
+                  This page lists records managed elsewhere in admin. Edit page text and images here;
+                  open the menu below to add or change the items themselves.
+                </p>
+                <div className={styles.relatedCrudActions}>
+                  {relatedCruds.map((item) => (
+                    <div key={item.to} className={styles.relatedCrudRow}>
+                      <a
+                        href={item.to}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${styles.btn} ${styles.btnSecondary}`}
+                      >
+                        {item.label}
+                        <span aria-hidden="true"> ↗</span>
+                      </a>
+                      {item.hint ? <p className={styles.muted}>{item.hint}</p> : null}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {kind !== 'home' && localeTab === defaultLocale ? (
               <>
                 <h2 className={styles.sectionTitle}>Footer explore band</h2>
                 <p className={styles.muted}>
@@ -644,50 +703,6 @@ export default function SectionsAdminPage() {
                 </div>
               </>
             ) : null}
-
-            {kind === 'pillar.explore' && localeTab === defaultLocale ? (
-              <>
-                <h2 className={styles.sectionTitle}>Default footer image</h2>
-                <p className={styles.muted}>
-                  Used on all pages in this menu unless a page sets its own footer image above.
-                </p>
-                <ImageField
-                  label="Footer image"
-                  value={form.footerImage}
-                  onChange={(url) => setForm({ ...form, footerImage: url })}
-                  folder="pages"
-                />
-                <div className={styles.field}>
-                  <label>Footer image alt text</label>
-                  <input
-                    value={form.footerImageAlt}
-                    onChange={(e) => setForm({ ...form, footerImageAlt: e.target.value })}
-                  />
-                </div>
-              </>
-            ) : null}
-
-            {kind === 'pillar.explore' ? (
-              <div className={styles.field}>
-                <label>Section introduction</label>
-                <textarea
-                  rows={3}
-                  value={getPageContentField(form, sectionTranslations, 'intro', localeTab, defaultLocale)}
-                  onChange={(e) => patchField('intro', e.target.value)}
-                />
-              </div>
-            ) : null}
-
-            {kind !== 'pillar.explore' ? (
-            <>
-            <h2 className={styles.sectionTitle}>Introduction</h2>
-            <div className={styles.field}>
-              <label>Intro description</label>
-              <RichTextEditor
-                value={getPageContentField(form, sectionTranslations, 'intro', localeTab, defaultLocale)}
-                onChange={(html) => patchField('intro', html)}
-              />
-            </div>
 
             {kind === 'home.activities' ? (
               <>
@@ -782,8 +797,8 @@ export default function SectionsAdminPage() {
               <>
                 <h2 className={styles.sectionTitle}>Schedule page sections</h2>
                 <p className={styles.muted}>
-                  Weekly Mass times are managed under <strong>Mass schedules</strong>. Annual celebrations pull
-                  from <strong>Pilgrimage events</strong>. Edit section copy and visitor guidelines here.
+                  Use the buttons above to manage weekly Mass times and pilgrimage events. Edit section
+                  copy and visitor guidelines here.
                 </p>
                 <div className={styles.field}>
                   <label>Weekly programmes intro</label>
@@ -950,8 +965,8 @@ export default function SectionsAdminPage() {
 
                 <h2 className={styles.sectionTitle}>Leadership team</h2>
                 <p className={styles.muted}>
-                  Heading and introduction only — team members are managed under Pastoral Team in the admin.
-                  The page shows up to four published members automatically.
+                  Heading and introduction only — team members are managed with the button above under
+                  Pastoral team. The page shows up to four published members automatically.
                 </p>
                 <div className={styles.field}>
                   <label>Section title</label>
@@ -1006,13 +1021,11 @@ export default function SectionsAdminPage() {
               </>
             ) : null}
 
-            {kind === 'home.quickLinks' || (kind === 'cms' && selectedKey !== 'shrine.welcome') ? (
+            {kind === 'home.quickLinks' ? (
               <>
-                <h2 className={styles.sectionTitle}>{kind === 'home.quickLinks' ? 'Quick link cards' : 'Quick links'}</h2>
+                <h2 className={styles.sectionTitle}>Quick link cards</h2>
                 <p className={styles.muted}>
-                  {kind === 'home.quickLinks'
-                    ? 'The four shortcut cards under the homepage hero. Add more if needed.'
-                    : 'Optional link cards under the introduction (used on hub pages such as Our Lady).'}
+                  The four shortcut cards under the homepage hero. Add more if needed.
                 </p>
                 <ListEditor
                   label="Link cards"
@@ -1023,42 +1036,11 @@ export default function SectionsAdminPage() {
                   fields={[
                     { key: 'label', label: 'Label' },
                     { key: 'path', label: 'URL', placeholder: '/our-lady' },
-                    ...(kind === 'home.quickLinks'
-                      ? [
-                          { key: 'text', label: 'Description' },
-                          { key: 'icon', label: 'Icon', placeholder: 'info, users, calendar, heart' },
-                        ]
-                      : []),
+                    { key: 'text', label: 'Description' },
+                    { key: 'icon', label: 'Icon', placeholder: 'info, users, calendar, heart' },
                   ]}
                 />
               </>
-            ) : null}
-
-            {kind === 'cms' && selectedKey !== 'shrine.welcome' ? (
-              <>
-                <h2 className={styles.sectionTitle}>Body content</h2>
-                <p className={styles.muted}>
-                  Headings, paragraphs, notes, and cards (for example Places to visit on The Shrine). Add a Cards
-                  block to create a table of linked items.
-                </p>
-                <BlocksEditor
-                  blocks={getPageContentField(form, sectionTranslations, 'blocks', localeTab, defaultLocale)}
-                  onChange={(blocks) => patchField('blocks', blocks)}
-                />
-              </>
-            ) : null}
-
-            {kind === 'cms' && isStory && selectedKey !== 'shrine.welcome' ? (
-              <div className={styles.card}>
-                <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
-                  Hero button &amp; call to action
-                </h2>
-                <p className={styles.muted}>
-                  The hero button and the three call-to-action buttons at the bottom of story pages
-                  (View Calendar, Plan Your Pilgrimage, Get involved) are managed in{' '}
-                  <Link to="/admin/buttons">Site buttons</Link> so they stay consistent across the site.
-                </p>
-              </div>
             ) : null}
 
             </>
