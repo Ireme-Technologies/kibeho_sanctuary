@@ -1051,12 +1051,12 @@ export default function SectionsAdminPage() {
             {kind === 'cms' && isStory && selectedKey !== 'shrine.welcome' ? (
               <div className={styles.card}>
                 <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
-                  Hero button &amp; invite cards
+                  Hero button &amp; call to action
                 </h2>
                 <p className={styles.muted}>
-                  The hero “Be part of this” button and the three invite cards at the bottom of story pages
-                  are managed in <Link to="/admin/buttons">Site buttons</Link> so they stay consistent across
-                  the site.
+                  The hero button and the three call-to-action buttons at the bottom of story pages
+                  (View Calendar, Plan Your Pilgrimage, Get involved) are managed in{' '}
+                  <Link to="/admin/buttons">Site buttons</Link> so they stay consistent across the site.
                 </p>
               </div>
             ) : null}

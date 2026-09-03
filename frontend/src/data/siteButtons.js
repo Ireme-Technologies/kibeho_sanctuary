@@ -3,6 +3,8 @@
  * Managed in Admin → Site buttons. Do not edit per page in Site pages.
  */
 
+import { STANDARD_SITE_CTAS } from './siteCtas'
+
 export const defaultSiteButtons = {
   navDonate: {
     path: '/support/get-involved',
@@ -20,26 +22,26 @@ export const defaultSiteButtons = {
       en: {
         title: 'The only Marian place in Africa recognised by the Church',
         text: 'Come on pilgrimage, or support the Shrine that welcomes the continent — and the world — to Kibeho.',
-        primaryLabel: 'Plan your pilgrimage',
-        secondaryLabel: 'Donate',
+        primaryLabel: 'Plan Your Pilgrimage',
+        secondaryLabel: 'Get involved',
       },
       fr: {
         title: 'Le seul lieu marial d’Afrique reconnu par l’Église',
         text: 'Venez en pèlerinage, ou soutenez le Sanctuaire qui accueille le continent — et le monde — à Kibeho.',
         primaryLabel: 'Planifiez votre pèlerinage',
-        secondaryLabel: 'Faire un don',
+        secondaryLabel: 'S’impliquer',
       },
       rw: {
         title: 'Ahantu h’Umwami wacu Nyina wacu honyine muri Afurika hakemewe n’Itorero',
         text: 'Zana urugendo rw’abahunzi, cyangwa ushyigikire Umwibutso wakira Afurika n’isi i Kibeho.',
         primaryLabel: 'Tegura urugendo rwawe',
-        secondaryLabel: 'Tanga',
+        secondaryLabel: 'Injira mu bikorwa',
       },
       de: {
         title: 'Der einzige von der Kirche anerkannte marianische Ort in Afrika',
         text: 'Kommen Sie auf Pilgerfahrt oder unterstützen Sie das Heiligtum, das den Kontinent — und die Welt — in Kibeho empfängt.',
         primaryLabel: 'Planen Sie Ihre Pilgerfahrt',
-        secondaryLabel: 'Spenden',
+        secondaryLabel: 'Mitmachen',
       },
     },
   },
@@ -48,23 +50,7 @@ export const defaultSiteButtons = {
       en: {
         title: 'This call is still being lived at Kibeho',
         lead: 'Read, then walk with the pilgrims — in prayer, at Mass, or on the road to the Shrine.',
-        cards: [
-          {
-            title: 'Light a candle',
-            text: 'Leave a prayer intention at the Shrine.',
-            path: '/spirituality/light-a-candle',
-          },
-          {
-            title: 'Have a Mass said',
-            text: 'Offer Mass for a loved one or intention.',
-            path: '/spirituality/mass-request',
-          },
-          {
-            title: 'Come on pilgrimage',
-            text: 'Plan a visit to Our Lady of Kibeho.',
-            path: '/pilgrimage/plan',
-          },
-        ],
+        cards: STANDARD_SITE_CTAS,
       },
     },
   },

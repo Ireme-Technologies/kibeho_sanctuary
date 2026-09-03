@@ -399,8 +399,14 @@ export default function ShrineSchedulePage() {
           </div>
 
           <div className={styles.guideActions}>
+            <Link to="/pilgrimage/calendar" className={styles.btnGhost}>
+              View Calendar
+            </Link>
             <Link to="/pilgrimage/plan" className={styles.btnPrimary}>
-              Plan your pilgrimage
+              Plan Your Pilgrimage
+            </Link>
+            <Link to="/support/get-involved" className={styles.btnGhost}>
+              Get involved
             </Link>
           </div>
         </section>

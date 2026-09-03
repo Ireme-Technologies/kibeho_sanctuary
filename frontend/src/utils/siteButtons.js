@@ -1,4 +1,5 @@
 import { defaultSiteButtons } from '@data/siteButtons'
+import { resolveStoryCtas } from '@data/siteCtas'
 
 function localePack(button, locale, defaultLocale) {
   if (!button || typeof button !== 'object') return {}
@@ -41,8 +42,8 @@ export function footerCtaContent(siteButtons, locale, defaultLocale, t) {
   const button = siteButtons?.footerCta || defaultSiteButtons.footerCta
   const pack = localePack(button, locale, defaultLocale)
   const fallback = localePack(defaultSiteButtons.footerCta, locale, defaultLocale)
-  const primaryLabel = pack.primaryLabel || fallback.primaryLabel || 'Plan your pilgrimage'
-  const secondaryLabel = pack.secondaryLabel || fallback.secondaryLabel || 'Donate'
+  const primaryLabel = pack.primaryLabel || fallback.primaryLabel || 'Plan Your Pilgrimage'
+  const secondaryLabel = pack.secondaryLabel || fallback.secondaryLabel || 'Get involved'
   const stalePair =
     /^(donate|faire un don|tanga|spenden)$/i.test(String(primaryLabel).trim()) &&
     /partner|partenair|umufatanyabikorwa|support our shrine|soutenir notre sanctuaire/i.test(
@@ -55,11 +56,11 @@ export function footerCtaContent(siteButtons, locale, defaultLocale, t) {
       text: fallback.text || '',
       primary: {
         path: defaultSiteButtons.footerCta.primaryPath,
-        label: fallback.primaryLabel || 'Plan your pilgrimage',
+        label: fallback.primaryLabel || 'Plan Your Pilgrimage',
       },
       secondary: {
         path: defaultSiteButtons.footerCta.secondaryPath,
-        label: fallback.secondaryLabel || 'Donate',
+        label: fallback.secondaryLabel || 'Get involved',
       },
     }
   }
@@ -67,6 +68,7 @@ export function footerCtaContent(siteButtons, locale, defaultLocale, t) {
   const staleMissionTitle = /support our mission|soutenir notre mission|fasha umurimo|unterstützen sie unsere mission/i.test(
     String(pack.title || ''),
   )
+  const staleDonateSecondary = /^(donate|faire un don|tanga|spenden)$/i.test(String(secondaryLabel).trim())
 
   return {
     title:
@@ -79,8 +81,12 @@ export function footerCtaContent(siteButtons, locale, defaultLocale, t) {
       label: primaryLabel,
     },
     secondary: {
-      path: button.secondaryPath || defaultSiteButtons.footerCta.secondaryPath,
-      label: secondaryLabel,
+      path: staleDonateSecondary
+        ? defaultSiteButtons.footerCta.secondaryPath || '/support/get-involved'
+        : button.secondaryPath ||
+          defaultSiteButtons.footerCta.secondaryPath ||
+          '/support/get-involved',
+      label: staleDonateSecondary ? fallback.secondaryLabel || 'Get involved' : secondaryLabel,
     },
   }
 }
@@ -89,10 +95,12 @@ export function involveStoryContent(siteButtons, locale, defaultLocale, t) {
   const block = siteButtons?.involveStory || defaultSiteButtons.involveStory
   const pack = localePack(block, locale, defaultLocale)
   const fallback = localePack(defaultSiteButtons.involveStory, locale, defaultLocale)
-  const cards = Array.isArray(pack.cards) && pack.cards.length ? pack.cards : fallback.cards || []
+  const cards = resolveStoryCtas(
+    Array.isArray(pack.cards) && pack.cards.length ? pack.cards : fallback.cards || [],
+  )
   return {
     title: pack.title || t('story.joinTitle') || fallback.title || '',
     lead: pack.lead || t('story.joinLead') || fallback.lead || '',
-    cards: cards.filter((item) => item?.title && item?.path),
+    cards,
   }
 }

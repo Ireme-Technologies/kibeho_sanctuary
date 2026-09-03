@@ -19,19 +19,19 @@ export const STORY_INVOLVE_DEFAULTS = {
     'Read, then walk with the pilgrims — in prayer, at Mass, or on the road to the Shrine.',
   involveLinks: [
     {
-      label: 'Light a candle',
-      text: 'Leave a prayer intention at the Shrine.',
-      path: '/spirituality/prayer-intentions',
+      label: 'View Calendar',
+      text: '',
+      path: '/pilgrimage/calendar',
     },
     {
-      label: 'Have a Mass said',
-      text: 'Offer Mass for a loved one or intention.',
-      path: '/spirituality/request-a-mass',
-    },
-    {
-      label: 'Come on pilgrimage',
-      text: 'Plan a visit to Our Lady of Kibeho.',
+      label: 'Plan Your Pilgrimage',
+      text: '',
       path: '/pilgrimage/plan',
+    },
+    {
+      label: 'Get involved',
+      text: '',
+      path: '/support/get-involved',
     },
   ],
 }

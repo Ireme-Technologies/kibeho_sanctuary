@@ -47,11 +47,11 @@ export default function Footer() {
 
         <div className={styles.ctaActions}>
           <LocalizedNavLink to={footerCta.primary.path || '/pilgrimage/plan'} className={styles.ctaBtn}>
-            {displayCapsLabel(footerCta.primary.label || 'Plan your pilgrimage', locale)}
+            {displayCapsLabel(footerCta.primary.label || 'Plan Your Pilgrimage', locale)}
           </LocalizedNavLink>
           <LocalizedNavLink to={footerCta.secondary.path || GIVE_PAGE_PATH} className={styles.ctaBtnGhost}>
             <Heart size={16} aria-hidden="true" />
-            {displayCapsLabel(footerCta.secondary.label || 'Donate', locale)}
+            {displayCapsLabel(footerCta.secondary.label || 'Get involved', locale)}
           </LocalizedNavLink>
         </div>
       </div>

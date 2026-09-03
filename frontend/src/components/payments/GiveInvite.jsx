@@ -150,9 +150,9 @@ const INVOLVE = {
     title: 'story.joinTitle',
     lead: 'story.joinLead',
     links: [
-      { to: '/spirituality/light-a-candle', title: 'invite.candleTitle', text: 'invite.candleText' },
-      { to: '/spirituality/mass-request', title: 'invite.massTitle', text: 'invite.massText' },
-      { to: '/pilgrimage/plan', title: 'story.planTitle', text: 'story.planText' },
+      { to: '/pilgrimage/calendar', title: 'story.calendarTitle', text: '' },
+      { to: '/pilgrimage/plan', title: 'story.planTitle', text: '' },
+      { to: '/support/get-involved', title: 'story.involvedTitle', text: '' },
     ],
   },
 }
@@ -167,25 +167,32 @@ export function InvolveMore({ variant = 'donation', title, lead, links }) {
       ? links.map((item) => ({
           to: item.path || item.to,
           title: item.label || t(item.title),
-          text: item.label ? item.text : t(item.text),
+          text: item.label ? item.text || '' : item.text ? t(item.text) : '',
         }))
       : data.links.map((item) => ({
           to: item.to,
           title: t(item.title),
-          text: t(item.text),
+          text: item.text ? t(item.text) : '',
         }))
+  const asButtons = variant === 'story' || cards.every((item) => !String(item.text || '').trim())
 
   return (
     <section className={styles.involve} id="join" aria-labelledby="involve-heading">
       <h2 id="involve-heading">{heading}</h2>
-      <p className={styles.involveLead}>{intro}</p>
-      <nav className={styles.involveGrid}>
-        {cards.map((item) => (
-          <Link key={item.to} to={item.to} className={styles.involveCard}>
-            <strong>{item.title}</strong>
-            <span>{item.text}</span>
-          </Link>
-        ))}
+      {intro ? <p className={styles.involveLead}>{intro}</p> : null}
+      <nav className={asButtons ? styles.involveActions : styles.involveGrid} aria-label={heading}>
+        {cards.map((item) =>
+          asButtons ? (
+            <Link key={item.to} to={item.to} className={styles.involveBtn}>
+              {item.title}
+            </Link>
+          ) : (
+            <Link key={item.to} to={item.to} className={styles.involveCard}>
+              <strong>{item.title}</strong>
+              <span>{item.text}</span>
+            </Link>
+          ),
+        )}
       </nav>
     </section>
   )

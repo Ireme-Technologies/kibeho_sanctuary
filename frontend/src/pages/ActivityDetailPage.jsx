@@ -38,8 +38,14 @@ export default function ActivityDetailPage() {
           <Link to="/activities" className={styles.btnGhost}>
             {index.title ? `All ${index.title}` : 'All activities'}
           </Link>
-          <Link to="/pilgrimage/join" className={styles.btn}>
-            Plan your pilgrimage
+          <Link to="/pilgrimage/calendar" className={styles.btnGhost}>
+            View Calendar
+          </Link>
+          <Link to="/pilgrimage/plan" className={styles.btn}>
+            Plan Your Pilgrimage
+          </Link>
+          <Link to="/support/get-involved" className={styles.btnGhost}>
+            Get involved
           </Link>
         </div>
       </div>

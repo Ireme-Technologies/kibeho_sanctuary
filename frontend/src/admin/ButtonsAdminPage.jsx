@@ -4,6 +4,7 @@ import { fetchSettings, updateSettings } from '@api/cms'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { defaultSiteButtons } from '@data/siteButtons'
+import { resolveStoryCtas, STANDARD_SITE_CTAS } from '@data/siteCtas'
 import { mergeSiteButtons } from '@utils/siteButtons'
 import FlashMessage from './components/FlashMessage'
 import LocaleTabs from './components/LocaleTabs'
@@ -38,12 +39,30 @@ export default function ButtonsAdminPage() {
 
   useEffect(() => {
     fetchSettings()
-      .then((data) => setButtons(mergeSiteButtons(data?.siteButtons || {})))
+      .then((data) => {
+        const merged = mergeSiteButtons(data?.siteButtons || {})
+        const en = merged.involveStory?.translations?.en || {}
+        const cards = resolveStoryCtas(en.cards)
+        setButtons({
+          ...merged,
+          involveStory: {
+            ...merged.involveStory,
+            translations: {
+              ...merged.involveStory.translations,
+              en: { ...en, cards },
+            },
+          },
+        })
+      })
       .catch((err) => setFlash({ type: 'error', message: err.message || 'Failed to load buttons' }))
   }, [])
 
   const footerPack = pickTranslation(buttons.footerCta, locale, defaultLocale)
   const involvePack = pickTranslation(buttons.involveStory, locale, defaultLocale)
+  const involveCards =
+    Array.isArray(involvePack.cards) && involvePack.cards.length
+      ? involvePack.cards
+      : STANDARD_SITE_CTAS
   const navPack = pickTranslation(buttons.navDonate, locale, defaultLocale)
 
   const handleSave = async () => {
@@ -188,9 +207,10 @@ export default function ButtonsAdminPage() {
       </div>
 
       <div className={styles.card} style={{ marginTop: '1.25rem' }}>
-        <h2 className={styles.sectionTitle}>Story pages — invite cards</h2>
+        <h2 className={styles.sectionTitle}>Story pages — call to action</h2>
         <p className={styles.muted}>
-          Three cards shown near the bottom of Shrine, Pilgrimage, and Spirituality story pages.
+          Three buttons shown near the bottom of Shrine, Pilgrimage, and Spirituality story pages
+          (View Calendar, Plan Your Pilgrimage, Get involved).
         </p>
         <div className={styles.field}>
           <label>Section title ({locale})</label>
@@ -218,19 +238,19 @@ export default function ButtonsAdminPage() {
           />
         </div>
         <ListEditor
-          label={`Cards (${locale})`}
-          items={involvePack.cards || []}
+          label={`Buttons (${locale})`}
+          items={involveCards}
           onChange={(cards) =>
             setButtons((prev) => ({
               ...prev,
               involveStory: setTranslation(prev.involveStory, locale, defaultLocale, { cards }),
             }))
           }
-          addLabel="Add card"
+          addLabel="Add button"
           emptyItem={{ title: '', text: '', path: '' }}
           fields={[
-            { key: 'title', label: 'Title' },
-            { key: 'text', label: 'Description', type: 'textarea' },
+            { key: 'title', label: 'Button label' },
+            { key: 'text', label: 'Description (optional)', type: 'textarea' },
             { key: 'path', label: 'URL', placeholder: '/pilgrimage/plan' },
           ]}
         />
