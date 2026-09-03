@@ -557,8 +557,9 @@ export default function SectionsAdminPage() {
 
             <h2 className={styles.sectionTitle}>Page header</h2>
             <p className={styles.muted}>
-              Title, subtitle, and hero image at the top of this page. Leave the image empty to use the
-              default header image.
+              {kind === 'pillar.explore'
+                ? 'Used only on this menu’s hub page (for example /pilgrimage). Submenu pages show their own page title instead.'
+                : 'Title, subtitle, and hero image at the top of this page. Leave the image empty to use the default header image.'}
             </p>
             <div className={styles.field}>
               <label>Title</label>
@@ -631,12 +632,15 @@ export default function SectionsAdminPage() {
                   </>
                 ) : null}
                 <div className={styles.field}>
-                  <label>Section introduction</label>
+                  <label>Section introduction (hub only)</label>
                   <textarea
                     rows={3}
                     value={getPageContentField(form, sectionTranslations, 'intro', localeTab, defaultLocale)}
                     onChange={(e) => patchField('intro', e.target.value)}
                   />
+                  <p className={styles.muted}>
+                    Shown under the heading on the main menu hub. Child pages use each page’s own subtitle.
+                  </p>
                 </div>
               </>
             ) : null}

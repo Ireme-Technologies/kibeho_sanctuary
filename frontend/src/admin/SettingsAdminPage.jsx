@@ -398,7 +398,7 @@ export default function SettingsAdminPage() {
                 Brand & logo
               </h2>
               <ImageField
-                label="Site logo"
+                label="Site logo (header & footer)"
                 value={company.logo}
                 onChange={(url) => setCompany({ ...company, logo: url })}
                 folder="logo"
@@ -416,7 +416,8 @@ export default function SettingsAdminPage() {
                 folder="logo"
               />
               <p className={styles.muted}>
-                To replace the seeded files in place (same URL for every page), use{' '}
+                The site logo appears in the header and footer. Prefer a wide mark (cross + wordmark).
+                To replace the seeded file in place (same URL for every page), use{' '}
                 <strong>Admin → Media library → Logo & brand</strong>.
               </p>
               <div className={styles.fieldRow}>

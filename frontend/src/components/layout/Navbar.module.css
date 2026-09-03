@@ -230,12 +230,13 @@
 
 .logoImg {
   height: 3.15rem;
-  width: 3.15rem;
+  width: auto;
+  max-width: 11rem;
   flex-shrink: 0;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
   object-position: left center;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .brandText {
@@ -519,6 +520,7 @@
 
   .logoImg {
     height: 2.65rem;
-    width: 2.65rem;
+    width: auto;
+    max-width: 9rem;
   }
 }

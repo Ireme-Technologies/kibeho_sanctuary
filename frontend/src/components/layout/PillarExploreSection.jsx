@@ -60,20 +60,37 @@ export default function PillarExploreSection() {
     pillarMeta.footerImage || '/images/sanctuary/hero.jpg',
   )
 
+  const activeLink =
+    links.find((link) => pillarExploreLinkIsActive(pathOnly, link.path)) || null
+  const isHub = pathOnly === nav.hubPath
+
+  // Prefer this page's menu label / CMS title so each submenu page is distinct.
+  // Shared explore.* copy is only the hub fallback (e.g. /pilgrimage).
+  const pageTitle =
+    activeLink?.label ||
+    pageContent.title ||
+    pageContent.heading ||
+    ''
+  const pageSubtitle = String(pageContent.subtitle || '').trim()
+
   const footerAlt =
     pageContent.footerImageAlt ||
     pageContent.map?.alt ||
     pageContent.mapAlt ||
     (pageHeaderImage
-      ? pageContent.title || pageContent.heading || pillarMeta.heading || nav.pillarLabel
+      ? pageTitle || pillarMeta.heading || nav.pillarLabel
       : null) ||
     pillarMeta.footerImageAlt ||
+    pageTitle ||
     pillarMeta.heading ||
     nav.pillarLabel
 
   const eyebrow = pillarMeta.eyebrow || nav.pillarLabel
-  const heading = pillarMeta.heading || pillarMeta.title || `Explore ${nav.pillarLabel}`
-  const intro = pillarMeta.intro || ''
+  const heading =
+    pageTitle ||
+    (isHub ? pillarMeta.heading || pillarMeta.title : '') ||
+    `Explore ${nav.pillarLabel}`
+  const intro = pageSubtitle || (isHub ? pillarMeta.intro || '' : '')
 
   return (
     <section className={styles.section} id="pillar-explore" aria-labelledby="pillar-explore-heading">
