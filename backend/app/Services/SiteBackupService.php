@@ -32,6 +32,7 @@ class SiteBackupService
         'sacred_places',
         'visionaries',
         'mary_messages',
+        'travel_routes',
         'official_prayers',
         'spiritual_books',
         'audio_items',

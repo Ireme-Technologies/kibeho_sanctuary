@@ -30,6 +30,7 @@ const ShrineProjectsAdminPage = lazy(() => import('@admin/ShrineProjectsAdminPag
 const SacredPlacesAdminPage = lazy(() => import('@admin/SacredPlacesAdminPage'))
 const VisionariesAdminPage = lazy(() => import('@admin/VisionariesAdminPage'))
 const MaryMessagesAdminPage = lazy(() => import('@admin/MaryMessagesAdminPage'))
+const TravelRoutesAdminPage = lazy(() => import('@admin/TravelRoutesAdminPage'))
 const OfficialPrayersAdminPage = lazy(() => import('@admin/OfficialPrayersAdminPage'))
 const SpiritualBooksAdminPage = lazy(() => import('@admin/SpiritualBooksAdminPage'))
 const AudioItemsAdminPage = lazy(() => import('@admin/AudioItemsAdminPage'))
@@ -294,6 +295,7 @@ const router = createBrowserRouter([
       { path: 'main-places', element: <MainPlacesAdmin /> },
       { path: 'visionaries', element: <Wrap Component={VisionariesAdminPage} /> },
       { path: 'mary-messages', element: <Wrap Component={MaryMessagesAdminPage} /> },
+      { path: 'travel-routes', element: <Wrap Component={TravelRoutesAdminPage} /> },
       { path: 'official-prayers', element: <Wrap Component={OfficialPrayersAdminPage} /> },
       { path: 'spiritual-books', element: <Wrap Component={SpiritualBooksAdminPage} /> },
       { path: 'audio-items', element: <Wrap Component={AudioItemsAdminPage} /> },

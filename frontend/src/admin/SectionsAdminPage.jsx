@@ -687,11 +687,38 @@ export default function SectionsAdminPage() {
             {kind !== 'home' && localeTab === defaultLocale ? (
               <>
                 <h2 className={styles.sectionTitle}>Footer explore band</h2>
-                <p className={styles.muted}>
-                  Image shown in the section navigation band at the bottom of this page. Leave empty to
-                  use the default image for this main menu (editable under Explore band — … in the page
-                  list).
-                </p>
+                {selectedKey === 'pilgrimage.how-to-get-here' ? (
+                  <>
+                    <p className={styles.muted}>
+                      This page shows a Google Map instead of a photo. Leave the map URL empty to use
+                      the embed from Settings → Map. A page-specific URL here overrides the site setting.
+                    </p>
+                    <div className={styles.field}>
+                      <label>Google Map embed URL</label>
+                      <input
+                        value={form.mapEmbedSrc}
+                        onChange={(e) => setForm({ ...form, mapEmbedSrc: e.target.value })}
+                        placeholder="https://www.google.com/maps?q=9H23+58+Kibeho&output=embed"
+                      />
+                    </div>
+                    <div className={styles.field}>
+                      <label>Directions link</label>
+                      <input
+                        value={form.mapDirectionsLink}
+                        onChange={(e) => setForm({ ...form, mapDirectionsLink: e.target.value })}
+                        placeholder="https://maps.google.com/?q=9H23+58+Kibeho"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <p className={styles.muted}>
+                    Image shown in the section navigation band at the bottom of this page. Leave empty to
+                    use the default image for this main menu (editable under Explore band — … in the page
+                    list).
+                  </p>
+                )}
+                {selectedKey === 'pilgrimage.how-to-get-here' ? null : (
+                  <>
                 <ImageField
                   label="Footer image"
                   value={form.footerImage}
@@ -705,6 +732,8 @@ export default function SectionsAdminPage() {
                     onChange={(e) => setForm({ ...form, footerImageAlt: e.target.value })}
                   />
                 </div>
+                  </>
+                )}
               </>
             ) : null}
 

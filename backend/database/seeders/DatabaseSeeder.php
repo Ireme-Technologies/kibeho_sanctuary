@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             EnsureOurLadyNavSeeder::class,
             RestructureContentSeeder::class,
             VisionarySeeder::class,
+            TravelRouteSeeder::class,
         ]);
     }
 }

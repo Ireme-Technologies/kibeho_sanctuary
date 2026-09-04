@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ShrineProjectController;
 use App\Http\Controllers\Api\SpiritualBookController;
 use App\Http\Controllers\Api\TestimonialController;
+use App\Http\Controllers\Api\TravelRouteController;
 use App\Http\Controllers\Api\VideoController;
 use App\Http\Controllers\Api\VisionaryController;
 use App\Http\Controllers\Api\I18nController;
@@ -77,6 +78,8 @@ Route::get('/visionaries', [VisionaryController::class, 'index']);
 Route::get('/visionaries/{slug}', [VisionaryController::class, 'show']);
 Route::get('/mary-messages', [MaryMessageController::class, 'index']);
 Route::get('/mary-messages/{maryMessage}', [MaryMessageController::class, 'show']);
+Route::get('/travel-routes', [TravelRouteController::class, 'index']);
+Route::get('/travel-routes/{travelRoute}', [TravelRouteController::class, 'show']);
 Route::get('/official-prayers', [OfficialPrayerController::class, 'index']);
 Route::get('/spiritual-books', [SpiritualBookController::class, 'index']);
 Route::get('/spiritual-books/{slug}', [SpiritualBookController::class, 'show']);
@@ -161,6 +164,10 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
     Route::post('/mary-messages', [MaryMessageController::class, 'store']);
     Route::put('/mary-messages/{maryMessage}', [MaryMessageController::class, 'update']);
     Route::delete('/mary-messages/{maryMessage}', [MaryMessageController::class, 'destroy']);
+
+    Route::post('/travel-routes', [TravelRouteController::class, 'store']);
+    Route::put('/travel-routes/{travelRoute}', [TravelRouteController::class, 'update']);
+    Route::delete('/travel-routes/{travelRoute}', [TravelRouteController::class, 'destroy']);
 
     Route::post('/official-prayers', [OfficialPrayerController::class, 'store']);
     Route::put('/official-prayers/{officialPrayer}', [OfficialPrayerController::class, 'update']);

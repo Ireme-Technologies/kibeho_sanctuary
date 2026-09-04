@@ -702,9 +702,15 @@ export const pageFallbacks = {
         },
       ],
       cta: {
-        primary: { label: "Pilgrimage Office", path: "/pilgrimage/office" },
-        secondary: { label: "Practical Information", path: "/pilgrimage/practical-information" },
+        primary: { label: "Practical Guidelines", path: "/pilgrimage/practical-guidelines" },
+        secondary: { label: "How to Get Here", path: "/pilgrimage/how-to-get-here" },
       },
+      buttons: [
+        { label: "Practical Guidelines", path: "/pilgrimage/practical-guidelines" },
+        { label: "How to Get Here", path: "/pilgrimage/how-to-get-here" },
+        { label: "Register a group", path: "/pilgrimage/practical-guidelines" },
+        { label: "Accommodation", path: "/pilgrimage/accommodation" },
+      ],
     }),
 
   'pilgrimage.accommodation': page({
@@ -739,13 +745,23 @@ export const pageFallbacks = {
       ],
       cta: {
         primary: {
-          label: "Practical Information",
-          path: "/pilgrimage/practical-information",
+          label: "Practical Guidelines",
+          path: "/pilgrimage/practical-guidelines",
         },
         secondary: {
           label: "Contact",
           path: "/contact",
         },
+      },
+    }),
+
+  'pilgrimage.how-to-get-here': page({
+      title: "How to Get Here",
+      subtitle: "Reaching Kibeho from Rwanda and abroad",
+      intro: "<p>Kibeho is in Nyaruguru District, Southern Province, Rwanda. International pilgrims usually fly to Kigali and continue by road. Use the routes below, then the map to set your directions.</p>",
+      cta: {
+        primary: { label: "Practical Guidelines", path: "/pilgrimage/practical-guidelines" },
+        secondary: { label: "Plan Your Pilgrimage", path: "/pilgrimage/plan" },
       },
     }),
 

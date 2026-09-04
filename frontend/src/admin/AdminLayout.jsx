@@ -44,6 +44,7 @@ export default function AdminLayout() {
     { to: '/admin/main-places', label: 'Main places' },
     { to: '/admin/visionaries', label: 'Visionaries' },
     { to: '/admin/mary-messages', label: 'Messages of Mary' },
+    { to: '/admin/travel-routes', label: 'Travel routes' },
     { to: '/admin/official-prayers', label: 'Official prayers' },
     { to: '/admin/spiritual-books', label: 'Spiritual books' },
     { to: '/admin/audio-items', label: 'Audio & broadcast' },

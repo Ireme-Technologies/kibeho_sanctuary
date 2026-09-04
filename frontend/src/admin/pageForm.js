@@ -114,6 +114,13 @@ export function relatedAdminCruds(key) {
         hint: 'Add, edit, or remove communities shown on this page.',
       },
     ],
+    'pilgrimage.how-to-get-here': [
+      {
+        to: '/admin/travel-routes',
+        label: 'Manage travel routes',
+        hint: 'Add, edit, or remove road directions from different parts of Rwanda. They appear above the map on this page.',
+      },
+    ],
     'shrine.schedule': [
       {
         to: '/admin/mass-schedules',
@@ -393,6 +400,8 @@ export function emptyPageForm() {
     annualIntro: '',
     guidelinesTitle: '',
     guidelines: [],
+    mapEmbedSrc: '',
+    mapDirectionsLink: '',
   }
 }
 
@@ -443,6 +452,8 @@ export function contentToForm(content = {}, key = '') {
     annualIntro: merged.annualIntro || '',
     guidelinesTitle: merged.guidelinesTitle || '',
     guidelines: normalizeGuidelines(merged.guidelines),
+    mapEmbedSrc: merged.mapEmbedSrc || merged.map?.embedSrc || '',
+    mapDirectionsLink: merged.mapDirectionsLink || merged.map?.directionsLink || '',
   }
 }
 
@@ -491,7 +502,11 @@ export function formToContent(form, previous = {}, key = '') {
       image: form.mapImage,
       alt: form.mapAlt,
       caption: form.mapCaption,
+      embedSrc: form.mapEmbedSrc,
+      directionsLink: form.mapDirectionsLink,
     },
+    mapEmbedSrc: form.mapEmbedSrc,
+    mapDirectionsLink: form.mapDirectionsLink,
     ...(key === 'shrine.schedule'
       ? {
           weeklyIntro: form.weeklyIntro || '',

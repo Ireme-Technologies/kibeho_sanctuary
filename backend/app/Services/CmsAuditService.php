@@ -16,6 +16,7 @@ use App\Models\SacredPlace;
 use App\Models\Setting;
 use App\Models\ShrineProject;
 use App\Models\SpiritualBook;
+use App\Models\TravelRoute;
 use App\Models\UpcomingPilgrimage;
 use App\Models\Video;
 use App\Models\Visionary;
@@ -246,6 +247,11 @@ class CmsAuditService
                 ['id' => 'body', 'label' => 'Message body', 'fn' => fn ($row) => $this->filled($row->body) || $this->filled($row->summary)],
                 ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
             ], ['title', 'summary', 'body'], $default, $languages),
+            $this->collection('travel-routes', 'How to get here — routes', '/admin/travel-routes', TravelRoute::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
+                ['id' => 'origin', 'label' => 'Starting place', 'fn' => fn ($row) => $this->filled($row->origin)],
+                ['id' => 'description', 'label' => 'Directions', 'fn' => fn ($row) => $this->filled($row->description)],
+                ['id' => 'published', 'label' => 'Published', 'fn' => fn ($row) => (bool) $row->is_published],
+            ], ['origin', 'title', 'description'], $default, $languages),
             $this->collection('projects', 'Development projects', '/admin/shrine-projects', ShrineProject::query()->orderBy('sort_order')->orderBy('id')->get(), fn ($row) => $row->title, [
                 ['id' => 'photo', 'label' => 'Own photo', 'fn' => fn ($row) => $this->filled($row->cover_image)],
                 ['id' => 'description', 'label' => 'Description', 'fn' => fn ($row) => $this->filled($row->description) || $this->filled($row->short_description)],

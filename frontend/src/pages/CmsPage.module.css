@@ -178,6 +178,86 @@
   margin-bottom: 0;
 }
 
+.bodyWide {
+  max-width: min(1180px, 100%);
+}
+
+.beforeYouCome {
+  margin: 0 0 1.75rem;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0 0 2rem;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  border-radius: 999px;
+  background: var(--color-navy);
+  color: var(--color-white);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ctaBtn:hover {
+  filter: brightness(1.06);
+}
+
+.practicalLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+  width: 100%;
+}
+
+.practicalForm {
+  position: sticky;
+  top: 5.5rem;
+}
+
+.practicalForm > * {
+  margin-top: 0;
+}
+
+.routes {
+  margin: 0 0 2rem;
+}
+
+.routeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.routeCard {
+  padding: 1.15rem 1.2rem;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid #eadfce;
+  box-shadow: 0 8px 22px rgba(18, 40, 71, 0.06);
+}
+
+.routeCard h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1.05rem;
+  color: var(--color-navy);
+}
+
+.routeOrigin {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-sky);
+}
+
 .namedCards,
 .inviteList {
   list-style: none;
@@ -669,6 +749,17 @@
 
 .socialLink:hover {
   background: rgba(18, 40, 71, 0.05);
+}
+
+@media (max-width: 900px) {
+  .practicalLayout,
+  .routeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .practicalForm {
+    position: static;
+  }
 }
 
 @media (max-width: 1020px) {

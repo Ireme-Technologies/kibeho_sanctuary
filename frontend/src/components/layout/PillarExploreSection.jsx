@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ChevronRight, ZoomIn } from 'lucide-react'
+import { ChevronRight, ExternalLink, ZoomIn } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
@@ -21,7 +21,7 @@ const SKIP_PATHS = new Set(['/', '/contact'])
 export default function PillarExploreSection() {
   const { pathname } = useLocation()
   const pathOnly = stripLocale(pathname)
-  const { primaryNav, section, pages, resolveHeaderImage } = useContent()
+  const { primaryNav, section, pages, resolveHeaderImage, contactMap } = useContent()
   const { locale, defaultLocale } = useLocale()
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
@@ -91,6 +91,13 @@ export default function PillarExploreSection() {
     (isHub ? pillarMeta.heading || pillarMeta.title : '') ||
     `Explore ${nav.pillarLabel}`
   const intro = pageSubtitle || (isHub ? pillarMeta.intro || '' : '')
+  const mapEmbedSrc =
+    pageKey === 'pilgrimage.how-to-get-here'
+      ? pageContent.mapEmbedSrc || pageContent.map?.embedSrc || contactMap?.embedSrc || ''
+      : ''
+  const mapDirectionsLink =
+    pageContent.mapDirectionsLink || pageContent.map?.directionsLink || contactMap?.directionsLink || ''
+  const showMap = Boolean(mapEmbedSrc)
 
   return (
     <section className={styles.section} id="pillar-explore" aria-labelledby="pillar-explore-heading">
@@ -98,20 +105,44 @@ export default function PillarExploreSection() {
         <div className={styles.panel}>
           <div className={styles.layout}>
             <div className={styles.imageCol}>
-              <button
-                type="button"
-                className={styles.imageBtn}
-                onClick={() => setLightboxOpen(true)}
-                aria-label={footerAlt ? `View full size: ${footerAlt}` : 'View full size image'}
-              >
-                <img src={footerImage} alt={footerAlt} className={styles.image} loading="lazy" />
-                <span className={styles.imageOverlay} aria-hidden="true">
-                  <span className={styles.zoomBadge}>
-                    <ZoomIn size={18} />
-                    View image
+              {showMap ? (
+                <div className={styles.mapWrap}>
+                  <iframe
+                    className={styles.map}
+                    title={contactMap?.label || 'Map of the Shrine of Our Lady of Kibeho'}
+                    src={mapEmbedSrc}
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                  {mapDirectionsLink ? (
+                    <a
+                      href={mapDirectionsLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.mapDirections}
+                    >
+                      {contactMap?.directionsLabel || 'Get directions'}
+                      <ExternalLink size={14} aria-hidden="true" />
+                    </a>
+                  ) : null}
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.imageBtn}
+                  onClick={() => setLightboxOpen(true)}
+                  aria-label={footerAlt ? `View full size: ${footerAlt}` : 'View full size image'}
+                >
+                  <img src={footerImage} alt={footerAlt} className={styles.image} loading="lazy" />
+                  <span className={styles.imageOverlay} aria-hidden="true">
+                    <span className={styles.zoomBadge}>
+                      <ZoomIn size={18} />
+                      View image
+                    </span>
                   </span>
-                </span>
-              </button>
+                </button>
+              )}
             </div>
 
             <div className={styles.navCol}>
@@ -143,12 +174,14 @@ export default function PillarExploreSection() {
         </div>
       </div>
 
+      {showMap ? null : (
       <ImageLightbox
         open={lightboxOpen}
         images={[{ src: footerImage, alt: footerAlt }]}
         index={0}
         onClose={() => setLightboxOpen(false)}
       />
+      )}
     </section>
   )
 }

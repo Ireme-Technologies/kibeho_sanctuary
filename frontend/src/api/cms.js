@@ -10,6 +10,12 @@ function withQuery(path, params = {}) {
   return qs ? `${path}?${qs}` : path
 }
 
+function asCollection(data) {
+  if (Array.isArray(data)) return data
+  if (Array.isArray(data?.data)) return data.data
+  return []
+}
+
 export const fetchSettings = () => api('/api/settings')
 export const fetchI18n = (locale) => api(withQuery('/api/i18n', { locale }))
 export const updateI18n = (body) => api('/api/i18n', { method: 'PUT', body })
@@ -260,17 +266,25 @@ export const deleteCommunity = (id) => api(`/api/communities/${id}`, { method: '
 
 export const fetchLodging = (params = {}) => api(withQuery('/api/facilities', { lodging: 1, ...params }))
 
-export const fetchVisionaries = (params = {}) => api(withQuery('/api/visionaries', params))
+export const fetchVisionaries = (params = {}) =>
+  api(withQuery('/api/visionaries', params)).then(asCollection)
 export const fetchVisionary = (slug, params = {}) => api(withQuery(`/api/visionaries/${slug}`, params))
 export const createVisionary = (body) => api('/api/visionaries', { method: 'POST', body })
 export const updateVisionary = (id, body) => api(`/api/visionaries/${id}`, { method: 'PUT', body })
 export const deleteVisionary = (id) => api(`/api/visionaries/${id}`, { method: 'DELETE' })
 
-export const fetchMaryMessages = (params = {}) => api(withQuery('/api/mary-messages', params))
+export const fetchMaryMessages = (params = {}) =>
+  api(withQuery('/api/mary-messages', params)).then(asCollection)
 export const fetchMaryMessage = (id, params = {}) => api(withQuery(`/api/mary-messages/${id}`, params))
 export const createMaryMessage = (body) => api('/api/mary-messages', { method: 'POST', body })
 export const updateMaryMessage = (id, body) => api(`/api/mary-messages/${id}`, { method: 'PUT', body })
 export const deleteMaryMessage = (id) => api(`/api/mary-messages/${id}`, { method: 'DELETE' })
+
+export const fetchTravelRoutes = (params = {}) =>
+  api(withQuery('/api/travel-routes', params)).then(asCollection)
+export const createTravelRoute = (body) => api('/api/travel-routes', { method: 'POST', body })
+export const updateTravelRoute = (id, body) => api(`/api/travel-routes/${id}`, { method: 'PUT', body })
+export const deleteTravelRoute = (id) => api(`/api/travel-routes/${id}`, { method: 'DELETE' })
 
 export const fetchOfficialPrayers = (params = {}) => api(withQuery('/api/official-prayers', params))
 export const createOfficialPrayer = (body) => api('/api/official-prayers', { method: 'POST', body })

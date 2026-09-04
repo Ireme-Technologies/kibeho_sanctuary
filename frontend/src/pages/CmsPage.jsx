@@ -19,8 +19,23 @@ import { getInvolvedHref, serviceKeyForActionKind } from '@utils/giveServices'
 import RichText from '@components/ui/RichText'
 import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
 import { applyPageSeo, stripHtml } from '@utils/seo'
+import { fetchTravelRoutes } from '@api/cms'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
+
+function listItemsFromBlocks(blocks = []) {
+  return (blocks || [])
+    .filter((block) => block?.type === 'list')
+    .flatMap((block) => block.items || [])
+    .filter(Boolean)
+}
+
+function pageCtas(data = {}) {
+  if (Array.isArray(data.buttons) && data.buttons.length) {
+    return data.buttons.filter((item) => item?.label && (item.path || item.link))
+  }
+  return [data.cta?.primary, data.cta?.secondary].filter((item) => item?.label && (item.path || item.link))
+}
 
 function YoutubeBlock({ block }) {
   const [open, setOpen] = useState(false)
@@ -253,7 +268,7 @@ function PageLink({ to, className, children }) {
 
 export default function CmsPage() {
   const { pathname } = useLocation()
-  const { section, pages, company, offerings, resolveHeaderImage, involveStory } = useContent()
+  const { section, pages, company, offerings, resolveHeaderImage, involveStory, contactInfo } = useContent()
   const { t, locale, defaultLocale } = useLocale()
   const pathOnly = stripLocale(pathname)
   const key =
@@ -265,6 +280,7 @@ export default function CmsPage() {
   const translated = hasLocaleTranslation(record?.translations, locale, defaultLocale)
   const live = key ? section(key, {}) : {}
   const data = mergePageContent(fallback, live)
+  const [travelRoutes, setTravelRoutes] = useState([])
   if (key && !translated) {
     const navKey = navKeyForPath(pathOnly) || navKeyForPath(pathForSectionKey(key))
     if (navKey) {
@@ -282,6 +298,32 @@ export default function CmsPage() {
   const pageTitle = displayTitleLabel(rawTitle, locale)
   const blocks = data.blocks?.length ? data.blocks : fallback.blocks || []
   const links = data.links?.length ? data.links : fallback.links || []
+  const isPlan = key === 'pilgrimage.plan'
+  const isPractical = key === 'pilgrimage.practical-guidelines'
+  const isHowTo = key === 'pilgrimage.how-to-get-here'
+  const practicalFallback = getPageFallback('pilgrimage.practical-guidelines') || {}
+  const practicalLive = section('pilgrimage.practical-guidelines', {})
+  const beforeYouComeItems = listItemsFromBlocks(
+    mergePageContent(practicalFallback, practicalLive).blocks,
+  )
+  const planButtons = pageCtas(data)
+  const fallbackRoutes = (contactInfo?.routes || []).map((title, index) => ({
+    id: `fallback-${index}`,
+    origin: '',
+    title,
+    description: '',
+  }))
+  const displayRoutes = travelRoutes.length ? travelRoutes : fallbackRoutes
+
+  useEffect(() => {
+    if (key !== 'pilgrimage.how-to-get-here') {
+      setTravelRoutes([])
+      return
+    }
+    fetchTravelRoutes({ locale })
+      .then(setTravelRoutes)
+      .catch(() => setTravelRoutes([]))
+  }, [key, locale])
 
   useEffect(() => {
     if (!key || needsCanonicalRedirect) return
@@ -341,7 +383,7 @@ export default function CmsPage() {
         key?.startsWith('pilgrimage.') ||
         key === 'support.vision',
     )
-  const showStoryJoin = isStory && key !== 'shrine.history'
+  const showStoryJoin = isStory && key !== 'shrine.history' && !isPlan
 
   if (!key) return <NotFoundPage />
 
@@ -380,7 +422,7 @@ export default function CmsPage() {
         </div>
       </header>
 
-      <div className={`container ${styles.body} ${isAction ? styles.bodyAction : ''} ${isStory ? styles.bodyStory : ''}`}>
+      <div className={`container ${styles.body} ${isAction ? styles.bodyAction : ''} ${isStory ? styles.bodyStory : ''} ${isPractical || isHowTo ? styles.bodyWide : ''}`}>
         <ContentLocaleNotice translations={record?.translations} />
         {isDonations ? <GiveInvite introHtml={inviteIntro} /> : null}
         {actionPage && !isDonations ? (
@@ -420,10 +462,78 @@ export default function CmsPage() {
         ) : null}
 
         {!isAction
-          ? blocks.map((block, index) => <Block key={`${block.type}-${index}`} block={block} />)
+          ? isPlan
+            ? (
+              <>
+                {beforeYouComeItems.length ? (
+                  <section className={styles.beforeYouCome} aria-labelledby="before-you-come-heading">
+                    <h2 id="before-you-come-heading" className={styles.blockHeading}>
+                      Guidelines before you come
+                    </h2>
+                    <ListBlock items={beforeYouComeItems} />
+                    <PageLink to="/pilgrimage/practical-guidelines" className={styles.inlineLink}>
+                      Read the full practical guidelines →
+                    </PageLink>
+                  </section>
+                ) : null}
+                {planButtons.length ? (
+                  <nav className={styles.ctaRow} id="join" aria-label="Plan your pilgrimage">
+                    {planButtons.map((item) => (
+                      <PageLink key={`${item.label}-${item.path || item.link}`} to={item.path || item.link} className={styles.ctaBtn}>
+                        {item.label}
+                      </PageLink>
+                    ))}
+                  </nav>
+                ) : null}
+                {blocks
+                  .filter((block) => block.type !== 'list' && block.type !== 'note')
+                  .map((block, index) => (
+                    <Block key={`${block.type}-${index}`} block={block} />
+                  ))}
+              </>
+            )
+            : isPractical
+              ? (
+                <div className={styles.practicalLayout}>
+                  <div className={styles.practicalGuidelines}>
+                    {blocks.map((block, index) => (
+                      <Block key={`${block.type}-${index}`} block={block} />
+                    ))}
+                  </div>
+                  <div className={styles.practicalForm}>
+                    <GroupRegistrationForm />
+                  </div>
+                </div>
+              )
+              : isHowTo
+                ? (
+                  <>
+                    {blocks
+                      .filter((block) => block.type !== 'list')
+                      .map((block, index) => (
+                        <Block key={`${block.type}-${index}`} block={block} />
+                      ))}
+                    {displayRoutes.length ? (
+                      <section className={styles.routes} aria-labelledby="travel-routes-heading">
+                        <h2 id="travel-routes-heading" className={styles.blockHeading}>
+                          Routes from across Rwanda
+                        </h2>
+                        <div className={styles.routeGrid}>
+                          {displayRoutes.map((route) => (
+                            <article key={route.id} className={styles.routeCard}>
+                              {route.origin ? <p className={styles.routeOrigin}>From {route.origin}</p> : null}
+                              <h3>{route.title}</h3>
+                              {route.description ? <RichText html={route.description} /> : null}
+                            </article>
+                          ))}
+                        </div>
+                      </section>
+                    ) : null}
+                  </>
+                )
+                : blocks.map((block, index) => <Block key={`${block.type}-${index}`} block={block} />)
           : null}
 
-        {key === 'pilgrimage.practical-guidelines' ? <GroupRegistrationForm /> : null}
 
         {actionPage?.kind === 'prayer' ? <OfferingForm kind="prayer" /> : null}
         {actionPage?.kind === 'testimony' ? <OfferingForm kind="testimony" /> : null}
