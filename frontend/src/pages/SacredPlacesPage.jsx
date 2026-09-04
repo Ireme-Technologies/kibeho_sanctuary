@@ -7,6 +7,7 @@ import { catalogErrorMessage } from '@api/client'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import { cardExcerpt } from '@utils/text'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import styles from './CatalogPage.module.css'
 
 export default function SacredPlacesPage({ type: typeProp }) {
@@ -34,7 +35,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
 
   const heroImage = resolveHeaderImage(
     hero.heroImage,
-    type === 'main_place' ? '/images/sanctuary/church.jpg' : '/images/sanctuary/hero.jpg'
+    type === 'main_place' ? '/images/sanctuary/church.jpg' : '',
   )
 
   const basePath = type === 'apparition_site' ? '/shrine/apparition-sites' : '/shrine/places'
@@ -45,9 +46,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(heroImage)}
         aria-hidden="true"
       />
 

@@ -122,9 +122,13 @@ class SiteAssetService
                     'images/sanctuary/activity-candle.jpg',
                     'images/sanctuary/activity-spring.jpg',
                 ];
+                $removed = array_fill_keys($this->removedPaths(), true);
                 foreach ($candidates as $relative) {
                     if ($added >= $limit) {
                         break;
+                    }
+                    if (isset($removed[$relative])) {
+                        continue;
                     }
                     $abs = $this->firstExisting($relative);
                     if (! $abs) {

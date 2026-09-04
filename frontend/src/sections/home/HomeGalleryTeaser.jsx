@@ -3,7 +3,6 @@ import { useInView } from '@hooks/useInView'
 import styles from './HomeGalleryTeaser.module.css'
 
 const images = [
-  { src: '/images/sanctuary/hero.jpg', alt: 'Kibeho Sanctuary shrine exterior' },
   { src: '/images/sanctuary/welcome.jpg', alt: 'Pilgrims welcomed at the shrine' },
   { src: '/images/sanctuary/hills.jpg', alt: 'Hills surrounding Kibeho' },
   { src: '/images/sanctuary/mary.jpg', alt: 'Devotion to Our Lady of Kibeho' },

@@ -21,6 +21,7 @@ import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
 import { applyPageSeo, stripHtml } from '@utils/seo'
 import { fetchTravelRoutes } from '@api/cms'
 import { TRAVEL_ROUTE_FALLBACKS } from '@data/directories'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
 
@@ -392,9 +393,10 @@ export default function CmsPage() {
     <div className={`${styles.page} ${isStory ? styles.pageStory : ''}`}>
       <header
         className={`${styles.hero} ${data.heroCompact ? styles.heroCompact : ''}`}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(
+          heroImage,
+          'linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5))',
+        )}
       >
         <div className="container">
           {data.eyebrow ? (

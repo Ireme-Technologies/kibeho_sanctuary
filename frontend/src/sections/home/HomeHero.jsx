@@ -6,6 +6,7 @@ import { occasionCopy, pickSiteOccasion } from '@utils/occasion'
 import { hasLocaleTranslation } from '@components/ContentLocaleNotice'
 import { displayTitleLabel, displayCapsLabel } from '@i18n/typography'
 import { parseYoutubeId, youtubeEmbedUrl } from '@utils/youtube'
+import { firstUsableImage } from '@utils/siteImages'
 import {
   heroMode as fbMode,
   heroHeading as fbHeading,
@@ -26,9 +27,9 @@ function normalizeMode(raw) {
 const LEGACY_MEDIA =
   /construction|structural|mep-engineering|interior-design|building-compliance|sustainable-construction|professional-project|hero-slide|loader|crane/i
 
-function sanitizeMedia(src, fallback) {
-  if (!src || LEGACY_MEDIA.test(src)) return fallback
-  return src
+function sanitizeMedia(src, fallback = '') {
+  if (!src || LEGACY_MEDIA.test(src)) return firstUsableImage([fallback])
+  return firstUsableImage([src, fallback])
 }
 
 function resolveCtas(raw) {

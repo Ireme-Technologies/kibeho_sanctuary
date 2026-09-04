@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import RichText from '@components/ui/RichText'
 import { cardExcerpt } from '@utils/text'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import styles from './CmsPage.module.css'
 
 export default function ActivitiesPage() {
@@ -18,9 +19,10 @@ export default function ActivitiesPage() {
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(
+          heroImage,
+          'linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5))',
+        )}
       >
         <div className="container">
           <h1>{data.title || 'Activities'}</h1>

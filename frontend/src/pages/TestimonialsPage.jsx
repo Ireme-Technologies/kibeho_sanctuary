@@ -4,6 +4,7 @@ import { useLocale } from '@context/LocaleContext'
 import { fetchTestimonials } from '@api/cms'
 import { catalogErrorMessage } from '@api/client'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import RichText from '@components/ui/RichText'
 import styles from './CatalogPage.module.css'
 
@@ -30,12 +31,7 @@ export default function TestimonialsPage() {
 
   return (
     <div className={styles.page}>
-      <header
-        className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
-        }}
-      >
+      <header className={styles.hero} style={heroBackgroundStyle(heroImage)}>
         <div className="container">
           <h1>{hero.title || 'Testimonials'}</h1>
           {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}

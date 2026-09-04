@@ -20,6 +20,7 @@ import { classifyEvent, occurrenceWindow, statusLabel } from '@utils/occasion'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import { cardExcerpt } from '@utils/text'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import styles from './ShrineSchedulePage.module.css'
 
 const stripHtml = (html) =>
@@ -171,7 +172,7 @@ export default function ShrineSchedulePage() {
   }, [upcomingPilgrimages])
 
   const guidelines = useMemo(() => normalizeGuidelines(hero.guidelines), [hero.guidelines])
-  const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')
+  const heroImage = resolveHeaderImage(hero.heroImage)
 
   const weeklyGrouped = useMemo(() => {
     const map = new Map()
@@ -187,9 +188,10 @@ export default function ShrineSchedulePage() {
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.92), rgba(26, 54, 93, 0.58)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(
+          heroImage,
+          'linear-gradient(120deg, rgba(18, 40, 71, 0.92), rgba(26, 54, 93, 0.58))',
+        )}
       >
         <div className="container">
           <p className={styles.eyebrow}>The Shrine</p>

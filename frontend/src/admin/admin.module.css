@@ -717,9 +717,7 @@
   display: grid;
   place-items: center;
   padding: 1.5rem;
-  background:
-    linear-gradient(135deg, rgba(18, 40, 71, 0.88) 0%, rgba(26, 54, 93, 0.78) 45%, rgba(74, 163, 224, 0.35) 100%),
-    url('/images/sanctuary/hero.jpg') center / cover no-repeat;
+  background: linear-gradient(135deg, rgba(18, 40, 71, 0.88) 0%, rgba(26, 54, 93, 0.78) 45%, rgba(74, 163, 224, 0.35) 100%);
   font-family: var(--font-body);
 }
 

@@ -3,10 +3,10 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { useInView } from '@hooks/useInView'
 import { formatLocaleDate } from '@utils/localeDate'
+import { firstUsableImage } from '@utils/siteImages'
 import styles from './HomeNewsSimple.module.css'
 
 const SANCTUARY_COVERS = [
-  '/images/sanctuary/hero.jpg',
   '/images/sanctuary/welcome.jpg',
   '/images/sanctuary/mary.jpg',
   '/images/sanctuary/hills.jpg',
@@ -17,10 +17,9 @@ const LEGACY_COVER =
   /construction|structural|mep-engineering|interior-design|building-compliance|sustainable-construction|professional-project|kigali-business|nyarutarama|musanze|kacyiru/i
 
 function resolveCover(src, index = 0) {
-  if (!src || LEGACY_COVER.test(src)) {
-    return SANCTUARY_COVERS[index % SANCTUARY_COVERS.length]
-  }
-  return src
+  const fallback = SANCTUARY_COVERS[index % SANCTUARY_COVERS.length]
+  if (!src || LEGACY_COVER.test(src)) return firstUsableImage([fallback])
+  return firstUsableImage([src, fallback])
 }
 
 function formatDate(value, locale) {

@@ -4,6 +4,7 @@
 
 .hero {
   padding: clamp(3rem, 8vw, 5rem) 0 2.5rem;
+  background-color: var(--color-navy-deep);
   background-size: cover;
   background-position: center;
   color: var(--color-white);

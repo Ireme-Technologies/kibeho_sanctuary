@@ -53,7 +53,7 @@ export const PILLAR_EXPLORE_FALLBACKS = {
     eyebrow: 'News',
     heading: 'News & stories',
     intro: 'Chronicles, celebrations, articles, announcements, and the photo gallery.',
-    footerImage: '/images/sanctuary/hero.jpg',
+    footerImage: '/images/sanctuary/church-wide.jpg',
     footerImageAlt: 'Shrine of Our Lady of Kibeho',
   },
   [PILLAR_EXPLORE_KEYS.broadcast]: {

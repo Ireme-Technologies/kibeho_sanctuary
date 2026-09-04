@@ -7,6 +7,7 @@ import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import { getInvolvedHref } from '@utils/giveServices'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import RichText from '@components/ui/RichText'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import NotFoundPage from './NotFoundPage'
 import catalog from './CatalogPage.module.css'
 import styles from './SupportProject.module.css'
@@ -57,9 +58,7 @@ export default function SupportProjectDetailPage() {
     <div className={catalog.page}>
       <header
         className={catalog.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(heroImage)}
       >
         <div className="container">
           {item.status ? <p className={catalog.subtitle}>{item.status}</p> : null}

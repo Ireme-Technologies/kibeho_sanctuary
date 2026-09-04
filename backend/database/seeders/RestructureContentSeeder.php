@@ -339,16 +339,16 @@ class RestructureContentSeeder extends Seeder
         }
 
         $messages = [
-            ['number' => 1, 'title' => 'Convert while there is still time', 'theme' => 'Conversion'],
-            ['number' => 2, 'title' => 'Pray the Rosary daily', 'theme' => 'Prayer'],
-            ['number' => 3, 'title' => 'Offer reparation for sins', 'theme' => 'Reparation'],
-            ['number' => 4, 'title' => 'Seek reconciliation', 'theme' => 'Reconciliation'],
-            ['number' => 5, 'title' => 'Live as children of the Mother of the Word', 'theme' => 'Discipleship'],
-            ['number' => 6, 'title' => 'Repent and return to God', 'theme' => 'Conversion'],
-            ['number' => 7, 'title' => 'Pray the Seven Sorrows Rosary', 'theme' => 'Devotion'],
-            ['number' => 8, 'title' => 'Help the poor', 'theme' => 'Charity'],
-            ['number' => 9, 'title' => 'Forgive one another', 'theme' => 'Reconciliation'],
-            ['number' => 10, 'title' => 'Be witnesses of hope', 'theme' => 'Mission'],
+            ['number' => 1, 'title' => 'An urgent appeal to the repentance and conversion of hearts'],
+            ['number' => 2, 'title' => 'An assessment of the moral state of the world'],
+            ['number' => 3, 'title' => 'The deep sorrow of the Virgin Mary'],
+            ['number' => 4, 'title' => 'Faith and unbelief will come unseen'],
+            ['number' => 5, 'title' => 'The suffering that saves'],
+            ['number' => 6, 'title' => 'Pray always and without hypocrisy'],
+            ['number' => 7, 'title' => 'Marian devotion expressed through the Rosary'],
+            ['number' => 8, 'title' => 'The Rosary of the Seven Sorrows of the Virgin Mary'],
+            ['number' => 9, 'title' => 'A chapel in memory of her apparition at Kibeho'],
+            ['number' => 10, 'title' => 'Pray unceasingly for the Church'],
         ];
 
         foreach ($messages as $index => $row) {
@@ -356,7 +356,6 @@ class RestructureContentSeeder extends Seeder
                 ['number' => $row['number']],
                 [
                     'title' => $row['title'],
-                    'theme' => $row['theme'],
                     'sort_order' => $index + 1,
                     'is_published' => true,
                 ]

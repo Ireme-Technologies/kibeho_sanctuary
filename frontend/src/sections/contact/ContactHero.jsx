@@ -15,7 +15,9 @@ export default function ContactHero() {
   return (
     <section className={styles.hero} aria-label={title}>
       <div className={styles.background} aria-hidden="true">
-        <img src={backgroundImage} alt="" className={styles.bgImage} />
+        {backgroundImage ? (
+          <img src={backgroundImage} alt="" className={styles.bgImage} />
+        ) : null}
         <div className={styles.overlay} />
       </div>
 

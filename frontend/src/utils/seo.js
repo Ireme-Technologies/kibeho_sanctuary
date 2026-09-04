@@ -4,7 +4,7 @@ export const DEFAULT_SEO = {
   title: `${BRAND} | Official Website`,
   description:
     'Official website of the Shrine of Our Lady of Kibeho — the first Marian apparition site in Africa recognised by the Catholic Church. Discover the message, prepare your pilgrimage, and support the Shrine.',
-  image: '/images/sanctuary/hero.jpg',
+  image: '',
 }
 
 export function stripHtml(value) {

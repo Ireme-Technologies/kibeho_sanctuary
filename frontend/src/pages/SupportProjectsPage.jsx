@@ -8,6 +8,7 @@ import RichText from '@components/ui/RichText'
 import { cardExcerpt } from '@utils/text'
 import { getInvolvedHref } from '@utils/giveServices'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import catalog from './CatalogPage.module.css'
 import styles from './SupportProject.module.css'
 
@@ -24,17 +25,12 @@ export default function SupportProjectsPage() {
       .catch((err) => setError(catalogErrorMessage(err)))
   }, [locale])
 
-  const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')
+  const heroImage = resolveHeaderImage(hero.heroImage)
   const staleIntro = /principal places of worship|listed below/i.test(String(hero.intro || ''))
 
   return (
     <div className={catalog.page}>
-      <header
-        className={catalog.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
-        }}
-      >
+      <header className={catalog.hero} style={heroBackgroundStyle(heroImage)}>
         <div className="container">
           <h1>{hero.title || 'Sanctuary projects'}</h1>
           <p className={catalog.subtitle}>

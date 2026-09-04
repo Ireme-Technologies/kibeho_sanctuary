@@ -40,10 +40,7 @@ export default function VideosPage() {
     <>
       <PageHeader
         title={hero.title || t('videos')}
-        backgroundImage={resolveHeaderImage(
-          hero.heroImage || hero.backgroundImage,
-          '/images/sanctuary/hero.jpg'
-        )}
+        backgroundImage={resolveHeaderImage(hero.heroImage || hero.backgroundImage)}
       />
 
       <section className={styles.section}>
@@ -65,11 +62,11 @@ export default function VideosPage() {
                   onClick={() => setActive(item)}
                   aria-label={`${t('watchHere')}: ${item.title}`}
                 >
-                  <img
-                    src={item.thumbnailUrl || '/images/sanctuary/hero.jpg'}
-                    alt=""
-                    className={styles.thumb}
-                  />
+                  {item.thumbnailUrl ? (
+                    <img src={item.thumbnailUrl} alt="" className={styles.thumb} />
+                  ) : (
+                    <span className={styles.thumb} aria-hidden="true" />
+                  )}
                   <span className={styles.playBadge} aria-hidden="true">
                     <Play size={28} fill="currentColor" />
                   </span>

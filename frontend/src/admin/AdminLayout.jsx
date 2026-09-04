@@ -30,7 +30,6 @@ export default function AdminLayout() {
 
   const links = [
     { to: '/admin', label: 'Dashboard', end: true },
-    { to: '/admin/audit', label: 'CMS audit' },
     { to: '/admin/menus', label: 'Site menus' },
     { to: '/admin/buttons', label: 'Site buttons' },
     { to: '/admin/sections', label: 'Site pages' },
@@ -55,6 +54,7 @@ export default function AdminLayout() {
     { to: '/admin/gallery', label: 'Media gallery' },
     { to: '/admin/videos', label: 'Videos (YouTube)' },
     { to: '/admin/enquiries', label: 'Enquiries' },
+    { to: '/admin/audit', label: 'CMS audit' },
     { to: '/admin/settings', label: 'Settings' },
     { to: '/admin/backup', label: 'Backup & restore' },
     ...(user?.can_manage_users ? [{ to: '/admin/users', label: 'Users' }] : []),

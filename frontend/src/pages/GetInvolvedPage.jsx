@@ -9,6 +9,7 @@ import { isValidServiceKey, resolveGiveWays } from '@utils/giveServices'
 import GiveWayCards from '@components/payments/GiveWayCards'
 import OfferingForm from '@components/OfferingForm'
 import RichText from '@components/ui/RichText'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import styles from './GetInvolvedPage.module.css'
 
 export default function GetInvolvedPage() {
@@ -43,9 +44,10 @@ export default function GetInvolvedPage() {
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.9), rgba(26,54,93,.62)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(
+          heroImage,
+          'linear-gradient(120deg, rgba(18,40,71,.9), rgba(26,54,93,.62))',
+        )}
       >
         <div className="container">
           {page.eyebrow ? <p className={styles.eyebrow}>{page.eyebrow}</p> : null}

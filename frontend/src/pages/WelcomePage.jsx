@@ -85,7 +85,9 @@ export default function WelcomePage() {
       <header
         className={`${styles.hero} ${data.heroCompact ? styles.heroCompact : ''}`}
         style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.52)), url(${heroImage})`,
+          backgroundImage: heroImage
+            ? `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.52)), url(${heroImage})`
+            : 'linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.52))',
         }}
       >
         <div className="container">

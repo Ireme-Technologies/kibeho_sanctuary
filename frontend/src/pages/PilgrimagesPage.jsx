@@ -5,6 +5,7 @@ import { classifyEvent, statusLabel } from '@utils/occasion'
 import { cardExcerpt } from '@utils/text'
 import { PAGE_SIZE, paginate, sortByLatest } from '@utils/paginate'
 import Pagination from '@components/Pagination'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import styles from './CmsPage.module.css'
 
 export default function PilgrimagesPage() {
@@ -12,7 +13,7 @@ export default function PilgrimagesPage() {
   const [searchParams] = useSearchParams()
   const page = Number(searchParams.get('page') || 1)
   const hero = section('pilgrimage.calendar', {})
-  const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')
+  const heroImage = resolveHeaderImage(hero.heroImage)
   const sorted = sortByLatest(upcomingPilgrimages || [], (item) => item.startsOn || item.starts_on)
   const paged = paginate(sorted, page, PAGE_SIZE)
 
@@ -20,9 +21,10 @@ export default function PilgrimagesPage() {
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(
+          heroImage,
+          'linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5))',
+        )}
       >
         <div className="container">
           <h1>{hero.title || 'Pilgrimage events'}</h1>

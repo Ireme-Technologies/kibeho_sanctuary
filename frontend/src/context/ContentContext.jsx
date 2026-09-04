@@ -53,6 +53,7 @@ import {
   resolvePreloaderLogo,
 } from '@utils/brand'
 import { applyThemeToDocument, normalizeTheme, DEFAULT_THEME } from '@utils/theme'
+import { firstUsableImage, parseRemovedAssetSet } from '@utils/siteImages'
 
 const ContentContext = createContext(null)
 
@@ -218,10 +219,16 @@ export function ContentProvider({ children }) {
     const navigation = settings.navigation || {}
     const contact = settings.contact || {}
 
-    const defaultHeaderImage =
-      pageContent(pages, 'headers.default').backgroundImage || '/images/sanctuary/hero.jpg'
+    const removedAssets = parseRemovedAssetSet(settings)
+    const defaultHeaderImage = firstUsableImage(
+      [pageContent(pages, 'headers.default').backgroundImage],
+      removedAssets,
+    )
     const defaultFooterContent = pageContent(pages, 'footers.default')
-    const defaultFooterImage = defaultFooterContent.backgroundImage || ''
+    const defaultFooterImage = firstUsableImage(
+      [defaultFooterContent.backgroundImage],
+      removedAssets,
+    )
     const defaultFooterImageAlt = defaultFooterContent.alt || ''
 
     const resolvedActivities = activities.length ? activities : fallbackActivities
@@ -319,9 +326,12 @@ export function ContentProvider({ children }) {
       defaultFooterImage,
       defaultFooterImageAlt,
       resolveHeaderImage: (pageImage, fallback) =>
-        pageImage || defaultHeaderImage || fallback || '/images/sanctuary/hero.jpg',
+        firstUsableImage([pageImage, defaultHeaderImage, fallback], removedAssets),
       resolveFooterImage: (pageImage, fallback) =>
-        pageImage || defaultFooterImage || fallback || defaultHeaderImage || '/images/sanctuary/hero.jpg',
+        firstUsableImage(
+          [pageImage, defaultFooterImage, fallback, defaultHeaderImage],
+          removedAssets,
+        ),
       section: (key, fallback = {}) => pageContent(pages, key, fallback),
       theme,
       locale,

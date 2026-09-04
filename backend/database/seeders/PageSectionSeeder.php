@@ -14,7 +14,7 @@ class PageSectionSeeder extends Seeder
             'headers.default' => [
                 'label' => 'Default page header',
                 'content' => [
-                    'backgroundImage' => '/images/sanctuary/hero.jpg',
+                    'backgroundImage' => '',
                 ],
             ],
             'footers.default' => [
@@ -181,7 +181,7 @@ class PageSectionSeeder extends Seeder
                     'eyebrow' => 'News',
                     'heading' => 'News & stories',
                     'intro' => 'Chronicles, celebrations, articles, announcements, and the photo gallery.',
-                    'footerImage' => '/images/sanctuary/hero.jpg',
+                    'footerImage' => '/images/sanctuary/church-wide.jpg',
                     'footerImageAlt' => 'Shrine of Our Lady of Kibeho',
                 ],
             ],

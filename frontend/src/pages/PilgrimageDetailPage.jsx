@@ -18,6 +18,7 @@ import PaymentOptions, { paymentLabel } from '@components/payments/PaymentOption
 import SharePageBar from '@components/payments/SharePageBar'
 import TimingChoice from '@components/payments/TimingChoice'
 import RichText from '@components/ui/RichText'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import NotFoundPage from './NotFoundPage'
 import styles from './PilgrimageDetailPage.module.css'
 
@@ -152,9 +153,10 @@ export default function PilgrimageDetailPage() {
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.45)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(
+          heroImage,
+          'linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.45))',
+        )}
       >
         <div className="container">
           <p className={styles.eyebrow}>

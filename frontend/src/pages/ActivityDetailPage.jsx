@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import RichText from '@components/ui/RichText'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
 
@@ -18,9 +19,10 @@ export default function ActivityDetailPage() {
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(
+          heroImage,
+          'linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.5))',
+        )}
       >
         <div className="container">
           <p className={styles.eyebrow}>Activities</p>

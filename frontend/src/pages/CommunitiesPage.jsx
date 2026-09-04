@@ -7,6 +7,7 @@ import { catalogErrorMessage } from '@api/client'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import { cardExcerpt } from '@utils/text'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import styles from './CatalogPage.module.css'
 
 export default function CommunitiesPage() {
@@ -26,12 +27,7 @@ export default function CommunitiesPage() {
 
   return (
     <div className={styles.page}>
-      <header
-        className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
-        }}
-      >
+      <header className={styles.hero} style={heroBackgroundStyle(heroImage)}>
         <div className="container">
           <h1>{hero.title || 'Communities around Kibeho'}</h1>
           {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}

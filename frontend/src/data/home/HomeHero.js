@@ -10,13 +10,11 @@ export const heroHeading = 'Shrine of Our Lady of Kibeho'
 export const heroCaption =
   'The Only Marian Place in Africa Approved by the Church — a sanctuary of conversion, prayer, and reconciliation for pilgrims of every nation.'
 
-export const heroSlides = [
-  { id: 1, src: '/images/sanctuary/hero.jpg', duration: 8000 },
-]
+export const heroSlides = []
 
-export const heroVideo = { src: '', poster: '/images/sanctuary/hero.jpg' }
+export const heroVideo = { src: '', poster: '' }
 
-export const heroCoverImage = '/images/sanctuary/hero.jpg'
+export const heroCoverImage = ''
 
 export const heroForeground = { src: '', alt: '' }
 

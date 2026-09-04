@@ -7,6 +7,7 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { visionaryFromFallbacks, VISIONARY_FALLBACKS } from '@data/directories'
 import { applyPageSeo } from '@utils/seo'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import NotFoundPage from './NotFoundPage'
 import styles from './VisionaryDetailPage.module.css'
 
@@ -89,15 +90,15 @@ export default function VisionaryDetailPage() {
   if (notFound || !item) return <NotFoundPage />
 
   const heroImage = resolveHeaderImage(item.photo || item.coverImage)
-  const portrait = item.photo || item.coverImage
 
   return (
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.92), rgba(26, 54, 93, 0.6)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(
+          heroImage,
+          'linear-gradient(120deg, rgba(18, 40, 71, 0.92), rgba(26, 54, 93, 0.6))',
+        )}
       >
         <div className="container">
           {item.periodLabel ? <p className={styles.subtitle}>{item.periodLabel}</p> : null}
@@ -110,11 +111,9 @@ export default function VisionaryDetailPage() {
 
         <div className={styles.split}>
           <div className={styles.imageCol}>
-            {portrait ? (
-              <img src={portrait} alt={item.name} className={styles.portrait} />
-            ) : (
-              <img src={heroImage} alt="" className={styles.portrait} />
-            )}
+            {heroImage ? (
+              <img src={heroImage} alt={item.name} className={styles.portrait} />
+            ) : null}
           </div>
 
           <div className={styles.contentCol}>

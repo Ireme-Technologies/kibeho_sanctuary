@@ -15,9 +15,7 @@
   overflow: hidden;
   padding: clamp(4.5rem, 11vh, 7.5rem) 0 clamp(2.5rem, 6vh, 4rem);
   background-color: var(--color-navy-deep);
-  background-image:
-    linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)),
-    url('/images/sanctuary/hero.jpg');
+  background-image: linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

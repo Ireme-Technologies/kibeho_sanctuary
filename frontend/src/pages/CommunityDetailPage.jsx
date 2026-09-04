@@ -5,6 +5,7 @@ import { useContent } from '@context/ContentContext'
 import { fetchCommunity } from '@api/cms'
 import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import RichText from '@components/ui/RichText'
+import { heroBackgroundStyle } from '@utils/heroBackground'
 import NotFoundPage from './NotFoundPage'
 import styles from './CatalogPage.module.css'
 
@@ -41,9 +42,7 @@ export default function CommunityDetailPage() {
     <div className={styles.page}>
       <header
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(120deg, rgba(18, 40, 71, 0.9), rgba(26, 54, 93, 0.55)), url(${heroImage})`,
-        }}
+        style={heroBackgroundStyle(heroImage)}
       >
         <div className="container">
           {item.location ? <p className={styles.subtitle}>{item.location}</p> : null}
