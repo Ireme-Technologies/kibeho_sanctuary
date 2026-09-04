@@ -8,7 +8,7 @@ function asCollection(data) {
 }
 
 function pickTranslated(item, locale, fields) {
-  const code = String(locale || 'en').toLowerCase()
+  const code = String(locale || 'en').toLowerCase().split('-')[0]
   const tr = item?.translations?.[code]
   if (!tr) return item
   const next = { ...item }
@@ -17,6 +17,7 @@ function pickTranslated(item, locale, fields) {
     const value = tr[field] ?? tr[snake]
     if (value) next[field] = value
   })
+  if (tr.blocks) next.blocks = tr.blocks
   return next
 }
 

@@ -47,25 +47,27 @@ export default function MaryMessagesPage() {
     () => fetchMaryMessages({ locale }),
     MESSAGE_FALLBACKS,
     locale,
-    ['title', 'summary', 'body', 'theme'],
+    ['title', 'summary', 'body', 'theme', 'blocks'],
   )
   const items = resolveMaryMessages(apiItems, locale)
   const copy = maryMessagePageCopy(locale)
   const heroImage = resolveHeaderImage(hero.heroImage)
+  const pageTitle = copy.heroTitle || hero.title || 'The Messages'
+  const showCmsIntro = Boolean(hero.intro) && !copy.heading
 
   return (
     <div className={catalog.page}>
       <header className={catalog.hero} style={heroBackgroundStyle(heroImage)}>
         <div className="container">
-          <h1>{hero.title || 'The Messages'}</h1>
-          {hero.subtitle ? <p className={catalog.subtitle}>{hero.subtitle}</p> : null}
+          <h1>{pageTitle}</h1>
+          {hero.subtitle && !copy.heading ? <p className={catalog.subtitle}>{hero.subtitle}</p> : null}
         </div>
       </header>
 
       <div className={`container ${catalog.body}`}>
         <div className={styles.wrap}>
-          <h2 className={styles.docTitle}>{copy.heading}</h2>
-          {hero.intro ? <RichText html={hero.intro} className={catalog.intro} /> : null}
+          {copy.heading ? <h2 className={styles.docTitle}>{copy.heading}</h2> : null}
+          {showCmsIntro ? <RichText html={hero.intro} className={catalog.intro} /> : null}
 
           {!items.length ? (
             <p className={catalog.empty}>Messages will appear here once published.</p>

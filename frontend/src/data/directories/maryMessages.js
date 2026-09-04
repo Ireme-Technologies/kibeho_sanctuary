@@ -11,20 +11,48 @@ const LEGACY_TITLES = new Set([
   'Be witnesses of hope',
 ])
 
+function localeCode(locale) {
+  return String(locale || 'en').toLowerCase().split('-')[0]
+}
+
 const PAGE_COPY = {
   en: {
+    heroTitle: 'The Messages',
     heading: 'The main themes of the message of Mary, Mother of the Word at Kibeho',
     citation:
       'Cfr: Declaration by the Bishop of Gikongoro concerning the “apparitions of Kibeho”, Gikongoro, June 29, 2001.',
   },
+  rw: {
+    heroTitle: 'Ubutumwa',
+    heading: 'Ingingo z’ingenzi z’ubutumwa bwa Kibeho',
+    citation:
+      'Reba: Icyemezo cy’Umushumba wa Diyosezi ya Gikongoro gikemura burundu iby’ibonekerwa ry’i Kibeho, Gikongoro, 29 kamena 2001.',
+  },
+  fr: {
+    heroTitle: 'Les Messages',
+    heading: 'Les thèmes importants du message de la Mère du Verbe à Kibeho',
+    citation:
+      'Voir : Déclaration de l’Évêque de Gikongoro portant jugement définitif sur les faits dits « apparitions de Kibeho », Gikongoro, le 29 juin 2001.',
+  },
   sw: {
+    heroTitle: 'Ujumbe',
     heading: 'Mambo makuu ya ujumbe wa Mama wa Neno kwa Kibeho',
     citation:
-      'Cfr: Tamko la Askofu wa Gikongoro kuhusu “maono ya Kibeho”, Gikongoro, 29 Juni 2001.',
+      'Tamko la Askofu wa Gikongoro lililokuwa na hukumu ya mwisho juu ya ukweli unaojulikana kama “matokeo ya Kibeho”, Gikongoro, Juni 29, 2001.',
   },
 }
 
-function message(number, en, sw) {
+function message(number, locales) {
+  const en = locales.en
+  const translations = {}
+  Object.entries(locales).forEach(([code, pack]) => {
+    if (code === 'en' || !pack) return
+    translations[code] = {
+      title: pack.title,
+      summary: pack.summary || pack.title,
+      blocks: pack.blocks,
+    }
+  })
   return {
     id: number,
     number,
@@ -33,20 +61,13 @@ function message(number, en, sw) {
     title: en.title,
     summary: en.summary || en.title,
     blocks: en.blocks,
-    translations: {
-      sw: {
-        title: sw.title,
-        summary: sw.summary || sw.title,
-        blocks: sw.blocks,
-      },
-    },
+    translations,
   }
 }
 
 export const MARY_MESSAGE_THEMES = [
-  message(
-    1,
-    {
+  message(1, {
+    en: {
       title: 'An urgent appeal to the repentance and conversion of hearts',
       blocks: [
         {
@@ -55,7 +76,25 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-    {
+    rw: {
+      title: 'Abantu nibisubireho bidatinze, bagarukire Imana',
+      blocks: [
+        {
+          type: 'quotes',
+          items: ['Nimwicuze, nimwicuze, nimwicuze!', 'Nimuhinduke inzira zikigendwa.'],
+        },
+      ],
+    },
+    fr: {
+      title: 'Un urgent appel au repentir et à la conversion des cœurs',
+      blocks: [
+        {
+          type: 'quotes',
+          items: ['Repentez-vous, repentez-vous, repentez-vous !', 'Convertissez-vous quand il en est encore temps.'],
+        },
+      ],
+    },
+    sw: {
       title: 'Wito wa haraka wa toba na wongofu wa mioyo',
       blocks: [
         {
@@ -64,10 +103,9 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
-  message(
-    2,
-    {
+  }),
+  message(2, {
+    en: {
       title: 'An assessment of the moral state of the world',
       blocks: [
         {
@@ -90,7 +128,46 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-    {
+    rw: {
+      title: 'Nimusenge ubutarambirwa kandi musabire isi kugira ngo ihinduke',
+      blocks: [
+        {
+          type: 'quotes',
+          items: [
+            'Isi imeze nabi cyane.',
+            'Isi yarigometse, nta rukundo n’amahoro yifitemo.',
+          ],
+        },
+        {
+          type: 'text',
+          text: 'Niba mutisubiyeho ngo muhindure imitima yanyu, mwese mugiye kugwa mu rwobo, ari byo kuvuga guhora mu byago byinshi kandi bidashira.',
+        },
+      ],
+    },
+    fr: {
+      title: 'Un diagnostic de l’état moral du monde',
+      blocks: [
+        {
+          type: 'quotes',
+          items: [
+            'Le monde se porte très mal.',
+            'Le monde court à sa perte, il va tomber dans un gouffre.',
+          ],
+        },
+        {
+          type: 'text',
+          text: 'C’est-à-dire être plongé dans des malheurs innombrables et incessants.',
+        },
+        {
+          type: 'quotes',
+          items: [
+            'Le monde est en rébellion contre Dieu, trop de péchés s’y commettent ; il n’y a pas d’amour ni de paix.',
+            'Si vous ne vous repentez pas et ne convertissez pas vos cœurs, vous allez tous tomber dans un gouffre.',
+          ],
+        },
+      ],
+    },
+    sw: {
       title: 'Tathmini ya hali ya maadili ya ulimwengu',
       blocks: [
         {
@@ -113,19 +190,36 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
-  message(
-    3,
-    {
+  }),
+  message(3, {
+    en: {
       title: 'The deep sorrow of the Virgin Mary',
       blocks: [
         {
           type: 'text',
-          text: 'The visionaries said they saw the Virgin Mary in tears on 15 August 1982. The Mother of the Word is greatly afflicted because of the unbelief and impenitence of people. She complains about our bad behaviour, characterised by a dissolution of morals, complacency in evil, and continual disobedience to God’s Commandments.',
+          text: 'The visionaries said they saw the Virgin Mary in tears on 15 August 1982. The Mother of the Word is greatly afflicted because of the unbelief and impenitence of people. She complains about our bad behaviour, characterised by a dissolution of morals, complacency in evil and continual disobedience to God’s Commandments.',
         },
       ],
     },
-    {
+    rw: {
+      title: 'Agahinda ka Bikira Mariya',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Nyina wa Jambo arababaye cyane kubera ukwemera guke n’ukutihana biranga abantu b’iki gihe. Ababajwe kandi n’uko abantu badohotse ku muco mwiza, bakitabira ingeso mbi, bakishimira ikibi, bagahora bica amategeko y’Imana.',
+        },
+      ],
+    },
+    fr: {
+      title: 'La profonde tristesse de la Vierge Marie',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Les voyantes disent l’avoir vue pleurer le 15 août 1982. La Mère du Verbe est fort affligée à cause de l’incrédulité et de l’impénitence des gens. Elle se plaint de notre mauvaise conduite, caractérisée par une dissolution des mœurs, une complaisance dans le mal, une désobéissance continuelle aux Commandements de Dieu.',
+        },
+      ],
+    },
+    sw: {
       title: 'Huzuni kubwa ya Bikira Maria',
       blocks: [
         {
@@ -134,10 +228,9 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
-  message(
-    4,
-    {
+  }),
+  message(4, {
+    en: {
       title: 'Faith and unbelief will come unseen',
       blocks: [
         {
@@ -150,7 +243,29 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-    {
+    rw: {
+      title: 'Ukwemera n’ubuhakanyi bizaza mu mayeri',
+      blocks: [
+        {
+          type: 'quotes',
+          items: ['Ukwemera n’ubuhakanyi bizaza mu mayeri.'],
+        },
+      ],
+    },
+    fr: {
+      title: 'La foi et l’incroyance viendront sans qu’on s’en aperçoive',
+      blocks: [
+        {
+          type: 'quotes',
+          items: ['La foi et l’incroyance viendront sans qu’on s’en aperçoive.'],
+        },
+        {
+          type: 'text',
+          text: 'C’est une des paroles mystérieuses dites plus d’une fois par la Vierge Marie dans les débuts des apparitions, avec la demande de la répéter à tous.',
+        },
+      ],
+    },
+    sw: {
       title: 'Imani na kutokuamini vitakuja bila kuonekana',
       blocks: [
         {
@@ -163,10 +278,9 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
-  message(
-    5,
-    {
+  }),
+  message(5, {
+    en: {
       title: 'The suffering that saves',
       blocks: [
         {
@@ -186,7 +300,47 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-    {
+    rw: {
+      title: 'Agaciro k’ububabare mu mibereho y’abantu no mu buzima bwa gikristu',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Iyo ngingo ni imena mu zaranze ibonekerwa ry’i Kibeho. Ku mukristu, ububabare ni ngombwa kugira ngo azagere mu ikuzo ry’ijuru.',
+        },
+        {
+          type: 'quotes',
+          items: [
+            'Ntawe ugera mu ijuru atababaye.',
+            'Umwana wa Mariya ntatana n’imibabaro, n’umusaraba.',
+          ],
+        },
+        {
+          type: 'text',
+          text: 'Kwibabaza ni inzira yo guhongerera icyaha cy’isi no kwifatanya na Yezu na Bikira Mariya mu mibabaro kugira ngo isi ikizwe. Bityo Kibeho ikaba ari urwibutso rw’ahirengeye rw’umwanya w’umusaraba mu buzima bw’umukristu no mu mibereho ya Kiliziya.',
+        },
+      ],
+    },
+    fr: {
+      title: 'La souffrance salvifique',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Ce thème est l’un des plus importants dans l’histoire des apparitions de Kibeho. Pour un chrétien, la souffrance, par ailleurs inévitable dans la vie d’ici-bas, est un chemin obligé pour parvenir à la gloire céleste. La Vierge a dit :',
+        },
+        {
+          type: 'quotes',
+          items: [
+            'Personne n’arrive au ciel sans souffrir.',
+            'L’enfant de Marie ne se sépare pas de la souffrance.',
+          ],
+        },
+        {
+          type: 'text',
+          text: 'Mais la souffrance est aussi un moyen d’expier pour le péché du monde et de participer aux souffrances de Jésus et de Marie pour le salut du monde. Kibeho est ainsi un rappel de la place de la croix dans la vie du chrétien et de l’Église.',
+        },
+      ],
+    },
+    sw: {
       title: 'Mateso yanayookoa',
       blocks: [
         {
@@ -206,10 +360,9 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
-  message(
-    6,
-    {
+  }),
+  message(6, {
+    en: {
       title: 'Pray always and without hypocrisy',
       blocks: [
         {
@@ -218,7 +371,25 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-    {
+    rw: {
+      title: 'Nimusenge ubutitsa kandi nta buryarya',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Abantu ntibagisenga, kandi no mu basenga, abenshi ntibasenga uko bikwiye. Bikira Mariya yadusabye gusabira isi kenshi, gutoza abandi gusenga no gusenga mu kigwi cy’abadasenga. Aradusaba gusenga tubishyizeho umwete, nta buryarya kandi tubikuye ku mutima.',
+        },
+      ],
+    },
+    fr: {
+      title: 'Priez sans cesse et sans hypocrisie',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Les gens ne prient pas ; et même parmi ceux qui prient, beaucoup ne prient pas comme il faut. La Vierge Marie demande de prier beaucoup pour le monde, d’apprendre aux autres à prier, et de prier à la place de ceux qui ne prient pas. Elle nous demande de mettre plus de zèle à prier, et à prier sans hypocrisie.',
+        },
+      ],
+    },
+    sw: {
       title: 'Salini daima bila unafiki',
       blocks: [
         {
@@ -227,10 +398,9 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
-  message(
-    7,
-    {
+  }),
+  message(7, {
+    en: {
       title: 'Marian devotion expressed through the Rosary',
       blocks: [
         {
@@ -239,7 +409,25 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-    {
+    rw: {
+      title: 'Kubaha no kwiyambaza Umubyeyi Bikira Mariya',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Hari uburyo bwinshi bwo kumwiyambaza. Bikira Mariya aratugira inama yo kuvuga kenshi ishapure na Rozari tubikuye ku mutima; ni kimwe mu bimushimisha.',
+        },
+      ],
+    },
+    fr: {
+      title: 'Dévotion envers Marie',
+      blocks: [
+        {
+          type: 'text',
+          text: 'La dévotion envers Marie se concrétise notamment par une récitation régulière et sincère du chapelet.',
+        },
+      ],
+    },
+    sw: {
       title: 'Maombi na ibada kwa Mama Yetu Bikira Maria',
       blocks: [
         {
@@ -248,10 +436,9 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
-  message(
-    8,
-    {
+  }),
+  message(8, {
+    en: {
       title: 'The Rosary of the Seven Sorrows of the Virgin Mary',
       blocks: [
         {
@@ -260,7 +447,25 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-    {
+    rw: {
+      title: 'Ishapule y’Ububabare burindwi bwa Bikira Mariya',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Ni ishapule yigeze kujya ivugwa ariko iza kwibagirana. Bikira Mariya arayikunda cyane kandi yifuza ko yakwitabwaho ikamenyekana muri Kiliziya hose kandi ikavugwa ku isi yose. Ariko iyo shapule ntisimbura Rozari Ntagatifu.',
+        },
+      ],
+    },
+    fr: {
+      title: 'Le chapelet des Douleurs de la Vierge Marie',
+      blocks: [
+        {
+          type: 'text',
+          text: 'La Vierge Marie aime ce chapelet. Connu autrefois, celui-ci était tombé dans l’oubli. Notre-Dame de Kibeho désire qu’il soit remis en honneur et répandu dans l’Église. Mais le chapelet des sept Douleurs ne supplante point le Saint Rosaire.',
+        },
+      ],
+    },
+    sw: {
       title: 'Rozari ya Huzuni saba ya Bikira Maria',
       blocks: [
         {
@@ -269,10 +474,9 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
-  message(
-    9,
-    {
+  }),
+  message(9, {
+    en: {
       title: 'A chapel in memory of her apparition at Kibeho',
       blocks: [
         {
@@ -281,7 +485,25 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-    {
+    rw: {
+      title: 'Bikira Mariya arashaka ko bamwubakira Shapeli',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Bikira Mariya arashaka ko bamwubakira Shapeli ikaba urwibutso ruhoraho rw’uko yabonekeye i Kibeho. Ibyo byatangiye kuvugwa mu ibonekerwa ryo kuwa 16 Mutarama 1982, kandi ntiyahwema kubisubiramo uwo mwaka wose, abisobanura kurushaho.',
+        },
+      ],
+    },
+    fr: {
+      title: 'Une chapelle en souvenir de son apparition à Kibeho',
+      blocks: [
+        {
+          type: 'text',
+          text: 'La Vierge Marie désire qu’on lui construise une chapelle en souvenir de son apparition à Kibeho. C’est un thème qui remonte à l’apparition du 16 janvier 1982 et revient à plusieurs reprises au cours de cette année-là, avec de nouveaux développements.',
+        },
+      ],
+    },
+    sw: {
       title: 'Kanisa kwa kumbukumbu ya kuonekana kwake Kibeho',
       blocks: [
         {
@@ -290,10 +512,9 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
-  message(
-    10,
-    {
+  }),
+  message(10, {
+    en: {
       title: 'Pray unceasingly for the Church',
       blocks: [
         {
@@ -302,7 +523,27 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-    {
+    rw: {
+      title: 'Gusenga ubutitsa dusabira Kiliziya',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Gusenga ubutitsa dusabira Kiliziya, kuko amakuba akomeye ayitegereje mu bihe biri imbere.',
+        },
+      ],
+    },
+    fr: {
+      title: 'Priez sans relâche pour l’Église',
+      blocks: [
+        {
+          type: 'quotes',
+          items: [
+            'Priez sans relâche pour l’Église, car de grandes tribulations l’attendent dans les temps qui viennent.',
+          ],
+        },
+      ],
+    },
+    sw: {
       title: 'Ombeni bila kukoma kwa ajili ya Kanisa',
       blocks: [
         {
@@ -311,7 +552,7 @@ export const MARY_MESSAGE_THEMES = [
         },
       ],
     },
-  ),
+  }),
 ]
 
 function escapeHtml(value) {
@@ -337,33 +578,31 @@ export function blocksToHtml(blocks = []) {
 }
 
 function withHtml(row) {
-  const sw = row.translations?.sw || {}
+  const translations = {}
+  Object.entries(row.translations || {}).forEach(([code, pack]) => {
+    translations[code] = {
+      ...pack,
+      body: pack.body || blocksToHtml(pack.blocks),
+    }
+  })
   return {
     ...row,
     body: blocksToHtml(row.blocks),
-    translations: {
-      ...row.translations,
-      sw: {
-        ...sw,
-        title: sw.title,
-        summary: sw.summary,
-        body: blocksToHtml(sw.blocks),
-      },
-    },
+    translations,
   }
 }
 
 export const MESSAGE_FALLBACKS = MARY_MESSAGE_THEMES.map(withHtml)
 
 export function maryMessagePageCopy(locale) {
-  const code = String(locale || 'en').toLowerCase()
-  return PAGE_COPY[code] || PAGE_COPY.en
+  const code = localeCode(locale)
+  return PAGE_COPY[code] || {}
 }
 
 function localizeTheme(row, locale) {
-  const code = String(locale || 'en').toLowerCase()
+  const code = localeCode(locale)
   const tr = row.translations?.[code]
-  if (!tr) {
+  if (!tr || code === 'en') {
     return {
       ...row,
       body: row.body || blocksToHtml(row.blocks),
@@ -379,7 +618,7 @@ function localizeTheme(row, locale) {
 }
 
 export function resolveMaryMessages(apiItems, locale) {
-  const code = String(locale || 'en').toLowerCase()
+  const code = localeCode(locale)
   const bundled = MARY_MESSAGE_THEMES.map((row) => localizeTheme(withHtml(row), locale))
   const apiList = Array.isArray(apiItems) ? apiItems : []
 
