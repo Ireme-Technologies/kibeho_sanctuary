@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchMaryMessages } from '@api/cms'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
+import { MESSAGE_FALLBACKS, usePublicDirectory } from '@data/directories'
 import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
 
@@ -11,14 +11,12 @@ export default function MaryMessagesPage() {
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale } = useLocale()
   const hero = resolveSectionContent(section, 'shrine.messages')
-  const [items, setItems] = useState([])
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    fetchMaryMessages({ locale })
-      .then(setItems)
-      .catch((err) => setError(err.message))
-  }, [locale])
+  const items = usePublicDirectory(
+    () => fetchMaryMessages({ locale }),
+    MESSAGE_FALLBACKS,
+    locale,
+    ['title', 'summary', 'body', 'theme'],
+  )
 
   const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')
 
@@ -38,14 +36,13 @@ export default function MaryMessagesPage() {
 
       <div className={`container ${styles.body}`}>
         {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
-        {error ? <p className={styles.empty}>{error}</p> : null}
-        {!error && !items.length ? (
+        {!items.length ? (
           <p className={styles.empty}>Messages will appear here once published.</p>
         ) : null}
 
         <div className={styles.grid}>
           {items.map((item) => (
-            <article key={item.id} className={styles.card}>
+            <article key={item.id || item.number} className={styles.card}>
               {item.image ? (
                 <div className={styles.cardMedia}>
                   <img src={item.image || item.coverImage || defaultHeaderImage} alt="" />
@@ -56,10 +53,11 @@ export default function MaryMessagesPage() {
                 <h2>{item.title}</h2>
                 {item.theme ? <p className={styles.meta}>{item.theme}</p> : null}
                 {item.dateContext ? <p className={styles.meta}>{item.dateContext}</p> : null}
-                {cardExcerpt({ description: item.summary || item.body }) ? (
-                  <p className={styles.excerpt}>{cardExcerpt({ description: item.summary || item.body })}</p>
+                {item.body ? (
+                  <RichText html={item.body} className={styles.excerpt} />
+                ) : cardExcerpt({ description: item.summary }) ? (
+                  <p className={styles.excerpt}>{cardExcerpt({ description: item.summary })}</p>
                 ) : null}
-                {item.body ? <RichText html={item.body} className={styles.excerpt} /> : null}
               </div>
             </article>
           ))}

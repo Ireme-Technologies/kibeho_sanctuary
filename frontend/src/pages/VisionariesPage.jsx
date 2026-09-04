@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchVisionaries } from '@api/cms'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
+import { VISIONARY_FALLBACKS, usePublicDirectory } from '@data/directories'
 import { cardExcerpt } from '@utils/text'
 import styles from './CatalogPage.module.css'
 
@@ -12,14 +12,12 @@ export default function VisionariesPage() {
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
   const { locale } = useLocale()
   const hero = resolveSectionContent(section, 'shrine.visionaries', ['our-lady.visionaries'])
-  const [items, setItems] = useState([])
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    fetchVisionaries({ locale })
-      .then(setItems)
-      .catch((err) => setError(err.message))
-  }, [locale])
+  const items = usePublicDirectory(
+    () => fetchVisionaries({ locale }),
+    VISIONARY_FALLBACKS,
+    locale,
+    ['name', 'summary', 'description', 'periodLabel'],
+  )
 
   const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/welcome.jpg')
 
@@ -39,8 +37,7 @@ export default function VisionariesPage() {
 
       <div className={`container ${styles.body}`}>
         {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
-        {error ? <p className={styles.empty}>{error}</p> : null}
-        {!error && !items.length ? (
+        {!items.length ? (
           <p className={styles.empty}>Visionaries will appear here once published.</p>
         ) : null}
 
@@ -49,7 +46,7 @@ export default function VisionariesPage() {
             const detailPath = item.path || `/shrine/visionaries/${item.slug}`
             const teaser = item.summary || cardExcerpt(item)
             return (
-              <article key={item.id} className={styles.card}>
+              <article key={item.id || item.slug} className={styles.card}>
                 <div className={styles.cardMedia}>
                   <img src={item.photo || item.coverImage || defaultHeaderImage} alt={item.name} />
                 </div>

@@ -286,18 +286,21 @@ export const createTravelRoute = (body) => api('/api/travel-routes', { method: '
 export const updateTravelRoute = (id, body) => api(`/api/travel-routes/${id}`, { method: 'PUT', body })
 export const deleteTravelRoute = (id) => api(`/api/travel-routes/${id}`, { method: 'DELETE' })
 
-export const fetchOfficialPrayers = (params = {}) => api(withQuery('/api/official-prayers', params))
+export const fetchOfficialPrayers = (params = {}) =>
+  api(withQuery('/api/official-prayers', params)).then(asCollection)
 export const createOfficialPrayer = (body) => api('/api/official-prayers', { method: 'POST', body })
 export const updateOfficialPrayer = (id, body) => api(`/api/official-prayers/${id}`, { method: 'PUT', body })
 export const deleteOfficialPrayer = (id) => api(`/api/official-prayers/${id}`, { method: 'DELETE' })
 
-export const fetchSpiritualBooks = (params = {}) => api(withQuery('/api/spiritual-books', params))
+export const fetchSpiritualBooks = (params = {}) =>
+  api(withQuery('/api/spiritual-books', params)).then(asCollection)
 export const fetchSpiritualBook = (slug, params = {}) => api(withQuery(`/api/spiritual-books/${slug}`, params))
 export const createSpiritualBook = (body) => api('/api/spiritual-books', { method: 'POST', body })
 export const updateSpiritualBook = (id, body) => api(`/api/spiritual-books/${id}`, { method: 'PUT', body })
 export const deleteSpiritualBook = (id) => api(`/api/spiritual-books/${id}`, { method: 'DELETE' })
 
-export const fetchAudioItems = (params = {}) => api(withQuery('/api/audio-items', params))
+export const fetchAudioItems = (params = {}) =>
+  api(withQuery('/api/audio-items', params)).then(asCollection)
 export const fetchAudioItem = (slug, params = {}) => api(withQuery(`/api/audio-items/${slug}`, params))
 export const createAudioItem = (body) => api('/api/audio-items', { method: 'POST', body })
 export const updateAudioItem = (id, body) => api(`/api/audio-items/${id}`, { method: 'PUT', body })

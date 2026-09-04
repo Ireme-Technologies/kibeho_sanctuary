@@ -3,6 +3,7 @@ import { ExternalLink } from 'lucide-react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchSpiritualBooks } from '@api/cms'
+import { catalogErrorMessage } from '@api/client'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import { cardExcerpt } from '@utils/text'
@@ -18,7 +19,7 @@ export default function BooksPage() {
   useEffect(() => {
     fetchSpiritualBooks({ locale })
       .then(setItems)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(catalogErrorMessage(err)))
   }, [locale])
 
   const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')

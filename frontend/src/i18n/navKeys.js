@@ -48,7 +48,6 @@ export const NAV_PATH_KEYS = {
   '/spirituality/testimonies': 'nav.testimonies',
   '/news': 'nav.news',
   '/news?category=Chronicles': 'nav.chronicles',
-  '/news?category=Annual+Celebrations': 'nav.annualCelebrationsNews',
   '/news?category=Articles': 'nav.articles',
   '/news?category=Announcements': 'nav.announcements',
   '/news/audio': 'nav.audio',

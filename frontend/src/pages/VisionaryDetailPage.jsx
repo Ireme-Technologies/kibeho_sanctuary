@@ -5,6 +5,7 @@ import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import RichText from '@components/ui/RichText'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
+import { visionaryFromFallbacks, VISIONARY_FALLBACKS } from '@data/directories'
 import { applyPageSeo } from '@utils/seo'
 import NotFoundPage from './NotFoundPage'
 import styles from './VisionaryDetailPage.module.css'
@@ -19,15 +20,42 @@ export default function VisionaryDetailPage() {
   const [notFound, setNotFound] = useState(false)
 
   useEffect(() => {
+    let cancelled = false
     setLoading(true)
     setNotFound(false)
-    Promise.all([fetchVisionary(slug, { locale }), fetchVisionaries({ locale })])
-      .then(([detail, list]) => {
-        setItem(detail)
-        setSiblings(Array.isArray(list) ? list : [])
-      })
-      .catch(() => setNotFound(true))
-      .finally(() => setLoading(false))
+
+    Promise.allSettled([fetchVisionary(slug, { locale }), fetchVisionaries({ locale })]).then(
+      ([detailResult, listResult]) => {
+        if (cancelled) return
+
+        const fallbackList = VISIONARY_FALLBACKS.map((row) =>
+          visionaryFromFallbacks(row.slug, locale),
+        ).filter(Boolean)
+        const apiList =
+          listResult.status === 'fulfilled' && Array.isArray(listResult.value) ? listResult.value : []
+        const siblings = apiList.length ? apiList : fallbackList
+
+        const detail =
+          (detailResult.status === 'fulfilled' && detailResult.value) ||
+          visionaryFromFallbacks(slug, locale) ||
+          siblings.find((row) => row.slug === slug) ||
+          null
+
+        if (!detail) {
+          setNotFound(true)
+          setItem(null)
+          setSiblings([])
+        } else {
+          setItem(detail)
+          setSiblings(siblings)
+        }
+        setLoading(false)
+      },
+    )
+
+    return () => {
+      cancelled = true
+    }
   }, [slug, locale])
 
   const nav = useMemo(() => {

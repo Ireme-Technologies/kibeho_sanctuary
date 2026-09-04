@@ -55,7 +55,6 @@ export const primaryNav = [
     path: '/news',
     children: [
       { label: 'Chronicles', path: '/news?category=Chronicles' },
-      { label: 'Annual Celebrations', path: '/news?category=Annual+Celebrations' },
       { label: 'Articles', path: '/news?category=Articles' },
       { label: 'Announcements', path: '/news?category=Announcements' },
       { label: 'Gallery', path: '/gallery' },
@@ -145,6 +144,13 @@ export function ensureOurLadyNavPath(items) {
   })
 }
 
+function isNewsAnnualCelebrationsChild(child) {
+  const path = String(child?.path || '')
+  const label = String(child?.label || '').toLowerCase().trim()
+  if (label === 'annual celebrations') return true
+  return /[?&]category=annual(\+|%20|\s)+celebrations/i.test(path)
+}
+
 /** Parent News already lists the feed — do not repeat it as the first child. */
 export function ensureNewsNavChildren(items) {
   if (!Array.isArray(items)) return items
@@ -153,7 +159,9 @@ export function ensureNewsNavChildren(items) {
     const label = String(item.label || '').toLowerCase()
     const isNews = path === '/news' || label === 'news'
     if (!isNews || !Array.isArray(item.children)) return item
-    const children = item.children.filter((child) => navPath(child) !== '/news')
+    const children = item.children.filter(
+      (child) => navPath(child) !== '/news' && !isNewsAnnualCelebrationsChild(child),
+    )
     return { ...item, children: children.length ? children : item.children }
   })
 }

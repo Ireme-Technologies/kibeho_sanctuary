@@ -220,6 +220,9 @@ export function ContentProvider({ children }) {
 
     const defaultHeaderImage =
       pageContent(pages, 'headers.default').backgroundImage || '/images/sanctuary/hero.jpg'
+    const defaultFooterContent = pageContent(pages, 'footers.default')
+    const defaultFooterImage = defaultFooterContent.backgroundImage || ''
+    const defaultFooterImageAlt = defaultFooterContent.alt || ''
 
     const resolvedActivities = activities.length ? activities : fallbackActivities
     const resolvedPilgrimages = upcomingPilgrimages.length
@@ -313,8 +316,12 @@ export function ContentProvider({ children }) {
       blogAuthors: fallbackAuthors,
       pages,
       defaultHeaderImage,
+      defaultFooterImage,
+      defaultFooterImageAlt,
       resolveHeaderImage: (pageImage, fallback) =>
         pageImage || defaultHeaderImage || fallback || '/images/sanctuary/hero.jpg',
+      resolveFooterImage: (pageImage, fallback) =>
+        pageImage || defaultFooterImage || fallback || defaultHeaderImage || '/images/sanctuary/hero.jpg',
       section: (key, fallback = {}) => pageContent(pages, key, fallback),
       theme,
       locale,

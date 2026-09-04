@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchLodging } from '@api/cms'
+import { catalogErrorMessage } from '@api/client'
 import { sectionKeyForPath } from '@data/pages/registry'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import RichText from '@components/ui/RichText'
@@ -23,7 +24,7 @@ export default function HotelsPage() {
   useEffect(() => {
     fetchLodging({ locale })
       .then(setItems)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(catalogErrorMessage(err)))
   }, [locale])
 
   const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')

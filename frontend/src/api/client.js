@@ -33,6 +33,14 @@ export async function ensureCsrf() {
   }
 }
 
+/** Hide Laravel "route could not be found" dumps on public catalog pages. */
+export function catalogErrorMessage(error) {
+  if (!error) return ''
+  if (error.missingRoute || error.status === 404) return ''
+  if (/route .+ could not be found/i.test(String(error.message || ''))) return ''
+  return error.message || ''
+}
+
 export async function api(path, options = {}) {
   const headers = {
     Accept: 'application/json',
@@ -67,9 +75,12 @@ export async function api(path, options = {}) {
   const data = await response.json().catch(() => ({}))
 
   if (!response.ok) {
-    const error = new Error(data.message || 'Request failed')
+    const raw = String(data.message || 'Request failed')
+    const missingRoute = response.status === 404 && /route .+ could not be found/i.test(raw)
+    const error = new Error(missingRoute ? 'This content is not available yet.' : raw)
     error.status = response.status
     error.errors = data.errors
+    error.missingRoute = missingRoute
     throw error
   }
 

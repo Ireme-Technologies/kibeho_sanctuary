@@ -28,7 +28,7 @@ const PAGES_TAB_KEY = 'admin.pages.activeTab'
 const PAGES_SELECTED_KEY = 'admin.pages.selectedKey'
 
 const TABS = [
-  { id: 'default-header', label: 'Default header' },
+  { id: 'default-header', label: 'Defaults' },
   { id: 'page', label: 'All pages' },
 ]
 
@@ -57,7 +57,7 @@ function readStoredSelected() {
 }
 
 function isEditablePageKey(key) {
-  return key && !key.startsWith('headers.') && key !== 'home.hero'
+  return key && !key.startsWith('headers.') && !key.startsWith('footers.') && key !== 'home.hero'
 }
 
 function getPageLabel(label, translations, locale, defaultLocale) {
@@ -205,10 +205,13 @@ export default function SectionsAdminPage() {
   const [localeTab, setLocaleTab] = useState(defaultLocale || 'en')
   const [form, setForm] = useState(emptyContent())
   const [defaultImage, setDefaultImage] = useState('')
+  const [defaultFooterImage, setDefaultFooterImage] = useState('')
+  const [defaultFooterAlt, setDefaultFooterAlt] = useState('')
   const [error, setError] = useState('')
   const [flash, setFlash] = useState({ type: 'success', message: '' })
   const [saving, setSaving] = useState(false)
   const [savingDefault, setSavingDefault] = useState(false)
+  const [savingDefaultFooter, setSavingDefaultFooter] = useState(false)
   const [editingPage, setEditingPage] = useState(false)
   const [pageQuery, setPageQuery] = useState('')
   const pendingLocaleRef = useRef(null)
@@ -240,6 +243,8 @@ export default function SectionsAdminPage() {
     const next = { ...(data || {}), ...extras }
     setSections(next)
     setDefaultImage(data?.['headers.default']?.content?.backgroundImage || '')
+    setDefaultFooterImage(data?.['footers.default']?.content?.backgroundImage || '')
+    setDefaultFooterAlt(data?.['footers.default']?.content?.alt || '')
     const keys = Object.keys(next).filter(isEditablePageKey)
     if (!keys.length) return
     if (!selectedKey || !next?.[selectedKey] || !isEditablePageKey(selectedKey)) {
@@ -317,6 +322,24 @@ export default function SectionsAdminPage() {
     }
   }
 
+  const handleSaveDefaultFooter = async (e) => {
+    e.preventDefault()
+    setSavingDefaultFooter(true)
+    setFlash({ type: 'success', message: '' })
+    try {
+      await updatePageSection('footers.default', {
+        label: 'Default Footer Image',
+        content: { backgroundImage: defaultFooterImage, alt: defaultFooterAlt },
+      })
+      await load()
+      setFlash({ type: 'success', message: 'Default footer image saved.' })
+    } catch (err) {
+      setFlash({ type: 'error', message: err.message || 'Failed to save default footer image.' })
+    } finally {
+      setSavingDefaultFooter(false)
+    }
+  }
+
   const handleSavePage = async (e) => {
     e.preventDefault()
     if (!selectedKey) return
@@ -377,24 +400,55 @@ export default function SectionsAdminPage() {
       </div>
 
       {activeTab === 'default-header' && (
-        <div className={styles.card}>
-          <form className={styles.form} onSubmit={handleSaveDefault}>
-            <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
-              Default header image
-            </h2>
-            <p className={styles.muted}>
-              Used when a page does not set its own header / hero image below under All pages.
-            </p>
-            <ImageField
-              label="Default background image"
-              value={defaultImage}
-              onChange={setDefaultImage}
-              folder="headers"
-            />
-            <button className={styles.btn} type="submit" disabled={savingDefault}>
-              {savingDefault ? 'Saving…' : 'Save default image'}
-            </button>
-          </form>
+        <div style={{ display: 'grid', gap: '1.25rem' }}>
+          <div className={styles.card}>
+            <form className={styles.form} onSubmit={handleSaveDefault}>
+              <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
+                Default header image
+              </h2>
+              <p className={styles.muted}>
+                Used when a page does not set its own header / hero image below under All pages.
+              </p>
+              <ImageField
+                label="Default background image"
+                value={defaultImage}
+                onChange={setDefaultImage}
+                folder="headers"
+              />
+              <button className={styles.btn} type="submit" disabled={savingDefault}>
+                {savingDefault ? 'Saving…' : 'Save default header'}
+              </button>
+            </form>
+          </div>
+
+          <div className={styles.card}>
+            <form className={styles.form} onSubmit={handleSaveDefaultFooter}>
+              <h2 className={styles.sectionTitle} style={{ marginTop: 0 }}>
+                Default footer image
+              </h2>
+              <p className={styles.muted}>
+                Used in the explore band at the bottom of pages when a page does not set its own footer
+                image. Upload a new file or choose one already in the media library.
+              </p>
+              <ImageField
+                label="Default footer image"
+                value={defaultFooterImage}
+                onChange={setDefaultFooterImage}
+                folder="footers"
+              />
+              <div className={styles.field}>
+                <label>Alt text</label>
+                <input
+                  value={defaultFooterAlt}
+                  onChange={(e) => setDefaultFooterAlt(e.target.value)}
+                  placeholder="Describe the image for screen readers"
+                />
+              </div>
+              <button className={styles.btn} type="submit" disabled={savingDefaultFooter}>
+                {savingDefaultFooter ? 'Saving…' : 'Save default footer'}
+              </button>
+            </form>
+          </div>
         </div>
       )}
 
@@ -614,7 +668,8 @@ export default function SectionsAdminPage() {
                   <>
                     <h2 className={styles.sectionTitle}>Default footer image</h2>
                     <p className={styles.muted}>
-                      Used on all pages in this menu unless a page sets its own footer image.
+                      Used on all pages in this menu unless a page sets its own footer image. Leave empty
+                      to use the site default footer under Defaults.
                     </p>
                     <ImageField
                       label="Footer image"
@@ -713,8 +768,7 @@ export default function SectionsAdminPage() {
                 ) : (
                   <p className={styles.muted}>
                     Image shown in the section navigation band at the bottom of this page. Leave empty to
-                    use the default image for this main menu (editable under Explore band — … in the page
-                    list).
+                    use this menu’s hub footer image, or the site default footer under Defaults.
                   </p>
                 )}
                 {selectedKey === 'pilgrimage.how-to-get-here' ? null : (
@@ -725,6 +779,9 @@ export default function SectionsAdminPage() {
                   onChange={(url) => setForm({ ...form, footerImage: url })}
                   folder="pages"
                 />
+                {!form.footerImage && defaultFooterImage ? (
+                  <p className={styles.muted}>Currently falling back to the site default footer image.</p>
+                ) : null}
                 <div className={styles.field}>
                   <label>Footer image alt text</label>
                   <input

@@ -5,6 +5,7 @@ import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchVideos } from '@api/cms'
+import { catalogErrorMessage } from '@api/client'
 import { excerpt, stripHtml } from '@utils/text'
 import styles from './VideosPage.module.css'
 
@@ -19,7 +20,7 @@ export default function VideosPage() {
   useEffect(() => {
     fetchVideos({ locale })
       .then(setItems)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(catalogErrorMessage(err)))
   }, [locale])
 
   useEffect(() => {

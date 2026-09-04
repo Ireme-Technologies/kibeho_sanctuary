@@ -20,6 +20,7 @@ import RichText from '@components/ui/RichText'
 import { getVisibleSocials, resolveSocialIcon } from '@utils/socials'
 import { applyPageSeo, stripHtml } from '@utils/seo'
 import { fetchTravelRoutes } from '@api/cms'
+import { TRAVEL_ROUTE_FALLBACKS } from '@data/directories'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
 
@@ -321,8 +322,8 @@ export default function CmsPage() {
       return
     }
     fetchTravelRoutes({ locale })
-      .then(setTravelRoutes)
-      .catch(() => setTravelRoutes([]))
+      .then((list) => setTravelRoutes(Array.isArray(list) && list.length ? list : TRAVEL_ROUTE_FALLBACKS))
+      .catch(() => setTravelRoutes(TRAVEL_ROUTE_FALLBACKS))
   }, [key, locale])
 
   useEffect(() => {

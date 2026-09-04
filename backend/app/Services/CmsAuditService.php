@@ -123,11 +123,15 @@ class CmsAuditService
         $header = PageSection::query()->where('key', 'headers.default')->first();
         $headerImage = is_array($header?->content) ? ($header->content['backgroundImage'] ?? '') : '';
 
+        $footer = PageSection::query()->where('key', 'footers.default')->first();
+        $footerImage = is_array($footer?->content) ? ($footer->content['backgroundImage'] ?? '') : '';
+
         $checks = [
             $this->check('Main menu has items', count($primary) > 0, '/admin/menus'),
             $this->check('Home hero photo or slides', $hasSlide || $hasCover, '/admin/home-hero'),
             $this->check('Home hero heading', $this->filled($heroContent['heading'] ?? null), '/admin/home-hero'),
             $this->check('Default page header image', $this->filled($headerImage), '/admin/sections?tab=default-header'),
+            $this->check('Default page footer image', $this->filled($footerImage), '/admin/sections?tab=default-header'),
         ];
 
         return $this->section('setup', 'Menus & home', '/admin/menus', $checks);
@@ -137,6 +141,7 @@ class CmsAuditService
     {
         $rows = PageSection::query()
             ->where('key', 'not like', 'headers.%')
+            ->where('key', 'not like', 'footers.%')
             ->where('key', '!=', 'home.hero')
             ->orderBy('label')
             ->get();
@@ -461,6 +466,7 @@ class CmsAuditService
         $uiTotal = max(count($defaultKeys), 1);
         $allPageItems = PageSection::query()
             ->where('key', 'not like', 'headers.%')
+            ->where('key', 'not like', 'footers.%')
             ->where('key', '!=', 'home.hero')
             ->get();
 

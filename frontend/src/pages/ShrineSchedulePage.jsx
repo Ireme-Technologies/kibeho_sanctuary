@@ -14,6 +14,7 @@ import {
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchMassSchedules } from '@api/cms'
+import { catalogErrorMessage } from '@api/client'
 import { formatMassTime, formatRecurrence, formatItemDates } from '@utils/eventTime'
 import { classifyEvent, occurrenceWindow, statusLabel } from '@utils/occasion'
 import RichText from '@components/ui/RichText'
@@ -145,7 +146,7 @@ export default function ShrineSchedulePage() {
   useEffect(() => {
     fetchMassSchedules({ locale })
       .then(setRows)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(catalogErrorMessage(err)))
   }, [locale])
 
   const weeklyRows = useMemo(() => {

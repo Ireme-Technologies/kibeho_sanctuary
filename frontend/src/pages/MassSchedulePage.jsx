@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchMassSchedules } from '@api/cms'
+import { catalogErrorMessage } from '@api/client'
 import { formatMassTime, formatRecurrence } from '@utils/eventTime'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
@@ -23,7 +24,7 @@ export default function MassSchedulePage() {
   useEffect(() => {
     fetchMassSchedules({ locale })
       .then(setRows)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(catalogErrorMessage(err)))
   }, [locale])
 
   const grouped = useMemo(() => {

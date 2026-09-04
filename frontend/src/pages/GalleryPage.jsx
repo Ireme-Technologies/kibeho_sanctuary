@@ -4,6 +4,7 @@ import ImageLightbox from '@components/ui/ImageLightbox'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchGallery } from '@api/cms'
+import { catalogErrorMessage } from '@api/client'
 import styles from './GalleryPage.module.css'
 
 export default function GalleryPage() {
@@ -17,7 +18,7 @@ export default function GalleryPage() {
   useEffect(() => {
     fetchGallery({ locale })
       .then(setItems)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(catalogErrorMessage(err)))
   }, [locale])
 
   return (

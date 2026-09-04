@@ -21,7 +21,7 @@ const SKIP_PATHS = new Set(['/', '/contact'])
 export default function PillarExploreSection() {
   const { pathname } = useLocation()
   const pathOnly = stripLocale(pathname)
-  const { primaryNav, section, pages, resolveHeaderImage, contactMap } = useContent()
+  const { primaryNav, section, pages, resolveFooterImage, defaultFooterImageAlt, contactMap } = useContent()
   const { locale, defaultLocale } = useLocale()
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
@@ -45,20 +45,15 @@ export default function PillarExploreSection() {
 
   const links = nav.links
 
-  // Prefer an explicit explore/footer image; otherwise use this page's header/hero.
-  const pageHeaderImage =
-    pageContent.heroImage || pageContent.backgroundImage || pageContent.image || ''
+  // Prefer an explicit page or menu footer image; otherwise the site default.
   const exploreImageSource =
     pageContent.footerImage ||
     pageContent.map?.image ||
     pageContent.mapImage ||
-    pageHeaderImage ||
-    pillarMeta.footerImage
+    pillarMeta.footerImage ||
+    ''
 
-  const footerImage = resolveHeaderImage(
-    exploreImageSource,
-    pillarMeta.footerImage || '/images/sanctuary/hero.jpg',
-  )
+  const footerImage = resolveFooterImage(exploreImageSource)
 
   const activeLink =
     links.find((link) => pillarExploreLinkIsActive(pathOnly, link.path)) || null
@@ -77,10 +72,8 @@ export default function PillarExploreSection() {
     pageContent.footerImageAlt ||
     pageContent.map?.alt ||
     pageContent.mapAlt ||
-    (pageHeaderImage
-      ? pageTitle || pillarMeta.heading || nav.pillarLabel
-      : null) ||
     pillarMeta.footerImageAlt ||
+    defaultFooterImageAlt ||
     pageTitle ||
     pillarMeta.heading ||
     nav.pillarLabel

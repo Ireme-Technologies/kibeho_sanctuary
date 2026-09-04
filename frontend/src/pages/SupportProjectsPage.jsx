@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchShrineProjects } from '@api/cms'
+import { catalogErrorMessage } from '@api/client'
 import RichText from '@components/ui/RichText'
 import { cardExcerpt } from '@utils/text'
 import { getInvolvedHref } from '@utils/giveServices'
@@ -20,7 +21,7 @@ export default function SupportProjectsPage() {
   useEffect(() => {
     fetchShrineProjects({ locale })
       .then(setItems)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(catalogErrorMessage(err)))
   }, [locale])
 
   const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')

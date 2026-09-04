@@ -3,6 +3,7 @@ import { ExternalLink, Headphones } from 'lucide-react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchAudioItems } from '@api/cms'
+import { catalogErrorMessage } from '@api/client'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import { cardExcerpt } from '@utils/text'
@@ -31,7 +32,7 @@ export default function AudioCatalogPage({ type = 'audio' }) {
   useEffect(() => {
     fetchAudioItems({ type, locale })
       .then(setItems)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(catalogErrorMessage(err)))
   }, [type, locale])
 
   const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')

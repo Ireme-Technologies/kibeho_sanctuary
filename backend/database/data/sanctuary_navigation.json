@@ -51,7 +51,6 @@
       "path": "/news",
       "children": [
         { "label": "Chronicles", "path": "/news?category=Chronicles" },
-        { "label": "Annual Celebrations", "path": "/news?category=Annual+Celebrations" },
         { "label": "Articles", "path": "/news?category=Articles" },
         { "label": "Announcements", "path": "/news?category=Announcements" },
         { "label": "Gallery", "path": "/gallery" }

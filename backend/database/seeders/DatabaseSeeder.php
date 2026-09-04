@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             RestructureContentSeeder::class,
             VisionarySeeder::class,
             TravelRouteSeeder::class,
+            CatalogCopySeeder::class,
         ]);
     }
 }

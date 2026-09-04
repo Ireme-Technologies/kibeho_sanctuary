@@ -1,23 +1,21 @@
-import { useEffect, useState } from 'react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchOfficialPrayers } from '@api/cms'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
+import { PRAYER_FALLBACKS, usePublicDirectory } from '@data/directories'
 import styles from './CatalogPage.module.css'
 
 export default function OfficialPrayersPage() {
   const { section, resolveHeaderImage } = useContent()
   const { locale } = useLocale()
   const hero = resolveSectionContent(section, 'spirituality.official-prayers')
-  const [items, setItems] = useState([])
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    fetchOfficialPrayers({ locale })
-      .then(setItems)
-      .catch((err) => setError(err.message))
-  }, [locale])
+  const items = usePublicDirectory(
+    () => fetchOfficialPrayers({ locale }),
+    PRAYER_FALLBACKS,
+    locale,
+    ['title', 'timeLabel', 'description'],
+  )
 
   const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/hero.jpg')
 
@@ -37,8 +35,7 @@ export default function OfficialPrayersPage() {
 
       <div className={`container ${styles.body}`}>
         {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
-        {error ? <p className={styles.empty}>{error}</p> : null}
-        {!error && !items.length ? (
+        {!items.length ? (
           <p className={styles.empty}>Official prayers will appear here once published.</p>
         ) : null}
 

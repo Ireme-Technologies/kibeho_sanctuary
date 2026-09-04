@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchTestimonials } from '@api/cms'
+import { catalogErrorMessage } from '@api/client'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import RichText from '@components/ui/RichText'
 import styles from './CatalogPage.module.css'
@@ -22,7 +23,7 @@ export default function TestimonialsPage() {
   useEffect(() => {
     fetchTestimonials({ locale })
       .then(setItems)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(catalogErrorMessage(err)))
   }, [locale])
 
   const heroImage = resolveHeaderImage(hero.heroImage, '/images/sanctuary/welcome.jpg')

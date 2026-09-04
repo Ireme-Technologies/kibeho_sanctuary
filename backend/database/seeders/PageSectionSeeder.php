@@ -17,6 +17,13 @@ class PageSectionSeeder extends Seeder
                     'backgroundImage' => '/images/sanctuary/hero.jpg',
                 ],
             ],
+            'footers.default' => [
+                'label' => 'Default page footer',
+                'content' => [
+                    'backgroundImage' => '/images/sanctuary/hills.jpg',
+                    'alt' => 'Hills around the Shrine of Our Lady of Kibeho',
+                ],
+            ],
             'home.hero' => [
                 'label' => 'Home Hero',
                 'content' => [
