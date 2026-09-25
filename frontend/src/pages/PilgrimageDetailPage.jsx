@@ -10,7 +10,6 @@ import {
   classifyEvent,
   formatOccurrenceRange,
   relatedToEvent,
-  statusLabel,
 } from '@utils/occasion'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import ContentLocaleNotice from '@components/ContentLocaleNotice'
@@ -66,7 +65,6 @@ export default function PilgrimageDetailPage() {
   const recurrenceLabel = formatRecurrence(pilgrimage)
   const occasion = classifyEvent(pilgrimage)
   const occasionWhen = formatOccurrenceRange(occasion.window)
-  const liveLabel = statusLabel(occasion.status)
   const galleries = archiveGalleries(pilgrimage.archives)
   const linkedNews = new Set(archiveNewsSlugs(pilgrimage.archives))
   const updates = (blogPosts || [])
@@ -159,9 +157,6 @@ export default function PilgrimageDetailPage() {
         )}
       >
         <div className="container">
-          <p className={styles.eyebrow}>
-            {liveLabel || (pilgrimage.eventType === 'feast' ? 'Feast day' : 'Pilgrimage event')}
-          </p>
           <h1>{pilgrimage.title}</h1>
           <div className={styles.metaRow}>
             {pilgrimage.meta ? <span>{pilgrimage.meta}</span> : null}

@@ -9,7 +9,6 @@ export default function HomeAbout() {
     <section className={styles.section}>
       <div className={`container ${styles.layout}`}>
         <div className={styles.copy}>
-          <p className={styles.eyebrow}>{data.eyebrow}</p>
           <h2 className={styles.heading}>{data.heading}</h2>
           <p className={styles.text}>{data.text}</p>
           <Link to={data.cta.path} className={styles.btn}>

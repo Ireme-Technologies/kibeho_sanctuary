@@ -30,7 +30,6 @@ export default function CommunitiesPage() {
       <header className={styles.hero} style={heroBackgroundStyle(heroImage)}>
         <div className="container">
           <h1>{hero.title || 'Communities around Kibeho'}</h1>
-          {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}
         </div>
       </header>
 

@@ -7,7 +7,6 @@ import {
   ctaHeadingStart as fbStart,
   ctaHeadingHighlight as fbHighlight,
   ctaHeadingEnd as fbEnd,
-  ctaSubline as fbSubline,
   ctaPrimaryBtn as fbPrimary,
   ctaSecondaryBtn as fbSecondary,
 } from '@data/home/HomeCTA'
@@ -20,7 +19,6 @@ export default function HomeCTA() {
   const ctaHeadingStart = homeCta.headingStart || fbStart
   const ctaHeadingHighlight = homeCta.headingHighlight || fbHighlight
   const ctaHeadingEnd = homeCta.headingEnd || fbEnd
-  const ctaSubline = homeCta.subline || fbSubline
   const ctaPrimaryBtn = homeCta.primaryBtn || fbPrimary
   const ctaSecondaryBtn = homeCta.secondaryBtn || fbSecondary
   const [ref, inView] = useInView(0.2)
@@ -36,7 +34,6 @@ export default function HomeCTA() {
             <h2 id="cta-heading" className={styles.heading}>
               {ctaHeadingStart} <span>{ctaHeadingHighlight}</span> {ctaHeadingEnd}
             </h2>
-            <p className={styles.subline}>{ctaSubline}</p>
 
             <div className={styles.buttons}>
               <Link to={ctaPrimaryBtn.link} className={styles.btnPrimary}>

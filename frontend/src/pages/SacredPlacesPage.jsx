@@ -52,7 +52,6 @@ export default function SacredPlacesPage({ type: typeProp }) {
 
       <div className={`container ${styles.body}`}>
         <h1 className={styles.pageTitle}>{pageTitle}</h1>
-        {hero.subtitle ? <p className={styles.pageLead}>{hero.subtitle}</p> : null}
         {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
 
         {error ? <p className={styles.empty}>{error}</p> : null}

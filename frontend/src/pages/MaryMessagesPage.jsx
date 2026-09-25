@@ -60,7 +60,6 @@ export default function MaryMessagesPage() {
       <header className={catalog.hero} style={heroBackgroundStyle(heroImage)}>
         <div className="container">
           <h1>{pageTitle}</h1>
-          {hero.subtitle && !copy.heading ? <p className={catalog.subtitle}>{hero.subtitle}</p> : null}
         </div>
       </header>
 

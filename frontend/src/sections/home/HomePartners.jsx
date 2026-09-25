@@ -11,7 +11,6 @@ export default function HomePartners() {
   return (
     <section className={styles.section}>
       <div className="container">
-        <p className={styles.eyebrow}>{data.eyebrow}</p>
         <h2 className={styles.heading}>{data.heading || data.title}</h2>
         <div className={styles.row}>
           {items.map((item) => (

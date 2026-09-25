@@ -26,7 +26,6 @@ export default function ActivitiesPage() {
       >
         <div className="container">
           <h1>{data.title || 'Activities'}</h1>
-          {data.subtitle ? <p className={styles.subtitle}>{data.subtitle}</p> : null}
         </div>
       </header>
 

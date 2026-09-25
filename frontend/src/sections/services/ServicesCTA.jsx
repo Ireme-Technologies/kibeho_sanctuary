@@ -18,7 +18,6 @@ export default function ServicesCTA() {
             {servicesCTA.heading}
           </h2>
           <div className={styles.accentLine} aria-hidden="true" />
-          <p className={styles.subline}>{servicesCTA.subline}</p>
         </div>
 
         <div className={styles.buttonSide}>

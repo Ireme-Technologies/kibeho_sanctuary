@@ -12,7 +12,6 @@ export default function ContactMap() {
       <div className={styles.container}>
         <div ref={ref} className={`${styles.card} fade-in-up ${inView ? 'is-visible' : ''}`}>
           <p className={styles.title}>{contactMap.title}</p>
-          <p className={styles.subtitle}>{contactMap.subtitle}</p>
 
           <div className={styles.mapWrapper}>
             <iframe

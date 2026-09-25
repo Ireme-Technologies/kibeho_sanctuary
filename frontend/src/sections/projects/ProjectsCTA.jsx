@@ -24,7 +24,6 @@ export default function ProjectsCTA() {
             {projectsCTA.heading}
           </h2>
           <div className={styles.accentLine} aria-hidden="true" />
-          <p className={styles.subline}>{projectsCTA.subline}</p>
         </div>
 
         {/* Right — buttons */}

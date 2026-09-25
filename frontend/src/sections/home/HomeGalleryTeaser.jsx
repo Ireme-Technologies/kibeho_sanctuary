@@ -17,7 +17,6 @@ export default function HomeGalleryTeaser() {
       <div className="container">
         <div className={styles.head}>
           <div>
-            <p className={styles.eyebrow}>Moments of Faith</p>
             <h2 className={styles.heading}>Gallery</h2>
           </div>
           <Link to="/gallery" className={styles.more}>

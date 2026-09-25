@@ -37,7 +37,6 @@ export default function AboutCTA() {
             {aboutCTA.heading}
           </h2>
           <div className={styles.accentLine} aria-hidden="true" />
-          <p className={styles.subline}>{aboutCTA.subline}</p>
         </div>
 
         {/* Right — buttons */}

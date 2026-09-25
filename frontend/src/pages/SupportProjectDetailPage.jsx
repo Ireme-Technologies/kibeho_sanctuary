@@ -12,11 +12,10 @@ import NotFoundPage from './NotFoundPage'
 import catalog from './CatalogPage.module.css'
 import styles from './SupportProject.module.css'
 
-function StoryBlock({ kicker, title, html }) {
+function StoryBlock({ title, html }) {
   if (!html) return null
   return (
     <section className={styles.story}>
-      {kicker ? <p className={styles.kicker}>{kicker}</p> : null}
       <h2>{title}</h2>
       <RichText html={html} />
     </section>

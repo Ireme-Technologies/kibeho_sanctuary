@@ -28,10 +28,6 @@ export default function PilgrimagesPage() {
       >
         <div className="container">
           <h1>{hero.title || 'Pilgrimage events'}</h1>
-          <p className={styles.subtitle}>
-            {hero.subtitle ||
-              'Join prayer gatherings, feast days, and pilgrimages at the Shrine of Our Lady of Kibeho.'}
-          </p>
         </div>
       </header>
 

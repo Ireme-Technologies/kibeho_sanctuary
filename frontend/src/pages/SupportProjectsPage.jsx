@@ -33,11 +33,6 @@ export default function SupportProjectsPage() {
       <header className={catalog.hero} style={heroBackgroundStyle(heroImage)}>
         <div className="container">
           <h1>{hero.title || 'Sanctuary projects'}</h1>
-          <p className={catalog.subtitle}>
-            {hero.subtitle && !/already in place/i.test(hero.subtitle)
-              ? hero.subtitle
-              : t('project.listingSubtitle')}
-          </p>
         </div>
       </header>
 

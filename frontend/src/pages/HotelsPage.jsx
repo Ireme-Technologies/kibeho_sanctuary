@@ -35,7 +35,6 @@ export default function HotelsPage() {
       <header className={styles.hero} style={heroBackgroundStyle(heroImage)}>
         <div className="container">
           <h1>{hero.title || 'Accommodation near the Shrine'}</h1>
-          {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}
         </div>
       </header>
 
