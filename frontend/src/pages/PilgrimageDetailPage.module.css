@@ -68,17 +68,96 @@
 
 .layout {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  padding: var(--space-2xl) var(--container-padding);
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 1.25rem;
   align-items: start;
+  padding-top: 1.25rem;
+  padding-bottom: 2.5rem;
 }
 
-.content {
+.layoutSimple {
+  grid-template-areas: "story form";
+}
+
+.layoutRich {
+  grid-template-areas:
+    "story form"
+    "record form";
+}
+
+.story,
+.record {
   background: var(--color-white);
   border: 1px solid var(--color-gray-border);
   border-radius: var(--radius-md);
-  padding: clamp(1.5rem, 3vw, 2.25rem);
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.story {
+  grid-area: story;
+}
+
+.story h1 {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.85rem, 3vw, 2.5rem);
+  line-height: 1.12;
+  color: var(--color-navy);
+}
+
+.cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 1rem;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  background: var(--color-cream);
+}
+
+.cover img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+}
+
+.facts {
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--color-navy);
+}
+
+.record {
+  grid-area: record;
+}
+
+.record .memory:first-child {
+  margin-top: 0;
+}
+
+.storyActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-top: 1.15rem;
+}
+
+.registerLink {
+  display: inline-flex;
+  padding: 0.75rem 1.15rem;
+  border-radius: 999px;
+  background: var(--color-navy);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.registerLink:hover {
+  background: var(--color-sky);
 }
 
 .lead {
@@ -238,20 +317,23 @@
 
 .backLink {
   display: inline-flex;
-  margin-top: 1.75rem;
   font-weight: 700;
   color: var(--color-sky);
 }
 
 .formCard {
+  grid-area: form;
   scroll-margin-top: 9.5rem;
-  position: sticky;
-  top: calc(var(--chrome-height) + 1rem);
   background: var(--color-white);
   border: 1px solid var(--color-gray-border);
   border-radius: var(--radius-md);
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
+}
+
+.layoutRich .formCard {
+  position: sticky;
+  top: calc(var(--chrome-height) + 1rem);
 }
 
 .formCard h2 {
@@ -384,9 +466,30 @@
   font-size: 0.95rem;
 }
 
+@media (min-width: 901px) {
+  .registerLink {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
-  .layout {
+  .layout,
+  .layoutSimple,
+  .layoutRich {
     grid-template-columns: 1fr;
+  }
+
+  .layoutSimple {
+    grid-template-areas:
+      "story"
+      "form";
+  }
+
+  .layoutRich {
+    grid-template-areas:
+      "story"
+      "record"
+      "form";
   }
 
   .formCard {

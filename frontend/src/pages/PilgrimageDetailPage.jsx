@@ -17,7 +17,6 @@ import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import PaymentOptions from '@components/payments/PaymentOptions'
 import SharePageBar from '@components/payments/SharePageBar'
 import RichText from '@components/ui/RichText'
-import ItemProfile, { itemProfileStyles as profile } from '@components/ItemProfile'
 import NotFoundPage from './NotFoundPage'
 import styles from './PilgrimageDetailPage.module.css'
 
@@ -149,29 +148,26 @@ export default function PilgrimageDetailPage() {
       images: (archive.images || []).filter((src) => src && src !== leadImage),
     }))
     .filter((archive) => archive.images.length)
+  const hasRecord = Boolean(
+    updates.length || visibleGalleries.length || videos.length || reports.length || linkedTestimonials.length,
+  )
+  const showOccasion = occasion.status === 'live' || occasion.status === 'recent' || occasion.status === 'upcoming'
 
   return (
     <div className={styles.page}>
-      <ItemProfile
-        image={leadImage}
-        title={pilgrimage.title}
-        footer={
-          pilgrimage.registrationOpen !== false ? (
-            <a href="#register" className={profile.primary}>
-              {t('register')}
-            </a>
-          ) : null
-        }
-      >
-        <ContentLocaleNotice translations={pilgrimage.translations} />
-        {facts.length ? <p className={profile.meta}>{facts.join(' · ')}</p> : null}
-        {pilgrimage.lead ? <p>{pilgrimage.lead}</p> : null}
-        {pilgrimage.description ? <RichText html={pilgrimage.description} /> : null}
-      </ItemProfile>
-
-      <div className={`container ${styles.layout}`}>
-        <div className={styles.content}>
-          {occasion.status === 'live' || occasion.status === 'recent' || occasion.status === 'upcoming' ? (
+      <div className={`container ${styles.layout} ${hasRecord ? styles.layoutRich : styles.layoutSimple}`}>
+        <article className={styles.story}>
+          {leadImage ? (
+            <figure className={styles.cover}>
+              <img src={leadImage} alt="" />
+            </figure>
+          ) : null}
+          <h1>{pilgrimage.title}</h1>
+          <ContentLocaleNotice translations={pilgrimage.translations} />
+          {facts.length ? <p className={styles.facts}>{facts.join(' · ')}</p> : null}
+          {pilgrimage.lead ? <p className={styles.lead}>{pilgrimage.lead}</p> : null}
+          {pilgrimage.description ? <RichText html={pilgrimage.description} className={styles.body} /> : null}
+          {showOccasion ? (
             <p className={`${styles.occasionNote} ${styles[occasion.status] || ''}`}>
               {occasion.status === 'live'
                 ? `${pilgrimage.title} is being celebrated today at the Shrine.`
@@ -180,7 +176,20 @@ export default function PilgrimageDetailPage() {
                   : `${pilgrimage.title} is coming up ${occasion.daysUntil === 1 ? 'tomorrow' : `in ${occasion.daysUntil} days`}.`}
             </p>
           ) : null}
+          <div className={styles.storyActions}>
+            {pilgrimage.registrationOpen !== false ? (
+              <a href="#register" className={styles.registerLink}>
+                {t('register')}
+              </a>
+            ) : null}
+            <Link to="/pilgrimage/annual-celebrations" className={styles.backLink}>
+              ← Annual Celebrations
+            </Link>
+          </div>
+        </article>
 
+        {hasRecord ? (
+          <div className={styles.record}>
           {updates.length ? (
             <section className={styles.memory} aria-labelledby="event-updates">
               <h2 id="event-updates">Recent updates</h2>
@@ -262,12 +271,6 @@ export default function PilgrimageDetailPage() {
             </section>
           ) : null}
 
-          {!updates.length && !visibleGalleries.length && !videos.length && !reports.length ? (
-            <p className={styles.memoryIntro}>
-              Photos, articles, videos, and reports from past celebrations will appear here when they are added.
-            </p>
-          ) : null}
-
           {linkedTestimonials.length ? (
             <section className={styles.memory} aria-labelledby="event-voices">
               <h2 id="event-voices">Voices from this gathering</h2>
@@ -285,11 +288,8 @@ export default function PilgrimageDetailPage() {
               </div>
             </section>
           ) : null}
-
-          <Link to="/pilgrimage/annual-celebrations" className={styles.backLink}>
-            ← Annual Celebrations
-          </Link>
-        </div>
+          </div>
+        ) : null}
 
         <aside className={styles.formCard} id="register">
           <div className={styles.formHeadRow}>
