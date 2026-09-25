@@ -13,6 +13,7 @@ export default function MultiImageField({
   value = [],
   onChange,
   folder = 'uploads',
+  hint = 'Upload landscape images only.',
 }) {
   const urls = Array.isArray(value) ? value.filter(Boolean) : []
   const [library, setLibrary] = useState([])
@@ -88,6 +89,7 @@ export default function MultiImageField({
   return (
     <div className={styles.field}>
       <label>{label}</label>
+      {hint ? <p className={styles.muted}>{hint}</p> : null}
       {urls.length ? (
         <div className={styles.multiImageList}>
           {urls.map((url, index) => (

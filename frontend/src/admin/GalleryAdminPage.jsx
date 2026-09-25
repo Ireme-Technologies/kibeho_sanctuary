@@ -491,6 +491,7 @@ export default function GalleryAdminPage() {
           />
         </label>
       </div>
+      <p className={styles.muted}>Upload landscape images only.</p>
       <FlashMessage
         type={flash.type}
         message={flash.message}

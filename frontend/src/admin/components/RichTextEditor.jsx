@@ -429,6 +429,7 @@ export default function RichTextEditor({
               Close
             </button>
           </div>
+          <p className={styles.muted}>Upload landscape images only.</p>
           {mediaError ? <p className={styles.error}>{mediaError}</p> : null}
           <div className={styles.mediaGrid}>
             {library.map((item) => (

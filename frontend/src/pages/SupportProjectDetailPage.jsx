@@ -8,6 +8,7 @@ import LocalizedLink from '@components/LocalizedLink'
 import { getInvolvedHref } from '@utils/giveServices'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import RichText from '@components/ui/RichText'
+import { latestImages } from '@utils/latestImages'
 import NotFoundPage from './NotFoundPage'
 import catalog from './CatalogPage.module.css'
 import styles from './SupportProject.module.css'
@@ -50,7 +51,7 @@ export default function SupportProjectDetailPage() {
   if (notFound || !item) return <NotFoundPage />
 
   const photo = item.coverImage || ''
-  const gallery = (item.gallery || []).filter((src) => src && src !== photo)
+  const gallery = latestImages(item.gallery, { exclude: photo })
 
   return (
     <div className={catalog.page}>

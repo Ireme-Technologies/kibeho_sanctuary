@@ -54,6 +54,7 @@ export default function ImageField({ label, value, onChange, folder = 'uploads',
   return (
     <div className={styles.field}>
       <label>{label}</label>
+      <p className={styles.muted}>Upload landscape images only.</p>
       {!hidePreview && value ? (
         <div className={styles.imagePreview}>
           <img src={value} alt="" />

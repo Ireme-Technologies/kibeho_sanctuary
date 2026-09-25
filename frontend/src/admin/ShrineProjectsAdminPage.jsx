@@ -309,6 +309,7 @@ export default function ShrineProjectsAdminPage() {
             value={form.gallery}
             onChange={(gallery) => setForm({ ...form, gallery })}
             folder="shrine-projects"
+            hint="Upload landscape images only. The page shows the latest 3 images."
           />
           <div className={styles.fieldRow}>
             <div className={styles.field}>

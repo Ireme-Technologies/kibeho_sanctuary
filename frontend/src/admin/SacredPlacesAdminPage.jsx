@@ -309,6 +309,7 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
             value={form.gallery}
             onChange={(gallery) => setForm({ ...form, gallery })}
             folder="sacred-places"
+            hint="Upload landscape images only. The page shows the latest 3 images."
           />
           <div className={styles.field}>
             <label>Location</label>

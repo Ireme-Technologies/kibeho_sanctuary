@@ -6,6 +6,7 @@ import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import ItemProfile, { itemProfileStyles as profile } from '@components/ItemProfile'
 import LocalizedLink from '@components/LocalizedLink'
 import RichText from '@components/ui/RichText'
+import { latestImages } from '@utils/latestImages'
 import NotFoundPage from './NotFoundPage'
 
 export default function CommunityDetailPage() {
@@ -35,7 +36,7 @@ export default function CommunityDetailPage() {
   if (notFound || !item) return <NotFoundPage />
 
   const photo = item.coverImage || ''
-  const gallery = (item.gallery || []).filter((src) => src && src !== photo)
+  const gallery = latestImages(item.gallery, { exclude: photo })
 
   return (
     <ItemProfile
