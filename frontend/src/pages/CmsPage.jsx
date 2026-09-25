@@ -39,6 +39,57 @@ function pageCtas(data = {}) {
   return [data.cta?.primary, data.cta?.secondary].filter((item) => item?.label && (item.path || item.link))
 }
 
+function imageRecord(value) {
+  if (!value) return null
+  if (typeof value === 'string') {
+    const src = value.trim()
+    return src ? { src, alt: '' } : null
+  }
+  const src = String(value.src || value.url || value.image || '').trim()
+  if (!src) return null
+  return { src, alt: String(value.alt || value.caption || '').trim() }
+}
+
+function imagesInHtml(html) {
+  const found = []
+  const re = /<img\b[^>]*>/gi
+  const source = String(html || '')
+  let match
+  while ((match = re.exec(source))) {
+    const tag = match[0]
+    const src = tag.match(/\bsrc=["']([^"']+)["']/i)?.[1]?.trim()
+    if (!src) continue
+    const alt = tag.match(/\balt=["']([^"']*)["']/i)?.[1]?.trim() || ''
+    found.push({ src, alt })
+  }
+  return found
+}
+
+function collectHistoryImages(data, blocks) {
+  const items = []
+  const push = (value) => {
+    const image = imageRecord(value)
+    if (!image || items.some((item) => item.src === image.src)) return
+    items.push(image)
+  }
+  ;[...(data.images || []), ...(data.gallery || []), ...(data.photos || [])].forEach(push)
+  ;(blocks || []).forEach((block) => {
+    if (block?.type === 'gallery') (block.images || []).forEach(push)
+    if (block?.type === 'paragraph' || block?.type === 'note') imagesInHtml(block.text).forEach(push)
+  })
+  imagesInHtml(data.intro).forEach(push)
+  return items.slice(0, 3)
+}
+
+function withoutImages(html, images) {
+  let next = String(html || '')
+  images.forEach((image) => {
+    const escaped = image.src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    next = next.replace(new RegExp(`<img\\b[^>]*\\bsrc=["']${escaped}["'][^>]*>`, 'gi'), '')
+  })
+  return next.replace(/<p>\s*<\/p>/gi, '').trim()
+}
+
 function YoutubeBlock({ block }) {
   const [open, setOpen] = useState(false)
   const ytId = parseYoutubeId(block.url)
@@ -303,6 +354,24 @@ export default function CmsPage() {
   const rawTitle = data.title || fallback.title
   const pageTitle = displayTitleLabel(rawTitle, locale)
   const blocks = data.blocks?.length ? data.blocks : fallback.blocks || []
+  const isHistory = key === 'shrine.history'
+  const historyImages = isHistory ? collectHistoryImages(data, blocks) : []
+  const historyIntro = isHistory ? withoutImages(data.intro, historyImages) : data.intro
+  const historyBlocks = isHistory
+    ? blocks.flatMap((block) => {
+        if (block?.type === 'gallery') {
+          const rest = (block.images || []).filter((image) => {
+            const record = imageRecord(image)
+            return record && !historyImages.some((item) => item.src === record.src)
+          })
+          return rest.length ? [{ ...block, images: rest }] : []
+        }
+        if (block?.type === 'paragraph' || block?.type === 'note') {
+          return [{ ...block, text: withoutImages(block.text, historyImages) }]
+        }
+        return [block]
+      })
+    : blocks
   const links = data.links?.length ? data.links : fallback.links || []
   const isPlan = key === 'pilgrimage.plan'
   const isPractical = key === 'pilgrimage.practical-guidelines'
@@ -426,13 +495,24 @@ export default function CmsPage() {
         </div>
       </header>
 
-      <div className={`container ${styles.body} ${isAction ? styles.bodyAction : ''} ${isStory ? styles.bodyStory : ''} ${isPractical || isHowTo || isPlan ? styles.bodyWide : ''}`}>
+      <div className={`container ${styles.body} ${isAction ? styles.bodyAction : ''} ${isStory ? styles.bodyStory : ''} ${isHistory ? styles.historyArticle : ''} ${isHistory && !historyImages.length ? styles.historyQuiet : ''} ${isPractical || isHowTo || isPlan ? styles.bodyWide : ''}`}>
         <ContentLocaleNotice translations={record?.translations} />
         {isDonations ? <GiveInvite introHtml={inviteIntro} /> : null}
         {actionPage && !isDonations ? (
           <ActionInvite kind={actionPage.kind} priceLabel={priceLabel} introHtml={inviteIntro} />
         ) : null}
-        {!isAction && data.intro ? <RichText html={data.intro} className={styles.intro} /> : null}
+        {!isAction && (isHistory ? historyIntro : data.intro) ? (
+          <RichText html={isHistory ? historyIntro : data.intro} className={styles.intro} />
+        ) : null}
+        {isHistory && historyImages.length ? (
+          <div className={styles.historyFigures} data-count={historyImages.length}>
+            {historyImages.map((image) => (
+              <figure key={image.src} className={styles.historyFigure}>
+                <img src={image.src} alt={image.alt} />
+              </figure>
+            ))}
+          </div>
+        ) : null}
 
         {key === 'news.our-channels' ? (
           <div className={styles.socialRow} aria-label="Official channels">
@@ -548,8 +628,14 @@ export default function CmsPage() {
                     ) : null}
                   </>
                 )
-                : blocks.map((block, index) => <Block key={`${block.type}-${index}`} block={block} />)
+                : (isHistory ? historyBlocks : blocks).map((block, index) => (
+                    <Block key={`${block.type}-${index}`} block={block} />
+                  ))
           : null}
+
+        {isHistory && data.churchRecognition ? (
+          <RichText html={data.churchRecognition} className={styles.paragraph} />
+        ) : null}
 
 
         {actionPage?.kind === 'prayer' ? <OfferingForm kind="prayer" /> : null}
