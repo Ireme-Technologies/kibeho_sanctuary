@@ -22,6 +22,7 @@ import { applyPageSeo, stripHtml } from '@utils/seo'
 import { fetchTravelRoutes } from '@api/cms'
 import { TRAVEL_ROUTE_FALLBACKS } from '@data/directories'
 import { heroBackgroundStyle } from '@utils/heroBackground'
+import FeastYear, { isDateList } from '@components/FeastYear'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
 
@@ -325,7 +326,7 @@ function PageLink({ to, className, children }) {
 
 export default function CmsPage() {
   const { pathname } = useLocation()
-  const { section, pages, company, offerings, resolveHeaderImage, involveStory, contactInfo } = useContent()
+  const { section, pages, company, offerings, resolveHeaderImage, involveStory, contactInfo, upcomingPilgrimages } = useContent()
   const { t, locale, defaultLocale } = useLocale()
   const pathOnly = stripLocale(pathname)
   const key =
@@ -373,6 +374,11 @@ export default function CmsPage() {
       })
     : blocks
   const links = data.links?.length ? data.links : fallback.links || []
+  const isFeasts = key === 'pilgrimage.annual-celebrations'
+  const feastEvents = isFeasts
+    ? (upcomingPilgrimages || []).filter((item) => item.eventType === 'feast')
+    : []
+  const hideDateList = feastEvents.length > 0
   const isPlan = key === 'pilgrimage.plan'
   const isPractical = key === 'pilgrimage.practical-guidelines'
   const isHowTo = key === 'pilgrimage.how-to-get-here'
@@ -501,9 +507,10 @@ export default function CmsPage() {
         {actionPage && !isDonations ? (
           <ActionInvite kind={actionPage.kind} priceLabel={priceLabel} introHtml={inviteIntro} />
         ) : null}
-        {!isAction && (isHistory ? historyIntro : data.intro) ? (
+        {!isAction && (isHistory ? historyIntro : data.intro) && !(hideDateList && isDateList(data.intro)) ? (
           <RichText html={isHistory ? historyIntro : data.intro} className={styles.intro} />
         ) : null}
+        {isFeasts ? <FeastYear events={feastEvents} /> : null}
         {isHistory && historyImages.length ? (
           <div className={styles.historyFigures} data-count={historyImages.length}>
             {historyImages.map((image) => (
@@ -628,7 +635,9 @@ export default function CmsPage() {
                     ) : null}
                   </>
                 )
-                : (isHistory ? historyBlocks : blocks).map((block, index) => (
+                : (isHistory ? historyBlocks : blocks)
+                    .filter((block) => !(hideDateList && isDateList(block?.text)))
+                    .map((block, index) => (
                     <Block key={`${block.type}-${index}`} block={block} />
                   ))
           : null}
