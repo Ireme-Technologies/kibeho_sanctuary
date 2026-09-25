@@ -210,14 +210,16 @@ export default function BlogPostContent() {
     <section className={styles.section}>
       <div className={`container ${styles.layout}`}>
         <article className={styles.article}>
-          <button
-            type="button"
-            className={`${styles.featuredImage} ${styles.imageButton}`}
-            onClick={() => openImage(post.coverImage)}
-            aria-label="View featured image"
-          >
-            <img src={post.coverImage} alt="" />
-          </button>
+          {post.coverImage ? (
+            <button
+              type="button"
+              className={`${styles.featuredImage} ${styles.imageButton}`}
+              onClick={() => openImage(post.coverImage)}
+              aria-label="View featured image"
+            >
+              <img src={post.coverImage} alt="" />
+            </button>
+          ) : null}
 
           <h1 className={styles.title}>{displayTitleLabel(post.title, locale)}</h1>
           <ContentLocaleNotice translations={post.translations} />
@@ -235,9 +237,11 @@ export default function BlogPostContent() {
           </div>
 
           <div className={styles.content}>
-            {(post.content || []).map((block, i) => (
-              <ContentBlock key={i} block={block} onOpenImage={openImage} />
-            ))}
+            {(post.content || [])
+              .filter((block) => !(block.type === 'image' && block.src && block.src === post.coverImage))
+              .map((block, i) => (
+                <ContentBlock key={i} block={block} onOpenImage={openImage} />
+              ))}
           </div>
 
           <div className={styles.tagsShareRow}>

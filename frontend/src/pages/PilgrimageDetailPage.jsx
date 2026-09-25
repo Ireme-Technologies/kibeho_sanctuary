@@ -17,7 +17,7 @@ import PaymentOptions, { paymentLabel } from '@components/payments/PaymentOption
 import SharePageBar from '@components/payments/SharePageBar'
 import TimingChoice from '@components/payments/TimingChoice'
 import RichText from '@components/ui/RichText'
-import { heroBackgroundStyle } from '@utils/heroBackground'
+import ItemProfile, { itemProfileStyles as profile } from '@components/ItemProfile'
 import NotFoundPage from './NotFoundPage'
 import styles from './PilgrimageDetailPage.module.css'
 
@@ -33,7 +33,7 @@ const initialForm = {
 
 export default function PilgrimageDetailPage() {
   const { slug } = useParams()
-  const { upcomingPilgrimages, blogPosts, resolveHeaderImage, offerings } = useContent()
+  const { upcomingPilgrimages, blogPosts, offerings } = useContent()
   const { t } = useLocale()
   const pilgrimage = (upcomingPilgrimages || []).find((item) => item.slug === slug)
 
@@ -145,36 +145,35 @@ export default function PilgrimageDetailPage() {
     }
   }
 
-  const heroImage = resolveHeaderImage(pilgrimage.image)
+  const leadImage = pilgrimage.image || ''
+  const facts = [pilgrimage.meta, occasionWhen || whenLabel, recurrenceLabel, pilgrimage.location].filter(Boolean)
+  const visibleGalleries = galleries
+    .map((archive) => ({
+      ...archive,
+      images: (archive.images || []).filter((src) => src && src !== leadImage),
+    }))
+    .filter((archive) => archive.images.length)
 
   return (
     <div className={styles.page}>
-      <header
-        className={styles.hero}
-        style={heroBackgroundStyle(
-          heroImage,
-          'linear-gradient(120deg, rgba(18,40,71,.88), rgba(26,54,93,.45))',
-        )}
-      >
-        <div className="container">
-          <h1>{pilgrimage.title}</h1>
-          <div className={styles.metaRow}>
-            {pilgrimage.meta ? <span>{pilgrimage.meta}</span> : null}
-            {occasionWhen || whenLabel ? <span>{occasionWhen || whenLabel}</span> : null}
-            {recurrenceLabel ? <span>{recurrenceLabel}</span> : null}
-            {pilgrimage.location ? <span>{pilgrimage.location}</span> : null}
-          </div>
-          {pilgrimage.registrationOpen !== false ? (
-            <a href="#register" className={styles.heroCta}>
+      <ItemProfile
+        image={leadImage}
+        title={pilgrimage.title}
+        footer={
+          pilgrimage.registrationOpen !== false ? (
+            <a href="#register" className={profile.primary}>
               {t('register')}
             </a>
-          ) : null}
-        </div>
-      </header>
+          ) : null
+        }
+      >
+        <ContentLocaleNotice translations={pilgrimage.translations} />
+        {facts.length ? <p className={profile.meta}>{facts.join(' · ')}</p> : null}
+        {pilgrimage.description ? <RichText html={pilgrimage.description} /> : null}
+      </ItemProfile>
 
       <div className={`container ${styles.layout}`}>
         <div className={styles.content}>
-          <ContentLocaleNotice translations={pilgrimage.translations} />
           {occasion.status === 'live' || occasion.status === 'recent' || occasion.status === 'upcoming' ? (
             <p className={`${styles.occasionNote} ${styles[occasion.status] || ''}`}>
               {occasion.status === 'live'
@@ -183,10 +182,6 @@ export default function PilgrimageDetailPage() {
                   ? `The shrine celebrated ${pilgrimage.title} ${occasion.daysSince === 1 ? 'yesterday' : `${occasion.daysSince} days ago`}.`
                   : `${pilgrimage.title} is coming up ${occasion.daysUntil === 1 ? 'tomorrow' : `in ${occasion.daysUntil} days`}.`}
             </p>
-          ) : null}
-
-          {pilgrimage.description ? (
-            <RichText html={pilgrimage.description} className={styles.body} />
           ) : null}
 
           {updates.length ? (
@@ -209,17 +204,17 @@ export default function PilgrimageDetailPage() {
             </section>
           ) : null}
 
-          {galleries.length ? (
+          {visibleGalleries.length ? (
             <section className={styles.memory} aria-labelledby="event-years">
-              <h2 id="event-years">{galleries.some((row) => row.year) ? 'Through the years' : 'Gallery'}</h2>
+              <h2 id="event-years">{visibleGalleries.some((row) => row.year) ? 'Through the years' : 'Gallery'}</h2>
               <p className={styles.memoryIntro}>
-                {galleries.some((row) => row.year)
+                {visibleGalleries.some((row) => row.year)
                   ? 'Moments from previous celebrations of this gathering.'
                   : 'Photos from this event.'}
               </p>
-              {galleries.map((archive, galleryIndex) => (
+              {visibleGalleries.map((archive, galleryIndex) => (
                 <div key={`${archive.year || 'gallery'}-${galleryIndex}`} className={styles.yearBlock}>
-                  {archive.year ? <h3>{archive.year}</h3> : galleries.length > 1 ? <h3>Gallery {galleryIndex + 1}</h3> : null}
+                  {archive.year ? <h3>{archive.year}</h3> : visibleGalleries.length > 1 ? <h3>Gallery {galleryIndex + 1}</h3> : null}
                   {archive.caption ? <p>{archive.caption}</p> : null}
                   <div className={styles.yearGrid}>
                     {archive.images.map((src, index) => (

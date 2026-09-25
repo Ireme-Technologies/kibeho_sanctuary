@@ -1,13 +1,13 @@
 import { useLocale } from '@context/LocaleContext'
-import { useContent } from '@context/ContentContext'
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { fetchShrineProject } from '@api/cms'
 import ContentLocaleNotice from '@components/ContentLocaleNotice'
+import ItemProfile, { itemProfileStyles as profile } from '@components/ItemProfile'
+import LocalizedLink from '@components/LocalizedLink'
 import { getInvolvedHref } from '@utils/giveServices'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import RichText from '@components/ui/RichText'
-import { heroBackgroundStyle } from '@utils/heroBackground'
 import NotFoundPage from './NotFoundPage'
 import catalog from './CatalogPage.module.css'
 import styles from './SupportProject.module.css'
@@ -24,7 +24,6 @@ function StoryBlock({ title, html }) {
 
 export default function SupportProjectDetailPage() {
   const { locale, t } = useLocale()
-  const { resolveHeaderImage } = useContent()
   const { slug } = useParams()
   const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -50,31 +49,33 @@ export default function SupportProjectDetailPage() {
 
   if (notFound || !item) return <NotFoundPage />
 
-  const gallery = (item.gallery || []).filter(Boolean)
-  const heroImage = resolveHeaderImage(item.coverImage)
+  const photo = item.coverImage || ''
+  const gallery = (item.gallery || []).filter((src) => src && src !== photo)
 
   return (
     <div className={catalog.page}>
-      <header
-        className={catalog.hero}
-        style={heroBackgroundStyle(heroImage)}
+      <ItemProfile
+        image={photo}
+        kicker={item.status}
+        title={item.title}
+        footer={
+          <>
+            <LocalizedLink to="/support/projects" className={profile.back}>
+              {t('project.allProjects')}
+            </LocalizedLink>
+            <LocalizedLink to={getInvolvedHref('expansion')} className={profile.primary}>
+              {t('offer.bePart')}
+            </LocalizedLink>
+          </>
+        }
       >
-        <div className="container">
-          {item.status ? <p className={catalog.subtitle}>{item.status}</p> : null}
-          <h1>{item.title}</h1>
-          <Link to={getInvolvedHref('expansion')} className={catalog.heroCta}>
-            {t('offer.bePart')}
-          </Link>
-        </div>
-      </header>
+        <ContentLocaleNotice translations={item.translations} />
+        {item.phase ? <p className={profile.meta}>{item.phase}</p> : null}
+        {item.description ? <RichText html={item.description} /> : null}
+      </ItemProfile>
 
       <div className={`container ${catalog.body}`}>
         <div className={styles.layout}>
-          <ContentLocaleNotice translations={item.translations} />
-          {item.phase ? <p className={catalog.meta}>{item.phase}</p> : null}
-
-          {item.description ? <RichText html={item.description} className={styles.lead} /> : null}
-
           {item.problem || item.solution || item.impactLocal || item.impactGlobal || item.impactChurch ? (
             <div className={styles.storyList}>
               <StoryBlock title={t('project.need')} html={item.problem} />
@@ -131,12 +132,9 @@ export default function SupportProjectDetailPage() {
           </section>
 
           <div className={catalog.actions}>
-            <Link to="/support/projects" className={catalog.btnGhost}>
-              {t('project.allProjects')}
-            </Link>
-            <Link to={getInvolvedHref('expansion')} className={catalog.btn}>
+            <LocalizedLink to={getInvolvedHref('expansion')} className={catalog.btn}>
               {t('offer.giveMission')}
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
       </div>

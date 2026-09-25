@@ -3,17 +3,16 @@ import { Link, useParams } from 'react-router-dom'
 import { fetchVisionaries, fetchVisionary } from '@api/cms'
 import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import RichText from '@components/ui/RichText'
-import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { visionaryFromFallbacks, VISIONARY_FALLBACKS } from '@data/directories'
 import { applyPageSeo } from '@utils/seo'
-import { heroBackgroundStyle } from '@utils/heroBackground'
+import ItemProfile, { itemProfileStyles as profile } from '@components/ItemProfile'
+import LocalizedLink from '@components/LocalizedLink'
 import NotFoundPage from './NotFoundPage'
 import styles from './VisionaryDetailPage.module.css'
 
 export default function VisionaryDetailPage() {
   const { locale, t } = useLocale()
-  const { resolveHeaderImage } = useContent()
   const { slug } = useParams()
   const [item, setItem] = useState(null)
   const [siblings, setSiblings] = useState([])
@@ -89,47 +88,35 @@ export default function VisionaryDetailPage() {
 
   if (notFound || !item) return <NotFoundPage />
 
-  const heroImage = resolveHeaderImage(item.photo || item.coverImage)
+  const photo = item.photo || item.coverImage || ''
 
   return (
     <div className={styles.page}>
-      <header
-        className={styles.hero}
-        style={heroBackgroundStyle(
-          heroImage,
-          'linear-gradient(120deg, rgba(18, 40, 71, 0.92), rgba(26, 54, 93, 0.6))',
-        )}
+      <ItemProfile
+        image={photo}
+        imageAlt={item.name}
+        kicker={item.periodLabel}
+        title={item.name}
+        footer={
+          <LocalizedLink to="/shrine/visionaries" className={profile.back}>
+            All visionaries
+          </LocalizedLink>
+        }
       >
-        <div className="container">
-          {item.periodLabel ? <p className={styles.subtitle}>{item.periodLabel}</p> : null}
-          <h1>{item.name}</h1>
-        </div>
-      </header>
+        <ContentLocaleNotice translations={item.translations} />
+        {item.isApproved === false ? (
+          <p className={styles.approvalNote}>Not approved by the Church</p>
+        ) : null}
+        {item.description ? (
+          <RichText html={item.description} />
+        ) : item.summary ? (
+          <p>{item.summary}</p>
+        ) : (
+          <p className={styles.empty}>Historical details will be added soon.</p>
+        )}
+      </ItemProfile>
 
       <div className={`container ${styles.body}`}>
-        <ContentLocaleNotice translations={item.translations} />
-
-        <div className={styles.split}>
-          <div className={styles.imageCol}>
-            {heroImage ? (
-              <img src={heroImage} alt={item.name} className={styles.portrait} />
-            ) : null}
-          </div>
-
-          <div className={styles.contentCol}>
-            {item.isApproved === false ? (
-              <p className={styles.approvalNote}>Not approved by the Church</p>
-            ) : null}
-            {item.description ? (
-              <RichText html={item.description} className={styles.insights} />
-            ) : item.summary ? (
-              <p className={styles.insights}>{item.summary}</p>
-            ) : (
-              <p className={styles.empty}>Historical details will be added soon.</p>
-            )}
-          </div>
-        </div>
-
         <nav className={styles.nav} aria-label="Other visionaries">
           {nav.prev ? (
             <Link to={nav.prev.path || `/shrine/visionaries/${nav.prev.slug}`} className={styles.navLink}>
@@ -150,10 +137,6 @@ export default function VisionaryDetailPage() {
             </Link>
           ) : null}
         </nav>
-
-        <Link to="/shrine/visionaries" className={styles.backLink}>
-          ← All visionaries
-        </Link>
       </div>
     </div>
   )

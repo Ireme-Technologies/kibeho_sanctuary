@@ -38,16 +38,21 @@
 
 /* ── HEADER ───────────────────────────────── */
 .featuredImage {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-lg);
   border-radius: var(--radius-md);
   overflow: hidden;
-  margin-bottom: var(--space-lg);
-  aspect-ratio: 16 / 9;
+  background: #f4f7fb;
 }
 
 .featuredImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(68vh, 520px);
+  object-fit: contain;
 }
 
 .imageButton {
