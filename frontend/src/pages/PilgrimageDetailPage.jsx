@@ -6,6 +6,7 @@ import { fetchTestimonials, submitEnquiry } from '@api/cms'
 import { formatEventWhen, formatRecurrence } from '@utils/eventTime'
 import {
   archiveGalleries,
+  archiveLinks,
   archiveNewsSlugs,
   classifyEvent,
   formatOccurrenceRange,
@@ -66,6 +67,8 @@ export default function PilgrimageDetailPage() {
   const occasion = classifyEvent(pilgrimage)
   const occasionWhen = formatOccurrenceRange(occasion.window)
   const galleries = archiveGalleries(pilgrimage.archives)
+  const videos = archiveLinks(pilgrimage.archives, 'video')
+  const reports = archiveLinks(pilgrimage.archives, 'report')
   const linkedNews = new Set(archiveNewsSlugs(pilgrimage.archives))
   const updates = (blogPosts || [])
     .filter((post) => relatedToEvent(post, pilgrimage) || linkedNews.has(post.slug))
@@ -231,6 +234,44 @@ export default function PilgrimageDetailPage() {
                 </div>
               ))}
             </section>
+          ) : null}
+
+          {videos.length ? (
+            <section className={styles.memory} aria-labelledby="event-videos">
+              <h2 id="event-videos">Videos</h2>
+              <ul className={styles.voiceList}>
+                {videos.map((item) => (
+                  <li key={`${item.year}-${item.url}`}>
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      {item.caption || 'Watch video'}
+                      {item.year ? ` · ${item.year}` : ''}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {reports.length ? (
+            <section className={styles.memory} aria-labelledby="event-reports">
+              <h2 id="event-reports">Reports</h2>
+              <ul className={styles.voiceList}>
+                {reports.map((item) => (
+                  <li key={`${item.year}-${item.url}`}>
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      {item.caption || 'Open report'}
+                      {item.year ? ` · ${item.year}` : ''}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {!updates.length && !visibleGalleries.length && !videos.length && !reports.length ? (
+            <p className={styles.memoryIntro}>
+              Photos, articles, videos, and reports from past celebrations will appear here when they are added.
+            </p>
           ) : null}
 
           {linkedTestimonials.length ? (

@@ -22,6 +22,7 @@ const DashboardPage = lazy(() => import('@admin/DashboardPage'))
 const ServicesAdminPage = lazy(() => import('@admin/ServicesAdminPage'))
 const UpcomingPilgrimagesAdminPage = lazy(() => import('@admin/UpcomingPilgrimagesAdminPage'))
 const EventUpdatesAdminPage = lazy(() => import('@admin/EventUpdatesAdminPage'))
+const EventRegistrationsAdminPage = lazy(() => import('@admin/EventRegistrationsAdminPage'))
 const ProjectsAdminPage = lazy(() => import('@admin/ProjectsAdminPage'))
 const BlogAdminPage = lazy(() => import('@admin/BlogAdminPage'))
 const VideosAdminPage = lazy(() => import('@admin/VideosAdminPage'))
@@ -288,6 +289,8 @@ const router = createBrowserRouter([
       { path: 'blog', element: <Wrap Component={BlogAdminPage} /> },
       { path: 'upcoming-pilgrimages', element: <Wrap Component={UpcomingPilgrimagesAdminPage} /> },
       { path: 'upcoming-pilgrimages/:id/updates', element: <Wrap Component={EventUpdatesAdminPage} /> },
+      { path: 'upcoming-pilgrimages/:id/registrations', element: <Wrap Component={EventRegistrationsAdminPage} /> },
+      { path: 'event-registrations', element: <Wrap Component={EventRegistrationsAdminPage} /> },
       { path: 'services', element: <Wrap Component={ServicesAdminPage} /> },
       { path: 'mass-schedules', element: <Wrap Component={MassSchedulesAdminPage} /> },
       { path: 'shrine-projects', element: <Wrap Component={ShrineProjectsAdminPage} /> },

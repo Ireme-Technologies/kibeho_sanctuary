@@ -37,6 +37,7 @@ export default function AdminLayout() {
     { to: '/admin/translations', label: 'Translations' },
     { to: '/admin/blog', label: 'Articles / News' },
     { to: '/admin/upcoming-pilgrimages', label: 'Pilgrimage events' },
+    { to: '/admin/event-registrations', label: 'Event registrations' },
     { to: '/admin/services', label: 'Pilgrimage services' },
     { to: '/admin/shrine-projects', label: 'Development projects' },
     { to: '/admin/apparition-sites', label: 'Apparition sites' },

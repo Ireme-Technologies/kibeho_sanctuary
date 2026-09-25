@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             NewsPostSeeder::class,
             ActivitySeeder::class,
             UpcomingPilgrimageSeeder::class,
+            MainFeastsSeeder::class,
             VideoSeeder::class,
             CmsContentSeeder::class,
             PageSectionSeeder::class,

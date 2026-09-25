@@ -107,16 +107,15 @@ export default function VisionaryDetailPage() {
         {item.isApproved === false ? (
           <p className={styles.approvalNote}>Not approved by the Church</p>
         ) : null}
-        {item.description ? (
-          <RichText html={item.description} />
-        ) : item.summary ? (
-          <p>{item.summary}</p>
-        ) : (
+        {item.summary && item.description ? <p>{item.summary}</p> : null}
+        {!item.description && !item.summary ? (
           <p className={styles.empty}>Historical details will be added soon.</p>
-        )}
+        ) : null}
+        {!item.description && item.summary ? <p>{item.summary}</p> : null}
       </ItemProfile>
 
       <div className={`container ${styles.body}`}>
+        {item.description ? <RichText html={item.description} className={styles.insights} /> : null}
         <nav className={styles.nav} aria-label="Other visionaries">
           {nav.prev ? (
             <Link to={nav.prev.path || `/shrine/visionaries/${nav.prev.slug}`} className={styles.navLink}>

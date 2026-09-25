@@ -1,14 +1,14 @@
 .profile {
-  padding: clamp(2.25rem, 5vw, 3.75rem) 0 clamp(3rem, 6vw, 4.5rem);
+  padding: 1.25rem 0 0.5rem;
   background: #f7f9fc;
 }
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(260px, 0.95fr) minmax(280px, 1.05fr);
-  gap: clamp(1.25rem, 3vw, 2.75rem);
-  align-items: start;
-  padding: clamp(0.85rem, 2vw, 1.35rem);
+  grid-template-columns: minmax(220px, 380px) minmax(0, 1fr);
+  gap: 1.15rem 1.5rem;
+  align-items: center;
+  padding: 1rem 1.15rem;
   background: #fff;
   border: 1px solid rgba(26, 54, 93, 0.08);
   border-radius: 20px;
@@ -17,7 +17,6 @@
 
 .layoutText {
   grid-template-columns: minmax(0, 46rem);
-  padding: clamp(1.25rem, 3vw, 2rem);
 }
 
 .portrait {
@@ -32,7 +31,7 @@
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: min(68vh, 520px);
+  max-height: 320px;
   object-fit: contain;
   border-radius: 14px;
 }
@@ -120,18 +119,36 @@
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.15rem;
 }
 
-.gallery img {
+.shot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 240px;
+  padding: 0.65rem;
+  border: 1px solid rgba(26, 54, 93, 0.1);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(18, 40, 71, 0.06);
+  cursor: pointer;
+}
+
+.shot:hover,
+.shot:focus-visible {
+  border-color: var(--color-sky);
+}
+
+.shot img {
   display: block;
   width: 100%;
-  height: 180px;
+  height: auto;
+  max-height: 320px;
   object-fit: contain;
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid rgba(26, 54, 93, 0.08);
+  border-radius: 10px;
 }
 
 @media (max-width: 800px) {
@@ -148,5 +165,13 @@
   .portrait img {
     width: 100%;
     max-height: none;
+  }
+
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .shot {
+    min-height: 0;
   }
 }

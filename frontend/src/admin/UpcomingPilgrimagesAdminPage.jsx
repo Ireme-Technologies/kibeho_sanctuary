@@ -164,7 +164,7 @@ export default function UpcomingPilgrimagesAdminPage() {
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
         Manage pilgrimages, feast days, retreats, and other calendar events. Set dates, times, and
         recurrence (weekly, monthly, or annual). Published events appear on the public calendar and homepage.
-        Use the Updates column to attach photo galleries or news articles for an event.
+        Use Updates to attach photos, articles, videos, and reports. Use Registrations to see who signed up for the next celebration and for past years.
       </p>
 
       <div className={styles.card}>
@@ -178,6 +178,7 @@ export default function UpcomingPilgrimagesAdminPage() {
               <th>Repeats</th>
               <th>Published</th>
               <th>Updates</th>
+              <th>Registrations</th>
             </tr>
           </thead>
           <tbody>
@@ -207,6 +208,14 @@ export default function UpcomingPilgrimagesAdminPage() {
                     className={`${styles.btn} ${styles.btnCompact}`}
                   >
                     {updateCount(item) ? `Manage (${updateCount(item)})` : 'Add updates'}
+                  </Link>
+                </td>
+                <td>
+                  <Link
+                    to={`/admin/upcoming-pilgrimages/${item.id}/registrations`}
+                    className={`${styles.btn} ${styles.btnCompact} ${styles.btnSecondary}`}
+                  >
+                    View list
                   </Link>
                 </td>
               </tr>

@@ -12,7 +12,14 @@ import styles from './admin.module.css'
 const RELATED_TYPES = [
   { value: 'gallery', label: 'Gallery images' },
   { value: 'news', label: 'News / article' },
+  { value: 'video', label: 'Video' },
+  { value: 'report', label: 'Report' },
 ]
+
+function archiveKind(type) {
+  if (type === 'news' || type === 'video' || type === 'report') return type
+  return 'gallery'
+}
 
 function yearChoices() {
   const current = new Date().getFullYear()
@@ -22,7 +29,7 @@ function yearChoices() {
 }
 
 function emptyRelated(type = 'gallery') {
-  return { type, year: '', caption: '', images: [], slug: '' }
+  return { type, year: '', caption: '', images: [], slug: '', url: '' }
 }
 
 function patchRelated(list, index, patch) {
@@ -31,22 +38,27 @@ function patchRelated(list, index, patch) {
 
 function fromArchives(raw) {
   return (Array.isArray(raw) ? raw : []).map((row) => ({
-    type: row.type === 'news' ? 'news' : 'gallery',
+    type: archiveKind(row.type),
     year: row.year || '',
     caption: row.caption || '',
     images: Array.isArray(row.images) ? row.images : [],
     slug: row.slug || '',
+    url: row.url || '',
   }))
 }
 
 function toArchives(list) {
   return (list || [])
     .map((row) => {
-      const type = row.type === 'news' ? 'news' : 'gallery'
+      const type = archiveKind(row.type)
       const year = Number(row.year) || null
       const caption = row.caption || ''
       if (type === 'news') {
         return row.slug ? { type, year, caption, slug: row.slug } : null
+      }
+      if (type === 'video' || type === 'report') {
+        const url = String(row.url || '').trim()
+        return url ? { type, year, caption, url } : null
       }
       const images = Array.isArray(row.images) ? row.images.filter(Boolean) : []
       return images.length ? { type, year, caption, images } : null
@@ -142,8 +154,8 @@ export default function EventUpdatesAdminPage() {
       />
 
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
-        Add photo galleries or link a news article for this event. Choose a year for annual feasts, or
-        leave it as “No year”.
+        Add photos, articles, videos, or reports from past celebrations. Choose a year for an annual feast,
+        or leave it as “No year”.
       </p>
 
       <form className={styles.form} onSubmit={handleSave}>
@@ -160,6 +172,7 @@ export default function EventUpdatesAdminPage() {
                         type: e.target.value,
                         images: e.target.value === 'gallery' ? row.images || [] : [],
                         slug: e.target.value === 'news' ? row.slug || '' : '',
+                        url: e.target.value === 'video' || e.target.value === 'report' ? row.url || '' : '',
                       })
                     )
                   }
@@ -208,12 +221,22 @@ export default function EventUpdatesAdminPage() {
                   ))}
                 </select>
               </div>
+            ) : row.type === 'video' || row.type === 'report' ? (
+              <div className={styles.field}>
+                <label>{row.type === 'video' ? 'Video link' : 'Report link'}</label>
+                <input
+                  value={row.url || ''}
+                  placeholder="https://"
+                  onChange={(e) => setArchives(patchRelated(archives, index, { url: e.target.value }))}
+                />
+              </div>
             ) : (
               <MultiImageField
                 label="Gallery images"
                 value={row.images || []}
                 onChange={(images) => setArchives(patchRelated(archives, index, { images }))}
                 folder="pilgrimages"
+                hint="Upload landscape images only. The page shows these photos on the event."
               />
             )}
             <button

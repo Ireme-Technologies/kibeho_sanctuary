@@ -78,10 +78,11 @@ class UpcomingPilgrimageController extends Controller
         $this->coerceArchiveYears($request);
         $data = $request->validate([
             'archives' => ['nullable', 'array'],
-            'archives.*.type' => ['nullable', 'string', Rule::in(['gallery', 'news'])],
+            'archives.*.type' => ['nullable', 'string', Rule::in(['gallery', 'news', 'video', 'report'])],
             'archives.*.year' => ['nullable', 'integer', 'min:1900', 'max:2200'],
             'archives.*.caption' => ['nullable', 'string', 'max:500'],
             'archives.*.slug' => ['nullable', 'string', 'max:255'],
+            'archives.*.url' => ['nullable', 'string', 'max:500'],
             'archives.*.images' => ['nullable', 'array'],
             'archives.*.images.*' => ['nullable', 'string', 'max:500'],
         ]);
@@ -136,10 +137,11 @@ class UpcomingPilgrimageController extends Controller
             'description' => ['nullable', 'string'],
             'image' => ['nullable', 'string', 'max:500'],
             'archives' => ['nullable', 'array'],
-            'archives.*.type' => ['nullable', 'string', Rule::in(['gallery', 'news'])],
+            'archives.*.type' => ['nullable', 'string', Rule::in(['gallery', 'news', 'video', 'report'])],
             'archives.*.year' => ['nullable', 'integer', 'min:1900', 'max:2200'],
             'archives.*.caption' => ['nullable', 'string', 'max:500'],
             'archives.*.slug' => ['nullable', 'string', 'max:255'],
+            'archives.*.url' => ['nullable', 'string', 'max:500'],
             'archives.*.images' => ['nullable', 'array'],
             'archives.*.images.*' => ['nullable', 'string', 'max:500'],
             'location' => ['nullable', 'string', 'max:255'],
@@ -178,7 +180,8 @@ class UpcomingPilgrimageController extends Controller
             if (! is_array($row)) {
                 continue;
             }
-            $kind = ($row['type'] ?? 'gallery') === 'news' ? 'news' : 'gallery';
+            $rawKind = $row['type'] ?? 'gallery';
+            $kind = in_array($rawKind, ['news', 'video', 'report'], true) ? $rawKind : 'gallery';
             $year = isset($row['year']) && $row['year'] !== '' && $row['year'] !== null
                 ? (int) $row['year']
                 : null;
@@ -194,6 +197,20 @@ class UpcomingPilgrimageController extends Controller
                     'year' => $year,
                     'slug' => $slug,
                     'caption' => $caption,
+                ];
+                continue;
+            }
+
+            if ($kind === 'video' || $kind === 'report') {
+                $url = trim((string) ($row['url'] ?? ''));
+                if ($url === '') {
+                    continue;
+                }
+                $out[] = [
+                    'type' => $kind,
+                    'year' => $year,
+                    'caption' => $caption,
+                    'url' => $url,
                 ];
                 continue;
             }

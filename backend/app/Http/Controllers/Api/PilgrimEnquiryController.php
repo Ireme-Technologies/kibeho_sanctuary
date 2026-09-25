@@ -128,8 +128,16 @@ class PilgrimEnquiryController extends Controller
         if ($request->filled('enquiry_type')) {
             $query->where('enquiry_type', $request->string('enquiry_type'));
         }
+        if ($request->filled('upcoming_pilgrimage_id')) {
+            $query->where('upcoming_pilgrimage_id', $request->integer('upcoming_pilgrimage_id'));
+        }
+        if ($request->boolean('for_events')) {
+            $query->whereNotNull('upcoming_pilgrimage_id');
+        }
 
-        return response()->json($query->limit(200)->get());
+        return response()->json(
+            $query->with('upcomingPilgrimage:id,title,slug,starts_on,ends_on,recurrence_type,is_recurring')->limit(500)->get()
+        );
     }
 
     public function show(PilgrimEnquiry $pilgrimEnquiry)

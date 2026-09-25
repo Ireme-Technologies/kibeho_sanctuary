@@ -22,10 +22,13 @@ export default function CalendarPage() {
   const hero = section('pilgrimage.calendar', {})
 
   const sorted = [...(upcomingPilgrimages || [])].sort((a, b) => {
+    const aPast = classifyEvent(a).status === 'past'
+    const bPast = classifyEvent(b).status === 'past'
+    if (aPast !== bPast) return aPast ? 1 : -1
     const aStart = occurrenceWindow(a)?.start
     const bStart = occurrenceWindow(b)?.start
-    if (aStart && bStart) return bStart - aStart
-    return (b.id || 0) - (a.id || 0)
+    if (aStart && bStart) return aStart - bStart
+    return (a.id || 0) - (b.id || 0)
   })
   const paged = paginate(sorted, page, PAGE_SIZE)
 

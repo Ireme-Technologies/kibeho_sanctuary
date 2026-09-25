@@ -138,7 +138,7 @@ function sortWeekly(rows) {
 }
 
 export default function ShrineSchedulePage() {
-  const { section, resolveHeaderImage, upcomingPilgrimages, defaultHeaderImage } = useContent()
+  const { section, resolveHeaderImage, upcomingPilgrimages } = useContent()
   const { locale } = useLocale()
   const hero = resolveSectionContent(section, 'shrine.schedule', ['shrine.mass-schedule'])
   const [rows, setRows] = useState([])
@@ -167,7 +167,6 @@ export default function ShrineSchedulePage() {
         if (aStart && bStart) return aStart - bStart
         return 0
       })
-      .slice(0, 6)
     return fromPilgrimages
   }, [upcomingPilgrimages])
 
@@ -283,15 +282,17 @@ export default function ShrineSchedulePage() {
               <div className={styles.annualGrid}>
                 {annualEvents.map(({ item, status }) => {
                   const window = occurrenceWindow(item)
-                  const image = resolveHeaderImage(item.image || item.coverImage, defaultHeaderImage)
+                  const image = item.image || item.coverImage || ''
                   const path = item.path || (item.slug ? `/pilgrimages/${item.slug}` : '/pilgrimage/calendar')
                   return (
                     <Link key={item.id || item.slug} to={path} className={styles.annualCard}>
-                      <div
-                        className={styles.annualMedia}
-                        style={{ backgroundImage: `url(${image})` }}
-                        aria-hidden="true"
-                      />
+                      {image ? (
+                        <div
+                          className={styles.annualMedia}
+                          style={{ backgroundImage: `url(${image})` }}
+                          aria-hidden="true"
+                        />
+                      ) : null}
                       <div className={styles.annualBody}>
                         {statusLabel(status) ? (
                           <span className={styles.annualBadge}>{statusLabel(status)}</span>

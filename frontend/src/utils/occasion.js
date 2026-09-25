@@ -251,21 +251,33 @@ export function normalizeArchives(raw) {
   const list = Array.isArray(raw) ? raw : []
   return list
     .map((row) => {
-      const type = row?.type === 'news' ? 'news' : 'gallery'
+      const rawType = row?.type
+      const type = rawType === 'news' || rawType === 'video' || rawType === 'report' ? rawType : 'gallery'
       const year = Number(row?.year) || null
       const caption = row?.caption || ''
       if (type === 'news') {
         const slug = String(row?.slug || '').trim()
         if (!slug) return null
-        return { type, year, caption, slug, images: [] }
+        return { type, year, caption, slug, images: [], url: '' }
+      }
+      if (type === 'video' || type === 'report') {
+        const url = String(row?.url || '').trim()
+        if (!url) return null
+        return { type, year, caption, slug: '', images: [], url }
       }
       const images = (Array.isArray(row?.images) ? row.images : [])
         .map((img) => (typeof img === 'string' ? img : img?.url || img?.src || ''))
         .filter(Boolean)
       if (!images.length) return null
-      return { type, year, caption, slug: '', images }
+      return { type, year, caption, slug: '', images, url: '' }
     })
     .filter(Boolean)
+}
+
+export function archiveLinks(raw, type) {
+  return normalizeArchives(raw)
+    .filter((row) => row.type === type && row.url)
+    .sort((a, b) => (b.year || 0) - (a.year || 0))
 }
 
 export function archiveGalleries(raw) {

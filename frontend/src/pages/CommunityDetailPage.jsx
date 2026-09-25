@@ -48,15 +48,7 @@ export default function CommunityDetailPage() {
           {t('allCommunities')}
         </LocalizedLink>
       }
-      extra={
-        gallery.length ? (
-          <div className={profile.gallery}>
-            {gallery.map((src) => (
-              <img key={src} src={src} alt="" />
-            ))}
-          </div>
-        ) : null
-      }
+      gallery={gallery}
     >
       <ContentLocaleNotice translations={item.translations} />
       {item.description ? <RichText html={item.description} /> : null}
