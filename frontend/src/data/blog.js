@@ -2,7 +2,7 @@
  * BLOG DATA — News & Events
  * ─────────────────────────────────────────────────────────────
  * Shared source of truth for BlogPage (grid), BlogPostPage (detail),
- * and the sidebar (popular posts, tags) on both.
+ * and the sidebar popular posts on both.
  *
  * images: place files at /public/images/blog/
  * ─────────────────────────────────────────────────────────────
@@ -42,17 +42,6 @@ export const blogCategories = [
   'Pilgrimage',
   'Events',
   'Faith & Devotion',
-  'Sanctuary News',
-]
-
-export const blogTags = [
-  'Pilgrimage',
-  'Holy Mass',
-  'Retreats',
-  'Our Lady of Kibeho',
-  'Reconciliation',
-  'Events',
-  'Feast Days',
   'Sanctuary News',
 ]
 

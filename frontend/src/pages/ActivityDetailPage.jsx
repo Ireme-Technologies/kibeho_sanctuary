@@ -25,7 +25,6 @@ export default function ActivityDetailPage() {
         )}
       >
         <div className="container">
-          <p className={styles.eyebrow}>Activities</p>
           <h1>{activity.title}</h1>
         </div>
       </header>

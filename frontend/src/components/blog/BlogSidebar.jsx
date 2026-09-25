@@ -1,15 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { Search, Tag } from 'lucide-react'
-import {
-  searchPlaceholder,
-  popularPostsLabel,
-  popularTagsLabel,
-} from '@data/blog/BlogGrid'
+import { Search } from 'lucide-react'
+import { searchPlaceholder, popularPostsLabel } from '@data/blog/BlogGrid'
 import styles from './BlogSidebar.module.css'
 import { useContent } from '@context/ContentContext'
-import { blogTags } from '@data/blog'
+import { sortByLatest } from '@utils/paginate'
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
@@ -31,10 +27,10 @@ export default function BlogSidebar({ excludeId, initialQuery = '', onSearch }) 
   const navigate = useNavigate()
   const [query, setQuery] = useState(initialQuery)
 
-  const popularPosts = [...blogPosts]
-    .filter((p) => p.id !== excludeId)
-    .sort((a, b) => b.comments.length - a.comments.length)
-    .slice(0, 3)
+  const popularPosts = sortByLatest(
+    blogPosts.filter((p) => p.id !== excludeId),
+    (post) => post.publishedAt,
+  ).slice(0, 4)
 
   const handleChange = (e) => {
     const value = e.target.value
@@ -74,7 +70,9 @@ export default function BlogSidebar({ excludeId, initialQuery = '', onSearch }) 
             return (
               <li key={post.id}>
                 <Link to={`/news/${post.slug}`} className={styles.popularItem}>
-                  <img src={post.coverImage} alt="" className={styles.popularThumb} />
+                  {post.coverImage ? (
+                    <img src={post.coverImage} alt="" className={styles.popularThumb} />
+                  ) : null}
                   <div>
                     <span className={styles.popularDate}>
                       {day} {month}
@@ -86,17 +84,6 @@ export default function BlogSidebar({ excludeId, initialQuery = '', onSearch }) 
             )
           })}
         </ul>
-      </div>
-
-      <div className={styles.widget}>
-        <h4 className={styles.widgetTitle}>{popularTagsLabel}</h4>
-        <div className={styles.tagCloud}>
-          {blogTags.map((tag) => (
-            <span key={tag} className={styles.tagPill}>
-              <Tag size={11} /> {tag}
-            </span>
-          ))}
-        </div>
       </div>
     </aside>
   )

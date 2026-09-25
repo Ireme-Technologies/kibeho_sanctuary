@@ -117,7 +117,6 @@ export default function VisionaryDetailPage() {
           </div>
 
           <div className={styles.contentCol}>
-            <p className={styles.eyebrow}>Historical insights</p>
             {item.isApproved === false ? (
               <p className={styles.approvalNote}>Not approved by the Church</p>
             ) : null}

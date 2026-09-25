@@ -214,6 +214,36 @@
   width: 100%;
 }
 
+.planLayout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  align-items: start;
+  width: 100%;
+  margin: 0 0 2rem;
+}
+
+.planLayout > :only-child {
+  grid-column: 1 / -1;
+}
+
+.planCol {
+  min-width: 0;
+}
+
+.planCol .blockHeading:first-child {
+  margin-top: 0;
+}
+
+.planCol .inviteList,
+.planCol .namedCards {
+  margin-bottom: 1rem;
+}
+
+.planCol .steps {
+  margin-top: 0.35rem;
+}
+
 .practicalForm {
   position: sticky;
   top: 5.5rem;
@@ -751,6 +781,7 @@
 
 @media (max-width: 900px) {
   .practicalLayout,
+  .planLayout,
   .routeGrid {
     grid-template-columns: 1fr;
   }

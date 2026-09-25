@@ -32,7 +32,6 @@
       "label": "Spirituality",
       "path": "/spirituality",
       "children": [
-        { "label": "Prayer Intentions", "path": "/spirituality/prayer-intentions" },
         { "label": "Mass Request", "path": "/spirituality/mass-request" },
         { "label": "Light a Candle", "path": "/spirituality/light-a-candle" },
         { "label": "Novena", "path": "/spirituality/novena" },

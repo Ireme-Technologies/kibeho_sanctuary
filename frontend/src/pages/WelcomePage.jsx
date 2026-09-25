@@ -62,14 +62,10 @@ export default function WelcomePage() {
     (item) => item?.title,
   )
   const leadershipTitle = pick(data, 'leadership.title', defaults.leadership.title)
-  const leadershipIntro = pick(data, 'leadership.intro', defaults.leadership.intro)
 
   const featuredTeam = team.slice(0, LEADERSHIP_LIMIT)
   const [welcomeRef, welcomeInView] = useInView(0.12)
-
-  /* Same heading pattern as HomeWelcome below the homepage hero */
-  const welcomeEyebrow = data.subtitle || ''
-  const welcomeHeading = data.title || 'Welcome to Kibeho'
+  const pageTitle = data.title || 'Welcome to Kibeho'
 
   useEffect(() => {
     applyPageSeo({
@@ -91,13 +87,11 @@ export default function WelcomePage() {
         }}
       >
         <div className="container">
-          {data.eyebrow ? <p className={styles.eyebrow}>{data.eyebrow}</p> : null}
-          <h1>{data.title || 'Welcome to Kibeho'}</h1>
-          {data.subtitle ? <p className={styles.subtitle}>{data.subtitle}</p> : null}
+          <h1 id="welcome-page-title">{pageTitle}</h1>
         </div>
       </header>
 
-      <section className={styles.welcomeSection} aria-labelledby="welcome-intro-heading">
+      <section className={styles.welcomeSection} aria-labelledby="welcome-page-title">
         <div className="container">
           <ContentLocaleNotice translations={record?.translations} />
           <div
@@ -105,11 +99,6 @@ export default function WelcomePage() {
             className={`${styles.welcomeGrid} ${welcomeInView ? styles.welcomeVisible : ''}`}
           >
             <div className={styles.welcomeCopy}>
-              {welcomeEyebrow ? <p className={styles.eyebrow}>{welcomeEyebrow}</p> : null}
-              <h2 id="welcome-intro-heading" className={styles.welcomeHeading}>
-                {welcomeHeading}
-              </h2>
-              <span className={styles.rule} aria-hidden="true" />
               {data.intro ? <RichText html={data.intro} className={styles.introText} /> : null}
             </div>
             <div className={styles.mediaWrap}>
@@ -127,17 +116,14 @@ export default function WelcomePage() {
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="mission-vision-heading">
         <div className="container">
           <div className={styles.sectionHead}>
-            <p className={styles.eyebrow}>Who we are</p>
             <h2 id="mission-vision-heading">Mission & vision</h2>
           </div>
           <div className={styles.mvGrid}>
             <article className={styles.mvCard}>
-              <p className={styles.eyebrow}>{mission.eyebrow}</p>
               <h3>{mission.title}</h3>
               <p>{mission.text}</p>
             </article>
             <article className={styles.mvCard}>
-              <p className={styles.eyebrow}>{vision.eyebrow}</p>
               <h3>{vision.title}</h3>
               <p>{vision.text}</p>
             </article>
@@ -148,9 +134,7 @@ export default function WelcomePage() {
       <section className={styles.section} aria-labelledby="values-heading">
         <div className="container">
           <div className={styles.sectionHead}>
-            <p className={styles.eyebrow}>What guides us</p>
             <h2 id="values-heading">Core values</h2>
-            <p>These principles shape how the Shrine welcomes pilgrims and serves the message of Our Lady of Kibeho.</p>
           </div>
           <div className={styles.valuesGrid}>
             {values.map((item, index) => {
@@ -172,9 +156,7 @@ export default function WelcomePage() {
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="leadership-heading">
         <div className="container">
           <div className={styles.sectionHead}>
-            <p className={styles.eyebrow}>Pastoral life</p>
             <h2 id="leadership-heading">{leadershipTitle}</h2>
-            {leadershipIntro ? <p>{leadershipIntro}</p> : null}
           </div>
 
           {teamError ? <p className={styles.emptyNote}>{teamError}</p> : null}

@@ -85,7 +85,6 @@ export default function HomePilgrimStrip() {
         <div className="container">
           <div className={styles.head}>
             <div>
-              <p className={styles.eyebrow}>{t('home.calendarEyebrow')}</p>
               <h2>{t('upcomingPilgrimages')}</h2>
             </div>
             <Link to="/pilgrimage/calendar" className={styles.more}>
@@ -125,7 +124,6 @@ export default function HomePilgrimStrip() {
       <section className={styles.visitSection} ref={visitRef}>
         <div className={`container ${styles.visitLayout} ${visitInView ? styles.visitVisible : ''}`}>
           <div className={styles.whyPanel}>
-            <p className={styles.eyebrow}>{why.eyebrow || 'Why Kibeho?'}</p>
             <h2>{why.heading || why.title || 'Why make a pilgrimage here?'}</h2>
             <span className={styles.panelRule} aria-hidden="true" />
             <div className={styles.whyGrid}>
@@ -149,7 +147,6 @@ export default function HomePilgrimStrip() {
 
           <div className={styles.stayPanel}>
             <div className={styles.stayCard}>
-              <p className={styles.eyebrow}>{stay.eyebrow || t('pilgrimage')}</p>
               <h2>{stay.heading || stay.title || t('accommodation')}</h2>
               <span className={styles.panelRuleLight} aria-hidden="true" />
 

@@ -10,6 +10,7 @@ import {
   utilityNav as fallbackUtilityNav,
   isStaleUtilityNav,
   ensureOurLadyNavChildren,
+  stripPrayerIntentionsFromNav,
 } from '@data/navigation'
 import FlashMessage from './components/FlashMessage'
 import LocaleTabs from './components/LocaleTabs'
@@ -65,8 +66,10 @@ export default function MenusAdminPage() {
         const navigation = data.navigation || {}
         setPrimaryNav(
           ensureNavIds(
-            ensureOurLadyNavChildren(
-              navigation.primaryNav?.length ? navigation.primaryNav : fallbackPrimaryNav,
+            stripPrayerIntentionsFromNav(
+              ensureOurLadyNavChildren(
+                navigation.primaryNav?.length ? navigation.primaryNav : fallbackPrimaryNav,
+              ),
             ),
           ),
         )

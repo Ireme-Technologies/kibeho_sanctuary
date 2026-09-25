@@ -17,7 +17,6 @@ export default function HomeWelcome() {
   const [ref, inView] = useInView(0.15)
 
   const title = data.title || 'Welcome'
-  const subtitle = data.subtitle || ''
   const intro = data.intro || ''
   const image = resolveHeaderImage(data.heroImage, '/images/sanctuary/welcome.jpg')
 
@@ -25,7 +24,6 @@ export default function HomeWelcome() {
     <section className={styles.section} aria-labelledby="home-welcome-heading" ref={ref}>
       <div className={`container ${styles.layout} ${inView ? styles.visible : ''}`}>
         <div className={styles.copy}>
-          {subtitle ? <p className={styles.eyebrow}>{subtitle}</p> : null}
           <h2 id="home-welcome-heading" className={styles.heading}>
             {title}
           </h2>

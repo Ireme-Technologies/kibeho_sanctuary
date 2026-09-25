@@ -50,9 +50,7 @@ export default function GetInvolvedPage() {
         )}
       >
         <div className="container">
-          {page.eyebrow ? <p className={styles.eyebrow}>{page.eyebrow}</p> : null}
           <h1>{page.title || 'Get involved'}</h1>
-          {page.subtitle ? <p className={styles.subtitle}>{page.subtitle}</p> : null}
         </div>
       </header>
 

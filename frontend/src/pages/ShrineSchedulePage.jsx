@@ -194,9 +194,7 @@ export default function ShrineSchedulePage() {
         )}
       >
         <div className="container">
-          <p className={styles.eyebrow}>The Shrine</p>
           <h1>{hero.title || 'Schedule of the Shrine'}</h1>
-          {hero.subtitle ? <p className={styles.subtitle}>{hero.subtitle}</p> : null}
         </div>
       </header>
 
@@ -207,7 +205,6 @@ export default function ShrineSchedulePage() {
         <section className={styles.section} aria-labelledby="weekly-heading">
           <div className={styles.sectionHead}>
             <div>
-              <p className={styles.sectionEyebrow}>Weekly programmes</p>
               <h2 id="weekly-heading">Mass, prayer & processions</h2>
             </div>
           </div>
@@ -271,7 +268,6 @@ export default function ShrineSchedulePage() {
           <div className={styles.annualInner}>
             <div className={styles.sectionHead}>
               <div>
-                <p className={styles.sectionEyebrowLight}>Annual celebrations</p>
                 <h2 id="annual-heading">Pilgrimage feasts & gatherings</h2>
               </div>
               <Link to="/pilgrimage/calendar" className={styles.calendarLink}>
@@ -363,12 +359,7 @@ export default function ShrineSchedulePage() {
 
         <section className={styles.guidelines} aria-labelledby="guidelines-heading">
           <div className={styles.guidelinesHead}>
-            <p className={styles.sectionEyebrow}>Before you visit</p>
             <h2 id="guidelines-heading">{hero.guidelinesTitle || 'Guidelines of the Shrine'}</h2>
-            <p className={styles.guidelinesLead}>
-              Please take note of these points so your pilgrimage remains prayerful, safe, and welcoming for
-              all.
-            </p>
           </div>
 
           <div className={styles.guidelinesGrid}>

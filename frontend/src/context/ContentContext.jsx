@@ -29,6 +29,7 @@ import {
   normalizeNavGivePaths,
   normalizeGiveNavPath,
   stripShrineMapFromNav,
+  stripPrayerIntentionsFromNav,
 } from '@data/navigation'
 import { resolveNavLabel } from '@i18n/navKeys'
 import {
@@ -268,10 +269,12 @@ export function ContentProvider({ children }) {
       refresh: () => load(locale),
       company,
       primaryNav: translateNav(
-        stripShrineMapFromNav(
-          normalizeNavGivePaths(
-            ensureBroadcastNav(
-              ensureNewsNavChildren(ensureOurLadyNavPath(ensureOurLadyNavChildren(primaryNavRaw))),
+        stripPrayerIntentionsFromNav(
+          stripShrineMapFromNav(
+            normalizeNavGivePaths(
+              ensureBroadcastNav(
+                ensureNewsNavChildren(ensureOurLadyNavPath(ensureOurLadyNavChildren(primaryNavRaw))),
+              ),
             ),
           ),
         ),

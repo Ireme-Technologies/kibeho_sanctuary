@@ -66,8 +66,6 @@ export default function PillarExploreSection() {
     pageContent.title ||
     pageContent.heading ||
     ''
-  const pageSubtitle = String(pageContent.subtitle || '').trim()
-
   const footerAlt =
     pageContent.footerImageAlt ||
     pageContent.map?.alt ||
@@ -78,12 +76,10 @@ export default function PillarExploreSection() {
     pillarMeta.heading ||
     nav.pillarLabel
 
-  const eyebrow = pillarMeta.eyebrow || nav.pillarLabel
   const heading =
     pageTitle ||
     (isHub ? pillarMeta.heading || pillarMeta.title : '') ||
     `Explore ${nav.pillarLabel}`
-  const intro = pageSubtitle || (isHub ? pillarMeta.intro || '' : '')
   const mapEmbedSrc =
     pageKey === 'pilgrimage.how-to-get-here'
       ? pageContent.mapEmbedSrc || pageContent.map?.embedSrc || contactMap?.embedSrc || ''
@@ -139,11 +135,9 @@ export default function PillarExploreSection() {
             </div>
 
             <div className={styles.navCol}>
-              {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
               <h2 id="pillar-explore-heading" className={styles.heading}>
                 {heading}
               </h2>
-              {intro ? <p className={styles.intro}>{intro}</p> : null}
               <span className={styles.rule} aria-hidden="true" />
 
               <nav className={styles.nav} aria-label={`${nav.pillarLabel} pages`}>

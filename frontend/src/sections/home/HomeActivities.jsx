@@ -41,7 +41,6 @@ export default function HomeActivities() {
           <h2 id="home-activities-heading" className={styles.heading}>
             {meta.heading || meta.title}
           </h2>
-          <p className={styles.subline}>{meta.subline || meta.subtitle}</p>
           <span className={styles.divider} aria-hidden="true" />
         </div>
 

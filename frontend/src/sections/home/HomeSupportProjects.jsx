@@ -13,9 +13,7 @@ export default function HomeSupportProjects() {
   const { t } = useLocale()
   const meta = mergePageContent(
     {
-      eyebrow: t('home.projectsEyebrow'),
       heading: t('home.projectsHeading'),
-      subtext: t('home.projectsSubtext'),
       backgroundImage: '/images/sanctuary/hills.jpg',
     },
     section('home.supportProjects', {}),
@@ -42,9 +40,7 @@ export default function HomeSupportProjects() {
       <div className={`container ${styles.inner} ${inView ? styles.visible : ''}`} ref={inViewRef}>
         <div className={styles.head}>
           <div>
-            <p className={styles.kicker}>{meta.eyebrow}</p>
             <h2 id="home-give-heading">{meta.heading}</h2>
-            <p className={styles.lead}>{meta.subtext}</p>
           </div>
           <div className={styles.links}>
             <Link to={getInvolvedHref()} className={styles.ctaPrimary}>

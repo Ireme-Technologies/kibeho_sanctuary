@@ -36,7 +36,6 @@ export const primaryNav = [
     label: 'Spirituality',
     path: '/spirituality',
     children: [
-      { label: 'Prayer Intentions', path: '/spirituality/prayer-intentions' },
       { label: 'Mass Request', path: '/spirituality/mass-request' },
       { label: 'Light a Candle', path: '/spirituality/light-a-candle' },
       { label: 'Novena', path: '/spirituality/novena' },
@@ -269,6 +268,26 @@ export function stripShrineMapFromNav(items) {
   return items.map((item) => {
     if (!Array.isArray(item.children)) return item
     const children = item.children.filter((child) => navPath(child) !== SHRINE_MAP_PATH)
+    return children.length === item.children.length ? item : { ...item, children }
+  })
+}
+
+function isPrayerIntentionsNavItem(item) {
+  const path = navPath(item).toLowerCase()
+  const label = String(item?.label || '').toLowerCase()
+  if (path.includes('prayer-intentions')) return true
+  if (path.includes('intentions-de-priere')) return true
+  if (path.includes('gebetsanliegen')) return true
+  if (path.includes('ibyifuzo-byo-gusenga')) return true
+  return /prayer intentions|intentions de prière|intego zo gusenga/.test(label)
+}
+
+/** Prayer intentions stay available as a page, but not in the Spirituality dropdown. */
+export function stripPrayerIntentionsFromNav(items) {
+  if (!Array.isArray(items)) return items
+  return items.map((item) => {
+    if (!Array.isArray(item.children)) return item
+    const children = item.children.filter((child) => !isPrayerIntentionsNavItem(child))
     return children.length === item.children.length ? item : { ...item, children }
   })
 }

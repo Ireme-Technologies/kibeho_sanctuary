@@ -3,7 +3,7 @@ import { ExternalLink, Play, X } from 'lucide-react'
 import { Link, useLocation, Navigate } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
-import { displayTitleLabel, displayCapsLabel } from '@i18n/typography'
+import { displayTitleLabel } from '@i18n/typography'
 import { pathForSectionKey, sectionKeyForPath } from '@data/pages/registry'
 import { cmsKeyForPath, localizeHref, pathForCmsKey, stripLocale, withLocale } from '@i18n/localizedPath'
 import { navKeyForPath } from '@i18n/navKeys'
@@ -128,7 +128,11 @@ function Block({ block }) {
   if (!block?.type) return null
 
   if (block.type === 'heading') {
-    return <h2 className={styles.blockHeading}>{block.text}</h2>
+    return (
+      <h2 id={block.id} className={styles.blockHeading}>
+        {block.text}
+      </h2>
+    )
   }
 
   if (block.type === 'paragraph') {
@@ -309,6 +313,7 @@ export default function CmsPage() {
     mergePageContent(practicalFallback, practicalLive).blocks,
   )
   const planButtons = pageCtas(data)
+  const planPathBlocks = blocks.filter((block) => block.type !== 'list' && block.type !== 'note')
   const fallbackRoutes = (contactInfo?.routes || []).map((title, index) => ({
     id: `fallback-${index}`,
     origin: '',
@@ -385,7 +390,7 @@ export default function CmsPage() {
         key?.startsWith('pilgrimage.') ||
         key === 'support.vision',
     )
-  const showStoryJoin = isStory && key !== 'shrine.history' && !isPlan
+      const showStoryJoin = isStory && key !== 'shrine.history' && !isPlan && !isHowTo
 
   if (!key) return <NotFoundPage />
 
@@ -399,11 +404,7 @@ export default function CmsPage() {
         )}
       >
         <div className="container">
-          {data.eyebrow ? (
-            <p className={styles.eyebrow}>{displayCapsLabel(data.eyebrow, locale)}</p>
-          ) : null}
           <h1>{pageTitle}</h1>
-          {data.subtitle ? <p className={styles.subtitle}>{data.subtitle}</p> : null}
           {actionPage ? (
             isPaymentAction ? (
               <PageLink
@@ -425,7 +426,7 @@ export default function CmsPage() {
         </div>
       </header>
 
-      <div className={`container ${styles.body} ${isAction ? styles.bodyAction : ''} ${isStory ? styles.bodyStory : ''} ${isPractical || isHowTo ? styles.bodyWide : ''}`}>
+      <div className={`container ${styles.body} ${isAction ? styles.bodyAction : ''} ${isStory ? styles.bodyStory : ''} ${isPractical || isHowTo || isPlan ? styles.bodyWide : ''}`}>
         <ContentLocaleNotice translations={record?.translations} />
         {isDonations ? <GiveInvite introHtml={inviteIntro} /> : null}
         {actionPage && !isDonations ? (
@@ -468,16 +469,34 @@ export default function CmsPage() {
           ? isPlan
             ? (
               <>
-                {beforeYouComeItems.length ? (
-                  <section className={styles.beforeYouCome} aria-labelledby="before-you-come-heading">
-                    <h2 id="before-you-come-heading" className={styles.blockHeading}>
-                      Guidelines before you come
-                    </h2>
-                    <ListBlock items={beforeYouComeItems} />
-                    <PageLink to="/pilgrimage/practical-guidelines" className={styles.inlineLink}>
-                      Read the full practical guidelines →
-                    </PageLink>
-                  </section>
+                {beforeYouComeItems.length || planPathBlocks.length ? (
+                  <div className={styles.planLayout}>
+                    {beforeYouComeItems.length ? (
+                      <section className={styles.planCol} aria-labelledby="before-you-come-heading">
+                        <h2 id="before-you-come-heading" className={styles.blockHeading}>
+                          Guidelines before you come
+                        </h2>
+                        <ListBlock items={beforeYouComeItems} />
+                        <PageLink to="/pilgrimage/practical-guidelines" className={styles.inlineLink}>
+                          Read the full practical guidelines →
+                        </PageLink>
+                      </section>
+                    ) : null}
+                    {planPathBlocks.length ? (
+                      <section className={styles.planCol} aria-labelledby="simple-path-heading">
+                        {planPathBlocks.map((block, index) => (
+                          <Block
+                            key={`${block.type}-${index}`}
+                            block={
+                              block.type === 'heading' && index === 0
+                                ? { ...block, id: 'simple-path-heading' }
+                                : block
+                            }
+                          />
+                        ))}
+                      </section>
+                    ) : null}
+                  </div>
                 ) : null}
                 {planButtons.length ? (
                   <nav className={styles.ctaRow} id="join" aria-label="Plan your pilgrimage">
@@ -488,11 +507,6 @@ export default function CmsPage() {
                     ))}
                   </nav>
                 ) : null}
-                {blocks
-                  .filter((block) => block.type !== 'list' && block.type !== 'note')
-                  .map((block, index) => (
-                    <Block key={`${block.type}-${index}`} block={block} />
-                  ))}
               </>
             )
             : isPractical

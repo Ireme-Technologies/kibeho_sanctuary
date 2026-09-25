@@ -43,9 +43,7 @@ export default function HomeNewsSimple() {
       <div className="container">
         <div className={styles.head}>
           <div>
-            <p className={styles.eyebrow}>{t('home.newsEyebrow')}</p>
             <h2>{t('home.newsHeading')}</h2>
-            <p>{t('home.newsSubtext')}</p>
           </div>
           <Link to="/news" className={styles.more}>
             {t('home.allNews')} →
