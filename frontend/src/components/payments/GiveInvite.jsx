@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import Link from '@components/LocalizedLink'
 import { Church, Flame, Handshake, Heart } from 'lucide-react'
 import { useLocale } from '@context/LocaleContext'
 import RichText from '@components/ui/RichText'

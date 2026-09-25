@@ -59,6 +59,17 @@ export default function PilgrimageDetailPage() {
     }
   }, [slug])
 
+  useEffect(() => {
+    if (window.location.hash !== '#register') return undefined
+    const node = document.getElementById('register')
+    if (!node) return undefined
+    const timer = window.setTimeout(() => {
+      const top = node.getBoundingClientRect().top + window.scrollY - 152
+      window.scrollTo({ top: Math.max(0, top), behavior: 'auto' })
+    }, 0)
+    return () => window.clearTimeout(timer)
+  }, [slug])
+
   if (!pilgrimage) return <NotFoundPage />
 
   const whenLabel = formatEventWhen(pilgrimage)

@@ -244,7 +244,7 @@
 }
 
 .formCard {
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: 9.5rem;
   position: sticky;
   top: calc(var(--chrome-height) + 1rem);
   background: var(--color-white);

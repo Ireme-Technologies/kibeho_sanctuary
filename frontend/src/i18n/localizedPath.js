@@ -237,17 +237,24 @@ export function localizeHref(href, locale, pages = {}, defaultLocale = DEFAULT_L
   if (!href || typeof href !== 'string') return href
   if (/^(https?:|mailto:|tel:|#)/i.test(href)) return href
 
-  const { path } = parseLocalizedPathname(href)
+  const hashAt = href.indexOf('#')
+  const hash = hashAt >= 0 ? href.slice(hashAt) : ''
+  const beforeHash = hashAt >= 0 ? href.slice(0, hashAt) : href
+  const queryAt = beforeHash.indexOf('?')
+  const query = queryAt >= 0 ? beforeHash.slice(queryAt) : ''
+  const bare = queryAt >= 0 ? beforeHash.slice(0, queryAt) : beforeHash
+
+  const { path } = parseLocalizedPathname(bare)
   const code = String(locale || defaultLocale).toLowerCase()
 
-  if (path === '/') return withLocale('/', code)
+  const localized = path === '/'
+    ? withLocale('/', code)
+    : (() => {
+        const key = cmsKeyForPath(path, code, pages, defaultLocale)
+        return withLocale(key ? pathForCmsKey(key, code, pages, defaultLocale) : path, code)
+      })()
 
-  const key = cmsKeyForPath(path, code, pages, defaultLocale)
-  if (key) {
-    return withLocale(pathForCmsKey(key, code, pages, defaultLocale), code)
-  }
-
-  return withLocale(path, code)
+  return `${localized}${query}${hash}`
 }
 
 /**

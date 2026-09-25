@@ -22,6 +22,7 @@ import { applyPageSeo, stripHtml } from '@utils/seo'
 import { fetchTravelRoutes } from '@api/cms'
 import { TRAVEL_ROUTE_FALLBACKS } from '@data/directories'
 import { heroBackgroundStyle } from '@utils/heroBackground'
+import { formatOccurrenceRange, pickHeaderOccasion } from '@utils/occasion'
 import FeastYear, { isDateList, parseDateList } from '@components/FeastYear'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
@@ -466,7 +467,14 @@ export default function CmsPage() {
         key?.startsWith('pilgrimage.') ||
         key === 'support.vision',
     )
-      const showStoryJoin = isStory && key !== 'shrine.history' && !isPlan && !isHowTo
+      const showStoryJoin = isStory && key !== 'shrine.history' && !isPlan && !isHowTo && !isFeasts
+  const nextCelebration = isFeasts
+    ? pickHeaderOccasion(
+        feastEvents.filter((item) => !/main feasts celebrated/i.test(item.title || '')),
+      )
+    : null
+  const nextCelebrationPath = nextCelebration?.item?.path
+    || (nextCelebration?.item?.slug ? `/pilgrimages/${nextCelebration.item.slug}` : '')
 
   if (!key) return <NotFoundPage />
 
@@ -494,6 +502,10 @@ export default function CmsPage() {
                 {actionPage.heroCta}
               </a>
             )
+          ) : isFeasts && nextCelebrationPath ? (
+            <PageLink to={`${nextCelebrationPath}#register`} className={styles.heroCta}>
+              Register
+            </PageLink>
           ) : showStoryJoin || isHub ? (
             <a href="#join" className={styles.heroCta}>
               {t('story.bePart')}
@@ -651,6 +663,24 @@ export default function CmsPage() {
         {actionPage?.kind === 'prayer' ? <OfferingForm kind="prayer" /> : null}
         {actionPage?.kind === 'testimony' ? <OfferingForm kind="testimony" /> : null}
         {actionPage ? <InvolveMore variant={actionPage.involve} /> : null}
+        {isFeasts ? (
+          <InvolveMore
+            variant="story"
+            title="Join the next celebration"
+            lead={
+              nextCelebration
+                ? `${nextCelebration.item.title}${formatOccurrenceRange(nextCelebration.window) ? ` · ${formatOccurrenceRange(nextCelebration.window)}` : ''}. Register your group, plan the journey, and arrange where you will stay.`
+                : 'Register for a celebration, plan the journey, and arrange where you will stay.'
+            }
+            links={[
+              nextCelebrationPath
+                ? { label: `Register · ${nextCelebration.item.title}`, path: `${nextCelebrationPath}#register` }
+                : null,
+              { label: 'Plan Your Pilgrimage', path: '/pilgrimage/plan' },
+              { label: 'Accommodation', path: '/pilgrimage/accommodation' },
+            ].filter(Boolean)}
+          />
+        ) : null}
         {showStoryJoin ? (
           <InvolveMore
             variant="story"
