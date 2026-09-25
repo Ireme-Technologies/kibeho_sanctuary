@@ -1,50 +1,50 @@
-import { Link } from 'react-router-dom'
-import { Church, BedDouble, CalendarDays, HeartHandshake, Users, Info } from 'lucide-react'
 import { useContent } from '@context/ContentContext'
-import { quickLinks as fallbackLinks } from '@data/home/sanctuaryHome'
+import { getPageFallback } from '@data/pages/content'
 import { mergePageContent } from '@data/pages/mergePageContent'
+import { welcomePageDefaults } from '@data/welcomePage'
 import styles from './HomeQuickLinks.module.css'
 
-const icons = {
-  church: Church,
-  bed: BedDouble,
-  calendar: CalendarDays,
-  heart: HeartHandshake,
-  users: Users,
-  info: Info,
+function pick(data, path, fallback = '') {
+  const parts = path.split('.')
+  let cur = data
+  for (const part of parts) {
+    if (cur == null) return fallback
+    cur = cur[part]
+  }
+  return cur ?? fallback
 }
 
 export default function HomeQuickLinks() {
   const { section } = useContent()
-  const data = mergePageContent(
-    {
-      links: fallbackLinks.map((item) => ({
-        label: item.title,
-        text: item.description,
-        path: item.path,
-        icon: item.icon,
-        id: item.id,
-      })),
-    },
-    section('home.quickLinks', {}),
-  )
-  const items = data.links?.length ? data.links : fallbackLinks
+  const fallback = getPageFallback('shrine.welcome') || {}
+  const data = mergePageContent(fallback, section('shrine.welcome', {}))
+  const defaults = welcomePageDefaults
+
+  const mission = {
+    title: pick(data, 'mission.title', defaults.mission.title),
+    text: pick(data, 'mission.text', defaults.mission.text),
+  }
+  const vision = {
+    title: pick(data, 'vision.title', defaults.vision.title),
+    text: pick(data, 'vision.text', defaults.vision.text),
+  }
 
   return (
-    <section className={styles.section} aria-label="Quick links">
-      <div className={`container ${styles.grid}`}>
-        {items.map((item) => {
-          const Icon = icons[item.icon] || Info
-          return (
-            <Link key={item.id || item.path || item.label} to={item.path} className={styles.item}>
-              <span className={styles.iconWrap} aria-hidden="true">
-                <Icon size={28} strokeWidth={1.6} />
-              </span>
-              <span className={styles.title}>{item.label || item.title}</span>
-              <span className={styles.desc}>{item.text || item.description}</span>
-            </Link>
-          )
-        })}
+    <section className={styles.section} aria-labelledby="home-mission-vision-heading">
+      <div className="container">
+        <h2 id="home-mission-vision-heading" className={styles.heading}>
+          Mission & vision
+        </h2>
+        <div className={styles.grid}>
+          <article className={styles.card}>
+            <h3>{mission.title}</h3>
+            <p>{mission.text}</p>
+          </article>
+          <article className={styles.card}>
+            <h3>{vision.title}</h3>
+            <p>{vision.text}</p>
+          </article>
+        </div>
       </div>
     </section>
   )
