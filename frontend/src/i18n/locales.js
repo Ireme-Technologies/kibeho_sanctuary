@@ -56,7 +56,7 @@ export const uiStrings = {
     notFound: 'Page not found',
     backHome: 'Back to home',
     upcomingPilgrimages: 'Pilgrimage events',
-    viewCalendar: 'View calendar',
+    viewCalendar: 'Annual celebrations',
     massSchedule: 'Mass Schedule',
     accommodation: 'Accommodation',
     bookNow: 'Book Now',

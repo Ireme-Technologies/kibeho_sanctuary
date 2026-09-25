@@ -25,6 +25,7 @@ class UpcomingPilgrimage extends Model
         'recurrence_type',
         'sort_order',
         'registration_open',
+        'is_charged',
         'is_published',
         'translations',
     ];
@@ -35,6 +36,7 @@ class UpcomingPilgrimage extends Model
         'translations' => 'array',
         'ends_on' => 'date',
         'registration_open' => 'boolean',
+        'is_charged' => 'boolean',
         'is_published' => 'boolean',
         'is_recurring' => 'boolean',
     ];

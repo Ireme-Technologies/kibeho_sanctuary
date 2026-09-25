@@ -22,7 +22,7 @@ import { applyPageSeo, stripHtml } from '@utils/seo'
 import { fetchTravelRoutes } from '@api/cms'
 import { TRAVEL_ROUTE_FALLBACKS } from '@data/directories'
 import { heroBackgroundStyle } from '@utils/heroBackground'
-import FeastYear, { isDateList } from '@components/FeastYear'
+import FeastYear, { isDateList, parseDateList } from '@components/FeastYear'
 import NotFoundPage from './NotFoundPage'
 import styles from './CmsPage.module.css'
 
@@ -375,10 +375,11 @@ export default function CmsPage() {
     : blocks
   const links = data.links?.length ? data.links : fallback.links || []
   const isFeasts = key === 'pilgrimage.annual-celebrations'
-  const feastEvents = isFeasts
-    ? (upcomingPilgrimages || []).filter((item) => item.eventType === 'feast')
+  const feastEvents = isFeasts ? upcomingPilgrimages || [] : []
+  const feastLines = isFeasts
+    ? parseDateList([data.intro, ...(blocks || []).map((block) => block?.text || '')].filter(Boolean).join('\n'))
     : []
-  const hideDateList = feastEvents.length > 0
+  const hideDateList = feastLines.length >= 4
   const isPlan = key === 'pilgrimage.plan'
   const isPractical = key === 'pilgrimage.practical-guidelines'
   const isHowTo = key === 'pilgrimage.how-to-get-here'
@@ -510,7 +511,7 @@ export default function CmsPage() {
         {!isAction && (isHistory ? historyIntro : data.intro) && !(hideDateList && isDateList(data.intro)) ? (
           <RichText html={isHistory ? historyIntro : data.intro} className={styles.intro} />
         ) : null}
-        {isFeasts ? <FeastYear events={feastEvents} /> : null}
+        {isFeasts ? <FeastYear events={feastEvents} lines={feastLines} /> : null}
         {isHistory && historyImages.length ? (
           <div className={styles.historyFigures} data-count={historyImages.length}>
             {historyImages.map((image) => (

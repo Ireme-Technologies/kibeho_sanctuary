@@ -140,7 +140,7 @@ export default function EventUpdatesAdminPage() {
           <p className={styles.muted} style={{ margin: 0 }}>
             <Link to="/admin/upcoming-pilgrimages">Pilgrimage events</Link>
           </p>
-          <h1>Updates · {event.title}</h1>
+          <h1>This celebration · {event.title}</h1>
         </div>
         <a className={`${styles.btn} ${styles.btnSecondary}`} href={event.path} target="_blank" rel="noreferrer">
           View event
@@ -154,8 +154,7 @@ export default function EventUpdatesAdminPage() {
       />
 
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
-        Add photos, articles, videos, or reports from past celebrations. Choose a year for an annual feast,
-        or leave it as “No year”.
+        Photos, articles, videos, and reports added here belong only to this annual celebration. Choose a year, or leave it as “No year”.
       </p>
 
       <form className={styles.form} onSubmit={handleSave}>

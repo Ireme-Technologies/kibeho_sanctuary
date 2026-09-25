@@ -150,7 +150,7 @@ const INVOLVE = {
     title: 'story.joinTitle',
     lead: 'story.joinLead',
     links: [
-      { to: '/pilgrimage/calendar', title: 'story.calendarTitle', text: '' },
+      { to: '/pilgrimage/annual-celebrations', title: 'story.calendarTitle', text: '' },
       { to: '/pilgrimage/plan', title: 'story.planTitle', text: '' },
       { to: '/support/get-involved', title: 'story.involvedTitle', text: '' },
     ],

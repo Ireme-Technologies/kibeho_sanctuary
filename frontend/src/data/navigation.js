@@ -14,7 +14,7 @@ export const primaryNav = [
       { label: 'Visionaries', path: '/shrine/visionaries' },
       { label: 'The Messages', path: '/shrine/messages' },
       { label: 'Main Places of the Shrine', path: '/shrine/places' },
-      { label: 'Schedule of the Shrine', path: '/shrine/schedule' },
+      { label: 'Weekly programs', path: '/shrine/schedule' },
       { label: 'Communities', path: '/shrine/communities' },
       { label: 'Pastoral Team', path: '/shrine/pastoral-team' },
       { label: 'FAQ', path: '/shrine/faq' },
@@ -81,7 +81,7 @@ export const primaryNav = [
 ]
 
 export const utilityNav = [
-  { label: 'View Calendar', path: '/pilgrimage/calendar' },
+  { label: 'Annual Celebrations', path: '/pilgrimage/annual-celebrations' },
   { label: 'Plan Your Pilgrimage', path: '/pilgrimage/plan' },
 ]
 
@@ -110,7 +110,7 @@ export const footerLinks = [
 
 export const footerServiceLinks = [
   { label: 'Plan Your Pilgrimage', path: '/pilgrimage/plan' },
-  { label: 'Mass Schedule', path: '/shrine/schedule' },
+  { label: 'Weekly programs', path: '/shrine/schedule' },
   { label: 'Accommodation', path: '/pilgrimage/accommodation' },
   { label: 'Light a Candle', path: '/spirituality/light-a-candle' },
   { label: 'International Pilgrimage', path: '/pilgrimage/why-kibeho' },

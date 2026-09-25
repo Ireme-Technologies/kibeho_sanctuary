@@ -91,7 +91,7 @@ export const navStrings = {
     'nav.welcome': 'Welcome',
     'nav.history': 'History',
     'nav.mainPlaces': 'Main Places of the Shrine',
-    'nav.schedule': 'Schedule of the Shrine',
+    'nav.schedule': 'Weekly programs',
     'nav.shrineMap': 'Shrine Map',
     'nav.apparitionSites': 'Apparition Sites',
     'nav.visionaries': 'Visionaries',

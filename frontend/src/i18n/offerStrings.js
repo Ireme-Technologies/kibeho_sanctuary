@@ -91,7 +91,7 @@ export const offerStrings = {
     'story.bePart': 'Begin here',
     'story.joinTitle': 'This call is still being lived at Kibeho',
     'story.joinLead': 'Read, then walk with the pilgrims — in prayer, at Mass, or on the road to the Shrine.',
-    'story.calendarTitle': 'View Calendar',
+    'story.calendarTitle': 'Annual Celebrations',
     'story.planTitle': 'Plan Your Pilgrimage',
     'story.planText': 'Plan a visit and pray where the Mother of the Word appeared.',
     'story.involvedTitle': 'Get involved',

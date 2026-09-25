@@ -4,14 +4,14 @@
  */
 
 export const SITE_CTA_PATHS = {
-  calendar: '/pilgrimage/calendar',
+  calendar: '/pilgrimage/annual-celebrations',
   plan: '/pilgrimage/plan',
   getInvolved: '/support/get-involved',
 }
 
 export const STANDARD_SITE_CTAS = [
   {
-    title: 'View Calendar',
+    title: 'Annual Celebrations',
     text: '',
     path: SITE_CTA_PATHS.calendar,
   },

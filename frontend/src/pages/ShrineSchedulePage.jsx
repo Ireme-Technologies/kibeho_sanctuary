@@ -9,17 +9,14 @@ import {
   Users,
   VolumeX,
   ChevronRight,
-  CalendarDays,
 } from 'lucide-react'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchMassSchedules } from '@api/cms'
 import { catalogErrorMessage } from '@api/client'
-import { formatMassTime, formatRecurrence, formatItemDates } from '@utils/eventTime'
-import { classifyEvent, occurrenceWindow, statusLabel } from '@utils/occasion'
+import { formatMassTime, formatRecurrence } from '@utils/eventTime'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
-import { cardExcerpt } from '@utils/text'
 import { heroBackgroundStyle } from '@utils/heroBackground'
 import styles from './ShrineSchedulePage.module.css'
 
@@ -138,7 +135,7 @@ function sortWeekly(rows) {
 }
 
 export default function ShrineSchedulePage() {
-  const { section, resolveHeaderImage, upcomingPilgrimages } = useContent()
+  const { section, resolveHeaderImage } = useContent()
   const { locale } = useLocale()
   const hero = resolveSectionContent(section, 'shrine.schedule', ['shrine.mass-schedule'])
   const [rows, setRows] = useState([])
@@ -154,21 +151,6 @@ export default function ShrineSchedulePage() {
     const weekly = (rows || []).filter((row) => !isAnnualRow(row))
     return sortWeekly(ensureThursdayProcession(weekly))
   }, [rows])
-
-  const annualFromSchedule = useMemo(() => (rows || []).filter(isAnnualRow), [rows])
-
-  const annualEvents = useMemo(() => {
-    const fromPilgrimages = [...(upcomingPilgrimages || [])]
-      .map((item) => ({ item, ...classifyEvent(item) }))
-      .filter((entry) => entry.status !== 'none')
-      .sort((a, b) => {
-        const aStart = occurrenceWindow(a.item)?.start
-        const bStart = occurrenceWindow(b.item)?.start
-        if (aStart && bStart) return aStart - bStart
-        return 0
-      })
-    return fromPilgrimages
-  }, [upcomingPilgrimages])
 
   const guidelines = useMemo(() => normalizeGuidelines(hero.guidelines), [hero.guidelines])
   const heroImage = resolveHeaderImage(hero.heroImage)
@@ -193,7 +175,7 @@ export default function ShrineSchedulePage() {
         )}
       >
         <div className="container">
-          <h1>{hero.title || 'Schedule of the Shrine'}</h1>
+          <h1 id="page-title">{hero.title || 'Weekly programs'}</h1>
         </div>
       </header>
 
@@ -201,12 +183,7 @@ export default function ShrineSchedulePage() {
         {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
         {error ? <p className={styles.empty}>{error}</p> : null}
 
-        <section className={styles.section} aria-labelledby="weekly-heading">
-          <div className={styles.sectionHead}>
-            <div>
-              <h2 id="weekly-heading">Mass, prayer & processions</h2>
-            </div>
-          </div>
+        <section className={styles.section} aria-labelledby="page-title">
           {hero.weeklyIntro ? <RichText html={hero.weeklyIntro} className={styles.sectionIntro} /> : null}
 
           {!error && !weeklyRows.length ? (
@@ -267,94 +244,16 @@ export default function ShrineSchedulePage() {
           <div className={styles.annualInner}>
             <div className={styles.sectionHead}>
               <div>
-                <h2 id="annual-heading">Pilgrimage feasts & gatherings</h2>
+                <h2 id="annual-heading">Annual Celebrations</h2>
               </div>
-              <Link to="/pilgrimage/calendar" className={styles.calendarLink}>
-                Full calendar
+              <Link to="/pilgrimage/annual-celebrations" className={styles.calendarLink}>
+                Open the year
                 <ChevronRight size={16} aria-hidden="true" />
               </Link>
             </div>
-            {hero.annualIntro ? (
-              <RichText html={hero.annualIntro} className={styles.annualIntro} />
-            ) : null}
-
-            {annualEvents.length ? (
-              <div className={styles.annualGrid}>
-                {annualEvents.map(({ item, status }) => {
-                  const window = occurrenceWindow(item)
-                  const image = item.image || item.coverImage || ''
-                  const path = item.path || (item.slug ? `/pilgrimages/${item.slug}` : '/pilgrimage/calendar')
-                  return (
-                    <Link key={item.id || item.slug} to={path} className={styles.annualCard}>
-                      {image ? (
-                        <div
-                          className={styles.annualMedia}
-                          style={{ backgroundImage: `url(${image})` }}
-                          aria-hidden="true"
-                        />
-                      ) : null}
-                      <div className={styles.annualBody}>
-                        {statusLabel(status) ? (
-                          <span className={styles.annualBadge}>{statusLabel(status)}</span>
-                        ) : (
-                          <span className={styles.annualBadgeMuted}>
-                            <CalendarDays size={13} aria-hidden="true" />
-                            Annual
-                          </span>
-                        )}
-                        <h3>{item.title}</h3>
-                        <p className={styles.annualWhen}>
-                          {formatItemDates(item) ||
-                            (window?.start
-                              ? window.start.toLocaleDateString('en-GB', {
-                                  day: 'numeric',
-                                  month: 'long',
-                                  year: 'numeric',
-                                })
-                              : '')}
-                        </p>
-                        {cardExcerpt(item) ? (
-                          <p className={styles.annualText}>{cardExcerpt(item)}</p>
-                        ) : null}
-                      </div>
-                    </Link>
-                  )
-                })}
-              </div>
-            ) : annualFromSchedule.length ? (
-              <div className={styles.weeklyGrid}>
-                {annualFromSchedule.map((row) => (
-                  <article key={row.id} className={`${styles.dayCard} ${styles.dayCardFeatured}`}>
-                    <div className={styles.dayHead}>
-                      <h3>{row.dayLabel || 'Feast Days'}</h3>
-                      <span className={styles.pill}>Annual</span>
-                    </div>
-                    <div className={styles.dayRows}>
-                      <div className={`${styles.slot} ${styles.slot_sunday}`}>
-                        <div className={styles.slotMain}>
-                          <p className={styles.slotTitle}>{row.title}</p>
-                          <p className={styles.slotMeta}>
-                            {[formatRecurrence(row), row.language, row.location]
-                              .filter(Boolean)
-                              .join(' · ')}
-                          </p>
-                          {row.notes ? (
-                            <p className={styles.slotNotes}>{stripHtml(row.notes)}</p>
-                          ) : null}
-                        </div>
-                        {formatMassTime(row) ? (
-                          <p className={styles.slotTime}>{formatMassTime(row)}</p>
-                        ) : null}
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <p className={styles.emptyLight}>
-                Annual celebrations will appear here as pilgrimage events are published.
-              </p>
-            )}
+            <p className={styles.annualIntro}>
+              Feast days and pilgrimages each have their own page, with registration and the photos, articles, and reports of that celebration.
+            </p>
           </div>
         </section>
 
@@ -394,8 +293,8 @@ export default function ShrineSchedulePage() {
           </div>
 
           <div className={styles.guideActions}>
-            <Link to="/pilgrimage/calendar" className={styles.btnGhost}>
-              View Calendar
+            <Link to="/pilgrimage/annual-celebrations" className={styles.btnGhost}>
+              Annual Celebrations
             </Link>
             <Link to="/pilgrimage/plan" className={styles.btnPrimary}>
               Plan Your Pilgrimage

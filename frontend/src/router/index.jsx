@@ -56,7 +56,6 @@ const PastoralTeamPage = lazy(() => import('@pages/PastoralTeamPage'))
 const PastoralTeamDetailPage = lazy(() => import('@pages/PastoralTeamDetailPage'))
 const CommunitiesPage = lazy(() => import('@pages/CommunitiesPage'))
 const CommunityDetailPage = lazy(() => import('@pages/CommunityDetailPage'))
-const CalendarPage = lazy(() => import('@pages/CalendarPage'))
 const SettingsAdminPage = lazy(() => import('@admin/SettingsAdminPage'))
 const MenusAdminPage = lazy(() => import('@admin/MenusAdminPage'))
 const ButtonsAdminPage = lazy(() => import('@admin/ButtonsAdminPage'))
@@ -164,7 +163,7 @@ const localizedChildren = [
   { path: 'activities/:slug', element: <RedirectActivitySlug /> },
   { path: 'pilgrimages', element: <LocalizedNavigate to="/pilgrimage/annual-celebrations" /> },
   { path: 'pilgrimages/:slug', element: <Wrap Component={PilgrimageDetailPage} /> },
-  { path: 'pilgrimage/calendar', element: <Wrap Component={CalendarPage} /> },
+  { path: 'pilgrimage/calendar', element: <LocalizedNavigate to="/pilgrimage/annual-celebrations" /> },
   { path: 'pilgrimage/accommodation', element: <Wrap Component={HotelsPage} /> },
   { path: 'pilgrimage/accommodation/:slug', element: <Wrap Component={HotelDetailPage} /> },
   { path: 'shrine/schedule', element: <Wrap Component={ShrineSchedulePage} /> },

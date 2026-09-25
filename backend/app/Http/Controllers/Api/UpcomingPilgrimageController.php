@@ -153,6 +153,7 @@ class UpcomingPilgrimageController extends Controller
             'recurrence_type' => ['nullable', 'string', Rule::in(['weekly', 'monthly', 'annual'])],
             'sort_order' => ['nullable', 'integer'],
             'registration_open' => ['boolean'],
+            'is_charged' => ['boolean'],
             'is_published' => ['boolean'],
             'translations' => ['nullable', 'array'],
         ]);
@@ -265,6 +266,7 @@ class UpcomingPilgrimageController extends Controller
             'path' => '/pilgrimages/'.$item->slug,
             'sortOrder' => $item->sort_order,
             'registrationOpen' => $item->registration_open,
+            'isCharged' => (bool) $item->is_charged,
             'isPublished' => $item->is_published,
             'translations' => $item->translations ?? [],
         ];

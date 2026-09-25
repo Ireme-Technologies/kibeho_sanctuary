@@ -87,7 +87,7 @@ export default function HomePilgrimStrip() {
             <div>
               <h2>{t('upcomingPilgrimages')}</h2>
             </div>
-            <Link to="/pilgrimage/calendar" className={styles.more}>
+            <Link to="/pilgrimage/annual-celebrations" className={styles.more}>
               {t('viewCalendar')} →
             </Link>
           </div>

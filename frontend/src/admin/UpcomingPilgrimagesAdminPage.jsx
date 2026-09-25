@@ -34,6 +34,7 @@ const empty = {
   recurrence_type: '',
   sort_order: 0,
   registration_open: true,
+  is_charged: false,
   is_published: true,
   translations: {},
 }
@@ -92,6 +93,7 @@ export default function UpcomingPilgrimagesAdminPage() {
       recurrence_type: item.recurrenceType || (item.isRecurring ? 'annual' : ''),
       sort_order: item.sortOrder || 0,
       registration_open: item.registrationOpen !== false,
+      is_charged: item.isCharged === true,
       is_published: item.isPublished !== false,
       translations: item.translations || {},
     })
@@ -162,9 +164,7 @@ export default function UpcomingPilgrimagesAdminPage() {
       />
 
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
-        Manage pilgrimages, feast days, retreats, and other calendar events. Set dates, times, and
-        recurrence (weekly, monthly, or annual). Published events appear on the public calendar and homepage.
-        Use Updates to attach photos, articles, videos, and reports. Use Registrations to see who signed up for the next celebration and for past years.
+        Each annual celebration has its own page. Use Updates to attach that celebration’s photos, articles, videos, and reports. Use Registrations for who signed up.
       </p>
 
       <div className={styles.card}>
@@ -356,6 +356,14 @@ export default function UpcomingPilgrimagesAdminPage() {
               onChange={(e) => setForm({ ...form, registration_open: e.target.checked })}
             />{' '}
             Registration open
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={form.is_charged}
+              onChange={(e) => setForm({ ...form, is_charged: e.target.checked })}
+            />{' '}
+            Charged celebration
           </label>
           <label>
             <input
