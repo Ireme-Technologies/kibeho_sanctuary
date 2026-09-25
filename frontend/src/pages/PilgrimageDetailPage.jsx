@@ -165,6 +165,7 @@ export default function PilgrimageDetailPage() {
       >
         <ContentLocaleNotice translations={pilgrimage.translations} />
         {facts.length ? <p className={profile.meta}>{facts.join(' · ')}</p> : null}
+        {pilgrimage.lead ? <p>{pilgrimage.lead}</p> : null}
         {pilgrimage.description ? <RichText html={pilgrimage.description} /> : null}
       </ItemProfile>
 

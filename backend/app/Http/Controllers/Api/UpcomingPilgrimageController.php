@@ -250,6 +250,7 @@ class UpcomingPilgrimageController extends Controller
             'eventType' => $item->event_type ?: 'pilgrimage',
             'title' => $resolved['title'],
             'meta' => $resolved['meta'],
+            'lead' => $resolved['short_description'],
             'shortDescription' => Locale::cardExcerpt($resolved),
             'description' => $resolved['description'],
             'image' => $item->image,

@@ -18,12 +18,13 @@ import ListTitle from './components/ListTitle'
 import { formatEventWhen, formatRecurrence, RECURRENCE_OPTIONS } from '@utils/eventTime'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['title', 'meta', 'description', 'location']
+const LOCALE_FIELDS = ['title', 'meta', 'short_description', 'description', 'location']
 
 const empty = {
   title: '',
   event_type: 'pilgrimage',
   meta: '',
+  short_description: '',
   description: '',
   image: '',
   location: '',
@@ -83,6 +84,7 @@ export default function UpcomingPilgrimagesAdminPage() {
       title: item.title || '',
       event_type: item.eventType || 'pilgrimage',
       meta: item.meta || '',
+      short_description: item.lead || '',
       description: item.description || '',
       image: item.image || '',
       location: item.location || '',
@@ -328,12 +330,34 @@ export default function UpcomingPilgrimagesAdminPage() {
             </select>
           </div>
           <div className={styles.field}>
-            <label>Description</label>
+            <label>Summary</label>
+            <textarea
+              rows={2}
+              value={getLocaleField(form, 'short_description', localeTab, defaultLocale)}
+              onChange={(e) => setForm(setLocaleField(form, 'short_description', localeTab, e.target.value, defaultLocale))}
+              placeholder="One or two sentences shown under the title on the celebration page"
+            />
+          </div>
+          <div className={styles.field}>
+            <label>Page text</label>
             <RichTextEditor
               value={getLocaleField(form, 'description', localeTab, defaultLocale)}
               onChange={(html) => setForm(setLocaleField(form, 'description', localeTab, html, defaultLocale))}
             />
-            <p className={styles.muted}>Listings show the first 160 characters of this description.</p>
+            <p className={styles.muted}>
+              This text, the cover image, the date, and the location are what visitors read on the celebration page.
+              {editingId ? (
+                <>
+                  {' '}
+                  <Link to={`/admin/upcoming-pilgrimages/${editingId}/updates`}>
+                    Add photos, articles, videos, and reports
+                  </Link>
+                  .
+                </>
+              ) : (
+                ' After you save, use Updates on this celebration to add photos, articles, videos, and reports.'
+              )}
+            </p>
           </div>
           <ImageField
             label="Cover image"
