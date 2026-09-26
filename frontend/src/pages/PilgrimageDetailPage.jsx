@@ -4,6 +4,7 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchTestimonials, submitEnquiry } from '@api/cms'
 import { formatEventWhen, formatRecurrence } from '@utils/eventTime'
+import { toBcp47 } from '@utils/localeDate'
 import {
   archiveGalleries,
   archiveLinks,
@@ -20,6 +21,24 @@ import RichText from '@components/ui/RichText'
 import NotFoundPage from './NotFoundPage'
 import styles from './PilgrimageDetailPage.module.css'
 
+function updateDateParts(dateStr, locale) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dateStr || ''))
+  if (!match) return null
+  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+  if (Number.isNaN(date.getTime())) return null
+  const month = date
+    .toLocaleDateString(toBcp47(locale), { month: 'short' })
+    .replace(/\./g, '')
+    .slice(0, 3)
+    .toUpperCase()
+  return {
+    month,
+    day: date.getDate(),
+    year: match[1],
+    label: date.toLocaleDateString(toBcp47(locale), { day: 'numeric', month: 'long', year: 'numeric' }),
+  }
+}
+
 const initialForm = {
   name: '',
   email: '',
@@ -32,7 +51,7 @@ const initialForm = {
 export default function PilgrimageDetailPage() {
   const { slug } = useParams()
   const { upcomingPilgrimages, blogPosts, offerings } = useContent()
-  const { t } = useLocale()
+  const { t, locale } = useLocale()
   const pilgrimage = (upcomingPilgrimages || []).find((item) => item.slug === slug)
 
   const [values, setValues] = useState(initialForm)
@@ -194,18 +213,32 @@ export default function PilgrimageDetailPage() {
             <section className={styles.memory} aria-labelledby="event-updates">
               <h2 id="event-updates">Recent updates</h2>
               <div className={styles.updateList}>
-                {updates.map((post) => (
-                  <Link key={post.id || post.slug} to={`/news/${post.slug}`} className={styles.updateCard}>
-                    {post.coverImage ? <img src={post.coverImage} alt="" /> : null}
-                    <div>
-                      {post.publishedAt ? <p className={styles.memoryMeta}>{post.publishedAt}</p> : null}
-                      <h3>{post.title}</h3>
-                      {post.excerpt ? (
-                        <p>{String(post.excerpt).replace(/<[^>]+>/g, '').slice(0, 140)}</p>
+                {updates.map((post) => {
+                  const dated = updateDateParts(post.publishedAt, locale)
+                  const excerpt = post.excerpt ? String(post.excerpt).replace(/<[^>]+>/g, '').trim() : ''
+                  return (
+                    <Link
+                      key={post.id || post.slug}
+                      to={`/news/${post.slug}`}
+                      className={`${styles.updateCard} ${post.coverImage ? styles.updateCardMedia : ''}`}
+                    >
+                      {post.coverImage ? (
+                        <img src={post.coverImage} alt="" />
+                      ) : dated ? (
+                        <span className={styles.updateDate}>
+                          <span>{dated.month}</span>
+                          <strong>{dated.day}</strong>
+                          <span>{dated.year}</span>
+                        </span>
                       ) : null}
-                    </div>
-                  </Link>
-                ))}
+                      <span className={styles.updateCopy}>
+                        {post.coverImage && dated ? <span className={styles.memoryMeta}>{dated.label}</span> : null}
+                        <h3>{post.title}</h3>
+                        {excerpt ? <p>{excerpt}</p> : null}
+                      </span>
+                    </Link>
+                  )
+                })}
               </div>
             </section>
           ) : null}
