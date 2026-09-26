@@ -10,6 +10,7 @@ import { applyPageSeo, DEFAULT_SEO, stripHtml } from '@utils/seo'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import PillarExploreSection from './PillarExploreSection'
+import OtherCelebrations from './OtherCelebrations'
 import styles from './Layout.module.css'
 
 const PUBLIC_SEO = {
@@ -41,6 +42,7 @@ export default function Layout({ hasHero = false }) {
   const { company, section, pages } = useContent()
   const { t, locale, defaultLocale } = useLocale()
   const pathOnly = stripLocale(pathname)
+  const isEventPage = /^\/pilgrimages\/[^/]+$/.test(pathOnly)
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
@@ -81,7 +83,7 @@ export default function Layout({ hasHero = false }) {
       <main className={`${styles.main} ${!hasHero ? styles.withOffset : ''}`}>
         <Outlet />
       </main>
-      <PillarExploreSection />
+      {isEventPage ? <OtherCelebrations /> : <PillarExploreSection />}
       <Footer />
     </div>
   )
