@@ -37,10 +37,12 @@ class PilgrimEnquiryController extends Controller
             'channel' => ['required', Rule::in(['email', 'whatsapp'])],
         ]);
 
-        if ($data['channel'] === 'email') {
-            if (empty($data['email'])) {
-                return response()->json(['message' => 'Email is required for email enquiries.', 'errors' => ['email' => ['Email is required.']]], 422);
-            }
+        $registration = ($data['enquiry_type'] ?? '') === 'pilgrimage' || ! empty($data['upcoming_pilgrimage_id']);
+        if (($data['channel'] === 'email' || $registration) && empty($data['email'])) {
+            return response()->json(['message' => 'Email is required.', 'errors' => ['email' => ['Email is required.']]], 422);
+        }
+
+        if (! empty($data['email'])) {
             $emails->assertDeliverable($data['email']);
         }
 

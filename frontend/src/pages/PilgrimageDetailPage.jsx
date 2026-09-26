@@ -117,13 +117,10 @@ export default function PilgrimageDetailPage() {
   const validate = () => {
     const next = {}
     if (!values.name.trim()) next.name = 'Name is required.'
+    if (!values.email.trim()) next.email = 'Email is required.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) next.email = 'Enter a valid email.'
     if (!values.message.trim()) next.message = 'Please share a short message or group details.'
-    if (values.channel === 'email') {
-      if (!values.email.trim()) next.email = 'Email is required.'
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) next.email = 'Enter a valid email.'
-    } else if (!values.phone.trim()) {
-      next.phone = 'WhatsApp number is required.'
-    }
+    if (values.channel === 'whatsapp' && !values.phone.trim()) next.phone = 'WhatsApp number is required.'
     return next
   }
 
@@ -139,7 +136,7 @@ export default function PilgrimageDetailPage() {
       const channel = values.channel === 'whatsapp' ? 'whatsapp' : 'email'
       const result = await submitEnquiry({
         name: values.name.trim(),
-        email: values.email.trim() || null,
+        email: values.email.trim(),
         phone: values.phone.trim(),
         subject: `Registration: ${pilgrimage.title}`,
         message: [values.message.trim(), '', `Page: ${window.location.href}`].join('\n'),
@@ -326,7 +323,9 @@ export default function PilgrimageDetailPage() {
 
         <aside className={styles.formCard} id="register">
           <div className={styles.formHeadRow}>
-            <h2>Register</h2>
+            <h2>
+              {`Register to take part in ${pilgrimage.title}${occasionWhen || whenLabel ? ` on ${occasionWhen || whenLabel}` : ''}`}
+            </h2>
             <SharePageBar title={pilgrimage.title} />
           </div>
           {pilgrimage.registrationOpen === false ? (
@@ -336,52 +335,55 @@ export default function PilgrimageDetailPage() {
           <form className={styles.form} onSubmit={handleSubmit} noValidate>
             <label className={styles.field}>
               <span>Full name</span>
-              <input value={values.name} onChange={handleChange('name')} />
+              <input value={values.name} onChange={handleChange('name')} autoComplete="name" />
               {errors.name ? <em>{errors.name}</em> : null}
             </label>
 
             <label className={styles.field}>
+              <span>Email</span>
+              <input type="email" value={values.email} onChange={handleChange('email')} autoComplete="email" />
+              {errors.email ? <em>{errors.email}</em> : null}
+            </label>
+
+            <label className={styles.field}>
               <span>Group size, dates, or message</span>
-              <textarea rows={4} value={values.message} onChange={handleChange('message')} />
+              <textarea rows={3} value={values.message} onChange={handleChange('message')} />
               {errors.message ? <em>{errors.message}</em> : null}
             </label>
 
-            <div className={styles.channelRow}>
-              <label className={values.channel === 'email' ? styles.channelActive : undefined}>
-                <input
-                  type="radio"
-                  name="channel"
-                  value="email"
-                  checked={values.channel === 'email'}
-                  onChange={handleChange('channel')}
-                />
-                Email
-              </label>
-              <label className={values.channel === 'whatsapp' ? styles.channelActive : undefined}>
-                <input
-                  type="radio"
-                  name="channel"
-                  value="whatsapp"
-                  checked={values.channel === 'whatsapp'}
-                  onChange={handleChange('channel')}
-                />
-                WhatsApp
-              </label>
-            </div>
+            <fieldset className={styles.channelField}>
+              <legend>Send your registration by</legend>
+              <div className={styles.channelRow}>
+                <label className={values.channel === 'email' ? styles.channelActive : undefined}>
+                  <input
+                    type="radio"
+                    name="channel"
+                    value="email"
+                    checked={values.channel === 'email'}
+                    onChange={handleChange('channel')}
+                  />
+                  Email
+                </label>
+                <label className={values.channel === 'whatsapp' ? styles.channelActive : undefined}>
+                  <input
+                    type="radio"
+                    name="channel"
+                    value="whatsapp"
+                    checked={values.channel === 'whatsapp'}
+                    onChange={handleChange('channel')}
+                  />
+                  WhatsApp
+                </label>
+              </div>
+            </fieldset>
 
-            {values.channel === 'email' ? (
-              <label className={styles.field}>
-                <span>Email</span>
-                <input type="email" value={values.email} onChange={handleChange('email')} />
-                {errors.email ? <em>{errors.email}</em> : null}
-              </label>
-            ) : (
+            {values.channel === 'whatsapp' ? (
               <label className={styles.field}>
                 <span>WhatsApp number</span>
-                <input value={values.phone} onChange={handleChange('phone')} />
+                <input value={values.phone} onChange={handleChange('phone')} autoComplete="tel" />
                 {errors.phone ? <em>{errors.phone}</em> : null}
               </label>
-            )}
+            ) : null}
 
             {charged ? (
               <>

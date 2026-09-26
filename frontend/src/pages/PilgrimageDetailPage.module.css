@@ -395,14 +395,15 @@
 }
 
 .formCard h2 {
-  font-size: 1.45rem;
+  font-size: 1.2rem;
+  line-height: 1.35;
   color: var(--color-navy);
   margin-bottom: 0.5rem;
 }
 
 .formHeadRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
   margin-bottom: 1rem;
@@ -410,6 +411,21 @@
 
 .formHeadRow h2 {
   margin: 0;
+  flex: 1;
+}
+
+.channelField {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.channelField legend {
+  margin-bottom: 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-navy);
 }
 
 .formIntro {
