@@ -132,7 +132,7 @@ export default function LanguagesManager({
 
   return (
     <div className={styles.card} style={{ marginBottom: '1rem' }}>
-      <h2 className={styles.langManagerTitle}>Site languages</h2>
+      <h2 className={styles.langManagerTitle}>Languages settings</h2>
       <p className={styles.muted} style={{ marginTop: 0 }}>
         Add a language to translate in admin. It starts as <strong>Draft</strong> (staff only). When
         the wording is ready, turn on <strong>Public</strong> so it appears in the language menu on

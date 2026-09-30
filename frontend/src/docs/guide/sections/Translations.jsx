@@ -14,8 +14,8 @@ export default function GuideTranslations() {
                     <li>Search for the page or the English word you want to change.</li>
                     <li>Type each language in its column. Cream cells are still empty.</li>
                     <li>
-                      Optionally set the <strong>Default language</strong> used for first-time visitors and as
-                      fallback.
+                      Open <strong>Languages settings</strong> to choose the default language, and which languages
+                      visitors can pick.
                     </li>
                     <li>
                       When the amber bar appears (“unsaved changes”), click <strong>Save translations</strong>.

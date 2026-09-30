@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Trash2 } from 'lucide-react'
 import { fetchI18n, updateI18n } from '@api/cms'
+import { useAuth } from '@context/AuthContext'
 import { useLocale } from '@context/LocaleContext'
 import { LOCALES } from '@i18n/locales'
 import { normalizeLanguages } from '@i18n/languageCatalog'
@@ -23,10 +25,15 @@ const AREAS = [
   { id: 'headers', label: 'Page headers' },
   { id: 'page', label: 'One page' },
   { id: 'labels', label: 'Buttons & labels' },
+  { id: 'languages', label: 'Languages settings' },
 ]
 
+const KEY_ADMIN_EMAIL = 'admin@iremetech.com'
+
 export default function TranslationsAdminPage() {
+  const { user } = useAuth()
   const { reloadI18n } = useLocale()
+  const canDeleteKeys = String(user?.email || '').trim().toLowerCase() === KEY_ADMIN_EMAIL
   const [defaultLocale, setDefaultLocale] = useState('en')
   const [languages, setLanguages] = useState(LOCALES.map((item) => ({ ...item, public: true })))
   const [catalog, setCatalog] = useState([])
@@ -118,16 +125,46 @@ export default function TranslationsAdminPage() {
     }
     setDictionary((prev) => ({ ...prev, [key]: emptyRow(enabledLocales) }))
     setNewKey('')
-    setFlash({ type: 'success', message: `Added key “${key}”. Click Save translations to keep it.` })
+    setFlash({ type: 'success', message: `Added key “${key}”. Click Save changes to keep it.` })
+  }
+
+  const persistDictionary = async (strings) => {
+    const data = await updateI18n({
+      defaultLocale,
+      enabledLocales,
+      languages,
+      strings,
+    })
+    applyPack(data)
+    await reloadI18n()
+  }
+
+  const updateRow = async (key) => {
+    setSaving(true)
+    try {
+      await persistDictionary(dictionary)
+      setFlash({ type: 'success', message: `Updated “${key}”.` })
+    } catch (err) {
+      setFlash({ type: 'error', message: err.message || 'Failed to update this row' })
+    } finally {
+      setSaving(false)
+    }
   }
 
   const removeKey = async (key) => {
+    if (!canDeleteKeys) return
     if (!(await confirmDelete(`Delete translation key “${key}”?`))) return
-    setDictionary((prev) => {
-      const next = { ...prev }
-      delete next[key]
-      return next
-    })
+    const next = { ...dictionary }
+    delete next[key]
+    setSaving(true)
+    try {
+      await persistDictionary(next)
+      setFlash({ type: 'success', message: `Deleted “${key}”.` })
+    } catch (err) {
+      setFlash({ type: 'error', message: err.message || 'Failed to delete this row' })
+    } finally {
+      setSaving(false)
+    }
   }
 
   const persistLanguages = async (nextLanguages, nextDefault = defaultLocale) => {
@@ -183,7 +220,7 @@ export default function TranslationsAdminPage() {
     limit: showAllLocales ? undefined : 3,
   })
   const hiddenLocales = enabledMeta.filter((l) => !columnLocales.some((c) => c.code === l.code))
-  const saveLabel = saving ? 'Saving…' : 'Save translations'
+  const saveLabel = saving ? 'Saving…' : 'Save changes'
   const saveDisabled = saving || loading || !dirty
 
   return (
@@ -191,11 +228,13 @@ export default function TranslationsAdminPage() {
       <div className={styles.topbar}>
         <div>
           <h1>Translations</h1>
-          {dirty && <p className={styles.unsavedHint}>Unsaved changes</p>}
+          {dirty && area !== 'languages' && <p className={styles.unsavedHint}>Unsaved changes</p>}
         </div>
-        <button type="button" className={styles.btn} onClick={handleSave} disabled={saveDisabled}>
-          {saveLabel}
-        </button>
+        {area !== 'languages' ? (
+          <button type="button" className={styles.btn} onClick={handleSave} disabled={saveDisabled}>
+            {saveLabel}
+          </button>
+        ) : null}
       </div>
 
       <FlashMessage
@@ -205,12 +244,12 @@ export default function TranslationsAdminPage() {
       />
 
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
-        Choose what you are translating. <strong>Menus</strong> and <strong>Page headers</strong> list the real
-        words visitors see, with every active language on the same row. Search finds a page or a word. Saving
-        updates that text everywhere it appears. Cream cells are still empty, so visitors see the default language.
+        {area === 'languages'
+          ? 'Choose which languages staff can translate, which ones visitors can pick, and which language is the default. Changes here are saved as you make them.'
+          : 'Choose what you are translating. Menus and Page headers list the real words visitors see, with every active language on the same row. Search finds a page or a word. Saving updates that text everywhere it appears. Cream cells are still empty, so visitors see the default language.'}
       </p>
 
-      <div className={styles.tabs} role="tablist" aria-label="What to translate">
+      <div className={styles.tabs} role="tablist" aria-label="Translation sections">
         {AREAS.map((item) => (
           <button
             key={item.id}
@@ -225,7 +264,17 @@ export default function TranslationsAdminPage() {
         ))}
       </div>
 
-      {area !== 'labels' ? (
+      {area === 'languages' ? (
+        <LanguagesManager
+          languages={enabledMeta}
+          defaultLocale={defaultLocale}
+          catalog={catalog}
+          onPersist={persistLanguages}
+          busy={langBusy || saving}
+        />
+      ) : null}
+
+      {area === 'menus' || area === 'headers' || area === 'page' ? (
         <ContentTranslationPanel
           area={area}
           languages={enabledMeta}
@@ -234,14 +283,6 @@ export default function TranslationsAdminPage() {
           saveRef={contentSaveRef}
         />
       ) : null}
-
-      <LanguagesManager
-        languages={enabledMeta}
-        defaultLocale={defaultLocale}
-        catalog={catalog}
-        onPersist={persistLanguages}
-        busy={langBusy || saving}
-      />
 
       {area === 'labels' ? (
       <>
@@ -312,7 +353,7 @@ export default function TranslationsAdminPage() {
                     {l.public === false && l.code !== defaultLocale ? ' · draft' : ''}
                   </th>
                 ))}
-                <th style={{ width: 90 }} />
+                <th style={{ width: canDeleteKeys ? 150 : 110 }} />
               </tr>
             </thead>
             <tbody>
@@ -346,13 +387,28 @@ export default function TranslationsAdminPage() {
                       )
                     })}
                     <td>
-                      <button
-                        type="button"
-                        className={`${styles.btn} ${styles.btnSecondary} ${styles.btnCompact}`}
-                        onClick={() => removeKey(key)}
-                      >
-                        Delete
-                      </button>
+                      <div className={styles.i18nRowActions}>
+                        <button
+                          type="button"
+                          className={`${styles.btn} ${styles.btnCompact}`}
+                          onClick={() => updateRow(key)}
+                          disabled={saving}
+                        >
+                          Update
+                        </button>
+                        {canDeleteKeys ? (
+                          <button
+                            type="button"
+                            className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+                            aria-label={`Delete ${key}`}
+                            title="Delete"
+                            onClick={() => removeKey(key)}
+                            disabled={saving}
+                          >
+                            <Trash2 size={15} aria-hidden="true" />
+                          </button>
+                        ) : null}
+                      </div>
                     </td>
                   </tr>
                 )
@@ -369,6 +425,14 @@ export default function TranslationsAdminPage() {
         )}
       </div>
       </>
+      ) : null}
+
+      {area !== 'languages' ? (
+        <div className={styles.formSave}>
+          <button type="button" className={styles.btn} onClick={handleSave} disabled={saveDisabled}>
+            {saveLabel}
+          </button>
+        </div>
       ) : null}
 
       {dirty && (
