@@ -1,4 +1,71 @@
+import { pathForSectionKey } from '@data/pages/registry'
+import { pageLabel } from './menuPages'
 import { mergedSectionContent } from './pageForm'
+
+const GROUP_ORDER = [
+  'Our Lady of Kibeho',
+  'The Shrine',
+  'Pilgrimage',
+  'Spirituality',
+  'News',
+  'Support the Shrine',
+  'Homepage',
+  'Other pages',
+]
+
+function stripHtml(value) {
+  return String(value || '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+export function pageGroup(key) {
+  if (String(key || '').startsWith('home.')) return 'Homepage'
+  const path = pathForSectionKey(key) || ''
+  if (path === '/our-lady' || path.startsWith('/our-lady/')) return 'Our Lady of Kibeho'
+  if (path === '/shrine' || path.startsWith('/shrine/') || path === '/faq') return 'The Shrine'
+  if (path === '/pilgrimage' || path.startsWith('/pilgrimage/') || path === '/hotels' || path === '/pilgrimages') {
+    return 'Pilgrimage'
+  }
+  if (path === '/spirituality' || path.startsWith('/spirituality/')) return 'Spirituality'
+  if (path === '/news' || path.startsWith('/news/') || path === '/gallery' || path === '/broadcast') return 'News'
+  if (path === '/support' || path.startsWith('/support/') || path === '/contact') return 'Support the Shrine'
+  return 'Other pages'
+}
+
+export function describePage(key, section, locale = 'en') {
+  const path = pathForSectionKey(key) || ''
+  const menuName = pageLabel(path, locale)
+  const source = mergedSectionContent(key, section?.content || {})
+  const heading = stripHtml(source.title || source.heading || '')
+  let name = ''
+  if (!String(key).startsWith('home.') && menuName) name = menuName
+  else if (heading && heading.length <= 80) name = heading
+  else {
+    name = String(section?.label || '')
+      .replace(/^Home\s+[—–-]\s+/i, '')
+      .replace(/\s+Index$/i, '')
+      .trim()
+  }
+  if (!name) name = heading || key
+  return { key, name, group: pageGroup(key), path }
+}
+
+export function groupPages(pages, locale = 'en') {
+  const buckets = new Map(GROUP_ORDER.map((name) => [name, []]))
+  Object.keys(pages || {}).forEach((key) => {
+    const described = describePage(key, pages[key], locale)
+    if (!buckets.has(described.group)) buckets.set(described.group, [])
+    buckets.get(described.group).push(described)
+  })
+  return [...buckets.entries()]
+    .map(([name, items]) => ({
+      name,
+      items: items.sort((a, b) => a.name.localeCompare(b.name)),
+    }))
+    .filter((group) => group.items.length)
+}
 
 const SKIP_KEYS = new Set([
   'path',
@@ -73,8 +140,6 @@ const TEXT_KEYS = new Set([
   'guidelinesTitle',
   'footerImageAlt',
 ])
-
-const ALWAYS = new Set(['title', 'heading', 'subtitle', 'subline', 'intro', 'eyebrow'])
 
 const FIELD_LABELS = {
   title: 'Title',
@@ -211,14 +276,13 @@ export function collectPageFields(content, key) {
   const fields = []
   const seen = new Set()
 
-  ;['eyebrow', 'title', 'heading', 'subtitle', 'subline', 'intro', 'text'].forEach((field) => {
-    if (field === 'heading' && merged.heading === merged.title) return
-    if (field === 'subline' && merged.subline === merged.subtitle) return
-    if (field === 'text' && merged.text === merged.intro) return
-    if (typeof merged[field] === 'string') {
-      pushField(fields, seen, field, FIELD_LABELS[field], 'Header', merged[field], ALWAYS.has(field))
-    }
+  ;['title', 'subtitle', 'intro'].forEach((field) => {
+    const value = typeof merged[field] === 'string' ? merged[field] : ''
+    pushField(fields, seen, field, FIELD_LABELS[field], 'Header', value, true)
   })
+  if (typeof merged.eyebrow === 'string' && merged.eyebrow.trim()) {
+    pushField(fields, seen, 'eyebrow', FIELD_LABELS.eyebrow, 'Header', merged.eyebrow, true)
+  }
 
   ;(merged.blocks || []).forEach((block, index) => {
     const group = `${BLOCK_NAMES[block?.type] || 'Section'} ${index + 1}`

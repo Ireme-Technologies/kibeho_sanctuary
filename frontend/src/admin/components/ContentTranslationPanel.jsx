@@ -12,7 +12,7 @@ import {
 } from '@data/navigation'
 import { pathForSectionKey } from '@data/pages/registry'
 import { relatedAdminCruds } from '../pageForm'
-import { collectPageFields, pageFieldText, writePageFieldValue } from '../pageTranslationFields'
+import { collectPageFields, describePage, groupPages, pageFieldText, writePageFieldValue } from '../pageTranslationFields'
 import {
   ensureNavIds,
   findNavNode,
@@ -59,7 +59,8 @@ function writePageField(section, field, locale, value, defaultLocale) {
 }
 
 function pageHaystack(section, key, locales, defaultLocale) {
-  const parts = [key, section?.label || '', pathForSectionKey(key) || '']
+  const described = describePage(key, section, defaultLocale)
+  const parts = [key, section?.label || '', described.name, described.group, pathForSectionKey(key) || '']
   const { fields } = collectPageFields(section?.content, key)
   fields.forEach((field) => {
     parts.push(field.label, field.group, field.source)
@@ -100,6 +101,7 @@ function menuSnapshot(menus) {
 
 function PageDetailTranslations({ pageKey, section, locales, defaultLocale, onChange }) {
   const { source, fields } = useMemo(() => collectPageFields(section?.content, pageKey), [section?.content, pageKey])
+  const pageName = describePage(pageKey, section, defaultLocale).name
   const records = relatedAdminCruds(pageKey)
   const groups = []
   fields.forEach((field) => {
@@ -110,6 +112,9 @@ function PageDetailTranslations({ pageKey, section, locales, defaultLocale, onCh
 
   return (
     <>
+      <p className={styles.muted}>
+        Translating <strong>{pageName}</strong>. Every section and label on this page is below.
+      </p>
       {records.length ? (
         <div className={styles.card} style={{ marginBottom: '1rem' }}>
           <h2 className={styles.sectionTitle}>Records listed on this page</h2>
@@ -340,7 +345,7 @@ export default function ContentTranslationPanel({
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={area === 'menus' ? 'Pilgrimage, Umwibutso, /shrine…' : 'Spirituality, header title, /pilgrimage…'}
+            placeholder={area === 'menus' ? 'Pilgrimage, Umwibutso, /shrine…' : 'FAQ, accommodation, a word from the page…'}
           />
         </div>
       </div>
@@ -419,8 +424,8 @@ export default function ContentTranslationPanel({
               {pageKeys.map((key) => (
                 <tr key={key}>
                   <td>
-                    <strong>{pages[key]?.label || key}</strong>
-                    <div className={styles.menuHint}>{pathForSectionKey(key) || key}</div>
+                    <strong>{describePage(key, pages[key], defaultLocale).name}</strong>
+                    <div className={styles.menuHint}>{describePage(key, pages[key], defaultLocale).group}</div>
                   </td>
                   {locales.map((locale) => {
                     const value = readPageField(pages[key], 'title', locale.code, defaultLocale)
@@ -455,10 +460,17 @@ export default function ContentTranslationPanel({
           <div className={styles.field}>
             <label>Page</label>
             <select value={selectedPageKey} onChange={(e) => setPageKey(e.target.value)}>
-              {pageKeys.map((key) => (
-                <option key={key} value={key}>
-                  {(pages[key]?.label || key) + (pathForSectionKey(key) ? ` — ${pathForSectionKey(key)}` : '')}
-                </option>
+              {groupPages(
+                Object.fromEntries(pageKeys.map((key) => [key, pages[key]])),
+                defaultLocale,
+              ).map((group) => (
+                <optgroup key={group.name} label={group.name}>
+                  {group.items.map((item) => (
+                    <option key={item.key} value={item.key}>
+                      {item.name}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </div>
