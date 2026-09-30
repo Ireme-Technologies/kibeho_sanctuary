@@ -375,6 +375,14 @@ export default function CmsPage() {
       })
     : blocks
   const links = data.links?.length ? data.links : fallback.links || []
+  const coverForLink = (path) => {
+    const clean = String(path || '').split(/[?#]/)[0]
+    const linkKey =
+      cmsKeyForPath(clean, locale, pages, defaultLocale) || sectionKeyForPath(clean)
+    if (!linkKey || linkKey === key) return resolveHeaderImage('')
+    const linked = mergePageContent(getPageFallback(linkKey) || {}, section(linkKey, {}))
+    return resolveHeaderImage(linked.heroImage || linked.backgroundImage || linked.image || '')
+  }
   const isFeasts = key === 'pilgrimage.annual-celebrations'
   const feastEvents = isFeasts ? upcomingPilgrimages || [] : []
   const feastLines = isFeasts
@@ -557,11 +565,23 @@ export default function CmsPage() {
 
         {links.length > 0 ? (
           <nav className={styles.linkGrid} aria-label="Section pages">
-            {links.map((link) => (
-              <Link key={link.path} to={normalizeGiveNavPath(link.path)} className={styles.linkCard}>
-                {displayTitleLabel(link.label, locale)}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const title = displayTitleLabel(link.label, locale)
+              const image = coverForLink(link.path)
+              return (
+                <Link key={link.path} to={normalizeGiveNavPath(link.path)} className={styles.linkCard}>
+                  <span className={styles.linkMedia}>
+                    {image ? <img src={image} alt="" /> : null}
+                  </span>
+                  <span className={styles.linkBody}>
+                    <span className={styles.linkTitle}>{title}</span>
+                    <span className={styles.linkMore} aria-hidden="true">
+                      {t('viewMore')}
+                    </span>
+                  </span>
+                </Link>
+              )
+            })}
           </nav>
         ) : null}
 
