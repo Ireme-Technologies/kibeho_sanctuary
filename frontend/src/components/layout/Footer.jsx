@@ -69,22 +69,43 @@ export default function Footer() {
               <span className={styles.brandTag}>{t('brand.diocese')}</span>
             </span>
           </LocalizedNavLink>
-          <div className={styles.socials}>
-            {socials.map((social, index) => {
-              const Icon = resolveSocialIcon(social)
-              return (
-                <a
-                  key={`${social.label || social.href}-${index}`}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label || 'Social link'}
-                  className={styles.socialIcon}
+          {socials.length ? (
+            <div className={styles.socials}>
+              {socials.map((social, index) => {
+                const Icon = resolveSocialIcon(social)
+                return (
+                  <a
+                    key={`${social.label || social.href}-${index}`}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label || 'Social link'}
+                    className={styles.socialIcon}
+                  >
+                    <Icon size={16} />
+                  </a>
+                )
+              })}
+            </div>
+          ) : null}
+          <div className={styles.langBlock}>
+            <p className={styles.langLabel} id="footer-lang">
+              {t('language')}
+            </p>
+            <div className={styles.langRow} role="group" aria-labelledby="footer-lang">
+              {locales.map((l) => (
+                <button
+                  key={l.code}
+                  type="button"
+                  className={styles.langChip}
+                  aria-pressed={locale === l.code}
+                  onClick={() => switchLocale(l.code)}
                 >
-                  <Icon size={16} />
-                </a>
-              )
-            })}
+                  <span aria-hidden="true">{l.flag}</span>
+                  {l.code.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -140,19 +161,6 @@ export default function Footer() {
               <a href={`mailto:${company.email}`}>{company.email}</a>
             </li>
           </ul>
-          <div className={styles.langRow} role="group" aria-label={t('language')}>
-            {locales.map((l) => (
-              <button
-                key={l.code}
-                type="button"
-                className={styles.langChip}
-                aria-pressed={locale === l.code}
-                onClick={() => switchLocale(l.code)}
-              >
-                {l.flag} {l.code.toUpperCase()}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 

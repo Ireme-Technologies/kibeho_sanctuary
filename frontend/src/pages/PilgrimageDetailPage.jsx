@@ -174,13 +174,33 @@ export default function PilgrimageDetailPage() {
       <div className={`container ${styles.layout} ${hasRecord ? styles.layoutRich : styles.layoutSimple}`}>
         <article className={styles.story}>
           {leadImage ? (
-            <figure className={styles.cover}>
-              <img src={leadImage} alt="" />
-            </figure>
-          ) : null}
-          <h1>{pilgrimage.title}</h1>
-          <ContentLocaleNotice translations={pilgrimage.translations} />
-          {facts.length ? <p className={styles.facts}>{facts.join(' · ')}</p> : null}
+            <>
+              <figure className={styles.cover}>
+                <img src={leadImage} alt="" />
+              </figure>
+              <h1>{pilgrimage.title}</h1>
+              <ContentLocaleNotice translations={pilgrimage.translations} />
+              {facts.length ? (
+                <ul className={styles.facts}>
+                  {facts.map((fact) => (
+                    <li key={fact}>{fact}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </>
+          ) : (
+            <div className={styles.storyHead}>
+              <h1>{pilgrimage.title}</h1>
+              {facts.length ? (
+                <ul className={styles.facts}>
+                  {facts.map((fact) => (
+                    <li key={fact}>{fact}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          )}
+          {leadImage ? null : <ContentLocaleNotice translations={pilgrimage.translations} />}
           {pilgrimage.lead ? <p className={styles.lead}>{pilgrimage.lead}</p> : null}
           {pilgrimage.description ? <RichText html={pilgrimage.description} className={styles.body} /> : null}
           {showOccasion ? (
@@ -323,9 +343,12 @@ export default function PilgrimageDetailPage() {
 
         <aside className={styles.formCard} id="register">
           <div className={styles.formHeadRow}>
-            <h2>
-              {`Register to take part in ${pilgrimage.title}${occasionWhen || whenLabel ? ` on ${occasionWhen || whenLabel}` : ''}`}
-            </h2>
+            <div className={styles.formHeadCopy}>
+              <h2>{t('register')}</h2>
+              <p className={styles.formLead}>
+                {`Take part in ${pilgrimage.title}${occasionWhen || whenLabel ? ` on ${occasionWhen || whenLabel}` : ''}.`}
+              </p>
+            </div>
             <SharePageBar title={pilgrimage.title} />
           </div>
           {pilgrimage.registrationOpen === false ? (

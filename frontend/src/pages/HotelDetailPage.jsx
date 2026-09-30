@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowRight, ExternalLink, Globe, Mail, Phone } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Globe, Mail, Phone } from 'lucide-react'
 import { fetchLodging, fetchProject } from '@api/cms'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
@@ -18,23 +18,11 @@ function digits(value) {
   return String(value || '').replace(/\D/g, '')
 }
 
-function isExternal(url) {
-  return /^https?:\/\//i.test(url || '')
-}
-
-function ActionLink({ href, className, children }) {
-  if (isExternal(href)) {
-    return (
-      <a href={href} className={className} target="_blank" rel="noopener noreferrer">
-        {children}
-      </a>
-    )
-  }
-  return (
-    <Link to={href} className={className}>
-      {children}
-    </Link>
-  )
+function websiteHref(url) {
+  const value = String(url || '').trim()
+  if (!value) return ''
+  if (/^https?:\/\//i.test(value)) return value
+  return `https://${value}`
 }
 
 export default function HotelDetailPage() {
@@ -83,24 +71,21 @@ export default function HotelDetailPage() {
   const amenities = resolveLodgingItems(item.amenities, LODGING_AMENITIES, t)
   const services = resolveLodgingItems(item.services, LODGING_SERVICES, t)
   const mainPhoto = photos[activeIndex] || photos[0]
-  const thumbs = photos.slice(0, 3)
-  const website = String(item.websiteUrl || '').trim()
-  const bookUrl = String(item.bookingUrl || '').trim()
+  const website = websiteHref(item.websiteUrl)
   const phone = String(item.phone || '').trim()
   const email = String(item.email || '').trim()
-  const hasContact = Boolean(website || bookUrl || phone || email)
+  const about = item.description || cardExcerpt(item)
 
   return (
     <div className={styles.page}>
       <div className={`container ${styles.inner}`}>
-        <p className={styles.crumb}>
-          <Link to="/pilgrimage/accommodation">{t('accommodation')}</Link>
-          {item.category ? <span> · {item.category}</span> : null}
-        </p>
-        <h1 className={styles.title}>{displayFacilityName(item.title)}</h1>
+        <Link to="/pilgrimage/accommodation" className={styles.back}>
+          <ArrowLeft size={16} aria-hidden="true" />
+          {t('accommodation')}
+        </Link>
         <ContentLocaleNotice translations={item.translations} />
 
-        <div className={`${styles.topGrid} ${amenities.length ? '' : styles.topGridSolo}`}>
+        <div className={styles.topGrid}>
           <div className={styles.gallery}>
             {mainPhoto ? (
               <button
@@ -114,9 +99,9 @@ export default function HotelDetailPage() {
             ) : (
               <div className={styles.mainPhoto} />
             )}
-            {thumbs.length > 1 ? (
+            {photos.length > 1 ? (
               <div className={styles.thumbs} role="group" aria-label="Photo thumbnails">
-                {thumbs.map((src, index) => (
+                {photos.map((src, index) => (
                   <button
                     key={src}
                     type="button"
@@ -130,36 +115,72 @@ export default function HotelDetailPage() {
                 ))}
               </div>
             ) : null}
-            {photos.length ? (
-              <button
-                type="button"
-                className={styles.viewAll}
-                onClick={() => setLightboxOpen(true)}
-              >
-                {t('viewAllPhotos')} <ArrowRight size={14} />
-              </button>
-            ) : null}
           </div>
 
-          {amenities.length ? (
-            <aside className={styles.amenitiesCard}>
-              <h2>{t('amenities')}</h2>
-              <ul className={styles.amenityGrid}>
-                {amenities.map((entry) => (
-                  <li key={entry.id}>
-                    <LodgingIcon id={entry.id} size={18} />
-                    <span>{entry.label}</span>
-                  </li>
-                ))}
-              </ul>
-            </aside>
-          ) : null}
+          <aside className={styles.summary}>
+            <p className={styles.eyebrow}>{item.category || t('accommodation')}</p>
+            <h1 className={styles.title}>{displayFacilityName(item.title)}</h1>
+
+            {phone || email ? (
+              <div className={styles.contactBox}>
+                {phone ? (
+                  <a className={styles.contactLine} href={`tel:${digits(phone)}`}>
+                    <Phone size={16} aria-hidden="true" />
+                    <span>
+                      <span className={styles.contactLabel}>{t('phone')}</span>
+                      {phone}
+                    </span>
+                  </a>
+                ) : null}
+                {email ? (
+                  <a className={styles.contactLine} href={`mailto:${email}`}>
+                    <Mail size={16} aria-hidden="true" />
+                    <span>
+                      <span className={styles.contactLabel}>{t('email')}</span>
+                      {email}
+                    </span>
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
+
+            {website ? (
+              <a
+                className={styles.websiteBtn}
+                href={website}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Globe size={16} aria-hidden="true" />
+                {t('visitWebsite')}
+              </a>
+            ) : null}
+          </aside>
         </div>
 
-        {item.description ? (
-          <RichText html={item.description} className={styles.description} />
-        ) : cardExcerpt(item) ? (
-          <p className={styles.description}>{cardExcerpt(item)}</p>
+        {about ? (
+          <section className={styles.about} aria-labelledby="hotel-about-heading">
+            <h2 id="hotel-about-heading">{t('aboutStay')}</h2>
+            {item.description ? (
+              <RichText html={item.description} className={styles.aboutText} />
+            ) : (
+              <p className={styles.aboutText}>{about}</p>
+            )}
+          </section>
+        ) : null}
+
+        {amenities.length ? (
+          <section className={styles.amenities} aria-labelledby="hotel-amenities-heading">
+            <h2 id="hotel-amenities-heading">{t('amenities')}</h2>
+            <ul className={styles.amenityGrid}>
+              {amenities.map((entry) => (
+                <li key={entry.id}>
+                  <LodgingIcon id={entry.id} size={18} />
+                  <span>{entry.label}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
         ) : null}
 
         {services.length ? (
@@ -175,55 +196,6 @@ export default function HotelDetailPage() {
                 </article>
               ))}
             </div>
-          </section>
-        ) : null}
-
-        {hasContact ? (
-          <section className={styles.contactCard} aria-labelledby="hotel-contact-heading">
-            <h2 id="hotel-contact-heading">{t('reservationsContact')}</h2>
-            {website || bookUrl ? (
-              <div className={styles.ctaButtons}>
-                {website ? (
-                  <ActionLink href={website} className={styles.btnGhost}>
-                    <Globe size={16} aria-hidden="true" />
-                    {t('visitWebsite')}
-                    {isExternal(website) ? <ExternalLink size={14} aria-hidden="true" /> : null}
-                  </ActionLink>
-                ) : null}
-                {bookUrl ? (
-                  <ActionLink href={bookUrl} className={styles.btnSolid}>
-                    {t('bookDirectly')}
-                    {isExternal(bookUrl) ? <ExternalLink size={14} aria-hidden="true" /> : null}
-                  </ActionLink>
-                ) : null}
-              </div>
-            ) : null}
-            {phone || email ? (
-              <dl className={styles.contactFacts}>
-                {phone ? (
-                  <div className={styles.contactFact}>
-                    <dt>
-                      <Phone size={14} aria-hidden="true" />
-                      {t('phone')}
-                    </dt>
-                    <dd>
-                      <a href={`tel:${digits(phone)}`}>{phone}</a>
-                    </dd>
-                  </div>
-                ) : null}
-                {email ? (
-                  <div className={styles.contactFact}>
-                    <dt>
-                      <Mail size={14} aria-hidden="true" />
-                      {t('email')}
-                    </dt>
-                    <dd>
-                      <a href={`mailto:${email}`}>{email}</a>
-                    </dd>
-                  </div>
-                ) : null}
-              </dl>
-            ) : null}
           </section>
         ) : null}
 

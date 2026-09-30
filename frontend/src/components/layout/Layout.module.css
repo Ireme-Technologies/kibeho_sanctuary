@@ -6,9 +6,15 @@
 }
 
 .main {
-  flex: 1;
+  flex: 0 0 auto;
   width: 100%;
   min-width: 0;
+}
+
+/* Short pages pin the footer to the bottom. The space stays below the
+   explore band, so it does not open a gap under the page content. */
+.page > :last-child {
+  margin-top: auto;
 }
 
 /* Non-hero pages: navbar is solid from the start, so push content down

@@ -18,7 +18,7 @@ export default function HomeSupportProjects() {
     },
     section('home.supportProjects', {}),
   )
-  const [parallaxRef, parallaxOffset] = useParallax(0.18)
+  const [parallaxRef, parallaxOffset] = useParallax(0.22)
   const [inViewRef, inView] = useInView(0.12)
   const cards = homeGiveWays(offerings)
   const backgroundImage = resolveHeaderImage(meta.backgroundImage, '/images/sanctuary/hills.jpg')
@@ -31,10 +31,11 @@ export default function HomeSupportProjects() {
         <div
           className={styles.bgImage}
           style={{
-            backgroundImage: `linear-gradient(165deg, rgba(18, 40, 71, 0.88), rgba(26, 54, 93, 0.78)), url(${backgroundImage})`,
-            transform: `translateY(${parallaxOffset}px) scale(1.08)`,
+            backgroundImage: `url(${backgroundImage})`,
+            transform: `translate3d(0, ${parallaxOffset}px, 0)`,
           }}
         />
+        <div className={styles.overlay} />
       </div>
 
       <div className={`container ${styles.inner} ${inView ? styles.visible : ''}`} ref={inViewRef}>
