@@ -11,6 +11,8 @@ import {
   stripPrayerIntentionsFromNav,
 } from '@data/navigation'
 import { pathForSectionKey } from '@data/pages/registry'
+import { relatedAdminCruds } from '../pageForm'
+import { collectPageFields, pageFieldText, writePageFieldValue } from '../pageTranslationFields'
 import {
   ensureNavIds,
   findNavNode,
@@ -58,9 +60,11 @@ function writePageField(section, field, locale, value, defaultLocale) {
 
 function pageHaystack(section, key, locales, defaultLocale) {
   const parts = [key, section?.label || '', pathForSectionKey(key) || '']
-  locales.forEach((locale) => {
-    PAGE_FIELDS.forEach((field) => {
-      parts.push(readPageField(section, field.key, locale.code, defaultLocale))
+  const { fields } = collectPageFields(section?.content, key)
+  fields.forEach((field) => {
+    parts.push(field.label, field.group, field.source)
+    locales.forEach((locale) => {
+      parts.push(pageFieldText(section, field.path, locale.code, defaultLocale, field.source))
     })
   })
   return parts.join(' ').toLowerCase()
@@ -92,6 +96,99 @@ function menuSnapshot(menus) {
     footerLinks: persistNavItems(menus.footerLinks),
     footerServiceLinks: persistNavItems(menus.footerServiceLinks),
   })
+}
+
+function PageDetailTranslations({ pageKey, section, locales, defaultLocale, onChange }) {
+  const { source, fields } = useMemo(() => collectPageFields(section?.content, pageKey), [section?.content, pageKey])
+  const records = relatedAdminCruds(pageKey)
+  const groups = []
+  fields.forEach((field) => {
+    const existing = groups.find((group) => group.name === field.group)
+    if (existing) existing.fields.push(field)
+    else groups.push({ name: field.group, fields: [field] })
+  })
+
+  return (
+    <>
+      {records.length ? (
+        <div className={styles.card} style={{ marginBottom: '1rem' }}>
+          <h2 className={styles.sectionTitle}>Records listed on this page</h2>
+          <p className={styles.muted}>
+            These items are edited on their own screen. Open it to translate each record. The page editor keeps its
+            own language fields as well.
+          </p>
+          <div className={styles.translationRecords}>
+            {records.map((record) => (
+              <div key={record.to} className={styles.translationRecord}>
+                <Link to={record.to} target="_blank" rel="noreferrer">
+                  {record.label}
+                </Link>
+                <p>{record.hint}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {!groups.length ? (
+        <p className={styles.muted}>This page has no text of its own to translate here.</p>
+      ) : null}
+
+      {groups.map((group) => (
+        <section key={group.name} className={`${styles.card} ${styles.i18nTable}`} style={{ marginBottom: '1rem' }}>
+          <h2 className={styles.sectionTitle}>{group.name}</h2>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Label</th>
+                {locales.map((locale) => (
+                  <th key={locale.code}>
+                    {locale.flag} {locale.nativeLabel || locale.label}
+                    {locale.code === defaultLocale ? ' · default' : ''}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {group.fields.map((field) => (
+                <tr key={field.path}>
+                  <td>
+                    <strong>{field.label}</strong>
+                  </td>
+                  {locales.map((locale) => {
+                    const value = pageFieldText(section, field.path, locale.code, defaultLocale, field.source)
+                    const empty = !String(value).trim()
+                    const placeholder =
+                      locale.code === defaultLocale ? field.label : field.source || 'Empty — uses the default text'
+                    return (
+                      <td key={locale.code}>
+                        {field.multiline ? (
+                          <textarea
+                            rows={4}
+                            className={empty && locale.code !== defaultLocale ? styles.i18nEmpty : undefined}
+                            value={value}
+                            placeholder={placeholder}
+                            onChange={(e) => onChange(field.path, locale.code, e.target.value, source)}
+                          />
+                        ) : (
+                          <input
+                            className={empty && locale.code !== defaultLocale ? styles.i18nEmpty : undefined}
+                            value={value}
+                            placeholder={placeholder}
+                            onChange={(e) => onChange(field.path, locale.code, e.target.value, source)}
+                          />
+                        )}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      ))}
+    </>
+  )
 }
 
 export default function ContentTranslationPanel({
@@ -353,8 +450,9 @@ export default function ContentTranslationPanel({
       ) : null}
 
       {area === 'page' ? (
-        <div className={`${styles.card} ${styles.i18nTable}`}>
-          <div className={styles.field} style={{ marginBottom: '1rem' }}>
+        <>
+        <div className={styles.card} style={{ marginBottom: '1rem' }}>
+          <div className={styles.field}>
             <label>Page</label>
             <select value={selectedPageKey} onChange={(e) => setPageKey(e.target.value)}>
               {pageKeys.map((key) => (
@@ -364,62 +462,31 @@ export default function ContentTranslationPanel({
               ))}
             </select>
           </div>
+        </div>
           {selectedPageKey && pages[selectedPageKey] ? (
-            <>
-              <p className={styles.muted}>
-                These are the header and introduction for this page. Longer body text stays in{' '}
-                <Link to="/admin/pages">Pages</Link>.
-              </p>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>Field</th>
-                    {locales.map((locale) => (
-                      <th key={locale.code}>
-                        {locale.flag} {locale.nativeLabel || locale.label}
-                        {locale.code === defaultLocale ? ' · default' : ''}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {PAGE_FIELDS.map((field) => (
-                    <tr key={field.key}>
-                      <td>
-                        <strong>{field.label}</strong>
-                      </td>
-                      {locales.map((locale) => {
-                        const value = readPageField(pages[selectedPageKey], field.key, locale.code, defaultLocale)
-                        const long = field.key === 'intro'
-                        return (
-                          <td key={locale.code}>
-                            {long ? (
-                              <textarea
-                                rows={4}
-                                className={!String(value).trim() && locale.code !== defaultLocale ? styles.i18nEmpty : undefined}
-                                value={value}
-                                onChange={(e) => patchPage(selectedPageKey, field.key, locale.code, e.target.value)}
-                              />
-                            ) : (
-                              <input
-                                className={!String(value).trim() && locale.code !== defaultLocale ? styles.i18nEmpty : undefined}
-                                value={value}
-                                placeholder={locale.code === defaultLocale ? field.label : 'Empty — uses the default text'}
-                                onChange={(e) => patchPage(selectedPageKey, field.key, locale.code, e.target.value)}
-                              />
-                            )}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>
+            <PageDetailTranslations
+              pageKey={selectedPageKey}
+              section={pages[selectedPageKey]}
+              locales={locales}
+              defaultLocale={defaultLocale}
+              onChange={(path, locale, value, source) =>
+                setPages((current) => ({
+                  ...current,
+                  [selectedPageKey]: writePageFieldValue(
+                    current[selectedPageKey],
+                    path,
+                    value,
+                    locale,
+                    defaultLocale,
+                    source,
+                  ),
+                }))
+              }
+            />
           ) : (
             <p className={styles.muted}>No page matches that search.</p>
           )}
-        </div>
+        </>
       ) : null}
 
       {error ? <p className={styles.error}>{error}</p> : null}

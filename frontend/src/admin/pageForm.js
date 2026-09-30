@@ -121,6 +121,13 @@ export function relatedAdminCruds(key) {
         hint: 'Add, edit, or remove road directions from different parts of Rwanda. They appear above the map on this page.',
       },
     ],
+    'home.todaySchedule': [
+      {
+        to: '/admin/mass-schedules',
+        label: 'Manage mass schedules',
+        hint: 'Weekly Mass and prayer times. Open this screen to translate each row.',
+      },
+    ],
     'shrine.schedule': [
       {
         to: '/admin/mass-schedules',
