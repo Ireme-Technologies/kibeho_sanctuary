@@ -3,15 +3,16 @@ export default function GuideTranslations() {
     <div>
       <h2>10. Short UI labels (Translations menu)</h2>
                   <p>
-                    Use this screen only for repeating chrome: Donate, Contact, Read more, Pay now, Submit a
-                    pledge, form field names, and similar short phrases. Search <code>offer.</code>,{' '}
-                    <code>invite.</code>, or <code>project.</code> for candle, Mass, donation, and project wording.
-                    It does <strong>not</strong> replace language tabs on Pages or News.
+                    Open <strong>Translations</strong> and pick what you are translating: <strong>Menus</strong>,{' '}
+                    <strong>Page headers</strong>, <strong>One page</strong>, or <strong>Buttons &amp; labels</strong>.
+                    Every active language is a column. Search for a page name or a word, type the translations, then
+                    save. Menu labels and page headers update everywhere they appear. Longer articles stay in Pages
+                    or News.
                   </p>
                   <ol>
-                    <li>Open <strong>Translations</strong>.</li>
-                    <li>Select a language tab (e.g. Français). The default-language column stays visible as the source.</li>
-                    <li>Search for a key or for existing English text, then type the translation beside it.</li>
+                    <li>Open <strong>Translations</strong> and choose Menus, Page headers, or One page.</li>
+                    <li>Search for the page or the English word you want to change.</li>
+                    <li>Type each language in its column. Cream cells are still empty.</li>
                     <li>
                       Optionally set the <strong>Default language</strong> used for first-time visitors and as
                       fallback.

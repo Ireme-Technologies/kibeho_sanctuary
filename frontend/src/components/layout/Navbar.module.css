@@ -270,6 +270,7 @@
 }
 
 .desktopNav {
+  --nav-scale: 1;
   display: none;
   align-items: center;
   justify-content: flex-end;
@@ -278,6 +279,7 @@
   min-width: 0;
   overflow: visible;
   height: 100%;
+  font-size: calc(clamp(0.82rem, 1.05vw, 1rem) * var(--nav-scale));
 }
 
 @media (min-width: 1100px) {
@@ -286,10 +288,12 @@
   }
 }
 
+.desktopNav > * {
+  flex: 0 0 auto;
+}
+
 .navItem {
   position: relative;
-  flex: 0 1 auto;
-  min-width: 0;
   height: 100%;
   display: flex;
   align-items: center;
@@ -301,12 +305,12 @@
 
 .navLink {
   font-family: var(--font-body);
-  font-size: clamp(0.82rem, 1.05vw, 1rem);
+  font-size: 1em;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: calc(0.04em * var(--nav-scale, 1));
   text-transform: uppercase;
   color: var(--color-navy-soft);
-  padding: 0.45rem 0.45rem;
+  padding: 0.45rem calc(0.45rem * var(--nav-scale, 1));
   transition: color var(--transition-base);
   white-space: nowrap;
 }
@@ -481,10 +485,13 @@
     column-gap: 1.1rem;
   }
 
+  .desktopNav {
+    font-size: calc(0.78rem * var(--nav-scale, 1));
+  }
+
   .navLink {
-    font-size: 0.78rem;
-    padding: 0.4rem 0.32rem;
-    letter-spacing: 0.03em;
+    padding: 0.4rem calc(0.32rem * var(--nav-scale, 1));
+    letter-spacing: calc(0.03em * var(--nav-scale, 1));
   }
 }
 

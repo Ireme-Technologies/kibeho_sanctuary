@@ -13,7 +13,6 @@ import {
   stripPrayerIntentionsFromNav,
 } from '@data/navigation'
 import FlashMessage from './components/FlashMessage'
-import LocaleTabs from './components/LocaleTabs'
 import MenuTreeEditor from './components/MenuTreeEditor'
 import { ensureNavIds, persistNavItems } from './menuUtils'
 import styles from './admin.module.css'
@@ -47,7 +46,6 @@ export default function MenusAdminPage() {
   const locationId = LOCATIONS.some((item) => item.id === requested) ? requested : 'main'
   const location = LOCATIONS.find((item) => item.id === locationId) || LOCATIONS[0]
 
-  const [menuLocale, setMenuLocale] = useState(defaultLocale || 'en')
   const [primaryNav, setPrimaryNav] = useState([])
   const [utilityNav, setUtilityNav] = useState([])
   const [footerLinks, setFooterLinks] = useState([])
@@ -55,10 +53,6 @@ export default function MenusAdminPage() {
   const [error, setError] = useState('')
   const [flash, setFlash] = useState({ type: 'success', message: '' })
   const [saving, setSaving] = useState(false)
-
-  useEffect(() => {
-    setMenuLocale(defaultLocale || 'en')
-  }, [defaultLocale])
 
   useEffect(() => {
     fetchSettings()
@@ -161,11 +155,9 @@ export default function MenusAdminPage() {
           <p>{location.hint}</p>
         </div>
 
-        <LocaleTabs value={menuLocale} onChange={setMenuLocale} defaultLocale={defaultLocale} />
         <p className={styles.muted}>
-          There is one menu and one URL per page for every language. Pick a page from the list — the path is
-          filled automatically and reused in Ikinyarwanda, Français, English, and Deutsch. Labels follow
-          Translations; type a label only if the automatic text is wrong.
+          There is one menu and one URL for every language. Fill a label for each active language, then save.
+          The same labels appear in the header and footer on every page.
         </p>
 
         {locationId === 'main' ? (
@@ -173,7 +165,7 @@ export default function MenusAdminPage() {
             items={primaryNav}
             onChange={setPrimaryNav}
             allowChildren
-            locale={menuLocale}
+            locale={defaultLocale}
             defaultLocale={defaultLocale}
             addTitle="Add to the main menu"
             pathPlaceholder="/our-lady"
@@ -195,7 +187,7 @@ export default function MenusAdminPage() {
             <MenuTreeEditor
               items={utilityNav}
               onChange={setUtilityNav}
-              locale={menuLocale}
+              locale={defaultLocale}
               defaultLocale={defaultLocale}
               addTitle="Add a top header link"
               pathPlaceholder="/pilgrimage/calendar"
@@ -210,7 +202,7 @@ export default function MenusAdminPage() {
               <MenuTreeEditor
                 items={footerLinks}
                 onChange={setFooterLinks}
-                locale={menuLocale}
+                locale={defaultLocale}
                 defaultLocale={defaultLocale}
                 addTitle="Add a quick link"
                 pathPlaceholder="/contact"
@@ -221,7 +213,7 @@ export default function MenusAdminPage() {
               <MenuTreeEditor
                 items={footerServiceLinks}
                 onChange={setFooterServiceLinks}
-                locale={menuLocale}
+                locale={defaultLocale}
                 defaultLocale={defaultLocale}
                 addTitle="Add an Explore link"
                 pathPlaceholder="/pilgrimage/plan"

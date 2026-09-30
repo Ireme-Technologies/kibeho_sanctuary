@@ -1422,7 +1422,8 @@
   background: #fff8f0;
 }
 
-.i18nTable input {
+.i18nTable input,
+.i18nTable textarea {
   width: 100%;
   min-width: 8rem;
 }
@@ -2510,9 +2511,15 @@
 
 .menuRowFields {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0.55rem;
   min-width: 0;
+}
+
+.menuLocaleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.55rem;
 }
 
 .menuPathFields {

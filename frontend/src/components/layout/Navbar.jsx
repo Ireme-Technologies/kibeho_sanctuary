@@ -127,6 +127,7 @@ export default function Navbar({ hasHero = false }) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const langRef = useRef(null)
+  const desktopNavRef = useRef(null)
 
   const headerOccasion = pickHeaderOccasion(upcomingPilgrimages)
   const occasionBadge = headerOccasion ? statusLabel(headerOccasion.status) : null
@@ -146,6 +147,58 @@ export default function Navbar({ hasHero = false }) {
     document.addEventListener('mousedown', onDown)
     return () => document.removeEventListener('mousedown', onDown)
   }, [langOpen])
+
+  useEffect(() => {
+    const nav = desktopNavRef.current
+    if (!nav) return undefined
+
+    const minScale = 0.46
+    let frame = 0
+
+    const contentWiderThanNav = () => {
+      const first = nav.firstElementChild
+      const last = nav.lastElementChild
+      if (!first || !last) return false
+      const width = last.getBoundingClientRect().right - first.getBoundingClientRect().left
+      return width > nav.clientWidth + 1
+    }
+
+    const fit = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        if (getComputedStyle(nav).display === 'none') {
+          nav.style.removeProperty('--nav-scale')
+          return
+        }
+        let low = minScale
+        let high = 1
+        let chosen = minScale
+        for (let i = 0; i < 8; i += 1) {
+          const scale = (low + high) / 2
+          nav.style.setProperty('--nav-scale', String(scale))
+          if (contentWiderThanNav()) {
+            high = scale
+          } else {
+            chosen = scale
+            low = scale
+          }
+        }
+        nav.style.setProperty('--nav-scale', chosen.toFixed(3))
+      })
+    }
+
+    fit()
+    document.fonts?.ready?.then(fit)
+    const observer = new ResizeObserver(fit)
+    observer.observe(nav)
+    if (nav.parentElement) observer.observe(nav.parentElement)
+    const logo = nav.previousElementSibling
+    if (logo) observer.observe(logo)
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+    }
+  }, [locale, primaryNav])
 
   const brandName = company.name || 'Shrine of Our Lady of Kibeho'
 
@@ -206,7 +259,7 @@ export default function Navbar({ hasHero = false }) {
             </span>
           </LocalizedNavLink>
 
-          <nav className={styles.desktopNav} aria-label="Primary">
+          <nav className={styles.desktopNav} aria-label="Primary" ref={desktopNavRef}>
             {(primaryNav || []).map((item) => (
               <NavItem key={item.path + item.label} item={item} />
             ))}

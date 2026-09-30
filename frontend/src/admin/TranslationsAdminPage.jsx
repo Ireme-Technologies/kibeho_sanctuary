@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { fetchI18n, updateI18n } from '@api/cms'
 import { useLocale } from '@context/LocaleContext'
 import { LOCALES } from '@i18n/locales'
 import { normalizeLanguages } from '@i18n/languageCatalog'
+import ContentTranslationPanel from './components/ContentTranslationPanel'
 import FlashMessage from './components/FlashMessage'
 import LanguagesManager from './components/LanguagesManager'
 import { confirmDelete } from './components/confirmDelete'
@@ -17,6 +18,13 @@ function snapshotState({ dictionary }) {
   return JSON.stringify({ dictionary })
 }
 
+const AREAS = [
+  { id: 'menus', label: 'Menus' },
+  { id: 'headers', label: 'Page headers' },
+  { id: 'page', label: 'One page' },
+  { id: 'labels', label: 'Buttons & labels' },
+]
+
 export default function TranslationsAdminPage() {
   const { reloadI18n } = useLocale()
   const [defaultLocale, setDefaultLocale] = useState('en')
@@ -24,6 +32,9 @@ export default function TranslationsAdminPage() {
   const [catalog, setCatalog] = useState([])
   const [dictionary, setDictionary] = useState({})
   const [savedSnapshot, setSavedSnapshot] = useState('')
+  const [area, setArea] = useState('menus')
+  const [contentDirty, setContentDirty] = useState(false)
+  const contentSaveRef = useRef(null)
   const [query, setQuery] = useState('')
   const [newKey, setNewKey] = useState('')
   const [showAllLocales, setShowAllLocales] = useState(false)
@@ -34,10 +45,11 @@ export default function TranslationsAdminPage() {
 
   const enabledLocales = languages.map((item) => item.code)
 
-  const dirty = useMemo(() => {
+  const labelsDirty = useMemo(() => {
     if (!savedSnapshot) return false
     return snapshotState({ dictionary }) !== savedSnapshot
   }, [dictionary, savedSnapshot])
+  const dirty = labelsDirty || contentDirty
 
   const applyPack = (data) => {
     const nextDict = data.dictionary || {}
@@ -143,15 +155,21 @@ export default function TranslationsAdminPage() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      await updateI18n({
-        defaultLocale,
-        enabledLocales,
-        languages,
-        strings: dictionary,
+      if (contentDirty) await contentSaveRef.current?.()
+      if (labelsDirty) {
+        await updateI18n({
+          defaultLocale,
+          enabledLocales,
+          languages,
+          strings: dictionary,
+        })
+        await load()
+        await reloadI18n()
+      }
+      setFlash({
+        type: 'success',
+        message: 'Translations saved. Menu labels and page text update across the site.',
       })
-      setFlash({ type: 'success', message: 'Translations saved.' })
-      await load()
-      await reloadI18n()
     } catch (err) {
       setFlash({ type: 'error', message: err.message || 'Failed to save translations' })
     } finally {
@@ -187,10 +205,35 @@ export default function TranslationsAdminPage() {
       />
 
       <p className={styles.muted} style={{ marginBottom: '1rem' }}>
-        This page is for <strong>short buttons and labels</strong> (Donate, menu words, form hints).
-        Empty cells are highlighted — visitors then see the default language. Long articles belong in{' '}
-        <strong>Pages</strong> or <strong>News</strong>, where each language has its own editor.
+        Choose what you are translating. <strong>Menus</strong> and <strong>Page headers</strong> list the real
+        words visitors see, with every active language on the same row. Search finds a page or a word. Saving
+        updates that text everywhere it appears. Cream cells are still empty, so visitors see the default language.
       </p>
+
+      <div className={styles.tabs} role="tablist" aria-label="What to translate">
+        {AREAS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            role="tab"
+            aria-selected={area === item.id}
+            className={`${styles.tab} ${area === item.id ? styles.tabActive : ''}`}
+            onClick={() => setArea(item.id)}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+
+      {area !== 'labels' ? (
+        <ContentTranslationPanel
+          area={area}
+          languages={enabledMeta}
+          defaultLocale={defaultLocale}
+          onDirtyChange={setContentDirty}
+          saveRef={contentSaveRef}
+        />
+      ) : null}
 
       <LanguagesManager
         languages={enabledMeta}
@@ -200,6 +243,8 @@ export default function TranslationsAdminPage() {
         busy={langBusy || saving}
       />
 
+      {area === 'labels' ? (
+      <>
       <div className={styles.card} style={{ marginBottom: '1rem' }}>
         <div className={styles.fieldRow}>
           <div className={styles.field}>
@@ -323,6 +368,8 @@ export default function TranslationsAdminPage() {
           </table>
         )}
       </div>
+      </>
+      ) : null}
 
       {dirty && (
         <div className={styles.saveBar} role="status" aria-live="polite">

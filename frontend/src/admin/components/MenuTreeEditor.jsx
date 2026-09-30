@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { GripVertical } from 'lucide-react'
+import { useLocale } from '@context/LocaleContext'
 import {
   addNavItem,
   deleteNavNode,
@@ -39,6 +40,8 @@ export default function MenuTreeEditor({
   emptyText = 'No items yet. Add the first one on the left.',
   pathPlaceholder = '/page-path',
 }) {
+  const { workspaceLocales } = useLocale()
+  const locales = workspaceLocales?.length ? workspaceLocales : [{ code: defaultLocale, label: defaultLocale }]
   const [add, setAdd] = useState(emptyAdd)
   const [addKey, setAddKey] = useState(0)
   const [draggingId, setDraggingId] = useState(null)
@@ -215,10 +218,6 @@ export default function MenuTreeEditor({
         {!rows.length ? <p className={styles.muted}>{emptyText}</p> : null}
         <div className={styles.menuTree} onDragOver={(event) => event.preventDefault()}>
           {rows.map((row) => {
-            const autoLabel = pageLabel(row.item.path, locale) || row.item.label || ''
-            const stored = navLabelForLocale(row.item, locale, defaultLocale)
-            const displayLabel = stored || autoLabel
-            const usingAuto = !isDefault && !String(stored || '').trim() && Boolean(autoLabel)
             const drop = hint?.id === row.item._id ? hint.where : null
             return (
               <div
@@ -253,42 +252,34 @@ export default function MenuTreeEditor({
                   <GripVertical size={16} aria-hidden="true" />
                 </span>
                 <div className={styles.menuRowFields}>
-                  <div className={styles.field}>
-                    <label>{isDefault ? 'Label' : 'Label'}</label>
-                    <input
-                      value={displayLabel}
-                      placeholder={isDefault ? '' : autoLabel || row.item.label || ''}
-                      onChange={(e) => {
-                        const next = e.target.value
-                        const save = !isDefault && next.trim() === String(autoLabel).trim() ? '' : next
-                        setItems(
-                          updateNavNode(
-                            list,
-                            row.item._id,
-                            setNavLabelForLocale(row.item, locale, save, defaultLocale),
-                          ),
-                        )
-                      }}
-                    />
-                    {usingAuto ? (
-                      <p className={styles.menuHint}>Automatic translation. Type here only to correct it.</p>
-                    ) : !isDefault && stored ? (
-                      <button
-                        type="button"
-                        className={styles.menuResetLink}
-                        onClick={() =>
-                          setItems(
-                            updateNavNode(
-                              list,
-                              row.item._id,
-                              setNavLabelForLocale(row.item, locale, '', defaultLocale),
-                            ),
-                          )
-                        }
-                      >
-                        Use automatic label
-                      </button>
-                    ) : null}
+                  <div className={styles.menuLocaleGrid}>
+                    {locales.map((lang) => {
+                      const code = lang.code
+                      const isLangDefault = code === defaultLocale
+                      const storedLabel = navLabelForLocale(row.item, code, defaultLocale)
+                      return (
+                        <div className={styles.field} key={code}>
+                          <label>
+                            {lang.flag ? `${lang.flag} ` : ''}
+                            {lang.nativeLabel || lang.label || code}
+                            {isLangDefault ? ' · default' : ''}
+                          </label>
+                          <input
+                            value={storedLabel}
+                            placeholder={isLangDefault ? 'Label' : row.item.label || 'Translation'}
+                            onChange={(e) =>
+                              setItems(
+                                updateNavNode(
+                                  list,
+                                  row.item._id,
+                                  setNavLabelForLocale(row.item, code, e.target.value, defaultLocale),
+                                ),
+                              )
+                            }
+                          />
+                        </div>
+                      )
+                    })}
                   </div>
                   <MenuPathFields
                     path={row.item.path}
