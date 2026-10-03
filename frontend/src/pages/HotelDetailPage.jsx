@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Globe, Mail, Phone } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Mail, Phone } from 'lucide-react'
 import LocalizedLink from '@components/LocalizedLink'
 import { fetchLodging, fetchProject } from '@api/cms'
 import { useContent } from '@context/ContentContext'
@@ -9,7 +9,7 @@ import ContentLocaleNotice from '@components/ContentLocaleNotice'
 import ImageLightbox from '@components/ui/ImageLightbox'
 import LodgingIcon from '@components/ui/LodgingIcon'
 import RichText from '@components/ui/RichText'
-import { LODGING_AMENITIES, LODGING_SERVICES, resolveLodgingItems } from '@data/lodgingCatalog'
+import { LODGING_AMENITIES, resolveLodgingItems } from '@data/lodgingCatalog'
 import { cardExcerpt } from '@utils/text'
 import { displayFacilityName } from '@utils/displayName'
 import NotFoundPage from './NotFoundPage'
@@ -88,13 +88,10 @@ export default function HotelDetailPage() {
   if (notFound || !item) return <NotFoundPage />
 
   const amenities = resolveLodgingItems(item.amenities, LODGING_AMENITIES, t)
-  const services = resolveLodgingItems(item.services, LODGING_SERVICES, t)
   const mainPhoto = photos[activeIndex] || photos[0]
-  const website = websiteHref(item.websiteUrl)
   const reservationUrl = externalReservationUrl(item.bookingUrl)
   const phone = String(item.phone || '').trim()
   const email = String(item.email || '').trim()
-  const whatsapp = String(item.whatsapp || '').trim()
   const about = item.description || cardExcerpt(item)
   const price = formatPrice(item.priceFrom)
   const meetingRooms = (item.meetingRooms || []).filter((room) => room?.name || room?.capacity)
@@ -208,22 +205,9 @@ export default function HotelDetailPage() {
               </div>
             ) : null}
 
-            {whatsapp ? (
-              <LocalizedLink className={styles.bookBtn} to={`/pilgrimage/accommodation/${item.slug}/book`}>
-                {t('bookNow')}
-              </LocalizedLink>
-            ) : null}
-            {website ? (
-              <a
-                className={styles.websiteBtn}
-                href={website}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Globe size={16} aria-hidden="true" />
-                {t('visitWebsite')}
-              </a>
-            ) : null}
+            <LocalizedLink className={styles.bookBtn} to={`/pilgrimage/accommodation/${item.slug}/book`}>
+              {t('reserveYourStay')}
+            </LocalizedLink>
             {reservationUrl ? (
               <a className={styles.reserveLink} href={reservationUrl} target="_blank" rel="noopener noreferrer">
                 {t('hotelReservationPage')}
@@ -269,22 +253,6 @@ export default function HotelDetailPage() {
                 </li>
               ))}
             </ul>
-          </section>
-        ) : null}
-
-        {services.length ? (
-          <section className={styles.services} aria-labelledby="hotel-services-heading">
-            <h2 id="hotel-services-heading">{t('servicesOffered')}</h2>
-            <div className={styles.serviceGrid}>
-              {services.map((entry) => (
-                <article key={entry.id} className={styles.serviceCard}>
-                  <span className={styles.serviceIcon}>
-                    <LodgingIcon id={entry.id} size={28} />
-                  </span>
-                  <h3>{entry.label}</h3>
-                </article>
-              ))}
-            </div>
           </section>
         ) : null}
 

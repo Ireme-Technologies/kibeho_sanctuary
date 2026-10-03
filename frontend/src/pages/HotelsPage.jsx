@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+import LocalizedLink from '@components/LocalizedLink'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchLodging } from '@api/cms'
@@ -15,7 +16,7 @@ import styles from './CatalogPage.module.css'
 export default function HotelsPage() {
   const { pathname } = useLocation()
   const { section, resolveHeaderImage, defaultHeaderImage } = useContent()
-  const { locale } = useLocale()
+  const { locale, t } = useLocale()
   const key = sectionKeyForPath(pathname) || 'hotels.index'
   const extra = key === 'hotels.index' ? ['pilgrimage.accommodation'] : ['hotels.index']
   const hero = resolveSectionContent(section, key, extra)
@@ -50,7 +51,7 @@ export default function HotelsPage() {
         <div className={styles.lodgingGrid}>
           {items.map((item) => (
             <article key={item.id} className={`${styles.card} ${styles.lodgingCard}`}>
-              <Link to={`/pilgrimage/accommodation/${item.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+              <LocalizedLink to={`/pilgrimage/accommodation/${item.slug}`} className={styles.cardMain}>
                 <div className={styles.cardMedia}>
                   {item.category ? <span className={styles.categoryBadge}>{item.category}</span> : null}
                   <img src={item.coverImage || item.featuredImage || defaultHeaderImage} alt="" />
@@ -60,9 +61,16 @@ export default function HotelsPage() {
                   {cardExcerpt(item) ? (
                     <p className={styles.excerpt}>{cardExcerpt(item)}</p>
                   ) : null}
-                  <span className={styles.cta}>View details →</span>
                 </div>
-              </Link>
+              </LocalizedLink>
+              <div className={styles.cardActions}>
+                <LocalizedLink to={`/pilgrimage/accommodation/${item.slug}`} className={styles.cta}>
+                  {t('viewDetails')} →
+                </LocalizedLink>
+                <LocalizedLink to={`/pilgrimage/accommodation/${item.slug}/book`} className={styles.bookCta}>
+                  {t('bookNow')}
+                </LocalizedLink>
+              </div>
             </article>
           ))}
         </div>

@@ -12,7 +12,7 @@ import { confirmDelete } from './components/confirmDelete'
 import LocaleTabs, { getLocaleField, setLocaleField, splitTranslationsPayload } from './components/LocaleTabs'
 import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColumns'
 import ListTitle from './components/ListTitle'
-import { LODGING_AMENITIES, LODGING_SERVICES } from '@data/lodgingCatalog'
+import { LODGING_AMENITIES } from '@data/lodgingCatalog'
 import styles from './admin.module.css'
 
 const LOCALE_FIELDS = ['title', 'description', 'category', 'location', 'status']
@@ -632,15 +632,6 @@ export default function ProjectsAdminPage() {
             onChange={(amenities) => setForm({ ...form, amenities })}
             allowCustom
             customPlaceholder="e.g. Campfire"
-          />
-          <OptionChecklist
-            label="Services offered"
-            hint="Shown in the services section under the booking buttons."
-            options={LODGING_SERVICES}
-            value={form.services}
-            onChange={(services) => setForm({ ...form, services })}
-            allowCustom
-            customPlaceholder="e.g. Packed lunch"
           />
           <div className={styles.field}>
             <label>Sort order</label>
