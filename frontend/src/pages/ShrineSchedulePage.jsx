@@ -14,7 +14,9 @@ import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
 import { fetchMassSchedules } from '@api/cms'
 import { catalogErrorMessage } from '@api/client'
-import { formatMassTime, formatRecurrence } from '@utils/eventTime'
+import { formatItemDates, formatMassTime, formatRecurrence } from '@utils/eventTime'
+import { classifyEvent, occurrenceWindow, statusLabel } from '@utils/occasion'
+import { cardExcerpt, excerpt } from '@utils/text'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
 import { heroBackgroundStyle } from '@utils/heroBackground'
@@ -121,6 +123,24 @@ function ensureThursdayProcession(weeklyRows) {
   return [...weeklyRows, THURSDAY_PROCESSION]
 }
 
+function samePlainText(a, b) {
+  const left = stripHtml(a).toLowerCase()
+  const right = stripHtml(b).toLowerCase()
+  return Boolean(left) && left === right
+}
+
+function sortCelebrations(items) {
+  return [...items].sort((a, b) => {
+    const aPast = classifyEvent(a).status === 'past'
+    const bPast = classifyEvent(b).status === 'past'
+    if (aPast !== bPast) return aPast ? 1 : -1
+    const aStart = occurrenceWindow(a)?.start
+    const bStart = occurrenceWindow(b)?.start
+    if (aStart && bStart) return aStart - bStart
+    return (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+  })
+}
+
 function sortWeekly(rows) {
   const rank = (row) => {
     if (isSundayRow(row)) return 0
@@ -135,7 +155,7 @@ function sortWeekly(rows) {
 }
 
 export default function ShrineSchedulePage() {
-  const { section, resolveHeaderImage } = useContent()
+  const { section, resolveHeaderImage, defaultHeaderImage, upcomingPilgrimages } = useContent()
   const { locale } = useLocale()
   const hero = resolveSectionContent(section, 'shrine.schedule', ['shrine.mass-schedule'])
   const [rows, setRows] = useState([])
@@ -154,6 +174,11 @@ export default function ShrineSchedulePage() {
 
   const guidelines = useMemo(() => normalizeGuidelines(hero.guidelines), [hero.guidelines])
   const heroImage = resolveHeaderImage(hero.heroImage)
+  const weeklyIntro = samePlainText(hero.weeklyIntro, hero.intro) ? '' : hero.weeklyIntro
+  const celebrations = useMemo(
+    () => sortCelebrations((upcomingPilgrimages || []).filter((item) => item?.title)).slice(0, 6),
+    [upcomingPilgrimages],
+  )
 
   const weeklyGrouped = useMemo(() => {
     const map = new Map()
@@ -183,8 +208,14 @@ export default function ShrineSchedulePage() {
         {hero.intro ? <RichText html={hero.intro} className={styles.intro} /> : null}
         {error ? <p className={styles.empty}>{error}</p> : null}
 
-        <section className={styles.section} aria-labelledby="page-title">
-          {hero.weeklyIntro ? <RichText html={hero.weeklyIntro} className={styles.sectionIntro} /> : null}
+        <section className={styles.section} aria-labelledby="weekly-heading">
+          <div className={styles.sectionHead}>
+            <div>
+              <p className={styles.sectionEyebrow}>Each week</p>
+              <h2 id="weekly-heading">Weekly schedule</h2>
+            </div>
+          </div>
+          {weeklyIntro ? <RichText html={weeklyIntro} className={styles.sectionIntro} /> : null}
 
           {!error && !weeklyRows.length ? (
             <p className={styles.empty}>Weekly times will be published here soon.</p>
@@ -251,9 +282,48 @@ export default function ShrineSchedulePage() {
                 <ChevronRight size={16} aria-hidden="true" />
               </Link>
             </div>
-            <p className={styles.annualIntro}>
-              Feast days and pilgrimages each have their own page, with registration and the photos, articles, and reports of that celebration.
-            </p>
+            {hero.annualIntro ? (
+              <RichText html={hero.annualIntro} className={styles.annualIntro} />
+            ) : (
+              <p className={styles.annualIntro}>
+                Feast days and pilgrimages each have their own page, with registration and the photos, articles, and reports of that celebration.
+              </p>
+            )}
+            {!celebrations.length ? (
+              <p className={styles.emptyLight}>Celebrations will appear here once published.</p>
+            ) : (
+              <div className={styles.annualGrid}>
+                {celebrations.map((item) => {
+                  const when = formatItemDates(item) || item.meta
+                  const badge = statusLabel(classifyEvent(item).status)
+                  const summary =
+                    excerpt(item.shortDescription || item.lead || item.summary || '', 140) ||
+                    cardExcerpt(item, 140)
+                  return (
+                    <Link
+                      key={item.id || item.slug}
+                      to={item.path || (item.slug ? `/pilgrimages/${item.slug}` : '/pilgrimage/annual-celebrations')}
+                      className={styles.annualCard}
+                    >
+                      <div
+                        className={styles.annualMedia}
+                        style={{
+                          backgroundImage: `url(${item.image || item.coverImage || defaultHeaderImage})`,
+                        }}
+                      />
+                      <div className={styles.annualBody}>
+                        {badge ? (
+                          <span className={styles.annualBadge}>{badge}</span>
+                        ) : null}
+                        <h3>{item.title}</h3>
+                        {when ? <p className={styles.annualWhen}>{when}</p> : null}
+                        {summary ? <p className={styles.annualText}>{summary}</p> : null}
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
           </div>
         </section>
 
