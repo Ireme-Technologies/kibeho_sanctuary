@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fetchMedia, uploadMedia } from '@api/cms'
 import { compressImageFile, MAX_IMAGE_BYTES } from '@utils/compressImage'
 import { confirmDelete } from './confirmDelete'
@@ -16,6 +16,8 @@ export default function MultiImageField({
   hint = 'Upload landscape images only.',
 }) {
   const urls = Array.isArray(value) ? value.filter(Boolean) : []
+  const urlsRef = useRef(urls)
+  urlsRef.current = urls
   const [library, setLibrary] = useState([])
   const [openLibrary, setOpenLibrary] = useState(false)
   const [error, setError] = useState('')
@@ -31,7 +33,12 @@ export default function MultiImageField({
     if (openLibrary) loadLibrary().catch((err) => setError(err.message))
   }, [openLibrary])
 
-  const setUrls = (next) => onChange?.(next)
+  const setUrls = (updater) => {
+    const current = urlsRef.current
+    const next = typeof updater === 'function' ? updater(current) : updater
+    urlsRef.current = next
+    onChange?.(next)
+  }
 
   const handleUploadMany = async (fileList) => {
     const files = Array.from(fileList || []).filter(Boolean)
@@ -63,7 +70,7 @@ export default function MultiImageField({
           failures.push(err.errors?.file?.[0] || err.message || file.name)
         }
       }
-      if (added.length) setUrls([...urls, ...added])
+      if (added.length) setUrls((current) => [...current, ...added])
       if (failures.length) setError(failures.join(' '))
       else if (added.length) setNotice(`${added.length} image(s) added.`)
     } finally {
@@ -71,19 +78,20 @@ export default function MultiImageField({
     }
   }
 
-  const removeAt = (index) => setUrls(urls.filter((_, i) => i !== index))
+  const removeAt = (index) => setUrls((current) => current.filter((_, i) => i !== index))
 
   const move = (index, dir) => {
-    const next = index + dir
-    if (next < 0 || next >= urls.length) return
-    const copy = [...urls]
-    ;[copy[index], copy[next]] = [copy[next], copy[index]]
-    setUrls(copy)
+    setUrls((current) => {
+      const next = index + dir
+      if (next < 0 || next >= current.length) return current
+      const copy = [...current]
+      ;[copy[index], copy[next]] = [copy[next], copy[index]]
+      return copy
+    })
   }
 
   const toggleLibraryItem = (url) => {
-    if (urls.includes(url)) setUrls(urls.filter((u) => u !== url))
-    else setUrls([...urls, url])
+    setUrls((current) => (current.includes(url) ? current.filter((item) => item !== url) : [...current, url]))
   }
 
   return (

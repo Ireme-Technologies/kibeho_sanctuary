@@ -28,6 +28,18 @@ const CATEGORY_OPTIONS = [
   'Prayer',
 ]
 
+function imageUrl(value) {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  if (typeof value === 'object') return value.url || value.src || ''
+  return ''
+}
+
+function listingImage(item) {
+  const gallery = Array.isArray(item?.gallery) ? item.gallery.map(imageUrl).filter(Boolean) : []
+  return imageUrl(item?.coverImage) || imageUrl(item?.featuredImage) || gallery[0] || ''
+}
+
 const empty = {
   title: '',
   category: 'Guest House',
@@ -93,7 +105,7 @@ export default function ProjectsAdminPage() {
       description: item.description || '',
       cover_image: item.coverImage || '',
       featured_image: item.featuredImage || '',
-      gallery: Array.isArray(item.gallery) ? item.gallery : [],
+      gallery: Array.isArray(item.gallery) ? item.gallery.map(imageUrl).filter(Boolean) : [],
       amenities: Array.isArray(item.amenities) ? item.amenities : [],
       services: Array.isArray(item.services) ? item.services : [],
       website_url: item.websiteUrl || '',
@@ -116,7 +128,7 @@ export default function ProjectsAdminPage() {
       ...(sort_order === '' || sort_order == null ? {} : { sort_order: Number(sort_order) }),
       rating: form.rating === '' || form.rating == null ? null : Number(form.rating),
       booking_url: form.booking_url || null,
-      gallery: Array.isArray(form.gallery) ? form.gallery : [],
+      gallery: Array.isArray(form.gallery) ? form.gallery.map(imageUrl).filter(Boolean) : [],
       amenities: Array.isArray(form.amenities) ? form.amenities : [],
       services: Array.isArray(form.services) ? form.services : [],
       website_url: form.website_url || null,
@@ -193,7 +205,13 @@ export default function ProjectsAdminPage() {
           <tbody>
             {items.map((item) => (
               <tr key={item.id}>
-                <td>{item.coverImage ? <img className={styles.thumb} src={item.coverImage} alt="" /> : '—'}</td>
+                <td>
+                  {listingImage(item) ? (
+                    <img className={styles.thumb} src={listingImage(item)} alt="" />
+                  ) : (
+                    '—'
+                  )}
+                </td>
                 <td>
                   <ListTitle
                     title={item.title}
@@ -337,12 +355,23 @@ export default function ProjectsAdminPage() {
             />
             <p className={styles.muted}>Listings show the first 160 characters of this description.</p>
           </div>
-          <ImageField label="Cover image" value={form.cover_image} onChange={(url) => setForm({ ...form, cover_image: url })} folder="projects" />
-          <ImageField label="Featured image" value={form.featured_image} onChange={(url) => setForm({ ...form, featured_image: url })} folder="projects" />
+          <ImageField
+            label="Cover image"
+            value={form.cover_image}
+            onChange={(url) => setForm((current) => ({ ...current, cover_image: url }))}
+            folder="projects"
+          />
+          <ImageField
+            label="Featured image"
+            value={form.featured_image}
+            onChange={(url) => setForm((current) => ({ ...current, featured_image: url }))}
+            folder="projects"
+          />
           <MultiImageField
             label="Gallery images"
+            hint="Upload several images at once, or open the library and click every photo you want. Selected photos stay highlighted; click one again to remove it."
             value={form.gallery}
-            onChange={(gallery) => setForm({ ...form, gallery })}
+            onChange={(gallery) => setForm((current) => ({ ...current, gallery }))}
             folder="projects"
           />
           <OptionChecklist
