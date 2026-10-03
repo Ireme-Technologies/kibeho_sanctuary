@@ -171,6 +171,15 @@ export async function deleteService(id) {
   return api(`/api/pilgrimage-services/${id}`, { method: 'DELETE' })
 }
 
+export async function submitAccommodationReservation(body) {
+  await ensureCsrf()
+  return api('/api/accommodation-reservations', { method: 'POST', body })
+}
+
+export async function fetchAccommodationReservations(params = {}) {
+  return api(withQuery('/api/accommodation-reservations', params))
+}
+
 export async function createProject(body) {
   return api('/api/facilities', { method: 'POST', body })
 }

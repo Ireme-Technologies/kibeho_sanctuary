@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AccommodationReservationController;
 use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AudioItemController;
 use App\Http\Controllers\Api\AuthController;
@@ -94,6 +95,7 @@ Route::get('/videos', [VideoController::class, 'index']);
 Route::get('/videos/{slug}', [VideoController::class, 'show']);
 
 Route::post('/contact', [ContactMessageController::class, 'store']);
+Route::post('/accommodation-reservations', [AccommodationReservationController::class, 'store']);
 Route::post('/pilgrim-enquiries', [PilgrimEnquiryController::class, 'store']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -115,6 +117,8 @@ Route::middleware(['auth:sanctum', 'super_admin'])->group(function () {
     Route::post('/pilgrimage-services', [PilgrimageServiceController::class, 'store']);
     Route::put('/pilgrimage-services/{pilgrimageService}', [PilgrimageServiceController::class, 'update']);
     Route::delete('/pilgrimage-services/{pilgrimageService}', [PilgrimageServiceController::class, 'destroy']);
+
+    Route::get('/accommodation-reservations', [AccommodationReservationController::class, 'index']);
 
     Route::post('/facilities', [FacilityController::class, 'store']);
     Route::put('/facilities/{facility}', [FacilityController::class, 'update']);

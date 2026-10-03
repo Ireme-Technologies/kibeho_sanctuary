@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Globe, Mail, Phone } from 'lucide-react'
+import LocalizedLink from '@components/LocalizedLink'
 import { fetchLodging, fetchProject } from '@api/cms'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
@@ -23,6 +24,24 @@ function websiteHref(url) {
   if (!value) return ''
   if (/^https?:\/\//i.test(value)) return value
   return `https://${value}`
+}
+
+function externalReservationUrl(url) {
+  const value = String(url || '').trim()
+  if (!value || value.startsWith('/')) return ''
+  return websiteHref(value)
+}
+
+function reviewLabel(link) {
+  if (link.platform === 'google') return 'Google'
+  if (link.platform === 'tripadvisor') return 'Tripadvisor'
+  return link.label || 'Reviews'
+}
+
+function formatPrice(amount) {
+  const value = Number(amount)
+  if (!Number.isFinite(value) || value <= 0) return ''
+  return `RWF ${value.toLocaleString('en-US')}`
 }
 
 export default function HotelDetailPage() {
@@ -72,9 +91,16 @@ export default function HotelDetailPage() {
   const services = resolveLodgingItems(item.services, LODGING_SERVICES, t)
   const mainPhoto = photos[activeIndex] || photos[0]
   const website = websiteHref(item.websiteUrl)
+  const reservationUrl = externalReservationUrl(item.bookingUrl)
   const phone = String(item.phone || '').trim()
   const email = String(item.email || '').trim()
+  const whatsapp = String(item.whatsapp || '').trim()
   const about = item.description || cardExcerpt(item)
+  const price = formatPrice(item.priceFrom)
+  const meetingRooms = (item.meetingRooms || []).filter((room) => room?.name || room?.capacity)
+  const reviews = (item.reviewLinks || [])
+    .filter((link) => String(link?.url || '').trim())
+    .map((link) => ({ ...link, href: websiteHref(link.url), label: reviewLabel(link) }))
 
   return (
     <div className={styles.page}>
@@ -121,6 +147,44 @@ export default function HotelDetailPage() {
             <p className={styles.eyebrow}>{item.category || t('accommodation')}</p>
             <h1 className={styles.title}>{displayFacilityName(item.title)}</h1>
 
+            {item.roomCount || meetingRooms.length || item.distanceFromKibeho || price ? (
+              <dl className={styles.facts}>
+                {item.roomCount ? (
+                  <div className={styles.fact}>
+                    <dt>{t('rooms')}</dt>
+                    <dd>{item.roomCount}</dd>
+                  </div>
+                ) : null}
+                {meetingRooms.length ? (
+                  <div className={styles.fact}>
+                    <dt>{t('meetingRooms')}</dt>
+                    <dd>
+                      <ul className={styles.meetingList}>
+                        {meetingRooms.map((room, index) => (
+                          <li key={`${room.name}-${index}`}>
+                            {room.name || t('meetingRooms')}
+                            {room.capacity ? ` — ${room.capacity} ${t('meetingRoomPeople')}` : ''}
+                          </li>
+                        ))}
+                      </ul>
+                    </dd>
+                  </div>
+                ) : null}
+                {item.distanceFromKibeho ? (
+                  <div className={styles.fact}>
+                    <dt>{t('distanceFromKibeho')}</dt>
+                    <dd>{item.distanceFromKibeho}</dd>
+                  </div>
+                ) : null}
+                {price ? (
+                  <div className={styles.fact}>
+                    <dt>{t('priceFrom')}</dt>
+                    <dd>{price}</dd>
+                  </div>
+                ) : null}
+              </dl>
+            ) : null}
+
             {phone || email ? (
               <div className={styles.contactBox}>
                 {phone ? (
@@ -144,6 +208,11 @@ export default function HotelDetailPage() {
               </div>
             ) : null}
 
+            {whatsapp ? (
+              <LocalizedLink className={styles.bookBtn} to={`/pilgrimage/accommodation/${item.slug}/book`}>
+                {t('bookNow')}
+              </LocalizedLink>
+            ) : null}
             {website ? (
               <a
                 className={styles.websiteBtn}
@@ -153,6 +222,11 @@ export default function HotelDetailPage() {
               >
                 <Globe size={16} aria-hidden="true" />
                 {t('visitWebsite')}
+              </a>
+            ) : null}
+            {reservationUrl ? (
+              <a className={styles.reserveLink} href={reservationUrl} target="_blank" rel="noopener noreferrer">
+                {t('hotelReservationPage')}
               </a>
             ) : null}
           </aside>
@@ -166,6 +240,21 @@ export default function HotelDetailPage() {
             ) : (
               <p className={styles.aboutText}>{about}</p>
             )}
+          </section>
+        ) : null}
+
+        {reviews.length ? (
+          <section className={styles.reviews} aria-labelledby="hotel-reviews-heading">
+            <h2 id="hotel-reviews-heading">{t('guestReviews')}</h2>
+            <ul className={styles.reviewList}>
+              {reviews.map((review) => (
+                <li key={`${review.platform}-${review.href}`}>
+                  <a href={review.href} target="_blank" rel="noopener noreferrer">
+                    {review.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </section>
         ) : null}
 

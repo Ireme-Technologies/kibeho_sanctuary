@@ -103,6 +103,9 @@ class FacilityController extends Controller
             'managed_by' => ['nullable', 'string', 'max:255'],
             'client' => ['nullable', 'string', 'max:255'],
             'capacity' => ['nullable', 'string', 'max:100'],
+            'room_count' => ['nullable', 'integer', 'min:0', 'max:5000'],
+            'distance_from_kibeho' => ['nullable', 'string', 'max:80'],
+            'price_from' => ['nullable', 'integer', 'min:0'],
             'area' => ['nullable', 'string', 'max:100'],
             'status' => ['nullable', 'string', 'max:100'],
             'rating' => ['nullable', 'numeric', 'min:0', 'max:5'],
@@ -116,6 +119,13 @@ class FacilityController extends Controller
             'gallery.*' => ['string'],
             'amenities' => ['nullable', 'array'],
             'amenities.*' => ['string', 'max:80'],
+            'meeting_rooms' => ['nullable', 'array'],
+            'meeting_rooms.*.name' => ['nullable', 'string', 'max:120'],
+            'meeting_rooms.*.capacity' => ['nullable', 'integer', 'min:1', 'max:5000'],
+            'review_links' => ['nullable', 'array'],
+            'review_links.*.platform' => ['nullable', 'string', 'max:40'],
+            'review_links.*.label' => ['nullable', 'string', 'max:80'],
+            'review_links.*.url' => ['nullable', 'string', 'max:500'],
             'related_programs' => ['nullable', 'array'],
             'related_programs.*' => ['string'],
             'services' => ['nullable', 'array'],
@@ -141,7 +151,71 @@ class FacilityController extends Controller
         }
         unset($data['client'], $data['area'], $data['services']);
 
+        if (array_key_exists('room_count', $data) && (int) $data['room_count'] === 0) {
+            $data['room_count'] = null;
+        }
+        if (array_key_exists('price_from', $data) && (int) $data['price_from'] === 0) {
+            $data['price_from'] = null;
+        }
+        if (array_key_exists('distance_from_kibeho', $data)) {
+            $distance = trim((string) $data['distance_from_kibeho']);
+            $data['distance_from_kibeho'] = $distance === '' ? null : $distance;
+        }
+        if (array_key_exists('meeting_rooms', $data)) {
+            $data['meeting_rooms'] = $this->cleanMeetingRooms($data['meeting_rooms']);
+        }
+        if (array_key_exists('review_links', $data)) {
+            $data['review_links'] = $this->cleanReviewLinks($data['review_links']);
+        }
+
         return $data;
+    }
+
+    private function cleanMeetingRooms(array $rows): array
+    {
+        return collect($rows)
+            ->map(function ($row) {
+                $name = trim((string) ($row['name'] ?? ''));
+                $capacity = isset($row['capacity']) && $row['capacity'] !== '' && $row['capacity'] !== null
+                    ? (int) $row['capacity']
+                    : null;
+                if ($name === '' && ! $capacity) {
+                    return null;
+                }
+
+                return [
+                    'name' => $name,
+                    'capacity' => $capacity ?: null,
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function cleanReviewLinks(array $rows): array
+    {
+        return collect($rows)
+            ->map(function ($row) {
+                $url = trim((string) ($row['url'] ?? ''));
+                if ($url === '') {
+                    return null;
+                }
+                $platform = strtolower(trim((string) ($row['platform'] ?? 'other')));
+                if (! in_array($platform, ['google', 'tripadvisor', 'other'], true)) {
+                    $platform = 'other';
+                }
+                $label = trim((string) ($row['label'] ?? ''));
+
+                return [
+                    'platform' => $platform,
+                    'label' => $label,
+                    'url' => $url,
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
     }
 
     private function transform(Facility $facility, ?string $locale = null): array
@@ -168,6 +242,9 @@ class FacilityController extends Controller
             'client' => $resolved['managed_by'],
             'capacity' => $facility->capacity,
             'area' => $facility->capacity,
+            'roomCount' => $facility->room_count,
+            'distanceFromKibeho' => $facility->distance_from_kibeho,
+            'priceFrom' => $facility->price_from,
             'status' => $resolved['status'],
             'rating' => $facility->rating,
             'bookingUrl' => $facility->booking_url,
@@ -178,6 +255,8 @@ class FacilityController extends Controller
             'featuredImage' => $facility->featured_image,
             'gallery' => $facility->gallery ?? [],
             'amenities' => $facility->amenities ?? [],
+            'meetingRooms' => $facility->meeting_rooms ?? [],
+            'reviewLinks' => $facility->review_links ?? [],
             'relatedPrograms' => $facility->related_programs ?? [],
             'services' => $facility->related_programs ?? [],
             'specs' => $facility->specs ?? [],

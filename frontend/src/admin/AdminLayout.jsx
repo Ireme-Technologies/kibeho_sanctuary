@@ -51,6 +51,7 @@ export default function AdminLayout() {
     { to: '/admin/communities', label: 'Communities' },
     { to: '/admin/mass-schedules', label: 'Mass schedules' },
     { to: '/admin/projects', label: 'Accommodations' },
+    { to: '/admin/accommodation-reservations', label: 'Reservations' },
     { to: '/admin/pastoral-team', label: 'Pastoral team' },
     { to: '/admin/gallery', label: 'Media gallery' },
     { to: '/admin/videos', label: 'Videos (YouTube)' },

@@ -24,6 +24,7 @@ const UpcomingPilgrimagesAdminPage = lazy(() => import('@admin/UpcomingPilgrimag
 const EventUpdatesAdminPage = lazy(() => import('@admin/EventUpdatesAdminPage'))
 const EventRegistrationsAdminPage = lazy(() => import('@admin/EventRegistrationsAdminPage'))
 const ProjectsAdminPage = lazy(() => import('@admin/ProjectsAdminPage'))
+const AccommodationReservationsAdminPage = lazy(() => import('@admin/AccommodationReservationsAdminPage'))
 const BlogAdminPage = lazy(() => import('@admin/BlogAdminPage'))
 const VideosAdminPage = lazy(() => import('@admin/VideosAdminPage'))
 const MassSchedulesAdminPage = lazy(() => import('@admin/MassSchedulesAdminPage'))
@@ -46,6 +47,7 @@ const BooksPage = lazy(() => import('@pages/BooksPage'))
 const AudioCatalogPage = lazy(() => import('@pages/AudioCatalogPage'))
 const HotelsPage = lazy(() => import('@pages/HotelsPage'))
 const HotelDetailPage = lazy(() => import('@pages/HotelDetailPage'))
+const AccommodationBookingPage = lazy(() => import('@pages/AccommodationBookingPage'))
 const SacredPlacesPage = lazy(() => import('@pages/SacredPlacesPage'))
 const SacredPlaceDetailPage = lazy(() => import('@pages/SacredPlaceDetailPage'))
 const GetInvolvedPage = lazy(() => import('@pages/GetInvolvedPage'))
@@ -165,6 +167,7 @@ const localizedChildren = [
   { path: 'pilgrimages/:slug', element: <Wrap Component={PilgrimageDetailPage} /> },
   { path: 'pilgrimage/calendar', element: <LocalizedNavigate to="/pilgrimage/annual-celebrations" /> },
   { path: 'pilgrimage/accommodation', element: <Wrap Component={HotelsPage} /> },
+  { path: 'pilgrimage/accommodation/:slug/book', element: <Wrap Component={AccommodationBookingPage} /> },
   { path: 'pilgrimage/accommodation/:slug', element: <Wrap Component={HotelDetailPage} /> },
   { path: 'shrine/schedule', element: <Wrap Component={ShrineSchedulePage} /> },
   { path: 'shrine/places', element: <Wrap Component={SacredPlacesPage} type="main_place" /> },
@@ -304,6 +307,7 @@ const router = createBrowserRouter([
       { path: 'communities', element: <Wrap Component={CommunitiesAdminPage} /> },
       { path: 'pastoral-team', element: <Wrap Component={PastoralTeamAdminPage} /> },
       { path: 'projects', element: <Wrap Component={ProjectsAdminPage} /> },
+      { path: 'accommodation-reservations', element: <Wrap Component={AccommodationReservationsAdminPage} /> },
       { path: 'gallery', element: <Wrap Component={GalleryAdminPage} /> },
       { path: 'videos', element: <Wrap Component={VideosAdminPage} /> },
       { path: 'enquiries', element: <Wrap Component={EnquiriesAdminPage} /> },
