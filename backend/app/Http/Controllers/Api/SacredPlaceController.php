@@ -77,7 +77,7 @@ class SacredPlaceController extends Controller
 
     private function validated(Request $request, ?int $ignoreId = null): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'slug' => ['nullable', 'string', 'max:255', 'unique:sacred_places,slug,'.($ignoreId ?? 'NULL')],
             'type' => ['required', Rule::in(['apparition_site', 'main_place'])],
             'category' => ['nullable', 'string', 'max:100'],
@@ -91,14 +91,27 @@ class SacredPlaceController extends Controller
             'gallery' => ['nullable', 'array'],
             'gallery.*' => ['string'],
             'location' => ['nullable', 'string', 'max:255'],
+            'link_path' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_published' => ['boolean'],
             'translations' => ['nullable', 'array'],
         ]);
+
+        if (array_key_exists('link_path', $data)) {
+            $link = trim((string) $data['link_path']);
+            $data['link_path'] = $link === '' ? null : $link;
+        }
+
+        return $data;
     }
 
     private function pathFor(SacredPlace $item): string
     {
+        $custom = trim((string) ($item->link_path ?? ''));
+        if ($custom !== '') {
+            return str_starts_with($custom, '/') ? $custom : '/'.$custom;
+        }
+
         if ($item->type === 'apparition_site') {
             return '/shrine/apparition-sites/'.$item->slug;
         }
@@ -136,6 +149,8 @@ class SacredPlaceController extends Controller
             'coverImage' => $item->cover_image,
             'gallery' => $item->gallery ?? [],
             'location' => $resolved['location'],
+            'short_description' => $resolved['short_description'],
+            'linkPath' => $item->link_path,
             'sortOrder' => $item->sort_order,
             'isPublished' => $item->is_published,
             'path' => $this->pathFor($item),

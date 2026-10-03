@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useContent } from '@context/ContentContext'
 import { useLocale } from '@context/LocaleContext'
-import { fetchSacredPlaces } from '@api/cms'
-import { catalogErrorMessage } from '@api/client'
+import { useSacredPlaces } from '@hooks/useSacredPlaces'
 import RichText from '@components/ui/RichText'
 import { resolveSectionContent } from '@data/pages/mergePageContent'
-import { cardExcerpt } from '@utils/text'
+import { placeCardExcerpt } from '@utils/text'
 import { heroBackgroundStyle } from '@utils/heroBackground'
 import styles from './CatalogPage.module.css'
 
@@ -24,14 +23,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
   const sectionKey =
     type === 'apparition_site' ? 'shrine.apparition-sites' : 'shrine.places'
   const hero = resolveSectionContent(section, sectionKey)
-  const [items, setItems] = useState([])
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    fetchSacredPlaces({ ...{ type }, locale })
-      .then(setItems)
-      .catch((err) => setError(catalogErrorMessage(err)))
-  }, [type, locale])
+  const { items, error, loaded } = useSacredPlaces(type, locale)
 
   const heroImage = resolveHeaderImage(
     hero.heroImage,
@@ -56,7 +48,9 @@ export default function SacredPlacesPage({ type: typeProp }) {
 
         {error ? <p className={styles.empty}>{error}</p> : null}
 
-        {!error && !items.length ? (
+        {!loaded && !error ? <p className={styles.empty}>{t('loading')}</p> : null}
+
+        {loaded && !error && !items.length ? (
           <p className={styles.empty}>Places will appear here once published.</p>
         ) : null}
 
@@ -72,7 +66,7 @@ export default function SacredPlacesPage({ type: typeProp }) {
               </div>
               <div className={styles.cardBody}>
                 <h2>{item.name || item.title}</h2>
-                {cardExcerpt(item) ? <p className={styles.excerpt}>{cardExcerpt(item)}</p> : null}
+                {placeCardExcerpt(item) ? <p className={styles.excerpt}>{placeCardExcerpt(item)}</p> : null}
                 <span className={styles.cta}>{t('learnMore')} →</span>
               </div>
             </Link>

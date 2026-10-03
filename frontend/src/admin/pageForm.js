@@ -79,11 +79,18 @@ export function relatedAdminCruds(key) {
         hint: 'Add, edit, or remove apparition site records shown on this page.',
       },
     ],
+    'home.activities': [
+      {
+        to: '/admin/main-places',
+        label: 'Manage main places',
+        hint: 'Add, edit, or remove the cards on the homepage. The same published places appear on Main Places of the Shrine.',
+      },
+    ],
     'shrine.places': [
       {
         to: '/admin/main-places',
         label: 'Manage main places',
-        hint: 'Add, edit, or remove main place records shown on this page.',
+        hint: 'Add, edit, or remove main place records. Published places also appear on the homepage.',
       },
     ],
     'shrine.visionaries': [

@@ -17,7 +17,7 @@ import { LocaleColumnHeaders, LocaleColumnCells } from './components/LocaleColum
 import ListTitle from './components/ListTitle'
 import styles from './admin.module.css'
 
-const LOCALE_FIELDS = ['name', 'description', 'location', 'why_visit']
+const LOCALE_FIELDS = ['name', 'short_description', 'description', 'location', 'why_visit']
 
 const TYPE_OPTIONS = [
   { value: 'apparition_site', label: 'Apparition site' },
@@ -37,12 +37,14 @@ function emptyForm(fixedType) {
     type: fixedType || 'main_place',
     category: '',
     name: '',
+    short_description: '',
     description: '',
     why_visit: '',
     key_points_text: '',
     cover_image: '',
     gallery: [],
     location: '',
+    link_path: '',
     sort_order: 0,
     is_published: true,
     translations: {},
@@ -72,6 +74,9 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
   const [saving, setSaving] = useState(false)
 
   const title = pageTitle(fixedType)
+  const localeFields = fixedType === 'main_place'
+    ? LOCALE_FIELDS.filter((field) => field !== 'location')
+    : LOCALE_FIELDS
 
   const load = async () => {
     const params = fixedType ? { type: fixedType } : {}
@@ -98,12 +103,14 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
       type: fixedType || item.type || 'main_place',
       category: item.category || '',
       name: item.name || '',
+      short_description: item.short_description || '',
       description: item.description || '',
       why_visit: item.whyVisit || '',
       key_points_text: keyPointsToText(item.keyPoints),
       cover_image: item.coverImage || '',
       gallery: Array.isArray(item.gallery) ? item.gallery : [],
       location: item.location || '',
+      link_path: item.linkPath || '',
       sort_order: item.sortOrder ?? 0,
       is_published: item.isPublished !== false,
       translations: item.translations || {},
@@ -147,7 +154,12 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
   }
 
   const handleDelete = async (id) => {
-    if (!(await confirmDelete('Delete this sacred place?'))) return
+    const noun = fixedType === 'main_place'
+      ? 'main place'
+      : fixedType === 'apparition_site'
+        ? 'apparition site'
+        : 'sacred place'
+    if (!(await confirmDelete(`Delete this ${noun}?`))) return
     try {
       await deleteSacredPlace(id)
       await load()
@@ -177,6 +189,11 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
           {addLabel}
         </button>
       </div>
+      {fixedType === 'main_place' ? (
+        <p className={styles.muted}>
+          Published places appear on the homepage and on Main Places of the Shrine. Unpublish a place to hide it everywhere.
+        </p>
+      ) : null}
 
       <FlashMessage
         type={flash.type}
@@ -192,7 +209,7 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
               <th>Name</th>
               <LocaleColumnHeaders defaultLocale={defaultLocale} />
               {!fixedType && <th>Type</th>}
-              <th>Category</th>
+              {fixedType !== 'main_place' && <th>Category</th>}
             </tr>
           </thead>
           <tbody>
@@ -215,17 +232,17 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
                 </td>
                 <LocaleColumnCells
                   item={item}
-                  fields={LOCALE_FIELDS}
+                  fields={localeFields}
                   defaultLocale={defaultLocale}
                   onEditLocale={(code) => openEdit(item, code)}
                 />
                 {!fixedType && <td>{typeLabel(item.type)}</td>}
-                <td>{item.category || '—'}</td>
+                {fixedType !== 'main_place' && <td>{item.category || '—'}</td>}
               </tr>
             ))}
             {!items.length && (
               <tr>
-                <td colSpan={fixedType ? 7 : 8} className={styles.muted}>
+                <td colSpan={fixedType === 'main_place' ? 6 : fixedType ? 7 : 8} className={styles.muted}>
                   No {title.toLowerCase()} yet.
                 </td>
               </tr>
@@ -252,21 +269,23 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
               </select>
             </div>
           )}
-          <div className={styles.field}>
-            <label>Category</label>
-            <input
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-              placeholder="e.g. Chapel, Spring, Stations"
-            />
-          </div>
+          {fixedType !== 'main_place' && (
+            <div className={styles.field}>
+              <label>Category</label>
+              <input
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                placeholder="e.g. Chapel, Spring, Stations"
+              />
+            </div>
+          )}
           <LocaleTabs
             value={localeTab}
             onChange={setLocaleTab}
             defaultLocale={defaultLocale}
             form={form}
             setForm={setForm}
-            fields={LOCALE_FIELDS}
+            fields={localeFields}
           />
           <div className={styles.field}>
             <label>Name</label>
@@ -274,6 +293,15 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
               value={getLocaleField(form, 'name', localeTab, defaultLocale)}
               onChange={(e) => setForm(setLocaleField(form, 'name', localeTab, e.target.value, defaultLocale))}
               required={localeTab === defaultLocale}
+            />
+          </div>
+          <div className={styles.field}>
+            <label>Card summary</label>
+            <textarea
+              rows={3}
+              value={getLocaleField(form, 'short_description', localeTab, defaultLocale)}
+              onChange={(e) => setForm(setLocaleField(form, 'short_description', localeTab, e.target.value, defaultLocale))}
+              placeholder="Short line shown on the homepage and place cards"
             />
           </div>
           <div className={styles.field}>
@@ -311,13 +339,28 @@ export default function SacredPlacesAdminPage({ fixedType } = {}) {
             folder="sacred-places"
             hint="Upload landscape images only. The page shows the latest 3 images."
           />
-          <div className={styles.field}>
-            <label>Location</label>
-            <input
-              value={getLocaleField(form, 'location', localeTab, defaultLocale)}
-              onChange={(e) => setForm(setLocaleField(form, 'location', localeTab, e.target.value, defaultLocale))}
-            />
-          </div>
+          {fixedType !== 'main_place' && (
+            <div className={styles.field}>
+              <label>Location</label>
+              <input
+                value={getLocaleField(form, 'location', localeTab, defaultLocale)}
+                onChange={(e) => setForm(setLocaleField(form, 'location', localeTab, e.target.value, defaultLocale))}
+              />
+            </div>
+          )}
+          {localeTab === defaultLocale ? (
+            <div className={styles.field}>
+              <label>Link path</label>
+              <input
+                value={form.link_path}
+                onChange={(e) => setForm({ ...form, link_path: e.target.value })}
+                placeholder="/shrine/apparition-sites"
+              />
+              <p className={styles.muted}>
+                Optional. Leave blank to open this place’s own page. Set a path when the card should open another page.
+              </p>
+            </div>
+          ) : null}
           <div className={styles.field}>
             <label>Sort order</label>
             <input

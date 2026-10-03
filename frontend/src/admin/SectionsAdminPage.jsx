@@ -797,20 +797,9 @@ export default function SectionsAdminPage() {
             {kind === 'home.activities' ? (
               <>
                 <h2 className={styles.sectionTitle}>Highlight cards</h2>
-                <p className={styles.muted}>Cards on the homepage “At the Shrine” strip. Add, edit, reorder, or remove.</p>
-                <ListEditor
-                  label="Cards"
-                  items={getPageContentField(form, sectionTranslations, 'highlights', localeTab, defaultLocale)}
-                  onChange={(highlights) => patchField('highlights', highlights)}
-                  addLabel="Add card"
-                  emptyItem={{ title: '', shortDescription: '', path: '', image: '' }}
-                  fields={[
-                    { key: 'title', label: 'Title' },
-                    { key: 'path', label: 'URL', placeholder: '/shrine/holy-spring' },
-                    { key: 'shortDescription', label: 'Description', type: 'textarea' },
-                    { key: 'image', label: 'Image URL (optional)' },
-                  ]}
-                />
+                <p className={styles.muted}>
+                  The place cards are managed under Main places. Adding, editing, or removing a place updates the homepage and Main Places of the Shrine together.
+                </p>
                 <div className={styles.field}>
                   <label>Card button label</label>
                   <input

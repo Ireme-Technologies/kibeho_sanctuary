@@ -18,6 +18,7 @@ class SacredPlace extends Model
         'cover_image',
         'gallery',
         'location',
+        'link_path',
         'sort_order',
         'is_published',
         'translations',

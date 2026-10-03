@@ -24,6 +24,13 @@ export function cardExcerpt(item, max = 160) {
   return excerpt(item.summary || item.description || item.shortDescription || item.text || '', max)
 }
 
+/** Card line for a sacred place: the summary written in admin, then the description. */
+export function placeCardExcerpt(item, max = 160) {
+  const summary = excerpt(item?.short_description || '', max)
+  if (summary) return summary
+  return cardExcerpt(item, max)
+}
+
 /** Turns a full name into up-to-2-character initials, e.g. "Isaac Byiringiro" -> "IB" */
 export function getInitials(name = '') {
   return name
